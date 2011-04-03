@@ -26,6 +26,7 @@ import org.gitana.repo.client.*;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.nodes.NodeImpl;
 import org.gitana.repo.namespace.QName;
+import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
 import java.util.HashMap;
@@ -79,14 +80,14 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Repository> list = new HashMap<String, Repository>();
+        Map<String, Repository> map = new HashMap<String, Repository>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Repository repository = new RepositoryImpl(gitana, object, true);
-            list.put(repository.getId(), repository);
+            map.put(repository.getId(), repository);
         }
 
-        return list;
+        return map;
     }
 
     @Override
@@ -125,14 +126,14 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Branch> list = new HashMap<String, Branch>();
+        Map<String, Branch> map = new HashMap<String, Branch>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Branch branch = new BranchImpl(gitana, repository, object, true);
-            list.put(branch.getId(), branch);
+            map.put(branch.getId(), branch);
         }
 
-        return list;
+        return map;
     }
 
     @Override
@@ -154,14 +155,14 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Changeset> list = new HashMap<String, Changeset>();
+        Map<String, Changeset> map = new HashMap<String, Changeset>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Changeset changeset = new ChangesetImpl(gitana, repository, object, true);
-            list.put(changeset.getId(), changeset);
+            map.put(changeset.getId(), changeset);
         }
 
-        return list;
+        return map;
     }
 
     @Override
@@ -202,14 +203,14 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Node> list = new HashMap<String, Node>();
+        Map<String, Node> map = new HashMap<String, Node>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Node node = produce(branch, object, true);
-            list.put(node.getId(), node);
+            map.put(node.getId(), node);
         }
 
-        return list;
+        return map;
     }
 
     /**
@@ -237,4 +238,165 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         return new NodeImpl(gitana, branch, object, isSaved);
     }
+
+    @Override
+    public SecurityUser securityUser()
+    {
+        return securityUser(JsonUtil.createObject());
+    }
+
+    @Override
+    public SecurityUser securityUser(ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new SecurityUserImpl(gitana, object, false);
+    }
+
+    @Override
+    public SecurityUser securityUser(Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new SecurityUserImpl(gitana, response.getObjectNode(), true);
+    }
+
+    @Override
+    public Map<String, SecurityUser> securityUsers(Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        Map<String, SecurityUser> map = new HashMap<String, SecurityUser>();
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            SecurityUser user = new SecurityUserImpl(gitana, object, true);
+            map.put(user.getId(), user);
+        }
+
+        return map;
+    }
+
+    @Override
+    public SecurityGroup securityGroup()
+    {
+        return securityGroup(JsonUtil.createObject());
+    }
+
+    @Override
+    public SecurityGroup securityGroup(ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new SecurityGroupImpl(gitana, object, false);
+    }
+
+    @Override
+    public SecurityGroup securityGroup(Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new SecurityGroupImpl(gitana, response.getObjectNode(), true);
+    }
+
+    @Override
+    public Map<String, SecurityGroup> securityGroups(Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        Map<String, SecurityGroup> map = new HashMap<String, SecurityGroup>();
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            SecurityGroup group = new SecurityGroupImpl(gitana, object, true);
+            map.put(group.getId(), group);
+        }
+
+        return map;
+    }
+
+    @Override
+    public SecurityPrincipal securityPrincipal(Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        ObjectNode object = response.getObjectNode();
+
+        SecurityPrincipal principal = null;
+
+        PrincipalType principalType = PrincipalType.valueOf(JsonUtil.objectGetString(object, SecurityPrincipal.FIELD_PRINCIPAL_TYPE));
+        if (principalType.equals(PrincipalType.GROUP))
+        {
+            principal = new SecurityGroupImpl(gitana, object, true);
+        }
+        else if (principalType.equals(PrincipalType.USER))
+        {
+            principal = new SecurityUserImpl(gitana, object, true);
+        }
+
+        return principal;
+    }
+
+    @Override
+    public Map<String, SecurityPrincipal> securityPrincipals(Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        Map<String, SecurityPrincipal> map = new HashMap<String, SecurityPrincipal>();
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            SecurityPrincipal principal = securityPrincipal(object);
+            map.put(principal.getId(), principal);
+        }
+
+        return map;
+    }
+
+    private SecurityPrincipal securityPrincipal(ObjectNode object)
+    {
+        SecurityPrincipal principal = null;
+
+        String principalTypeId = JsonUtil.objectGetString(object, SecurityPrincipal.FIELD_PRINCIPAL_TYPE);
+        if (principalTypeId == null)
+        {
+            int a = 3;
+        }
+
+        PrincipalType principalType = PrincipalType.valueOf(principalTypeId);
+        if (principalType.equals(PrincipalType.GROUP))
+        {
+            principal = new SecurityGroupImpl(gitana, object, true);
+        }
+        else if (principalType.equals(PrincipalType.USER))
+        {
+            principal = new SecurityUserImpl(gitana, object, true);
+        }
+
+        return principal;
+    }
+
+
+
 }

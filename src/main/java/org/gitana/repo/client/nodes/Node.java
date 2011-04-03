@@ -66,6 +66,16 @@ public interface Node extends Document
     public boolean isDeleted();
 
     /**
+     * Update
+     */
+    public void update();
+
+    /**
+     * Delete
+     */
+    public void delete();
+
+    /**
      * @return access control list
      */
     public ACL getACL();

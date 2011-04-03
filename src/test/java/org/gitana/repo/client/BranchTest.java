@@ -65,17 +65,8 @@ public class BranchTest extends AbstractTestCase
         assertNotNull(verify2);
         assertEquals(branch2, verify2);
 
-        /**
-        // delete branch 3
-        branches.delete(branch3.getId());
-
-        // read branch 3 and verify null
-        Branch verify3 = branches.read(branch3.getId());
-        assertNull(verify3);
-
-        // list branches (should be 3)
-        assertEquals(3, branches.list().size());
-         */
+        // update branch 1
+        branch1.update();
 
         // create a branch with obj data
         ObjectNode obj = JsonUtil.createObject();

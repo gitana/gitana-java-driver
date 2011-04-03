@@ -55,8 +55,11 @@ public class RepositoryTest extends AbstractTestCase
         Repository check2 = repositories.read(repository2.getId());
         assertEquals(repository2, check2);
 
+        // update the third one
+        repository3.update();
+
         // delete the third one
-        repositories.delete(repository3.getId());
+        repository3.delete();
 
         // read back for assurance
         Repository check3 = repositories.read(repository3.getId());

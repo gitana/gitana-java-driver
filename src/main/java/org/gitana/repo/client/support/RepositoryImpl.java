@@ -72,6 +72,18 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     }
 
     @Override
+    public void update()
+    {
+        getRemote().put("/repositories/" + getId(), getObject());
+    }
+
+    @Override
+    public void delete()
+    {
+        getRemote().delete("/repositories/" + getId());
+    }
+
+    @Override
     public ACL getACL()
     {
         Response response = getRemote().get("/repositories/" + getId() + "/acl");

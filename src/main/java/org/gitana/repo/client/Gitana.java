@@ -182,5 +182,14 @@ public class Gitana
         return new Nodes(this, branch);
     }
 
+    public Users users()
+    {
+        return new Users(this);
+    }
+
+    public Groups groups()
+    {
+        return new Groups(this);
+    }
 
 }

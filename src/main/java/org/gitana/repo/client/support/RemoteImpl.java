@@ -37,6 +37,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,10 +48,69 @@ public class RemoteImpl implements Remote
     private HttpClient client;
     private String remoteURL;
 
+    private boolean full;
+    private boolean metadata;
+
     public RemoteImpl(HttpClient client, String remoteURL)
     {
         this.client = client;
         this.remoteURL = remoteURL;
+
+        this.full = true;
+        this.metadata = true;
+    }
+
+    public void setFull(boolean full)
+    {
+        this.full = full;
+    }
+
+    public void setMetadata(boolean metadata)
+    {
+        this.metadata = metadata;
+    }
+
+    private String buildURL(String uri, boolean expand)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.remoteURL);
+        sb.append(uri);
+
+        if (expand)
+        {
+            boolean added = false;
+            if (uri.indexOf("?") > -1)
+            {
+                added = true;
+            }
+
+            if (this.metadata)
+            {
+                sb.append((added ? "&" : "?"));
+                sb.append("metadata=true");
+                added = true;
+            }
+            if (this.full)
+            {
+                sb.append((added ? "&" : "?"));
+                sb.append("full=true");
+                added = true;
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private void buildParams(Map<String, String> params)
+    {
+        if (this.metadata)
+        {
+            params.put("metadata", "true");
+        }
+        if (this.full)
+        {
+            params.put("full", "true");
+        }
     }
 
     @Override
@@ -59,7 +119,9 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.POST(client, this.remoteURL + uri);
+            String URL = buildURL(uri, true);
+
+            byte[] x = HttpUtilEx.POST(client, URL);
             response = toResult(x);
 
             if (!response.isOk())
@@ -90,7 +152,9 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.POST(client, this.remoteURL + uri, bytes, mimetype);
+            String URL = buildURL(uri, true);
+
+            byte[] x = HttpUtilEx.POST(client, URL, bytes, mimetype);
             response = toResult(x);
 
             if (!response.isOk())
@@ -112,7 +176,9 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.GET(client, this.remoteURL + uri);
+            String URL = buildURL(uri, true);
+
+            byte[] x = HttpUtilEx.GET(client, URL);
             response = toResult(x);
 
             if (!response.isOk())
@@ -134,7 +200,9 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.DELETE(client, this.remoteURL + uri);
+            String URL = buildURL(uri, true);
+
+            byte[] x = HttpUtilEx.DELETE(client, URL);
             response = toResult(x);
 
             if (!response.isOk())
@@ -176,7 +244,9 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.PUT(client, this.remoteURL + uri, bytes, mimetype);
+            String URL = buildURL(uri, true);
+
+            byte[] x = HttpUtilEx.PUT(client, URL, bytes, mimetype);
             response = toResult(x);
 
             if (!response.isOk())
@@ -198,7 +268,15 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.MULTIPART_POST(client, this.remoteURL + uri, params, object, payload);
+            String URL = buildURL(uri, false);
+
+            if (params == null)
+            {
+                params = new HashMap<String, String>();
+            }
+            buildParams(params);
+
+            byte[] x = HttpUtilEx.MULTIPART_POST(client, URL, params, object, payload);
             response = toResult(x);
 
             if (!response.isOk())
@@ -220,7 +298,15 @@ public class RemoteImpl implements Remote
         Response response = null;
         try
         {
-            byte[] x = HttpUtilEx.MULTIPART_PUT(client, this.remoteURL + uri, params, object, payload);
+            String URL = buildURL(uri, false);
+
+            if (params == null)
+            {
+                params = new HashMap<String, String>();
+            }
+            buildParams(params);
+
+            byte[] x = HttpUtilEx.MULTIPART_PUT(client, URL, params, object, payload);
             response = toResult(x);
 
             if (!response.isOk())
@@ -242,7 +328,8 @@ public class RemoteImpl implements Remote
 	{
 		InputStreamRequestEntity entity = new InputStreamRequestEntity(new ByteArrayInputStream(bytes));
 
-		PostMethod method = new PostMethod(this.remoteURL + uri);
+        String URL = buildURL(uri, false);
+		PostMethod method = new PostMethod(URL);
 		method.setRequestEntity(entity);
 
 		Header contentType = new Header("Content-Type", mimetype);
@@ -261,7 +348,8 @@ public class RemoteImpl implements Remote
 	public byte[] download(String uri)
         throws Exception
 	{
-		GetMethod method = new GetMethod(this.remoteURL + uri);
+        String URL = buildURL(uri, false);
+		GetMethod method = new GetMethod(URL);
 
 		int sc = client.executeMethod(method);
         if (sc != 200)

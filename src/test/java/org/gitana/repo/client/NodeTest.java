@@ -62,14 +62,14 @@ public class NodeTest extends AbstractTestCase
 
         // update a node
         node2.set("axl", "rose");
-        nodes.update(node2);
+        node2.update();
 
         // read node back to verify
         Node verify4 = nodes.read(node2.getId());
         assertEquals("rose", verify4.getString("axl"));
 
         // delete the second node
-        nodes.delete(node2);
+        node2.delete();
 
         // verify that we can't read it
         Node verify5 = nodes.read(node2.getId());

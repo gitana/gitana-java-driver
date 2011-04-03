@@ -159,6 +159,18 @@ public class NodeImpl extends DocumentImpl implements Node
         return equals;
     }
 
+    @Override
+    public void update()
+    {
+        getRemote().put("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId(), getObject());
+    }
+
+    @Override
+    public void delete()
+    {
+        getRemote().delete("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId());
+    }
+
     /**
      * @return access control list
      */

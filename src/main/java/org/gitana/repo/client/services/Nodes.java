@@ -155,35 +155,4 @@ public class Nodes extends AbstractService
         return read(nodeId);
     }
 
-    /**
-     * Updates a node.
-     *
-     * @param node
-     */
-    public void update(Node node)
-    {
-        getRemote().put("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + node.getId(), node.getObject());
-    }
-
-    /**
-     * Deletes a node.
-     *
-     * @param node
-     */
-    public void delete(Node node)
-    {
-        delete(node.getId());
-    }
-
-    /**
-     * Deletes a node.
-     *
-     * @param nodeId
-     */
-    public void delete(String nodeId)
-    {
-        getRemote().delete("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + nodeId);
-    }
-
-
 }

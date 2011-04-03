@@ -133,6 +133,12 @@ public class BranchImpl extends DocumentImpl implements Branch
         return equals;
     }
 
+    @Override
+    public void update()
+    {
+        getRemote().put("/repositories/" + getRepositoryId() + "/branches/" + getId(), getObject());
+    }
+
     /**
      * @return access control list
      */

@@ -22,7 +22,6 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.beans.ACL;
-import org.gitana.repo.client.util.DriverUtil;
 
 import java.util.List;
 
@@ -65,6 +64,11 @@ public interface Branch extends Document
     // helpers
     public String getJoinBranchId();
     public String getRootBranchId();
+
+    /**
+     * Update
+     */
+    public void update();
 
     /**
      * @return access control list

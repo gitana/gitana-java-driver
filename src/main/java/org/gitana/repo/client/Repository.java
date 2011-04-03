@@ -44,6 +44,16 @@ public interface Repository extends Document
     public RepositoryType getType();
 
     /**
+     * Update
+     */
+    public void update();
+
+    /**
+     * Delete
+     */
+    public void delete();
+
+    /**
      * @return access control list
      */
     public ACL getACL();

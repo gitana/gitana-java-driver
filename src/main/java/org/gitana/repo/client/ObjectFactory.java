@@ -53,4 +53,18 @@ public interface ObjectFactory
     public Node node(Branch branch, QName typeQName, ObjectNode object);
     public Node node(Branch branch, Response response);
     public Map<String, Node> nodes(Branch branch, Response response);
+
+    public SecurityUser securityUser();
+    public SecurityUser securityUser(ObjectNode object);
+    public SecurityUser securityUser(Response response);
+    public Map<String, SecurityUser> securityUsers(Response response);
+
+    public SecurityGroup securityGroup();
+    public SecurityGroup securityGroup(ObjectNode object);
+    public SecurityGroup securityGroup(Response response);
+    public Map<String, SecurityGroup> securityGroups(Response response);
+
+    public SecurityPrincipal securityPrincipal(Response response);
+    public Map<String, SecurityPrincipal> securityPrincipals(Response response);
+
 }

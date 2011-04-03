@@ -145,43 +145,4 @@ public class Branches extends AbstractService
         return read(branchId);
     }
 
-    /**
-     * Updates a branch.
-     *
-     * @param branch
-     */
-    public void update(Branch branch)
-    {
-        getRemote().put("/repositories/" + getRepositoryId() + "/branches/" + branch.getId(), branch.getObject());
-    }
-
-    /**
-     * Deletes a branch.
-     *
-     * NOTE: this isn't yet implemented
-     *
-     * @param branch
-     */
-    /*
-    public void delete(Branch branch)
-    {
-        delete(branch.getId());
-    }
-    */
-
-    /**
-     * Deletes a branch.
-     *
-     * NOTE: this isn't yet implemented
-     *
-     * @param branchId
-     */
-    /*
-    public void delete(String branchId)
-    {
-        getRemote().delete("/repositories/" + getRepositoryId() + "/branches/" + branchId);
-    }
-    */
-
-
 }

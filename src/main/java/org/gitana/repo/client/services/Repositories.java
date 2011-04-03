@@ -127,36 +127,4 @@ public class Repositories extends AbstractService
         String repositoryId = response.getId();
         return read(repositoryId);
     }
-
-    /**
-     * Updates a repository.
-     *
-     * @param repository
-     */
-    public void update(Repository repository)
-    {
-        getRemote().put("/repositories/" + repository.getId(), repository.getObject());
-    }
-
-    /**
-     * Deletes a repository.
-     *
-     * @param repository
-     */
-    public void delete(Repository repository)
-    {
-        delete(repository.getId());
-    }
-
-    /**
-     * Deletes a repository.
-     *
-     * @param repositoryId
-     */
-    public void delete(String repositoryId)
-    {
-        getRemote().delete("/repositories/" + repositoryId);
-    }
-
-
 }
