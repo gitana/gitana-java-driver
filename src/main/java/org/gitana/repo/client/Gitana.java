@@ -43,6 +43,8 @@ public class Gitana
     private String host;
     private int port;
 
+    private String ticket;
+
     private HttpClient client;
 
     private ObjectFactory factory;
@@ -98,6 +100,11 @@ public class Gitana
         return new RemoteImpl(this.client, "http://" + this.host + ":" + this.port);
     }
 
+    public String getTicket()
+    {
+        return this.ticket;
+    }
+
     /**
      * Authenticates as the given user.
      *
@@ -121,13 +128,13 @@ public class Gitana
             throw new AuthenticationFailedException(ex);
         }
 
-        String ticket = result.getObjectNode().get(FIELD_TICKET).getTextValue();
+        this.ticket = result.getObjectNode().get(FIELD_TICKET).getTextValue();
 
         // build a new http client
         HttpClient httpClient = new HttpClient();
 
         // set a cookie into the http state
-        Cookie cookie = buildCookie(ticket);
+        Cookie cookie = buildCookie(this.ticket);
         httpClient.getState().addCookie(cookie);
 
         // replace existing client

@@ -27,10 +27,10 @@ import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.nodes.NodeImpl;
 import org.gitana.util.JsonUtil;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,12 +72,31 @@ public class Nodes extends AbstractService
      *
      * @return a map of node objects keyed by node id
      */
-    public Map<String, Node> list()
+    public Map<String, Node> map()
     {
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes");
 
         return getFactory().nodes(getBranch(), response);
     }
+
+    /**
+     * Retrieves nodes for the branch.
+     *
+     * @return list of repositories
+     */
+    public List<Node> list()
+    {
+        Map<String, Node> map = map();
+
+        List<Node> list = new ArrayList<Node>();
+        for (Node node : map.values())
+        {
+            list.add(node);
+        }
+
+        return list;
+    }
+
 
     /**
      * Reads a single node from the branch.

@@ -27,6 +27,8 @@ import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,15 +42,33 @@ public class Repositories extends AbstractService
     }
 
     /**
-     * Retrieves repositories from the server.
+     * Retrieves repositories from the server as a map.
      *
      * @return a map of repository objects keyed by repository id
      */
-    public Map<String, Repository> list()
+    public Map<String, Repository> map()
     {
         Response response = getRemote().get("/repositories");
 
         return getFactory().repositories(response);
+    }
+
+    /**
+     * Retrieves repositories from the server as a list.
+     *
+     * @return list of repositories
+     */
+    public List<Repository> list()
+    {
+        Map<String, Repository> map = map();
+
+        List<Repository> list = new ArrayList<Repository>();
+        for (Repository repository : map.values())
+        {
+            list.add(repository);
+        }
+
+        return list;
     }
 
     /**

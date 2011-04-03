@@ -28,6 +28,8 @@ import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,11 +61,29 @@ public class Branches extends AbstractService
      *
      * @return a map of branch objects keyed by branch id
      */
-    public Map<String, Branch> list()
+    public Map<String, Branch> map()
     {
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches");
 
         return getFactory().branches(getRepository(), response);
+    }
+
+    /**
+     * Retrieves nodes for the branch.
+     *
+     * @return list of repositories
+     */
+    public List<Branch> list()
+    {
+        Map<String, Branch> map = map();
+
+        List<Branch> list = new ArrayList<Branch>();
+        for (Branch branch : map.values())
+        {
+            list.add(branch);
+        }
+
+        return list;
     }
 
     /**
