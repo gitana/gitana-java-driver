@@ -42,14 +42,13 @@ public class BranchTest extends AbstractTestCase
         // create a repository
         Repository repository = gitana.repositories().create();
 
-        // branches
-        Branches branches = gitana.branches(repository);
+        Branches branches = repository.branches();
 
         // list branches (should have 1)
         assertEquals(1, branches.list().size());
 
         // get the master branch
-        Branch master = gitana.branches(repository).read("master");
+        Branch master = branches.read("master");
         assertNotNull(master);
 
         // create three new branches

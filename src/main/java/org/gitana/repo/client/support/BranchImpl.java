@@ -27,6 +27,7 @@ import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Nodes;
 import org.gitana.repo.client.util.DriverUtil;
 
 import java.util.List;
@@ -131,6 +132,12 @@ public class BranchImpl extends DocumentImpl implements Branch
         }
 
         return equals;
+    }
+
+    @Override
+    public Nodes nodes()
+    {
+        return new Nodes(this.gitana, this);
     }
 
     @Override

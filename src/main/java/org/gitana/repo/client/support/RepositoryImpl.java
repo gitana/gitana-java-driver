@@ -26,6 +26,8 @@ import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Branches;
+import org.gitana.repo.client.services.Changesets;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.support.RepositoryType;
 
@@ -70,6 +72,17 @@ public class RepositoryImpl extends DocumentImpl implements Repository
 
         return equals;
     }
+
+    public Branches branches()
+    {
+        return new Branches(this.gitana, this);
+    }
+
+    public Changesets changesets()
+    {
+        return new Changesets(this.gitana, this);
+    }
+
 
     @Override
     public void update()

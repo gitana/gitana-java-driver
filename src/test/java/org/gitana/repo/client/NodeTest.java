@@ -42,10 +42,10 @@ public class NodeTest extends AbstractTestCase
         Repository repository = gitana.repositories().create();
 
         // get the master branch
-        Branch master = gitana.branches(repository).read("master");
+        Branch master = repository.branches().read("master");
 
         // nodes
-        Nodes nodes = gitana.nodes(master);
+        Nodes nodes = master.nodes();
 
         // create three nodes
         Node node1 = nodes.create();

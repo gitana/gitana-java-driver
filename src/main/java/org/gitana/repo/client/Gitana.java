@@ -167,21 +167,6 @@ public class Gitana
         return new Repositories(this);
     }
 
-    public Branches branches(Repository repository)
-    {
-        return new Branches(this, repository);
-    }
-
-    public Changesets changesets(Repository repository)
-    {
-        return new Changesets(this, repository);
-    }
-
-    public Nodes nodes(Branch branch)
-    {
-        return new Nodes(this, branch);
-    }
-
     public Users users()
     {
         return new Users(this);

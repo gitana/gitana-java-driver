@@ -22,6 +22,8 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Branches;
+import org.gitana.repo.client.services.Changesets;
 import org.gitana.repo.support.RepositoryType;
 
 import java.util.List;
@@ -42,6 +44,16 @@ public interface Repository extends Document
      * @return the repository type
      */
     public RepositoryType getType();
+
+    /**
+     * @return branches
+     */
+    public Branches branches();
+
+    /**
+     * @return changesets
+     */
+    public Changesets changesets();
 
     /**
      * Update

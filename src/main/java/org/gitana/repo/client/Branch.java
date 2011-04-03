@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Nodes;
 
 import java.util.List;
 
@@ -64,6 +65,11 @@ public interface Branch extends Document
     // helpers
     public String getJoinBranchId();
     public String getRootBranchId();
+
+    /**
+     * @return nodes
+     */
+    public Nodes nodes();
 
     /**
      * Update
