@@ -136,7 +136,7 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     {
         try
         {
-            getRemote().upload("/repositories/files/" + filename, bytes, contentType);
+            getRemote().upload("/repositories/" + this.getId() + "/files/" + filename, bytes, contentType);
         }
         catch (Exception ex)
         {
@@ -147,7 +147,7 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     @Override
     public void deleteFile(String filename)
     {
-        getRemote().delete("/repositories/files/" + filename);
+        getRemote().delete("/repositories/" + this.getId() + "/files/" + filename);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class RepositoryImpl extends DocumentImpl implements Repository
 
         try
         {
-            bytes = getRemote().download("/repositories/files/" + filename);
+            bytes = getRemote().download("/repositories/" + this.getId() + "/files/" + filename);
         }
         catch (Exception ex)
         {
