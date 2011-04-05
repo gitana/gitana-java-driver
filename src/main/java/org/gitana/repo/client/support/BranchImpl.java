@@ -22,6 +22,7 @@
 package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Repository;
@@ -118,6 +119,27 @@ public class BranchImpl extends DocumentImpl implements Branch
     {
         return getString(FIELD_ROOT_BRANCH);
     }
+
+    @Override
+    public boolean isMaster()
+    {
+        return BranchType.MASTER.equals(getType());
+    }
+
+    @Override
+    public BranchType getType()
+    {
+        BranchType type = null;
+
+        String typeId = getString(FIELD_BRANCH_TYPE);
+        if (typeId != null)
+        {
+            type = BranchType.valueOf(typeId);
+        }
+
+        return type;
+    }
+
 
     @Override
     public boolean equals(Object object)

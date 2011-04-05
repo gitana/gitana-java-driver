@@ -21,6 +21,7 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.services.Nodes;
 
@@ -44,7 +45,7 @@ public interface Branch extends Document
     public final static String FIELD_JOIN_BRANCH = "join-branch";
     public final static String FIELD_ROOT_BRANCH = "root-branch";
 
-    public final static String FIELD_BRANCH_TYPE = "branchType";
+    public final static String FIELD_BRANCH_TYPE = "type";
 
     public Repository getRepository();
     public String getRepositoryId();
@@ -65,6 +66,9 @@ public interface Branch extends Document
     // helpers
     public String getJoinBranchId();
     public String getRootBranchId();
+
+    public boolean isMaster();
+    public BranchType getType();
 
     /**
      * @return nodes

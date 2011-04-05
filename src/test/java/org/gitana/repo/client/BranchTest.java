@@ -50,6 +50,7 @@ public class BranchTest extends AbstractTestCase
         // get the master branch
         Branch master = branches.read("master");
         assertNotNull(master);
+        assertTrue(master.isMaster());
 
         // create three new branches
         Branch branch1 = branches.create(master.getRootChangesetId());
@@ -63,6 +64,7 @@ public class BranchTest extends AbstractTestCase
         Branch verify2 = branches.read(branch2.getId());
         assertNotNull(verify2);
         assertEquals(branch2, verify2);
+        assertFalse(verify2.isMaster());
 
         // update branch 1
         branch1.update();
