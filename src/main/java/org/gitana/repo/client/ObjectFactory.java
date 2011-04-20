@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.nodes.Association;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
 
@@ -53,6 +54,11 @@ public interface ObjectFactory
     public Node node(Branch branch, QName typeQName, ObjectNode object);
     public Node node(Branch branch, Response response);
     public Map<String, Node> nodes(Branch branch, Response response);
+
+    public Association association(Branch branch, QName typeQName);
+    public Association association(Branch branch, QName typeQName, ObjectNode object);
+    public Association association(Branch branch, Response response);
+    public Map<String, Association> associations(Branch branch, Response response);
 
     public SecurityUser securityUser();
     public SecurityUser securityUser(ObjectNode object);

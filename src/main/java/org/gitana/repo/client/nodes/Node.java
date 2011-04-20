@@ -21,60 +21,18 @@
 
 package org.gitana.repo.client.nodes;
 
-import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Document;
-import org.gitana.repo.client.Repository;
+import org.gitana.repo.association.Direction;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.namespace.QName;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
  */
-public interface Node extends Document
+public interface Node extends BaseNode
 {
-    // default collection location
-    public final static String DEFAULT_COLLECTION_ID = "nodes";
-
-	// additional metadata fields
-    public final static String FIELD_FEATURES = "_features";
-    public final static String FIELD_QNAME = "_qname";
-    public final static String FIELD_TYPE_QNAME = "_type";
-
-    // system metadata
-    public final static String SYSTEM_CHANGESET = "changeset";
-    public final static String SYSTEM_DELETED = "deleted";
-
-    public Repository getRepository();
-    public String getRepositoryId();
-
-    public Branch getBranch();
-    public String getBranchId();
-
-    // qualified name
-    public QName getQName();
-
-    // type
-    public QName getTypeQName();
-
-    // changeset information
-    public String getChangesetId();
-    //public int getChangesetRev();
-            
-    // flags
-    public boolean isDeleted();
-
-    /**
-     * Update
-     */
-    public void update();
-
-    /**
-     * Delete
-     */
-    public void delete();
-
     /**
      * @return access control list
      */
@@ -128,5 +86,61 @@ public interface Node extends Document
      * @return attachment
      */
     public byte[] downloadAttachment(String attachmentId);
+
+    /**
+     * Lists all associations (both directions) involving this node.
+     *
+     * @return map
+     */
+    public Map<String, Association> associations();
+
+    /**
+     * Lists all directed associations involving this node.
+     *
+     * @param direction
+     *
+     * @return map
+     */
+    public Map<String, Association> associations(Direction direction);
+
+    /**
+     * Lists all associations of the given type in both directions.
+     *
+     * @param associationTypeQName
+     * @return map
+     */
+    public Map<String, Association> associations(QName associationTypeQName);
+
+    /**
+     * Lists all associations of the given type in both directions.
+     *
+     * @param direction
+     * @param associationTypeQName
+     * @return map
+     */
+    public Map<String, Association> associations(Direction direction, QName associationTypeQName);
+
+    /**
+     * Associates a target node to this source node.
+     *
+     * The direction is OUTGOING from this node to the specified node.
+     *
+     * @param targetNode
+     * @param associationTypeQName
+     * @return association
+     */
+    public Association associate(Node targetNode, QName associationTypeQName);
+
+    /**
+     * Associates this node with another.
+     *
+     * @param otherNode
+     * @param direction
+     * @param associationTypeQName
+     * @return association
+     */
+    public Association associate(Node otherNode, Direction direction, QName associationTypeQName);
+
+
 
 }

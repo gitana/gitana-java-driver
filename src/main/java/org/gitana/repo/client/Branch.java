@@ -23,6 +23,7 @@ package org.gitana.repo.client;
 
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Definitions;
 import org.gitana.repo.client.services.Nodes;
 
 import java.util.List;
@@ -74,6 +75,11 @@ public interface Branch extends Document
      * @return nodes
      */
     public Nodes nodes();
+
+    /**
+     * @return definitions
+     */
+    public Definitions definitions();
 
     /**
      * Update

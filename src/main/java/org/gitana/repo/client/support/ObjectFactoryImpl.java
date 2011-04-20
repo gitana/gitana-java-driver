@@ -23,8 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
-import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.nodes.NodeImpl;
+import org.gitana.repo.client.nodes.*;
 import org.gitana.repo.namespace.QName;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
@@ -181,7 +180,7 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         object.put(Node.FIELD_TYPE_QNAME, typeQName.toString());
 
-        return produce(branch, object, false);
+        return (Node) produce(branch, object, false);
     }
 
     @Override
@@ -192,7 +191,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a data document");
         }
 
-        return produce(branch, response.getObjectNode(), true);
+        return (Node) produce(branch, response.getObjectNode(), true);
     }
 
     @Override
@@ -206,8 +205,56 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, Node> map = new HashMap<String, Node>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            Node node = produce(branch, object, true);
+            Node node = (Node) produce(branch, object, true);
             map.put(node.getId(), node);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Association association(Branch branch, QName typeQName)
+    {
+        return association(branch, typeQName, JsonUtil.createObject());
+    }
+
+    @Override
+    public Association association(Branch branch, QName typeQName, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        object.put(Node.FIELD_TYPE_QNAME, typeQName.toString());
+
+        return (Association) produce(branch, object, false);
+    }
+
+    @Override
+    public Association association(Branch branch, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return (Association) produce(branch, response.getObjectNode(), true);
+    }
+
+    @Override
+    public Map<String, Association> associations(Branch branch, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        Map<String, Association> map = new HashMap<String, Association>();
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Association association = (Association) produce(branch, object, true);
+            map.put(association.getId(), association);
         }
 
         return map;
@@ -224,7 +271,7 @@ public class ObjectFactoryImpl implements ObjectFactory
      *
      * @return node
      */
-    private Node produce(Branch branch, ObjectNode object, boolean isSaved)
+    private BaseNode produce(Branch branch, ObjectNode object, boolean isSaved)
     {
         /*
         String type = JsonUtil.objectGetString(object, Node.FIELD_TYPE_QNAME);
@@ -236,7 +283,18 @@ public class ObjectFactoryImpl implements ObjectFactory
         QName typeQName = QName.create(type);
         */
 
-        return new NodeImpl(gitana, branch, object, isSaved);
+        BaseNode baseNode = null;
+
+        if (object.get("_is_association").getBooleanValue())
+        {
+            baseNode = new AssociationImpl(gitana, branch, object, isSaved);
+        }
+        else
+        {
+            baseNode = new NodeImpl(gitana, branch, object, isSaved);
+        }
+
+        return baseNode;
     }
 
     @Override
@@ -379,10 +437,6 @@ public class ObjectFactoryImpl implements ObjectFactory
         SecurityPrincipal principal = null;
 
         String principalTypeId = JsonUtil.objectGetString(object, SecurityPrincipal.FIELD_PRINCIPAL_TYPE);
-        if (principalTypeId == null)
-        {
-            int a = 3;
-        }
 
         PrincipalType principalType = PrincipalType.valueOf(principalTypeId);
         if (principalType.equals(PrincipalType.GROUP))

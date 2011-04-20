@@ -22,17 +22,16 @@
 package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.association.Direction;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
-import org.gitana.repo.client.support.DocumentImpl;
-import org.gitana.repo.client.support.Remote;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Default "n:node" implementation for a node.
@@ -41,7 +40,7 @@ import java.util.List;
  * 
  * @author uzi
  */
-public class NodeImpl extends DocumentImpl implements Node
+public class NodeImpl extends BaseNodeImpl implements Node
 {
 	private QName qname;
 	private QName typeQName;
@@ -69,106 +68,13 @@ public class NodeImpl extends DocumentImpl implements Node
      */
     public NodeImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-
-        this.gitana = gitana;
-        this.branch = branch;
+        super(gitana, branch, obj, isSaved);
 
         this.init();
     }
 
     private void init()
     {
-        String _qname = getString(FIELD_QNAME);
-        this.qname = QName.create(_qname);
-
-        String _type = getString(FIELD_TYPE_QNAME);
-        this.typeQName = QName.create(_type);
-    }
-
-    protected Remote getRemote()
-    {
-        return gitana.getRemote();
-    }
-
-    @Override
-    public Repository getRepository()
-    {
-        return getBranch().getRepository();
-    }
-
-    @Override
-    public String getRepositoryId()
-    {
-        return getRepository().getId();
-    }
-    @Override
-    public Branch getBranch()
-    {
-        return branch;
-    }
-
-    @Override
-    public String getBranchId()
-    {
-        return getBranch().getId();
-    }
-
-    @Override
-    public QName getQName()
-    {
-    	return this.qname;
-    }
-    
-    @Override
-    public QName getTypeQName()
-    {
-    	return this.typeQName;
-    }
-    
-    @Override
-    public String getChangesetId()
-    {
-        return getSystemObject().get(SYSTEM_CHANGESET).getTextValue();
-    }
-    
-    @Override
-    public boolean isDeleted()
-    {
-        return getSystemObject().has(SYSTEM_DELETED);
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        boolean equals = false;
-
-        if (obj instanceof Node)
-        {
-            Node _node = (Node) obj;
-
-            equals = getId().equals(_node.getId()) &&
-                     getChangesetId().equals(_node.getChangesetId()) &&
-                     getBranchId().equals(_node.getBranchId());
-        }
-        else
-        {
-            equals = super.equals(obj);
-        }
-
-        return equals;
-    }
-
-    @Override
-    public void update()
-    {
-        getRemote().put("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId(), getObject());
-    }
-
-    @Override
-    public void delete()
-    {
-        getRemote().delete("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId());
     }
 
     /**
@@ -241,5 +147,89 @@ public class NodeImpl extends DocumentImpl implements Node
 
         return bytes;
     }
+
+    @Override
+    public Map<String, Association> associations()
+    {
+        return associations(Direction.BOTH);
+    }
+
+    @Override
+    public Map<String, Association> associations(Direction direction)
+    {
+        return associations(direction, null);
+    }
+
+    @Override
+    public Map<String, Association> associations(QName associationTypeQName)
+    {
+        return associations(Direction.BOTH, associationTypeQName);
+    }
+
+    @Override
+    public Map<String, Association> associations(Direction direction, QName associationTypeQName)
+    {
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/associations";
+
+        boolean first = true;
+
+        // direction
+        if (direction != null)
+        {
+            uri += (first ? "?" : "&");
+            uri = uri + "direction=" + direction.toString();
+            first = false;
+        }
+
+        // associationTypeQName type qname
+        if (associationTypeQName != null)
+        {
+            uri += (first ? "?" : "&");
+            uri = uri + "type=" + associationTypeQName.toString();
+            first = false;
+        }
+
+        Response response = getRemote().get(uri);
+
+        return getFactory().associations(getBranch(), response);
+
+    }
+
+    @Override
+    public Association associate(Node targetNode, QName associationTypeQName)
+    {
+        return associate(targetNode, Direction.OUTGOING, associationTypeQName);
+    }
+
+    @Override
+    public Association associate(Node otherNode, Direction direction, QName associationTypeQName)
+    {
+        String sourceNodeId = null;
+        String targetNodeId = null;
+
+        if (Direction.INCOMING.equals(direction))
+        {
+            sourceNodeId = otherNode.getId();
+            targetNodeId = getId();
+        }
+        else if (Direction.OUTGOING.equals(direction))
+        {
+            sourceNodeId = getId();
+            targetNodeId = otherNode.getId();
+        }
+        else
+        {
+            throw new RuntimeException("Invalid direction: " + direction.toString());
+        }
+
+        Response r1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/associate?node=" + targetNodeId + "&type=" + associationTypeQName.toString());
+
+        String associationId = r1.getId();
+
+        // read it back
+        Response r2 = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + associationId);
+        return getFactory().association(getBranch(), r2);
+    }
+
 
 }
