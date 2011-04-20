@@ -135,4 +135,59 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
         return list;
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACCESSORS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public String getFirstName()
+    {
+        return getString(FIELD_FIRST_NAME);
+    }
+
+    @Override
+    public void setFirstName(String firstName)
+    {
+        set(FIELD_FIRST_NAME, firstName);
+    }
+
+    @Override
+    public String getLastName()
+    {
+        return getString(FIELD_LAST_NAME);
+    }
+
+    @Override
+    public void setLastName(String lastName)
+    {
+        set(FIELD_LAST_NAME,  lastName);
+    }
+
+    @Override
+    public String getCompanyName()
+    {
+        return getString(FIELD_COMPANY_NAME);
+    }
+
+    @Override
+    public void setCompanyName(String companyName)
+    {
+        set(FIELD_COMPANY_NAME, companyName);
+    }
+
+    @Override
+    public String getEmail()
+    {
+        return getString(FIELD_EMAIL);
+    }
+
+    @Override
+    public void setEmail(String email)
+    {
+        set(FIELD_EMAIL, email);
+    }
+
 }

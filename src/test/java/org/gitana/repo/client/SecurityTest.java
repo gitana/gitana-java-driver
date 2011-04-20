@@ -53,11 +53,19 @@ public class SecurityTest extends AbstractTestCase
 
         // update the user
         user.set("abc", "def");
+        user.setFirstName("turbo");
+        user.setLastName("ozone");
+        user.setCompanyName("specialk");
+        user.setEmail("breakin@breakin.com");
         user.update();
 
         // read back and verify
         verify = gitana.users().read(name);
         assertEquals("def", verify.getString("abc"));
+        assertEquals("turbo", verify.getFirstName());
+        assertEquals("ozone", verify.getLastName());
+        assertEquals("specialk", verify.getCompanyName());
+        assertEquals("breakin@breakin.com", verify.getEmail());
 
         // delete the user
         user.delete();

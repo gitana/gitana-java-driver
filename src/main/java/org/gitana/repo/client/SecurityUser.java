@@ -28,6 +28,10 @@ public interface SecurityUser extends SecurityPrincipal
 {
     // fields
     public final static String FIELD_MD5_PASSWORD = "md5password";
+    public final static String FIELD_FIRST_NAME = "firstName";
+    public final static String FIELD_LAST_NAME = "lastName";
+    public final static String FIELD_COMPANY_NAME = "companyName";
+    public final static String FIELD_EMAIL = "email";
 
     /**
      * @return the MD5 password hash
@@ -40,4 +44,52 @@ public interface SecurityUser extends SecurityPrincipal
      * @param newPassword
      */
     public void setPassword(String newPassword);
+
+    /**
+     * @return first name
+     */
+    public String getFirstName();
+
+    /**
+     * Sets the first name.
+     *
+     * @param firstName
+     */
+    public void setFirstName(String firstName);
+
+    /**
+     * @return last name
+     */
+    public String getLastName();
+
+    /**
+     * Sets the last name.
+     *
+     * @param lastName
+     */
+    public void setLastName(String lastName);
+
+    /**
+     * @return company name
+     */
+    public String getCompanyName();
+
+    /**
+     * Sets the company name.
+     *
+     * @param companyName
+     */
+    public void setCompanyName(String companyName);
+
+    /**
+     * @return email
+     */
+    public String getEmail();
+
+    /**
+     * Sets the email.
+     *
+     * @param email
+     */
+    public void setEmail(String email);
 }
