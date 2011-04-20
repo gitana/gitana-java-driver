@@ -69,4 +69,10 @@ public interface SecurityPrincipal extends Document, Principal
 
     public List<SecurityGroup> parentList(boolean includeAncestors);
 
+
+    // BINARIES
+
+    public void uploadAttachment(String id, String contentType, byte[] bytes);
+    public byte[] downloadAttachment(String id);
+
 }

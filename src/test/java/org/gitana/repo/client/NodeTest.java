@@ -23,6 +23,7 @@ package org.gitana.repo.client;
 
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.services.Nodes;
+import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
 /**
@@ -31,7 +32,7 @@ import org.junit.Test;
 public class NodeTest extends AbstractTestCase
 {
     @Test
-    public void testBranches()
+    public void testCRUD()
     {
         Gitana gitana = new Gitana();
 
@@ -75,4 +76,35 @@ public class NodeTest extends AbstractTestCase
         Node verify5 = nodes.read(node2.getId());
         assertNull(verify5);
     }
+
+    @Test
+    public void testAttachments()
+        throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        gitana.authenticate("admin", "admin");
+
+        // create a repository
+        Repository repository = gitana.repositories().create();
+
+        // get the master branch
+        Branch master = repository.branches().read("master");
+
+        // nodes
+        Nodes nodes = master.nodes();
+
+        // create a node
+        Node node = nodes.create();
+
+        // upload
+        byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/daffy.jpeg");
+        node.uploadAttachment("thumb", bytes, "image/jpeg");
+
+        // download and verify
+        byte[] verify = node.downloadAttachment("thumb");
+        assertEquals(bytes.length, verify.length);
+    }
+
 }

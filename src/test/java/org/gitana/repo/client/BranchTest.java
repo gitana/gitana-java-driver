@@ -32,7 +32,7 @@ import org.junit.Test;
 public class BranchTest extends AbstractTestCase
 {
     @Test
-    public void testBranches()
+    public void testCRUD()
     {
         Gitana gitana = new Gitana();
 

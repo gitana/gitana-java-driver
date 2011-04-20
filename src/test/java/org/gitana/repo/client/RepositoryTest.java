@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.services.Repositories;
+import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
 /**
@@ -67,5 +68,27 @@ public class RepositoryTest extends AbstractTestCase
 
         // list repositories
         assertEquals(baseCount + 2, repositories.list().size());
+    }
+
+    @Test
+    public void testRepositoryFiles()
+        throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        gitana.authenticate("admin", "admin");
+
+        // create a repo
+        Repository repo = gitana.repositories().create();
+
+        // upload a file
+        String filename = "testfilename-" + System.currentTimeMillis() + "-bugs.jpeg";
+        byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/bugs.jpeg");
+        repo.uploadFile(filename, bytes, "image/jpeg");
+
+        // download hte file
+        byte[] verify = repo.downloadFile(filename);
+        assertEquals(bytes.length, verify.length);
     }
 }

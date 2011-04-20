@@ -21,6 +21,7 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
 import java.util.Map;
@@ -172,5 +173,33 @@ public class SecurityTest extends AbstractTestCase
         assertEquals(2, user3.parentList(true).size());
         assertEquals(2, user4.parentList(true).size());
         assertEquals(2, user5.parentList(true).size());
+    }
+
+    @Test
+    public void testAttachments()
+        throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        gitana.authenticate("admin", "admin");
+
+        // create two users
+        SecurityUser daffy = gitana.users().create("testuser-" + System.currentTimeMillis() + "_1", "password");
+        SecurityUser bugs = gitana.users().create("testuser-" + System.currentTimeMillis() + "_2", "password");
+
+        // upload
+        byte[] daffyBytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/daffy.jpeg");
+        byte[] bugsBytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/bugs.jpeg");
+
+        // upload daffy avatar
+        daffy.uploadAttachment("avatar", "image/jpeg", daffyBytes);
+        byte[] test1 = daffy.downloadAttachment("avatar");
+        assertEquals(daffyBytes.length, test1.length);
+
+        // upload bugs avatar
+        bugs.uploadAttachment("avatar", "image/jpeg", bugsBytes);
+        byte[] test2 = bugs.downloadAttachment("avatar");
+        assertEquals(bugsBytes.length, test2.length);
     }
 }

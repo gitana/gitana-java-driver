@@ -111,4 +111,22 @@ public interface Node extends Document
      */
     public void revokeAll(String principalId);
 
+    /**
+     * Uploads an attachment.
+     *
+     * @param attachmentId
+     * @param bytes
+     * @param contentType
+     */
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType);
+
+    /**
+     * Downloads an attachment.
+     *
+     * @param attachmentId
+     *
+     * @return attachment
+     */
+    public byte[] downloadAttachment(String attachmentId);
+
 }

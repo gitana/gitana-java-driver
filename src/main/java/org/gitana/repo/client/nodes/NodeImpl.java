@@ -181,12 +181,7 @@ public class NodeImpl extends DocumentImpl implements Node
         return DriverUtil.toACL(response);
     }
 
-    /**
-     * Retrieve the authorities that a principal has.
-     *
-     * @param principalId
-     * @return list
-     */
+    @Override
     public List<String> getAuthorities(String principalId)
     {
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId);
@@ -194,35 +189,57 @@ public class NodeImpl extends DocumentImpl implements Node
         return DriverUtil.toStringList(response);
     }
 
-    /**
-     * Grants an authority to a principal.
-     *
-     * @param principalId
-     * @param authorityId
-     */
+    @Override
     public void grant(String principalId, String authorityId)
     {
         getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/grant/" + authorityId);
     }
 
-    /**
-     * Revokes an authority for a principal.
-     *
-     * @param principalId
-     * @param authorityId
-     */
+    @Override
     public void revoke(String principalId, String authorityId)
     {
         getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/revoke/" + authorityId);
     }
 
-    /**
-     * Revoke all authorities for a principal.
-     *
-     * @param principalId
-     */
+    @Override
     public void revokeAll(String principalId)
     {
         revoke(principalId, "all");
     }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
+    {
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachment/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] downloadAttachment(String attachmentId)
+    {
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachment/" + attachmentId;
+
+        byte[] bytes = null;
+        try
+        {
+            bytes = getRemote().download(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return bytes;
+    }
+
 }

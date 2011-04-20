@@ -90,4 +90,60 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
 
         return authorities;
     }
+
+    // BINARIES
+
+    @Override
+    public void uploadAttachment(String id, String contentType, byte[] bytes)
+    {
+        // build the uri
+        String uri = "/security";
+        if (this.getPrincipalType().equals(PrincipalType.USER))
+        {
+            uri += "/users";
+        }
+        else if (this.getPrincipalType().equals(PrincipalType.GROUP))
+        {
+            uri += "/groups";
+        }
+        uri += "/" + this.getId() + "/attachment/" + id;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] downloadAttachment(String id)
+    {
+        // build the uri
+        String uri = "/security";
+        if (this.getPrincipalType().equals(PrincipalType.USER))
+        {
+            uri += "/users";
+        }
+        else if (this.getPrincipalType().equals(PrincipalType.GROUP))
+        {
+            uri += "/groups";
+        }
+        uri += "/" + this.getId() + "/attachment/" + id;
+
+        byte[] bytes = null;
+        try
+        {
+            bytes = getRemote().download(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return bytes;
+    }
+
 }
