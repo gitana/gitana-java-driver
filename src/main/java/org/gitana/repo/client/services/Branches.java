@@ -145,4 +145,17 @@ public class Branches extends AbstractService
         return read(branchId);
     }
 
+    /**
+     * Performs a query over the branch index.
+     *
+     * @param query
+     * @return
+     */
+    public Map<String, Branch> query(ObjectNode query)
+    {
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/query", query);
+
+        return getFactory().branches(getRepository(), response);
+    }
+
 }

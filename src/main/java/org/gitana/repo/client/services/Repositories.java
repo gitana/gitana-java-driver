@@ -127,4 +127,18 @@ public class Repositories extends AbstractService
         String repositoryId = response.getId();
         return read(repositoryId);
     }
+
+    /**
+     * Performs a query over the repository index.
+     *
+     * @param query
+     * @return
+     */
+    public Map<String, Repository> query(ObjectNode query)
+    {
+        Response response = getRemote().post("/repositories/query", query);
+
+        return getFactory().repositories(response);
+    }
+
 }
