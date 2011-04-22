@@ -285,7 +285,13 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         BaseNode baseNode = null;
 
-        if (object.get("_is_association").getBooleanValue())
+        boolean isAssociation = false;
+        if (object.has("_is_association"))
+        {
+            isAssociation = object.get("_is_association").getBooleanValue();
+        }
+
+        if (isAssociation)
         {
             baseNode = new AssociationImpl(gitana, branch, object, isSaved);
         }

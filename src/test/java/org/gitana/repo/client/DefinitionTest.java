@@ -21,22 +21,18 @@
 
 package org.gitana.repo.client;
 
-import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.services.Branches;
 import org.gitana.repo.namespace.QName;
-import org.gitana.util.ClasspathUtil;
-import org.gitana.util.JsonUtil;
 import org.junit.Test;
-
-import java.io.IOException;
 
 /**
  * @author uzi
  */
-public class DefinitionTest extends AbstractTestCase {
+public class DefinitionTest extends AbstractTestCase
+{
     @Test
-    public void testCRUD() {
+    public void testDefineType() {
         Gitana gitana = new Gitana();
 
         // authenticate
@@ -55,13 +51,8 @@ public class DefinitionTest extends AbstractTestCase {
         assertNotNull(master);
         assertTrue(master.isMaster());
 
-        ObjectNode testDefinitionObj = JsonUtil.createObject();
-        //int beforeSize = master.definitions().list().size();
-        Node testDefinition = master.definitions().defineType(QName.create("test:product"), testDefinitionObj);
-        //int afterSize = master.definitions().list().size();
-        //assertEquals(beforeSize + 1, afterSize);
+        Node testDefinition = master.definitions().defineType(QName.create("test:product"));
         Node verifyDefinition = master.definitions().read(testDefinition.getQName());
         assertNotNull(verifyDefinition);
-        //assertEquals(verifyDefinition.getQName().toString(), "test:product");
     }
 }
