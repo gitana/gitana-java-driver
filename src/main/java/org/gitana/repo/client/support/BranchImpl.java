@@ -42,6 +42,8 @@ public class BranchImpl extends DocumentImpl implements Branch
     private Gitana gitana;
     private Repository repository;
 
+    private boolean dirty;
+
     protected BranchImpl(Gitana gitana, Repository repository, ObjectNode obj, boolean isSaved)
     {
     	super(obj, isSaved);
@@ -66,6 +68,21 @@ public class BranchImpl extends DocumentImpl implements Branch
     {
         return getRepository().getId();
     }
+
+    @Override
+    public void markDirty()
+    {
+        this.dirty = true;
+    }
+
+    private void ensureNotDirty()
+    {
+        if (this.dirty)
+        {
+            this.reload();
+            this.dirty = false;
+        }
+    }
     
     @Override
     public void setTipChangesetId(String changesetId)
@@ -76,6 +93,7 @@ public class BranchImpl extends DocumentImpl implements Branch
     @Override
     public String getTipChangesetId()
     {
+        ensureNotDirty();
     	return getString(FIELD_TIP);
     }
     
@@ -88,48 +106,57 @@ public class BranchImpl extends DocumentImpl implements Branch
     @Override
     public String getRootChangesetId() 
     {
+        ensureNotDirty();
         return getString(FIELD_ROOT);
     }
     
     @Override
     public boolean isReadOnly()
     {
+        ensureNotDirty();
     	return getBoolean(FIELD_READONLY);
     }
     
     @Override
     public boolean isSnapshot()
     {
+        ensureNotDirty();
     	return getBoolean(FIELD_SNAPSHOT);
     }
 
 	@Override
 	public boolean isFrozen() 
 	{
+        ensureNotDirty();
 		return getBoolean(Branch.FIELD_FROZEN);
 	}
 
     @Override
     public String getJoinBranchId()
     {
+        ensureNotDirty();
         return getString(FIELD_JOIN_BRANCH);
     }
 
     @Override
     public String getRootBranchId()
     {
+        ensureNotDirty();
         return getString(FIELD_ROOT_BRANCH);
     }
 
     @Override
     public boolean isMaster()
     {
+        ensureNotDirty();
         return BranchType.MASTER.equals(getType());
     }
 
     @Override
     public BranchType getType()
     {
+        ensureNotDirty();
+
         BranchType type = null;
 
         String typeId = getString(FIELD_BRANCH_TYPE);
@@ -167,6 +194,13 @@ public class BranchImpl extends DocumentImpl implements Branch
     public Definitions definitions()
     {
         return new Definitions(this.gitana, this);
+    }
+
+    @Override
+    public void reload()
+    {
+        Branch b = getRepository().branches().read(this.getId());
+        this.reload(b.getObject());
     }
 
     @Override

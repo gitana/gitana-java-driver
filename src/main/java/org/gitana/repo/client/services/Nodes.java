@@ -152,7 +152,26 @@ public class Nodes extends AbstractService
         Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes", object);
 
         String nodeId = response.getId();
-        return read(nodeId);
+        Node node = read(nodeId);
+
+        // mark the branch as being dirty (since the tip will have moved)
+        this.getBranch().markDirty();;
+
+        return node;
     }
+
+    /**
+     * Performs a query for nodes.
+     *
+     * @param query
+     * @return
+     */
+    public Map<String, Node> query(ObjectNode query)
+    {
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/query", query);
+
+        return getFactory().nodes(getBranch(), response);
+    }
+
 
 }

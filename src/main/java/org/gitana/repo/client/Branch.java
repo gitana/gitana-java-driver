@@ -71,6 +71,8 @@ public interface Branch extends Document
     public boolean isMaster();
     public BranchType getType();
 
+    public void markDirty();
+
     /**
      * @return nodes
      */
@@ -122,4 +124,5 @@ public interface Branch extends Document
      */
     public void revokeAll(String principalId);
 
+    public void reload();
 }
