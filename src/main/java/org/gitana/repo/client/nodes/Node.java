@@ -23,6 +23,7 @@ package org.gitana.repo.client.nodes;
 
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Translations;
 import org.gitana.repo.namespace.QName;
 
 import java.util.List;
@@ -33,6 +34,11 @@ import java.util.Map;
  */
 public interface Node extends BaseNode
 {
+    /**
+     * @return translations service for this node
+     */
+    public Translations translations();
+
     /**
      * @return access control list
      */

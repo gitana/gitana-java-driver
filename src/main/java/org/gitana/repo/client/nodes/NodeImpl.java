@@ -27,6 +27,7 @@ import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.services.Translations;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 
@@ -59,11 +60,19 @@ public class NodeImpl extends BaseNodeImpl implements Node
     {
         super(gitana, branch, obj, isSaved);
 
+        this.gitana = gitana;
+
         this.init();
     }
 
     private void init()
     {
+    }
+
+    @Override
+    public Translations translations()
+    {
+        return new Translations(gitana, this);
     }
 
     /**

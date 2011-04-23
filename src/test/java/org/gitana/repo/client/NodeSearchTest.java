@@ -90,7 +90,7 @@ public class NodeSearchTest extends AbstractTestCase
         // before the indexing is entirely completed.
         // as such, since this is a pretty large document (3.5 megs) of a pretty wordy book, we wait a good amount of
         // time here to make sure the indexing truly finishes.
-        Thread.sleep(15000);
+        Thread.sleep(20000);
 
 
         // now let's query for some text from the PDF
