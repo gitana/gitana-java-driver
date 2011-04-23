@@ -28,6 +28,7 @@ import org.gitana.repo.namespace.QName;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ import java.util.Map;
 public class ObjectFactoryImpl implements ObjectFactory
 {
     private Gitana gitana;
+
+    private Map<QName, Class> registry = new HashMap<QName, Class>();
 
     public ObjectFactoryImpl(Gitana gitana)
     {
@@ -260,49 +263,6 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
-    /**
-     * Factory method that produces typed node objects based on type QName.
-     *
-     * TODO: implement all of this
-     *
-     * @param branch
-     * @param object
-     * @param isSaved
-     *
-     * @return node
-     */
-    private BaseNode produce(Branch branch, ObjectNode object, boolean isSaved)
-    {
-        /*
-        String type = JsonUtil.objectGetString(object, Node.FIELD_TYPE_QNAME);
-        if (type == null)
-        {
-            type = "n:node"; // TODO: GitanaModel into objects?
-        }
-
-        QName typeQName = QName.create(type);
-        */
-
-        BaseNode baseNode = null;
-
-        boolean isAssociation = false;
-        if (object.has("_is_association"))
-        {
-            isAssociation = object.get("_is_association").getBooleanValue();
-        }
-
-        if (isAssociation)
-        {
-            baseNode = new AssociationImpl(gitana, branch, object, isSaved);
-        }
-        else
-        {
-            baseNode = new NodeImpl(gitana, branch, object, isSaved);
-        }
-
-        return baseNode;
-    }
-
     @Override
     public SecurityUser securityUser()
     {
@@ -457,6 +417,73 @@ public class ObjectFactoryImpl implements ObjectFactory
         return principal;
     }
 
+
+    @Override
+    public void register(QName typeQName, Class implementationClass)
+    {
+        registry.put(typeQName, implementationClass);
+    }
+
+    private BaseNode produce(Branch branch, ObjectNode object, boolean isSaved)
+    {
+        BaseNode node = null;
+
+        if (!object.has(Node.FIELD_ID))
+        {
+            throw new RuntimeException("Object is missing field: " + Node.FIELD_ID);
+        }
+
+        // type qname
+        QName typeQName = QName.create(JsonUtil.objectGetString(object, Node.FIELD_TYPE_QNAME));
+
+        // find implementation class
+        Class c = registry.get(typeQName);
+        if (c != null)
+        {
+            try
+            {
+                Class[] signature = new Class[] { Gitana.class, Branch.class, ObjectNode.class, Boolean.TYPE };
+
+                Constructor constructor = c.getConstructor(signature);
+                if (constructor != null)
+                {
+                    Object[] args = new Object[] { gitana, branch, object, isSaved };
+                    node = (BaseNode) constructor.newInstance(args);
+                }
+                else
+                {
+                    throw new RuntimeException("No constructor found for signature: " + signature);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        // if we didn't produce a node for a registered type, we can build a default kind of node
+        // either a node impl or an association impl
+        if (node == null)
+        {
+            boolean isAssociation = false;
+            if (object.has("_is_association"))
+            {
+                isAssociation = object.get("_is_association").getBooleanValue();
+            }
+
+            if (isAssociation)
+            {
+                node = new AssociationImpl(gitana, branch, object, isSaved);
+            }
+            else
+            {
+                node = new NodeImpl(gitana, branch, object, isSaved);
+            }
+
+        }
+
+        return node;
+    }
 
 
 }

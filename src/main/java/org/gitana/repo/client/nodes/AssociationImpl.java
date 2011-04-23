@@ -42,17 +42,6 @@ public class AssociationImpl extends NodeImpl implements Association
 	private QName targetNodeTypeQName;
 
     /**
-     * New association constructor.
-     *
-     * @param branch
-     * @param obj
-     */
-    public AssociationImpl(Gitana gitana, Branch branch, ObjectNode obj)
-    {
-        this(gitana, branch, obj, false);
-    }
-
-    /**
      * Existing node constructor.
      *
      * @param branch

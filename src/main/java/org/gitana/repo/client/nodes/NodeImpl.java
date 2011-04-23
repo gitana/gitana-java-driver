@@ -49,17 +49,6 @@ public class NodeImpl extends BaseNodeImpl implements Node
     private Branch branch;
 	
     /**
-     * New node constructor.
-     *
-     * @param branch
-     * @param obj
-     */
-    public NodeImpl(Gitana gitana, Branch branch, ObjectNode obj)
-    {
-        this(gitana, branch, obj, false);
-    }
-    
-    /**
      * Existing node constructor.
      *
      * @param branch

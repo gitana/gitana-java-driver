@@ -25,10 +25,14 @@ import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.gitana.repo.client.exceptions.AuthenticationFailedException;
 import org.gitana.repo.client.exceptions.RemoteServerException;
-import org.gitana.repo.client.services.*;
+import org.gitana.repo.client.services.Groups;
+import org.gitana.repo.client.services.Repositories;
+import org.gitana.repo.client.services.Server;
+import org.gitana.repo.client.services.Users;
 import org.gitana.repo.client.support.ObjectFactoryImpl;
 import org.gitana.repo.client.support.Remote;
 import org.gitana.repo.client.support.RemoteImpl;
+import org.gitana.repo.client.types.*;
 
 import java.util.ResourceBundle;
 
@@ -70,13 +74,34 @@ public class Gitana
         init();
     }
 
-    private void init()
+    protected void init()
     {
         // anonymous
         this.client = new HttpClient();
 
         // factory
         this.factory = new ObjectFactoryImpl(this);
+
+        // register default types
+        this.factory.register(AssociationDefinition.QNAME, AssociationDefinitionImpl.class);
+        this.factory.register(ChildAssociation.QNAME, ChildAssociationImpl.class);
+        this.factory.register(CopiedFromAssociation.QNAME, CopiedFromAssociationImpl.class);
+        this.factory.register(CreatedAssociation.QNAME, CreatedAssociationImpl.class);
+        this.factory.register(DeletedAssociation.QNAME, DeletedAssociationImpl.class);
+        this.factory.register(FeatureDefinition.QNAME, FeatureDefinitionImpl.class);
+        this.factory.register(Form.QNAME, FormImpl.class);
+        this.factory.register(Group.QNAME, GroupImpl.class);
+        this.factory.register(HasBehaviorAssociation.QNAME, HasBehaviorAssociationImpl.class);
+        this.factory.register(HasFormAssociation.QNAME, HasFormAssociationImpl.class);
+        this.factory.register(HasLockAssociation.QNAME, HasLockAssociationImpl.class);
+        this.factory.register(HasMountAssociation.QNAME, HasMountAssociationImpl.class);
+        this.factory.register(HasTranslationAssociation.QNAME, HasTranslationAssociationImpl.class);
+        this.factory.register(LinkedAssociation.QNAME, LinkedAssociationImpl.class);
+        this.factory.register(OwnedAssociation.QNAME, OwnedAssociationImpl.class);
+        this.factory.register(Person.QNAME, PersonImpl.class);
+        this.factory.register(Rule.QNAME, RuleImpl.class);
+        this.factory.register(TypeDefinition.QNAME, TypeDefinitionImpl.class);
+        this.factory.register(UpdatedAssociation.QNAME, UpdatedAssociationImpl.class);
     }
 
     /**

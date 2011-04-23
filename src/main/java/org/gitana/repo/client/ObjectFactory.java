@@ -23,6 +23,7 @@ package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.nodes.Association;
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
 
@@ -73,4 +74,7 @@ public interface ObjectFactory
     public SecurityPrincipal securityPrincipal(Response response);
     public Map<String, SecurityPrincipal> securityPrincipals(Response response);
 
+
+    // dynamic node registry
+    public void register(QName typeQName, Class implementationClass);
 }
