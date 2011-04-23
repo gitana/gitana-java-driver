@@ -27,9 +27,11 @@ import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.client.services.Translations;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
+import org.gitana.util.JsonUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -230,7 +232,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
             sourceNodeId = otherNode.getId();
             targetNodeId = getId();
         }
-        else if (Direction.OUTGOING.equals(direction))
+        else if (Direction.OUTGOING.equals(direction) || Direction.BOTH.equals(direction))
         {
             sourceNodeId = getId();
             targetNodeId = otherNode.getId();
@@ -249,5 +251,33 @@ public class NodeImpl extends BaseNodeImpl implements Node
         return getFactory().association(getBranch(), r2);
     }
 
+    @Override
+    public TraversalResults traverse(ObjectNode traverse)
+    {
+        ObjectNode config = JsonUtil.createObject();
+        config.put("traverse", traverse);
+
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/traverse";
+        Response r = getRemote().post(uri, config);
+
+        TraversalResults results = new TraversalResults();
+        results.parse(getFactory(), getBranch(), r);
+
+        return results;
+    }
+
+    @Override
+    public void mount(String mountKey)
+    {
+        String uri = "/repositories/" + this.getRepository().getId() + "/branches/" + this.getBranch().getId() + "/nodes/" + this.getId() + "/mount/" + mountKey;
+        getRemote().post(uri);
+    }
+
+    @Override
+    public void unmount()
+    {
+        String uri = "/repositories/" + this.getRepository().getId() + "/branches/" + this.getBranch().getId() + "/nodes/" + this.getId() + "/unmount";
+        getRemote().post(uri);
+    }
 
 }

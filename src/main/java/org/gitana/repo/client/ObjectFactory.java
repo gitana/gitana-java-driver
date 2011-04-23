@@ -77,4 +77,7 @@ public interface ObjectFactory
 
     // dynamic node registry
     public void register(QName typeQName, Class implementationClass);
+
+    // produces a node (raw function)
+    public BaseNode produce(Branch branch, ObjectNode object, boolean isSaved);
 }

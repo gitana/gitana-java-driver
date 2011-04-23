@@ -424,7 +424,8 @@ public class ObjectFactoryImpl implements ObjectFactory
         registry.put(typeQName, implementationClass);
     }
 
-    private BaseNode produce(Branch branch, ObjectNode object, boolean isSaved)
+    @Override
+    public BaseNode produce(Branch branch, ObjectNode object, boolean isSaved)
     {
         BaseNode node = null;
 

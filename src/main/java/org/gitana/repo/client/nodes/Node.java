@@ -21,8 +21,10 @@
 
 package org.gitana.repo.client.nodes;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.client.services.Translations;
 import org.gitana.repo.namespace.QName;
 
@@ -162,6 +164,24 @@ public interface Node extends BaseNode
      */
     public Association associate(Node otherNode, Direction direction, QName associationTypeQName);
 
+    /**
+     * Runs a traversal around this node using the given configuration.
+     *
+     * @param traverse
+     * @return
+     */
+    public TraversalResults traverse(ObjectNode traverse);
 
+    /**
+     * Mounts this node.
+     *
+     * @param mountKey
+     */
+    public void mount(String mountKey);
+
+    /**
+     * Unmounts this node.
+     */
+    public void unmount();
 
 }

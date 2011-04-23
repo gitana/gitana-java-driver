@@ -27,6 +27,7 @@ import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.nodes.Node;
+import org.gitana.repo.namespace.QName;
 import org.gitana.util.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -70,7 +71,7 @@ public class Nodes extends AbstractService
     }
 
     /**
-     * Retrieves nodes for the branch
+     * Retrieves the mount nodes for this branch.
      *
      * @return a map of node objects keyed by node id
      */
@@ -82,7 +83,7 @@ public class Nodes extends AbstractService
     }
 
     /**
-     * Retrieves nodes for the branch.
+     * Retrieves the mount nodes for this branch.
      *
      * @return list of repositories
      */
@@ -134,6 +135,21 @@ public class Nodes extends AbstractService
     public Node create()
     {
         return create(JsonUtil.createObject());
+    }
+
+    /**
+     * Creates an empty node on the branch.
+     *
+     * @param typeQName
+     *
+     * @return branch
+     */
+    public Node create(QName typeQName)
+    {
+        ObjectNode object = JsonUtil.createObject();
+        object.put("_type", typeQName.toString());
+
+        return create(object);
     }
 
     /**

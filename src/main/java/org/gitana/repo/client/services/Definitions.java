@@ -27,6 +27,8 @@ import org.gitana.repo.client.Gitana;
 import org.gitana.repo.client.Repository;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.nodes.Node;
+import org.gitana.repo.client.types.AssociationDefinition;
+import org.gitana.repo.client.types.TypeDefinition;
 import org.gitana.repo.namespace.QName;
 import org.gitana.util.JsonUtil;
 
@@ -139,7 +141,7 @@ public class Definitions extends AbstractService
      *
      * @return node
      */
-    public Node defineType(QName definitionQName)
+    public TypeDefinition defineType(QName definitionQName)
     {
         return defineType(definitionQName, JsonUtil.createObject());
     }
@@ -151,7 +153,7 @@ public class Definitions extends AbstractService
      * @param object
      * @return
      */
-    public Node defineType(QName definitionQName, ObjectNode object)
+    public TypeDefinition defineType(QName definitionQName, ObjectNode object)
     {
         if (object == null)
         {
@@ -163,7 +165,7 @@ public class Definitions extends AbstractService
         object.put("type", "object");
         object.put("description", definitionQName.toString());
 
-        return getBranch().nodes().create(object);
+        return (TypeDefinition) getBranch().nodes().create(object);
     }
 
     /**
@@ -172,7 +174,7 @@ public class Definitions extends AbstractService
      * @param definitionQName
      * @return
      */
-    public Node defineAssociationType(QName definitionQName)
+    public AssociationDefinition defineAssociationType(QName definitionQName)
     {
         return defineAssociationType(definitionQName, JsonUtil.createObject());
     }
@@ -184,7 +186,7 @@ public class Definitions extends AbstractService
      * @param object
      * @return
      */
-    public Node defineAssociationType(QName definitionQName, ObjectNode object)
+    public AssociationDefinition defineAssociationType(QName definitionQName, ObjectNode object)
     {
         if (object == null)
         {
@@ -196,7 +198,7 @@ public class Definitions extends AbstractService
         object.put("type", "object");
         object.put("description", definitionQName.toString());
 
-        return getBranch().nodes().create(object);
+        return (AssociationDefinition) getBranch().nodes().create(object);
 
     }
 }

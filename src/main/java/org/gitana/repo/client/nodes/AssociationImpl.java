@@ -30,7 +30,7 @@ import org.gitana.repo.namespace.QName;
 /**
  * @author uzi
  */
-public class AssociationImpl extends NodeImpl implements Association
+public class AssociationImpl extends BaseNodeImpl implements Association
 {
 	private Node sourceNode;
 	private Node targetNode;
