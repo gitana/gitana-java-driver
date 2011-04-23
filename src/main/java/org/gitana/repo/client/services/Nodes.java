@@ -29,6 +29,8 @@ import org.gitana.repo.client.Response;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.util.JsonUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +157,7 @@ public class Nodes extends AbstractService
         Node node = read(nodeId);
 
         // mark the branch as being dirty (since the tip will have moved)
-        this.getBranch().markDirty();;
+        this.getBranch().markDirty();
 
         return node;
     }
@@ -164,11 +166,34 @@ public class Nodes extends AbstractService
      * Performs a query for nodes.
      *
      * @param query
-     * @return
+     * @return map of nodes
      */
     public Map<String, Node> query(ObjectNode query)
     {
         Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/query", query);
+
+        return getFactory().nodes(getBranch(), response);
+    }
+
+    /**
+     * Full-text search
+     *
+     * @param text
+     * @return map of nodes
+     */
+    public Map<String, Node> search(String text)
+    {
+        // url encode the text
+        try
+        {
+            text = URLEncoder.encode(text, "utf-8");
+        }
+        catch (UnsupportedEncodingException uee)
+        {
+            throw new RuntimeException(uee);
+        }
+
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/search?text=" + text);
 
         return getFactory().nodes(getBranch(), response);
     }

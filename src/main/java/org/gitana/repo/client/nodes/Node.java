@@ -70,6 +70,14 @@ public interface Node extends BaseNode
     public void revokeAll(String principalId);
 
     /**
+     * Uploads the default attachment.
+     *
+     * @param bytes
+     * @param contentType
+     */
+    public void uploadAttachment(byte[] bytes, String contentType);
+
+    /**
      * Uploads an attachment.
      *
      * @param attachmentId
@@ -77,6 +85,13 @@ public interface Node extends BaseNode
      * @param contentType
      */
     public void uploadAttachment(String attachmentId, byte[] bytes, String contentType);
+
+    /**
+     * Downloads the default attachment.
+     *
+     * @return attachment
+     */
+    public byte[] downloadAttachment();
 
     /**
      * Downloads an attachment.
