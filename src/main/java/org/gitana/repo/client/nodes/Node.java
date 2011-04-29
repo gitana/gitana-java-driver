@@ -137,11 +137,11 @@ public interface Node extends BaseNode
     /**
      * Lists all associations of the given type in both directions.
      *
-     * @param direction
      * @param associationTypeQName
+     * @param direction
      * @return map
      */
-    public Map<String, Association> associations(Direction direction, QName associationTypeQName);
+    public Map<String, Association> associations(QName associationTypeQName, Direction direction);
 
     /**
      * Associates a target node to this source node.
@@ -158,11 +158,28 @@ public interface Node extends BaseNode
      * Associates this node with another.
      *
      * @param otherNode
-     * @param direction
      * @param associationTypeQName
+     * @param direction
      * @return association
      */
-    public Association associate(Node otherNode, Direction direction, QName associationTypeQName);
+    public Association associate(Node otherNode, QName associationTypeQName, Direction direction);
+
+    /**
+     * Unassociates a target node from this node.
+     *
+     * @param targetNode
+     * @param associationTypeQName
+     */
+    public void unassociate(Node targetNode, QName associationTypeQName);
+
+    /**
+     * Unassociates this node from another node.
+     *
+     * @param otherNode
+     * @param associationTypeQName
+     * @param direction
+     */
+    public void unassociate(Node otherNode, QName associationTypeQName, Direction direction);
 
     /**
      * Runs a traversal around this node using the given configuration.

@@ -94,13 +94,13 @@ public class AssociationTest extends AbstractTestCase
         assertEquals(2, node4.associations(Direction.OUTGOING).size()); // node5 and node6
 
         // typed checks
-        assertEquals(1, node4.associations(Direction.OUTGOING, isRelatedTo).size()); // node5
-        assertEquals(1, node4.associations(Direction.OUTGOING, references).size()); // node6
-        assertEquals(1, node4.associations(Direction.INCOMING, QName.create("a:created")).size()); // admin
+        assertEquals(1, node4.associations(isRelatedTo, Direction.OUTGOING).size()); // node5
+        assertEquals(1, node4.associations(references, Direction.OUTGOING).size()); // node6
+        assertEquals(1, node4.associations(QName.create("a:created"), Direction.INCOMING).size()); // admin
 
         // additional
-        assertEquals(0, node1.associations(Direction.OUTGOING, references).size());
-        assertEquals(0, node1.associations(Direction.INCOMING, references).size());
+        assertEquals(0, node1.associations(references, Direction.OUTGOING).size());
+        assertEquals(0, node1.associations(references, Direction.INCOMING).size());
         assertEquals(1, node1.associations(Direction.INCOMING).size()); // a:created
 
     }

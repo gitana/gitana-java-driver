@@ -177,17 +177,17 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public Map<String, Association> associations(Direction direction)
     {
-        return associations(direction, null);
+        return associations(null, direction);
     }
 
     @Override
     public Map<String, Association> associations(QName associationTypeQName)
     {
-        return associations(Direction.BOTH, associationTypeQName);
+        return associations(associationTypeQName, Direction.BOTH);
     }
 
     @Override
-    public Map<String, Association> associations(Direction direction, QName associationTypeQName)
+    public Map<String, Association> associations(QName associationTypeQName, Direction direction)
     {
         String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/associations";
 
@@ -218,37 +218,37 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public Association associate(Node targetNode, QName associationTypeQName)
     {
-        return associate(targetNode, Direction.OUTGOING, associationTypeQName);
+        return associate(targetNode, associationTypeQName, Direction.OUTGOING);
     }
 
     @Override
-    public Association associate(Node otherNode, Direction direction, QName associationTypeQName)
+    public Association associate(Node otherNode, QName associationTypeQName, Direction direction)
     {
-        String sourceNodeId = null;
-        String targetNodeId = null;
+        String sourceNodeId = getId();
+        String targetNodeId = otherNode.getId();
 
-        if (Direction.INCOMING.equals(direction))
-        {
-            sourceNodeId = otherNode.getId();
-            targetNodeId = getId();
-        }
-        else if (Direction.OUTGOING.equals(direction) || Direction.BOTH.equals(direction))
-        {
-            sourceNodeId = getId();
-            targetNodeId = otherNode.getId();
-        }
-        else
-        {
-            throw new RuntimeException("Invalid direction: " + direction.toString());
-        }
-
-        Response r1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/associate?node=" + targetNodeId + "&type=" + associationTypeQName.toString());
+        Response r1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/associate?node=" + targetNodeId + "&type=" + associationTypeQName.toString() + "&direction=" + direction.toString());
 
         String associationId = r1.getId();
 
         // read it back
         Response r2 = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + associationId);
         return getFactory().association(getBranch(), r2);
+    }
+
+    @Override
+    public void unassociate(Node targetNode, QName associationTypeQName)
+    {
+        unassociate(targetNode, associationTypeQName, Direction.OUTGOING);
+    }
+
+    @Override
+    public void unassociate(Node otherNode, QName associationTypeQName, Direction direction)
+    {
+        String sourceNodeId = getId();
+        String targetNodeId = otherNode.getId();
+
+        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/unassociate?node=" + targetNodeId + "&type=" + associationTypeQName.toString() + "&direction=" + direction.toString());
     }
 
     @Override
