@@ -73,9 +73,9 @@ public class TraversalTest extends AbstractTestCase
         master.definitions().defineAssociationType(wantsToKill);
 
         // the three friends
-        harry.associate(hermione, Direction.BOTH, friends);
-        harry.associate(ron, Direction.BOTH, friends);
-        hermione.associate(ron, Direction.BOTH, friends);
+        harry.associate(hermione, friends, Direction.BOTH);
+        harry.associate(ron, friends, Direction.BOTH);
+        hermione.associate(ron, friends, Direction.BOTH);
 
         // voldemort wants to kill harry
         voldemort.associate(harry, wantsToKill);
