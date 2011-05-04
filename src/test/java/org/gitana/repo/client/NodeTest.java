@@ -105,6 +105,17 @@ public class NodeTest extends AbstractTestCase
         // download and verify
         byte[] verify = node.downloadAttachment("thumb");
         assertEquals(bytes.length, verify.length);
+
+        // update a node
+        node.set("axl", "rose");
+        node.update();
+
+        // read node back to verify
+        Node verify2 = nodes.read(node.getId());
+        assertEquals("rose", verify2.getString("axl"));
+
+        verify = node.downloadAttachment("thumb");
+        assertEquals(bytes.length, verify.length);
     }
 
 }
