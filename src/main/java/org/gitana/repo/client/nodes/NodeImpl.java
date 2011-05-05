@@ -123,7 +123,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
     public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
     {
         // build the uri
-        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachment";
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments";
         if (attachmentId != null)
         {
             uri += "/" + attachmentId;
@@ -149,7 +149,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
     public byte[] downloadAttachment(String attachmentId)
     {
         // build the uri
-        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachment";
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments";
         if (attachmentId != null)
         {
             uri += "/" + attachmentId;
