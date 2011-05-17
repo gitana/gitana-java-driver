@@ -122,12 +122,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
     {
-        // build the uri
-        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments";
-        if (attachmentId != null)
+        if (attachmentId == null)
         {
-            uri += "/" + attachmentId;
+            attachmentId = "default";
         }
+
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments/" + attachmentId;
 
         try
         {
@@ -148,12 +149,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public byte[] downloadAttachment(String attachmentId)
     {
-        // build the uri
-        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments";
-        if (attachmentId != null)
+        if (attachmentId == null)
         {
-            uri += "/" + attachmentId;
+            attachmentId = "default";
         }
+
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments/" + attachmentId;
 
         byte[] bytes = null;
         try
