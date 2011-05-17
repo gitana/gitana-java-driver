@@ -163,7 +163,7 @@ public class Definitions extends AbstractService
         object.put(Node.FIELD_QNAME, definitionQName.toString());
         object.put(Node.FIELD_TYPE_QNAME, "d:type");
         object.put("type", "object");
-        object.put("description", definitionQName.toString());
+        //object.put("description", definitionQName.toString());
 
         return (TypeDefinition) getBranch().nodes().create(object);
     }

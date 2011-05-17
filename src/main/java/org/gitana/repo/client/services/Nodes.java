@@ -214,5 +214,31 @@ public class Nodes extends AbstractService
         return getFactory().nodes(getBranch(), response);
     }
 
+    /**
+     * Reads the person object for a security user.
+     *
+     * @param userId  userId
+     * @param createIfNotFound whether to create the person object if it isn't found
+     * @return Person node
+     */
+    public Node readPerson (String userId, boolean createIfNotFound)
+    {
+        // invoke
+        Response response = getRemote().get("/repositories/" + this.getRepositoryId() + "/branches/" + this.getBranchId() + "/person/" + userId + "?createIfNotFound=" + createIfNotFound);
+        return getFactory().node(getBranch(), response);
+    }
 
+    /**
+     *  Reads the group object for a security group.
+     *
+     * @param groupId groupd ID
+     * @param createIfNotFound whether to create the group object if it isn't found
+     * @return Group node
+     */
+    public Node readGroup (String groupId, boolean createIfNotFound)
+    {
+        // invoke
+        Response response = getRemote().get("/repositories/" + this.getRepositoryId() + "/branches/" + this.getBranchId() + "/group/" + groupId + "?createIfNotFound=" + createIfNotFound);
+        return getFactory().node(getBranch(), response);
+    }
 }
