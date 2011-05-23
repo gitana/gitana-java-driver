@@ -24,7 +24,7 @@ package org.gitana.repo.client.nodes;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Changeset;
-import org.gitana.repo.client.Gitana;
+import org.gitana.repo.client.Driver;
 import org.gitana.repo.namespace.QName;
 
 /**
@@ -48,16 +48,9 @@ public class AssociationImpl extends BaseNodeImpl implements Association
      * @param obj
      * @param isSaved
      */
-    public AssociationImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public AssociationImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, branch, obj, isSaved);
-
-        this.init();
-    }
-
-    protected void init()
-    {
-
+        super(driver, branch, obj, isSaved);
     }
 
     @Override
@@ -184,7 +177,7 @@ public class AssociationImpl extends BaseNodeImpl implements Association
     {
     	if (this.sourceNode == null)
     	{
-            this.sourceNode = this.getBranch().nodes().read(getSourceNodeId());
+            this.sourceNode = this.getBranch().readNode(getSourceNodeId());
     	}
     	
     	return this.sourceNode;
@@ -209,7 +202,7 @@ public class AssociationImpl extends BaseNodeImpl implements Association
     {
     	if (this.targetNode == null)
     	{
-            this.targetNode = this.getBranch().nodes().read(getTargetNodeId());
+            this.targetNode = this.getBranch().readNode(getTargetNodeId());
     	}
     	
     	return this.targetNode;

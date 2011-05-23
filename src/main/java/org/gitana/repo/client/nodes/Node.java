@@ -23,93 +23,21 @@ package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
-import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.AccessControllable;
+import org.gitana.repo.client.Attachable;
+import org.gitana.repo.client.Selfable;
 import org.gitana.repo.client.beans.TraversalResults;
-import org.gitana.repo.client.services.Translations;
 import org.gitana.repo.namespace.QName;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author uzi
  */
-public interface Node extends BaseNode
+public interface Node extends BaseNode, AccessControllable, Attachable
 {
-    /**
-     * @return translations service for this node
-     */
-    public Translations translations();
-
-    /**
-     * @return access control list
-     */
-    public ACL getACL();
-
-    /**
-     * Retrieve the authorities that a principal has.
-     *
-     * @param principalId
-     * @return list
-     */
-    public List<String> getAuthorities(String principalId);
-
-    /**
-     * Grants an authority to a principal.
-     *
-     * @param principalId
-     * @param authorityId
-     */
-    public void grant(String principalId, String authorityId);
-
-    /**
-     * Revokes an authority for a principal.
-     *
-     * @param principalId
-     * @param authorityId
-     */
-    public void revoke(String principalId, String authorityId);
-
-    /**
-     * Revoke all authorities for a principal.
-     *
-     * @param principalId
-     */
-    public void revokeAll(String principalId);
-
-    /**
-     * Uploads the default attachment.
-     *
-     * @param bytes
-     * @param contentType
-     */
-    public void uploadAttachment(byte[] bytes, String contentType);
-
-    /**
-     * Uploads an attachment.
-     *
-     * @param attachmentId
-     * @param bytes
-     * @param contentType
-     */
-    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType);
-
-    /**
-     * Downloads the default attachment.
-     *
-     * @return attachment
-     */
-    public byte[] downloadAttachment();
-
-    /**
-     * Downloads an attachment.
-     *
-     * @param attachmentId
-     *
-     * @return attachment
-     */
-    public byte[] downloadAttachment(String attachmentId);
-
     /**
      * Lists all associations (both directions) involving this node.
      *
@@ -200,5 +128,47 @@ public interface Node extends BaseNode
      * Unmounts this node.
      */
     public void unmount();
+
+
+    /**
+     * Creates a new translation.
+     *
+     * @param edition the edition
+     * @param locale the locale
+     * @param object the json object
+     *
+     * @return node
+     */
+    public Node createTranslation(String edition, Locale locale, ObjectNode object);
+
+    /**
+     * @return the editions available for this master node
+     */
+    public List<String> getTranslationEditions();
+
+    /**
+     * Hands back the locales available for a given edition of translations for this master node.
+     *
+     * @param edition
+     * @return
+     */
+    public List<Locale> getTranslationLocales(String edition);
+
+    /**
+     * Reads a translation for the tip edition of the master node in the given locale.
+     *
+     * @param locale
+     * @return
+     */
+    public Node readTranslation(Locale locale);
+
+    /**
+     * Reads a translation for the specified edition of the master node in the given locale.
+     *
+     * @param edition
+     * @param locale
+     * @return
+     */
+    public Node readTranslation(String edition, Locale locale);
 
 }

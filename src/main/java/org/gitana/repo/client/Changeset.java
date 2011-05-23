@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Changeset extends Document
+public interface Changeset extends RepositoryDocument
 {
     // default collection location
     public final static String DEFAULT_COLLECTION_ID = "changesets";
@@ -42,9 +42,6 @@ public interface Changeset extends Document
     public String getId();
     public int getRev();
 
-    public Repository getRepository();
-    public String getRepositoryId();
-    
     public String getSummary();    
     public void setSummary(String summary);
 

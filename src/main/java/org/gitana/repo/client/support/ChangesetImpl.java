@@ -24,7 +24,7 @@ package org.gitana.repo.client.support;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Changeset;
-import org.gitana.repo.client.Gitana;
+import org.gitana.repo.client.Driver;
 import org.gitana.repo.client.Repository;
 import org.gitana.util.JsonUtil;
 
@@ -34,41 +34,18 @@ import java.util.List;
 /**
  * @author uzi
  */
-public class ChangesetImpl extends DocumentImpl implements Changeset
+public class ChangesetImpl extends AbstractRepositoryDocumentImpl implements Changeset
 {
-    private Gitana gitana;
-    private Repository repository;
-
-    protected ChangesetImpl(Gitana gitana, Repository repository, ObjectNode obj, boolean isSaved)
+    protected ChangesetImpl(Driver driver, Repository repository, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-
-        this.gitana = gitana;
-        this.repository = repository;
+        super(driver, repository, obj, isSaved);
     }
 
-    protected Remote getRemote()
-    {
-        return gitana.getRemote();
-    }
-    
     @Override
     public int getRev()
     {
     	return getInt(FIELD_REV);
     }    
-
-    @Override
-    public Repository getRepository()
-    {
-        return this.repository;
-
-    }
-    @Override
-    public String getRepositoryId()
-    {
-        return getRepository().getId();
-    }
 
     @Override
     public String[] getTags()

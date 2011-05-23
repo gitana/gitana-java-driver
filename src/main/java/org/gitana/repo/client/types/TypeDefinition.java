@@ -21,8 +21,11 @@
 
 package org.gitana.repo.client.types;
 
-import org.gitana.repo.client.services.Forms;
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.namespace.QName;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -31,5 +34,50 @@ public interface TypeDefinition extends Definition
 {
     public final static QName QNAME = QName.create("d:type");
 
-    public Forms forms();
+    /**
+     * Retrieves associations pointing to any forms for this type definition.
+     *
+     * @return map
+     */
+    public Map<String, HasFormAssociation> fetchFormAssociations();
+
+    /**
+     * Retrieves associations pointing to any forms for this type definition.
+     *
+     * @return list
+     */
+    public List<HasFormAssociation> listFormAssociations();
+
+    /**
+     * Retrieves a specific form for this type definition.
+     *
+     * @param formKey
+     *
+     * @return node
+     */
+    public Form readForm(String formKey);
+
+    /**
+     * Creates a form.
+     *
+     * @param formKey
+     * @return
+     */
+    public Form createForm(String formKey);
+
+    /**
+     * Creates a form.
+     *
+     * @param formKey
+     * @param object
+     * @return
+     */
+    public Form createForm(String formKey, ObjectNode object);
+
+    /**
+     * Deletes a form.
+     *
+     * @param formKey
+     */
+    public void deleteForm(String formKey);
 }

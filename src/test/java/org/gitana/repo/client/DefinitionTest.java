@@ -22,7 +22,6 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.services.Branches;
 import org.gitana.repo.namespace.QName;
 import org.junit.Test;
 
@@ -32,27 +31,23 @@ import org.junit.Test;
 public class DefinitionTest extends AbstractTestCase
 {
     @Test
-    public void testDefineType() {
+    public void testDefineType()
+    {
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
-
-        Branches branches = repository.branches();
-
-        // list branches (should have 1)
-        assertEquals(1, branches.list().size());
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = branches.read("master");
+        Branch master = repository.readBranch("master");
         assertNotNull(master);
         assertTrue(master.isMaster());
 
-        Node testDefinition = master.definitions().defineType(QName.create("test:product"));
-        Node verifyDefinition = master.definitions().read(testDefinition.getQName());
+        Node testDefinition = master.defineType(QName.create("test:product"));
+        Node verifyDefinition = master.readDefinition(testDefinition.getQName());
         assertNotNull(verifyDefinition);
     }
 }

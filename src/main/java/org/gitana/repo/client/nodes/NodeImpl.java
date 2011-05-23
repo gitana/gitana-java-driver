@@ -21,19 +21,21 @@
 
 package org.gitana.repo.client.nodes;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Gitana;
+import org.gitana.repo.client.Driver;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.beans.TraversalResults;
-import org.gitana.repo.client.services.Translations;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -45,12 +47,6 @@ import java.util.Map;
  */
 public class NodeImpl extends BaseNodeImpl implements Node
 {
-	private QName qname;
-	private QName typeQName;
-
-    private Gitana gitana;
-    private Branch branch;
-	
     /**
      * Existing node constructor.
      *
@@ -58,24 +54,17 @@ public class NodeImpl extends BaseNodeImpl implements Node
      * @param obj
      * @param isSaved
      */
-    public NodeImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public NodeImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, branch, obj, isSaved);
-
-        this.gitana = gitana;
-
-        this.init();
+        super(driver, branch, obj, isSaved);
     }
 
-    private void init()
-    {
-    }
 
-    @Override
-    public Translations translations()
-    {
-        return new Translations(gitana, this);
-    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * @return access control list
@@ -112,6 +101,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
     {
         revoke(principalId, "all");
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ATTACHMENTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void uploadAttachment(byte[] bytes, String contentType)
@@ -169,6 +165,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
 
         return bytes;
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ASSOCIATIONS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Map<String, Association> associations()
@@ -253,6 +256,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
         getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/unassociate?node=" + targetNodeId + "&type=" + associationTypeQName.toString() + "&direction=" + direction.toString());
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TRAVERSE
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public TraversalResults traverse(ObjectNode traverse)
     {
@@ -268,6 +278,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
         return results;
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MOUNT
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public void mount(String mountKey)
     {
@@ -280,6 +297,79 @@ public class NodeImpl extends BaseNodeImpl implements Node
     {
         String uri = "/repositories/" + this.getRepository().getId() + "/branches/" + this.getBranch().getId() + "/nodes/" + this.getId() + "/unmount";
         getRemote().post(uri);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TRANSLATIONS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Node createTranslation(String edition, Locale locale, ObjectNode object)
+    {
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/i18n?edition=" + edition + "&locale=" + locale.toString();
+        Response r1 = getRemote().post(uri, object);
+        String nodeId = r1.getId();
+
+        Response r2 = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + nodeId);
+        return getFactory().node(getBranch(), r2);
+    }
+
+    @Override
+    public List<String> getTranslationEditions()
+    {
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/i18n/editions");
+
+        ArrayNode array = (ArrayNode) response.getObjectNode().get("editions");
+
+        List<String> editions = new ArrayList<String>();
+        for (int i = 0; i < array.size(); i++)
+        {
+            editions.add(array.get(i).getTextValue());
+        }
+
+        return editions;
+    }
+
+    @Override
+    public List<Locale> getTranslationLocales(String edition)
+    {
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/i18n/locales?edition=" + edition);
+
+        ArrayNode array = (ArrayNode) response.getObjectNode().get("locales");
+
+        List<Locale> locales = new ArrayList<Locale>();
+        for (int i = 0; i < array.size(); i++)
+        {
+            String localeString = array.get(i).getTextValue();
+            Locale locale = org.gitana.util.I18NUtil.parseLocale(localeString);
+
+            locales.add(locale);
+
+        }
+
+        return locales;
+    }
+
+    @Override
+    public Node readTranslation(Locale locale)
+    {
+        return readTranslation(null, locale);
+    }
+
+    @Override
+    public Node readTranslation(String edition, Locale locale)
+    {
+        String uri = "/repositories/" + this.getRepositoryId() + "/branches/" + this.getBranchId() + "/nodes/" + getId() + "/i18n?locale=" + locale.toString();
+        if (edition != null)
+        {
+            uri += "&edition=" + edition;
+        }
+
+        Response response = getRemote().get(uri);
+        return getFactory().node(getBranch(), response);
     }
 
 }

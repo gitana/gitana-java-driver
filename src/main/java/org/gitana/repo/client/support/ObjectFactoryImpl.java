@@ -37,45 +37,45 @@ import java.util.Map;
  */
 public class ObjectFactoryImpl implements ObjectFactory
 {
-    private Gitana gitana;
+    private Driver driver;
 
     private Map<QName, Class> registry = new HashMap<QName, Class>();
 
-    public ObjectFactoryImpl(Gitana gitana)
+    public ObjectFactoryImpl(Driver driver)
     {
-        this.gitana = gitana;
+        this.driver = driver;
     }
 
     @Override
-    public Repository repository()
+    public Repository repository(Server server)
     {
-        return repository(JsonUtil.createObject());
+        return repository(server, JsonUtil.createObject());
     }
 
     @Override
-    public Repository repository(ObjectNode object)
+    public Repository repository(Server server, ObjectNode object)
     {
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        return new RepositoryImpl(gitana, object, false);
+        return new RepositoryImpl(driver, server, object, false);
     }
 
     @Override
-    public Repository repository(Response response)
+    public Repository repository(Server server, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new RepositoryImpl(gitana, response.getObjectNode(), true);
+        return new RepositoryImpl(driver, server, response.getObjectNode(), true);
     }
 
     @Override
-    public Map<String, Repository> repositories(Response response)
+    public Map<String, Repository> repositories(Server server, Response response)
     {
         if (!response.isListDocument())
         {
@@ -85,7 +85,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, Repository> map = new HashMap<String, Repository>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            Repository repository = new RepositoryImpl(gitana, object, true);
+            Repository repository = new RepositoryImpl(driver, server, object, true);
             map.put(repository.getId(), repository);
         }
 
@@ -106,7 +106,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             object = JsonUtil.createObject();
         }
 
-        return new BranchImpl(gitana, repository, object, false);
+        return new BranchImpl(driver, repository, object, false);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new BranchImpl(gitana, repository, response.getObjectNode(), true);
+        return new BranchImpl(driver, repository, response.getObjectNode(), true);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, Branch> map = new HashMap<String, Branch>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            Branch branch = new BranchImpl(gitana, repository, object, true);
+            Branch branch = new BranchImpl(driver, repository, object, true);
             map.put(branch.getId(), branch);
         }
 
@@ -146,7 +146,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new ChangesetImpl(gitana, repository, response.getObjectNode(), true);
+        return new ChangesetImpl(driver, repository, response.getObjectNode(), true);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, Changeset> map = new HashMap<String, Changeset>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            Changeset changeset = new ChangesetImpl(gitana, repository, object, true);
+            Changeset changeset = new ChangesetImpl(driver, repository, object, true);
             map.put(changeset.getId(), changeset);
         }
 
@@ -264,35 +264,35 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public SecurityUser securityUser()
+    public SecurityUser securityUser(Server server)
     {
-        return securityUser(JsonUtil.createObject());
+        return securityUser(server, JsonUtil.createObject());
     }
 
     @Override
-    public SecurityUser securityUser(ObjectNode object)
+    public SecurityUser securityUser(Server server, ObjectNode object)
     {
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        return new SecurityUserImpl(gitana, object, false);
+        return new SecurityUserImpl(driver, server, object, false);
     }
 
     @Override
-    public SecurityUser securityUser(Response response)
+    public SecurityUser securityUser(Server server, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new SecurityUserImpl(gitana, response.getObjectNode(), true);
+        return new SecurityUserImpl(driver, server, response.getObjectNode(), true);
     }
 
     @Override
-    public Map<String, SecurityUser> securityUsers(Response response)
+    public Map<String, SecurityUser> securityUsers(Server server, Response response)
     {
         if (!response.isListDocument())
         {
@@ -302,7 +302,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, SecurityUser> map = new HashMap<String, SecurityUser>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            SecurityUser user = new SecurityUserImpl(gitana, object, true);
+            SecurityUser user = new SecurityUserImpl(driver, server, object, true);
             map.put(user.getId(), user);
         }
 
@@ -310,35 +310,35 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public SecurityGroup securityGroup()
+    public SecurityGroup securityGroup(Server server)
     {
-        return securityGroup(JsonUtil.createObject());
+        return securityGroup(server, JsonUtil.createObject());
     }
 
     @Override
-    public SecurityGroup securityGroup(ObjectNode object)
+    public SecurityGroup securityGroup(Server server, ObjectNode object)
     {
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        return new SecurityGroupImpl(gitana, object, false);
+        return new SecurityGroupImpl(driver, server, object, false);
     }
 
     @Override
-    public SecurityGroup securityGroup(Response response)
+    public SecurityGroup securityGroup(Server server, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new SecurityGroupImpl(gitana, response.getObjectNode(), true);
+        return new SecurityGroupImpl(driver, server, response.getObjectNode(), true);
     }
 
     @Override
-    public Map<String, SecurityGroup> securityGroups(Response response)
+    public Map<String, SecurityGroup> securityGroups(Server server, Response response)
     {
         if (!response.isListDocument())
         {
@@ -348,7 +348,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, SecurityGroup> map = new HashMap<String, SecurityGroup>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            SecurityGroup group = new SecurityGroupImpl(gitana, object, true);
+            SecurityGroup group = new SecurityGroupImpl(driver, server, object, true);
             map.put(group.getId(), group);
         }
 
@@ -356,7 +356,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public SecurityPrincipal securityPrincipal(Response response)
+    public SecurityPrincipal securityPrincipal(Server server, Response response)
     {
         if (!response.isDataDocument())
         {
@@ -370,18 +370,18 @@ public class ObjectFactoryImpl implements ObjectFactory
         PrincipalType principalType = PrincipalType.valueOf(JsonUtil.objectGetString(object, SecurityPrincipal.FIELD_PRINCIPAL_TYPE));
         if (principalType.equals(PrincipalType.GROUP))
         {
-            principal = new SecurityGroupImpl(gitana, object, true);
+            principal = new SecurityGroupImpl(driver, server, object, true);
         }
         else if (principalType.equals(PrincipalType.USER))
         {
-            principal = new SecurityUserImpl(gitana, object, true);
+            principal = new SecurityUserImpl(driver, server, object, true);
         }
 
         return principal;
     }
 
     @Override
-    public Map<String, SecurityPrincipal> securityPrincipals(Response response)
+    public Map<String, SecurityPrincipal> securityPrincipals(Server server, Response response)
     {
         if (!response.isListDocument())
         {
@@ -391,14 +391,14 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, SecurityPrincipal> map = new HashMap<String, SecurityPrincipal>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            SecurityPrincipal principal = securityPrincipal(object);
+            SecurityPrincipal principal = securityPrincipal(server, object);
             map.put(principal.getId(), principal);
         }
 
         return map;
     }
 
-    private SecurityPrincipal securityPrincipal(ObjectNode object)
+    private SecurityPrincipal securityPrincipal(Server server, ObjectNode object)
     {
         SecurityPrincipal principal = null;
 
@@ -407,11 +407,11 @@ public class ObjectFactoryImpl implements ObjectFactory
         PrincipalType principalType = PrincipalType.valueOf(principalTypeId);
         if (principalType.equals(PrincipalType.GROUP))
         {
-            principal = new SecurityGroupImpl(gitana, object, true);
+            principal = new SecurityGroupImpl(driver, server, object, true);
         }
         else if (principalType.equals(PrincipalType.USER))
         {
-            principal = new SecurityUserImpl(gitana, object, true);
+            principal = new SecurityUserImpl(driver, server, object, true);
         }
 
         return principal;
@@ -443,12 +443,12 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             try
             {
-                Class[] signature = new Class[] { Gitana.class, Branch.class, ObjectNode.class, Boolean.TYPE };
+                Class[] signature = new Class[] { Driver.class, Branch.class, ObjectNode.class, Boolean.TYPE };
 
                 Constructor constructor = c.getConstructor(signature);
                 if (constructor != null)
                 {
-                    Object[] args = new Object[] { gitana, branch, object, isSaved };
+                    Object[] args = new Object[] { driver, branch, object, isSaved };
                     node = (BaseNode) constructor.newInstance(args);
                 }
                 else
@@ -474,11 +474,11 @@ public class ObjectFactoryImpl implements ObjectFactory
 
             if (isAssociation)
             {
-                node = new AssociationImpl(gitana, branch, object, isSaved);
+                node = new AssociationImpl(driver, branch, object, isSaved);
             }
             else
             {
-                node = new NodeImpl(gitana, branch, object, isSaved);
+                node = new NodeImpl(driver, branch, object, isSaved);
             }
 
         }

@@ -35,10 +35,10 @@ public class ServerTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // get the ACL
-        ACL acl = gitana.server().getACL();
+        ACL acl = server.getACL();
         assert(acl.getEntries().size() > 0);
     }
 }

@@ -19,21 +19,26 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.repo.client.types;
-
-import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Driver;
-import org.gitana.repo.client.nodes.NodeImpl;
+package org.gitana.repo.client;
 
 /**
  * @author uzi
  */
-public class GroupImpl extends NodeImpl implements Group
+public interface Selfable
 {
-    public GroupImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
-    {
-        super(driver, branch, obj, isSaved);
-    }
+    /**
+     * Update
+     */
+    public void update();
+
+    /**
+     * Reload
+     */
+    public void reload();
+
+    /**
+     * Delete
+     */
+    public void delete();
 
 }

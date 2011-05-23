@@ -22,10 +22,7 @@
 package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.ObjectFactory;
-import org.gitana.repo.client.Repository;
+import org.gitana.repo.client.*;
 import org.gitana.repo.client.support.DocumentImpl;
 import org.gitana.repo.client.support.Remote;
 import org.gitana.repo.namespace.QName;
@@ -40,21 +37,22 @@ public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
 	private QName qname;
 	private QName typeQName;
 
-    private Gitana gitana;
+    private Driver driver;
     private Branch branch;
 
     /**
      * Existing node constructor.
      *
+     * @param driver
      * @param branch
      * @param obj
      * @param isSaved
      */
-    public BaseNodeImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public BaseNodeImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
         super(obj, isSaved);
 
-        this.gitana = gitana;
+        this.driver = driver;
         this.branch = branch;
 
         this.init();
@@ -71,13 +69,12 @@ public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
 
     protected ObjectFactory getFactory()
     {
-        return this.gitana.getFactory();
+        return driver.getFactory();
     }
-
 
     protected Remote getRemote()
     {
-        return gitana.getRemote();
+        return driver.getRemote();
     }
 
     @Override
@@ -158,5 +155,12 @@ public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
     public void delete()
     {
         getRemote().delete("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId());
+    }
+
+    @Override
+    public void reload()
+    {
+        Node node = getBranch().readNode(getId());
+        this.reload(node);
     }
 }

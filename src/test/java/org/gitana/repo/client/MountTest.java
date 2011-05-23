@@ -37,30 +37,30 @@ public class MountTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
+        Branch master = repository.readBranch("master");
 
         // get the mount nodes for this branch
-        List<Node> mounts1 = master.nodes().list();
+        List<Node> mounts1 = master.listNodes();
 
         // create a new mount
-        Node node1 = master.nodes().create();
+        Node node1 = master.createNode();
         node1.mount("scoobydoo");
 
         // assert mount nodes size + 1
-        List<Node> mounts2 = master.nodes().list();
+        List<Node> mounts2 = master.listNodes();
         assertEquals(mounts1.size() + 1, mounts2.size());
 
         // unmount
         node1.unmount();
 
         // assert mount nodes size back to before
-        List<Node> mounts3 = master.nodes().list();
+        List<Node> mounts3 = master.listNodes();
         assertEquals(mounts1.size(), mounts3.size());
     }
 

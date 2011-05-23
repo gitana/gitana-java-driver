@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public interface SecurityPrincipal extends Document, Principal
+public interface SecurityPrincipal extends Document, Principal, Attachable, Selfable
 {
     // default collection location
     public final static String DEFAULT_COLLECTION_ID = "principals";
@@ -51,28 +51,14 @@ public interface SecurityPrincipal extends Document, Principal
      */
     public List<String> getAuthorities();
 
-
-    // UPDATE AND DELETE
-
-    public void update();
-
-    public void delete();
-
-
     // PARENTS
 
-    public Map<String, SecurityGroup> parentMap();
+    public Map<String, SecurityGroup> fetchParentGroups();
 
-    public Map<String, SecurityGroup> parentMap(boolean includeAncestors);
+    public Map<String, SecurityGroup> fetchParentGroups(boolean includeAncestors);
 
-    public List<SecurityGroup> parentList();
+    public List<SecurityGroup> listParentGroups();
 
-    public List<SecurityGroup> parentList(boolean includeAncestors);
-
-
-    // BINARIES
-
-    public void uploadAttachment(String id, String contentType, byte[] bytes);
-    public byte[] downloadAttachment(String id);
+    public List<SecurityGroup> listParentGroups(boolean includeAncestors);
 
 }

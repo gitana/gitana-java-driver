@@ -19,34 +19,20 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.repo.client.services;
+package org.gitana.repo.client.types;
 
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.Repository;
+import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.Branch;
+import org.gitana.repo.client.Driver;
+import org.gitana.repo.client.nodes.NodeImpl;
 
 /**
  * @author uzi
  */
-public class Changesets extends AbstractService
+public abstract class AbstractDefinitionImpl extends NodeImpl
 {
-    private Repository repository;
-
-    public Changesets(Gitana gitana, Repository repository)
+    public AbstractDefinitionImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana);
-
-        this.repository = repository;
+        super(driver, branch, obj, isSaved);
     }
-
-    public Repository getRepository()
-    {
-        return this.repository;
-    }
-
-    public String getRepositoryId()
-    {
-        return getRepository().getId();
-    }
-
-    // TODO
 }

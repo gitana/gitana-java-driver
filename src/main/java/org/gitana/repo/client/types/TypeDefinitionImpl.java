@@ -23,27 +23,112 @@ package org.gitana.repo.client.types;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.nodes.NodeImpl;
-import org.gitana.repo.client.services.Forms;
+import org.gitana.repo.client.Driver;
+import org.gitana.repo.client.Response;
+import org.gitana.repo.client.nodes.Association;
+import org.gitana.repo.client.nodes.Node;
+import org.gitana.util.JsonUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
  */
-public class TypeDefinitionImpl extends NodeImpl implements TypeDefinition
+public class TypeDefinitionImpl extends AbstractDefinitionImpl implements TypeDefinition
 {
-    private Gitana gitana;
-
-    public TypeDefinitionImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public TypeDefinitionImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, branch, obj, isSaved);
-
-        this.gitana = gitana;
+        super(driver, branch, obj, isSaved);
     }
 
-    public Forms forms()
+    private Map<String, HasFormAssociation> _convert(Map<String, Association> map)
     {
-        return new Forms(gitana, this);
+        Map<String, HasFormAssociation> converted = new HashMap<String, HasFormAssociation>();
+        for (Association association : map.values())
+        {
+            converted.put(association.getId(), (HasFormAssociation) association);
+        }
+
+        return converted;
+    }
+
+    @Override
+    public Map<String, HasFormAssociation> fetchFormAssociations()
+    {
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/definitions/" + getQName().toString() + "/forms");
+
+        Map<String, Association> associations = getFactory().associations(getBranch(), response);
+        return _convert(associations);
+    }
+
+    @Override
+    public List<HasFormAssociation> listFormAssociations()
+    {
+        Map<String, HasFormAssociation> map = fetchFormAssociations();
+
+        List<HasFormAssociation> list = new ArrayList<HasFormAssociation>();
+        for (HasFormAssociation association : map.values())
+        {
+            list.add(association);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Form readForm(String formKey)
+    {
+        Form form = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/definitions/" + getQName().toString() + "/forms/" + formKey);
+            form = (Form) getFactory().node(getBranch(), response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return form;
+    }
+
+    @Override
+    public Form createForm(String formKey)
+    {
+        return createForm(formKey, JsonUtil.createObject());
+    }
+
+    @Override
+    public Form createForm(String formKey, ObjectNode object)
+    {
+        // create the form
+        object.put(Node.FIELD_TYPE_QNAME, Form.QNAME.toString());
+        Form form = (Form) getBranch().createNode(object);
+
+        // create the association
+        HasFormAssociation association = (HasFormAssociation) associate(form, HasFormAssociation.QNAME);
+        association.set(HasFormAssociation.FIELD_FORM_KEY, formKey);
+        association.update();
+
+        return form;
+    }
+
+    @Override
+    public void deleteForm(String formKey)
+    {
+        Form form = readForm(formKey);
+        if (form == null)
+        {
+            throw new RuntimeException("Unable to find form for form-key: " + formKey + " for node: " + getId());
+        }
+
+        form.delete();
     }
 
 }

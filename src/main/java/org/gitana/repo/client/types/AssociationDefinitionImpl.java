@@ -23,16 +23,15 @@ package org.gitana.repo.client.types;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.nodes.NodeImpl;
+import org.gitana.repo.client.Driver;
 
 /**
  * @author uzi
  */
-public class AssociationDefinitionImpl extends NodeImpl implements AssociationDefinition
+public class AssociationDefinitionImpl extends AbstractDefinitionImpl implements AssociationDefinition
 {
-    public AssociationDefinitionImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public AssociationDefinitionImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, branch, obj, isSaved);
+        super(driver, branch, obj, isSaved);
     }
 }

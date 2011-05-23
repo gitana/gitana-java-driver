@@ -23,16 +23,16 @@ package org.gitana.repo.client.types;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Gitana;
+import org.gitana.repo.client.Driver;
 
 /**
  * @author uzi
  */
 public class HasLockAssociationImpl extends LinkedAssociationImpl implements HasLockAssociation
 {
-    public HasLockAssociationImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public HasLockAssociationImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, branch, obj, isSaved);
+        super(driver, branch, obj, isSaved);
     }
 
 }

@@ -37,18 +37,18 @@ public class SecurityTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a user
         String name = "testuser" + System.currentTimeMillis();
-        SecurityUser user = gitana.users().create(name, "password");
+        SecurityUser user = server.createUser(name, "password");
 
         // user map (verify)
-        Map<String, SecurityUser> map = gitana.users().map();
+        Map<String, SecurityUser> map = server.fetchUsers();
         assertNotNull(map.get(name));
 
         // read the user back to verify
-        SecurityUser verify = gitana.users().read(user.getId());
+        SecurityUser verify = server.readUser(user.getId());
         assertNotNull(verify);
 
         // update the user
@@ -60,7 +60,7 @@ public class SecurityTest extends AbstractTestCase
         user.update();
 
         // read back and verify
-        verify = gitana.users().read(name);
+        verify = server.readUser(name);
         assertEquals("def", verify.getString("abc"));
         assertEquals("turbo", verify.getFirstName());
         assertEquals("ozone", verify.getLastName());
@@ -71,7 +71,7 @@ public class SecurityTest extends AbstractTestCase
         user.delete();
 
         // read back and verify
-        verify = gitana.users().read(name);
+        verify = server.readUser(name);
         assertNull(verify);
     }
 
@@ -81,18 +81,18 @@ public class SecurityTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a group
         String name = "testgroup" + System.currentTimeMillis();
-        SecurityGroup group = gitana.groups().create(name);
+        SecurityGroup group = server.createGroup(name);
 
         // user map (verify)
-        Map<String, SecurityGroup> map = gitana.groups().map();
+        Map<String, SecurityGroup> map = server.fetchGroups();
         assertNotNull(map.get(name));
 
         // read the user back to verify
-        SecurityGroup verify = gitana.groups().read(group.getId());
+        SecurityGroup verify = server.readGroup(group.getId());
         assertNotNull(verify);
 
         // update the group
@@ -100,14 +100,14 @@ public class SecurityTest extends AbstractTestCase
         group.update();
 
         // read back and verify
-        verify = gitana.groups().read(name);
+        verify = server.readGroup(name);
         assertEquals("def", verify.getString("abc"));
 
         // delete the group
         group.delete();
 
         // read back and verify
-        verify = gitana.groups().read(name);
+        verify = server.readGroup(name);
         assertNull(verify);
     }
 
@@ -117,50 +117,50 @@ public class SecurityTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create six users
-        SecurityUser user1 = gitana.users().create("testuser-" + System.currentTimeMillis() + "_1", "password");
-        SecurityUser user2 = gitana.users().create("testuser-" + System.currentTimeMillis() + "_2", "password");
-        SecurityUser user3 = gitana.users().create("testuser-" + System.currentTimeMillis() + "_3", "password");
-        SecurityUser user4 = gitana.users().create("testuser-" + System.currentTimeMillis() + "_4", "password");
-        SecurityUser user5 = gitana.users().create("testuser-" + System.currentTimeMillis() + "_5", "password");
-        SecurityUser user6 = gitana.users().create("testuser-" + System.currentTimeMillis() + "_6", "password");
+        SecurityUser user1 = server.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
+        SecurityUser user2 = server.createUser("testuser-" + System.currentTimeMillis() + "_2", "password");
+        SecurityUser user3 = server.createUser("testuser-" + System.currentTimeMillis() + "_3", "password");
+        SecurityUser user4 = server.createUser("testuser-" + System.currentTimeMillis() + "_4", "password");
+        SecurityUser user5 = server.createUser("testuser-" + System.currentTimeMillis() + "_5", "password");
+        SecurityUser user6 = server.createUser("testuser-" + System.currentTimeMillis() + "_6", "password");
 
         // create three groups
-        SecurityGroup group1 = gitana.groups().create("testgroup-" + System.currentTimeMillis() + "_1");
-        SecurityGroup group2 = gitana.groups().create("testgroup-" + System.currentTimeMillis() + "_2");
-        SecurityGroup group3 = gitana.groups().create("testgroup-" + System.currentTimeMillis() + "_3");
+        SecurityGroup group1 = server.createGroup("testgroup-" + System.currentTimeMillis() + "_1");
+        SecurityGroup group2 = server.createGroup("testgroup-" + System.currentTimeMillis() + "_2");
+        SecurityGroup group3 = server.createGroup("testgroup-" + System.currentTimeMillis() + "_3");
 
         // add users 1 and 2 into group 1
         // verify
-        group1.add(user1);
-        group1.add(user2);
-        assertEquals(2, group1.childList(false).size());
-        assertEquals(2, group1.childList(true).size());
-        assertEquals(1, user1.parentList().size());
-        assertEquals(1, user2.parentList().size());
+        group1.addPrincipal(user1);
+        group1.addPrincipal(user2);
+        assertEquals(2, group1.listPrincipals(false).size());
+        assertEquals(2, group1.listPrincipals(true).size());
+        assertEquals(1, user1.listParentGroups().size());
+        assertEquals(1, user2.listParentGroups().size());
 
         // add users 3, 4, 5 into group 2
         // verify
-        group2.add(user3);
-        group2.add(user4);
-        group2.add(user5);
-        assertEquals(3, group2.childList(false).size());
-        assertEquals(3, group2.childList(true).size());
-        assertEquals(1, user3.parentList().size());
-        assertEquals(1, user4.parentList().size());
-        assertEquals(1, user5.parentList().size());
+        group2.addPrincipal(user3);
+        group2.addPrincipal(user4);
+        group2.addPrincipal(user5);
+        assertEquals(3, group2.listPrincipals(false).size());
+        assertEquals(3, group2.listPrincipals(true).size());
+        assertEquals(1, user3.listParentGroups().size());
+        assertEquals(1, user4.listParentGroups().size());
+        assertEquals(1, user5.listParentGroups().size());
 
         // add user 6 into group 3
         // verify
-        group3.add(user6);
-        assertEquals(1, group3.childList(false).size());
-        assertEquals(1, group3.childList(true).size());
-        assertEquals(1, user6.parentList().size());
+        group3.addPrincipal(user6);
+        assertEquals(1, group3.listPrincipals(false).size());
+        assertEquals(1, group3.listPrincipals(true).size());
+        assertEquals(1, user6.listParentGroups().size());
 
         // now add group2 as a child of group 3
-        group3.add(group2);
+        group3.addPrincipal(group2);
 
         /**
          * graph looks like:
@@ -177,10 +177,10 @@ public class SecurityTest extends AbstractTestCase
          */
 
         // verify inherited memberships
-        assertEquals(5, group3.childList(true).size());
-        assertEquals(2, user3.parentList(true).size());
-        assertEquals(2, user4.parentList(true).size());
-        assertEquals(2, user5.parentList(true).size());
+        assertEquals(5, group3.listPrincipals(true).size());
+        assertEquals(2, user3.listParentGroups(true).size());
+        assertEquals(2, user4.listParentGroups(true).size());
+        assertEquals(2, user5.listParentGroups(true).size());
     }
 
     @Test
@@ -190,23 +190,23 @@ public class SecurityTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create two users
-        SecurityUser daffy = gitana.users().create("testuser-" + System.currentTimeMillis() + "_1", "password");
-        SecurityUser bugs = gitana.users().create("testuser-" + System.currentTimeMillis() + "_2", "password");
+        SecurityUser daffy = server.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
+        SecurityUser bugs = server.createUser("testuser-" + System.currentTimeMillis() + "_2", "password");
 
         // upload
         byte[] daffyBytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/daffy.jpeg");
         byte[] bugsBytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/bugs.jpeg");
 
         // upload daffy avatar
-        daffy.uploadAttachment("avatar", "image/jpeg", daffyBytes);
+        daffy.uploadAttachment("avatar", daffyBytes, "image/jpeg");
         byte[] test1 = daffy.downloadAttachment("avatar");
         assertEquals(daffyBytes.length, test1.length);
 
         // upload bugs avatar
-        bugs.uploadAttachment("avatar", "image/jpeg", bugsBytes);
+        bugs.uploadAttachment("avatar", bugsBytes, "image/jpeg");
         byte[] test2 = bugs.downloadAttachment("avatar");
         assertEquals(bugsBytes.length, test2.length);
     }

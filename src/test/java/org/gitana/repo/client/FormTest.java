@@ -40,35 +40,35 @@ public class FormTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
+        Branch master = repository.readBranch("master");
 
         // create a definition
-        TypeDefinition typeDefinition = (TypeDefinition) master.definitions().defineType(QName.create("blah:blah"));
+        TypeDefinition typeDefinition = master.defineType(QName.create("blah:blah"));
 
         // list forms
-        Map<String, HasFormAssociation> results1 = typeDefinition.forms().associationsMap();
+        Map<String, HasFormAssociation> results1 = typeDefinition.fetchFormAssociations();
         assertEquals(0, results1.size());
 
         // create three forms
-        typeDefinition.forms().create("test1");
-        typeDefinition.forms().create("test2");
-        typeDefinition.forms().create("test3");
+        typeDefinition.createForm("test1");
+        typeDefinition.createForm("test2");
+        typeDefinition.createForm("test3");
 
         // list forms
-        List<HasFormAssociation> results2 = typeDefinition.forms().associationsList();
+        List<HasFormAssociation> results2 = typeDefinition.listFormAssociations();
         assertEquals(3, results2.size());
 
         // delete a form
-        typeDefinition.forms().delete("test2");
+        typeDefinition.deleteForm("test2");
 
         // list forms
-        List<HasFormAssociation> results3 = typeDefinition.forms().associationsList();
+        List<HasFormAssociation> results3 = typeDefinition.listFormAssociations();
         assertEquals(2, results3.size());
     }
 

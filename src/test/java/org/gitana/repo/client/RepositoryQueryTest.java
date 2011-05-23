@@ -40,37 +40,37 @@ public class RepositoryQueryTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         String test = "test-" + System.currentTimeMillis();
 
         // create two repos
         // TODO: use object builder
-        Repository repo1 = gitana.repositories().create(JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1','test2']}"));
+        Repository repo1 = server.createRepository(JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1','test2']}"));
         assertEquals(2, repo1.getArray("tag").size());
-        Repository repo2 = gitana.repositories().create(JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1'], 'length': 10}"));
+        Repository repo2 = server.createRepository(JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1'], 'length': 10}"));
         assertEquals(10, repo2.getInt("length"));
 
         // find the repos with "tag=test1"
         ObjectNode query1 = QueryBuilder.start("test").is(test).and("tag").is("test1").get();
-        Map<String, Repository> results1 = gitana.repositories().query(query1);
+        Map<String, Repository> results1 = server.queryRepositories(query1);
         assertEquals(2, results1.size());
 
         // find the repos with "length=10"
         ObjectNode query2 = QueryBuilder.start("test").is(test).and("length").is(10).get();
-        Map<String, Repository> results2 = gitana.repositories().query(query2);
+        Map<String, Repository> results2 = server.queryRepositories(query2);
         assertEquals(1, results2.size());
 
         // find the repos with "length > 10"
         // @see http://www.mongodb.org/display/DOCS/Advanced+Queries
         ObjectNode query3 = QueryBuilder.start("test").is(test).and("length").greaterThan(10).get();
-        Map<String, Repository> results3 = gitana.repositories().query(query3);
+        Map<String, Repository> results3 = server.queryRepositories(query3);
         assertEquals(0, results3.size());
 
         // find the repos with "tag=test1" and "length > 1" and "length < 19"
         // @see http://www.mongodb.org/display/DOCS/Advanced+Queries
         ObjectNode query4 = QueryBuilder.start("test").is(test).and("tag").is("test1").and("length").greaterThan(1).and("length").lessThan(19).get();
-        Map<String, Repository> results4 = gitana.repositories().query(query4);
+        Map<String, Repository> results4 = server.queryRepositories(query4);
         assertEquals(1, results4.size());
 
     }

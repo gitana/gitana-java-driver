@@ -23,7 +23,6 @@ package org.gitana.repo.client;
 
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.services.Nodes;
 import org.gitana.repo.namespace.QName;
 import org.junit.Test;
 
@@ -38,32 +37,29 @@ public class AssociationTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
-
-        // nodes
-        Nodes nodes = master.nodes();
+        Branch master = repository.readBranch("master");
 
         // define association type: "custom:isRelatedTo"
         QName isRelatedTo = QName.create("custom:isRelatedTo");
-        master.definitions().defineAssociationType(isRelatedTo);
+        master.defineAssociationType(isRelatedTo);
 
         // define association type: "custom:references"
         QName references = QName.create("custom:references");
-        master.definitions().defineAssociationType(references);
+        master.defineAssociationType(references);
 
         // create some nodes
-        Node node1 = nodes.create();
-        Node node2 = nodes.create();
-        Node node3 = nodes.create();
-        Node node4 = nodes.create();
-        Node node5 = nodes.create();
-        Node node6 = nodes.create();
+        Node node1 = master.createNode();
+        Node node2 = master.createNode();
+        Node node3 = master.createNode();
+        Node node4 = master.createNode();
+        Node node5 = master.createNode();
+        Node node6 = master.createNode();
 
         // relate them
         //
@@ -82,16 +78,16 @@ public class AssociationTest extends AbstractTestCase
         node4.associate(node6, references);
 
         // all association checks
-        assertEquals(3, node1.associations().size()); // node2, node3 [custom:isRelatedTo] and a:created
-        assertEquals(2, node2.associations().size()); // node1 [custom:isRelatedTo] and a:created
-        assertEquals(3, node3.associations().size()); // node1 [custom:isRelatedTo] and node4 [custom:isRelatedTo] and a:created
-        assertEquals(4, node4.associations().size()); // node3, node5 [custom:isRelatedTo], node4 [custom:references] and a:created
-        assertEquals(2, node5.associations().size()); // node4 [custom:isRelatedTo] and a:created
-        assertEquals(2, node6.associations().size()); // node4 [custom:references] and a:created
+        assertEquals(3+2, node1.associations().size()); // node2, node3 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(2+2, node2.associations().size()); // node1 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(3+2, node3.associations().size()); // node1 [custom:isRelatedTo], node4 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(4+2, node4.associations().size()); // node3, node5 [custom:isRelatedTo], node4 [custom:references], a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(2+2, node5.associations().size()); // node4 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(2+2, node6.associations().size()); // node4 [custom:references], a:created AND ALSO a:has_role(person), a:has_role(everyone)
 
         // directional
-        assertEquals(2, node4.associations(Direction.INCOMING).size()); // node4 and "admin" (a:created)
-        assertEquals(2, node4.associations(Direction.OUTGOING).size()); // node5 and node6
+        assertEquals(2+2, node4.associations(Direction.INCOMING).size()); // node4, "admin" (a:created) AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(2, node4.associations(Direction.OUTGOING).size()); // node5, node6
 
         // typed checks
         assertEquals(1, node4.associations(isRelatedTo, Direction.OUTGOING).size()); // node5
@@ -101,7 +97,7 @@ public class AssociationTest extends AbstractTestCase
         // additional
         assertEquals(0, node1.associations(references, Direction.OUTGOING).size());
         assertEquals(0, node1.associations(references, Direction.INCOMING).size());
-        assertEquals(1, node1.associations(Direction.INCOMING).size()); // a:created
+        assertEquals(1+2, node1.associations(Direction.INCOMING).size()); // a:created AND ALSO a:has_role(person), a:has_role(everyone)
 
     }
 

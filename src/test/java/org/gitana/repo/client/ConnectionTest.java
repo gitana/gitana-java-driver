@@ -34,10 +34,11 @@ public class ConnectionTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate as admin/admin, ensure no errors
+        Server server = null;
         Exception ex1 = null;
         try
         {
-            gitana.authenticate("admin", "admin");
+            server = gitana.authenticate("admin", "admin");
         }
         catch (Exception ex)
         {
@@ -45,16 +46,21 @@ public class ConnectionTest extends AbstractTestCase
         }
         assertNull(ex1);
 
+        assertNotNull(server);
+
         // now try to authenticate as some jacked user and ensure it throws
+        Server server2 = null;
         Exception ex2  = null;
         try
         {
-            gitana.authenticate("rivers", "cuomo");
+            server2 = gitana.authenticate("rivers", "cuomo");
         }
         catch (Exception ex)
         {
             ex2 = ex;
         }
         assertNotNull(ex2);
+
+        assertNull(server2);
     }
 }

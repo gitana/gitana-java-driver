@@ -21,17 +21,16 @@
 
 package org.gitana.repo.client;
 
-import org.gitana.repo.client.beans.ACL;
-import org.gitana.repo.client.services.Branches;
-import org.gitana.repo.client.services.Changesets;
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.support.RepositoryType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
  */
-public interface Repository extends Document
+public interface Repository extends Document, AccessControllable, Selfable
 {
     public static final String FIELD_REPOSITORY_TYPE = "repositoryType";
 
@@ -46,60 +45,58 @@ public interface Repository extends Document
     public RepositoryType getType();
 
     /**
-     * @return branches
+     * @return server
      */
-    public Branches branches();
+    public Server getServer();
 
     /**
-     * @return changesets
-     */
-    public Changesets changesets();
-
-    /**
-     * Update
-     */
-    public void update();
-
-    /**
-     * Delete
-     */
-    public void delete();
-
-    /**
-     * @return access control list
-     */
-    public ACL getACL();
-
-    /**
-     * Retrieve the authorities that a principal has.
+     * Retrieves branches for the repository
      *
-     * @param principalId
-     * @return list
+     * @return a map of branch objects keyed by branch id
      */
-    public List<String> getAuthorities(String principalId);
+    public Map<String, Branch> fetchBranches();
 
     /**
-     * Grants an authority to a principal.
+     * Retrieves nodes for the branch.
      *
-     * @param principalId
-     * @param authorityId
+     * @return list of repositories
      */
-    public void grant(String principalId, String authorityId);
+    public List<Branch> listBranches();
 
     /**
-     * Revokes an authority for a principal.
+     * Reads a single branch from the server.
      *
-     * @param principalId
-     * @param authorityId
+     * @param branchId
+     *
+     * @return branch
      */
-    public void revoke(String principalId, String authorityId);
+    public Branch readBranch(String branchId);
 
     /**
-     * Revoke all authorities for a principal.
+     * Creates an empty branch on the server.
      *
-     * @param principalId
+     * @param changesetId the root changeset
+     * @return branch
      */
-    public void revokeAll(String principalId);
+    public Branch createBranch(String changesetId);
+
+    /**
+     * Creates a branch on the server.
+     *
+     * @param changesetId the root changeset id
+     * @param object
+     *
+     * @return branch
+     */
+    public Branch createBranch(String changesetId, ObjectNode object);
+
+    /**
+     * Performs a query over the branch index.
+     *
+     * @param query
+     * @return
+     */
+    public Map<String, Branch> queryBranches(ObjectNode query);
 
     /**
      * Uploads a file into the repository file system.

@@ -377,5 +377,4 @@ public class RemoteImpl implements Remote
 
         return new Response(object);
     }
-
 }

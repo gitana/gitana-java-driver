@@ -21,7 +21,6 @@
 
 package org.gitana.repo.client;
 
-import org.gitana.repo.client.services.Repositories;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
@@ -36,24 +35,21 @@ public class RepositoryTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
-
-        // repositories
-        Repositories repositories = gitana.repositories();
+        Server server = gitana.authenticate("admin", "admin");
 
         // list repositories
-        int baseCount = repositories.list().size();
+        int baseCount = server.listRepositories().size();
 
         // create three repositories
-        Repository repository1 = gitana.repositories().create();
-        Repository repository2 = gitana.repositories().create();
-        Repository repository3 = gitana.repositories().create();
+        Repository repository1 = server.createRepository();
+        Repository repository2 = server.createRepository();
+        Repository repository3 = server.createRepository();
 
         // list repositories
-        assertEquals(baseCount + 3, repositories.list().size());
+        assertEquals(baseCount + 3, server.listRepositories().size());
 
         // read one back for assurance
-        Repository check2 = repositories.read(repository2.getId());
+        Repository check2 = server.readRepository(repository2.getId());
         assertEquals(repository2, check2);
 
         // update the third one
@@ -63,11 +59,11 @@ public class RepositoryTest extends AbstractTestCase
         repository3.delete();
 
         // read back for assurance
-        Repository check3 = repositories.read(repository3.getId());
+        Repository check3 = server.readRepository(repository3.getId());
         assertNull(check3);
 
         // list repositories
-        assertEquals(baseCount + 2, repositories.list().size());
+        assertEquals(baseCount + 2, server.listRepositories().size());
     }
 
     @Test
@@ -77,10 +73,10 @@ public class RepositoryTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repo
-        Repository repo = gitana.repositories().create();
+        Repository repo = server.createRepository();
 
         // upload a file
         String filename = "testfilename-" + System.currentTimeMillis() + "-bugs.jpeg";

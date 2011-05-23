@@ -34,10 +34,10 @@ import java.util.Map;
  */
 public interface ObjectFactory
 {
-    public Repository repository();
-    public Repository repository(ObjectNode object);
-    public Repository repository(Response response);
-    public Map<String, Repository> repositories(Response response);
+    public Repository repository(Server server);
+    public Repository repository(Server server, ObjectNode object);
+    public Repository repository(Server server, Response response);
+    public Map<String, Repository> repositories(Server server, Response response);
 
     public Branch branch(Repository repository);
     public Branch branch(Repository repository, ObjectNode object);
@@ -61,18 +61,18 @@ public interface ObjectFactory
     public Association association(Branch branch, Response response);
     public Map<String, Association> associations(Branch branch, Response response);
 
-    public SecurityUser securityUser();
-    public SecurityUser securityUser(ObjectNode object);
-    public SecurityUser securityUser(Response response);
-    public Map<String, SecurityUser> securityUsers(Response response);
+    public SecurityUser securityUser(Server server);
+    public SecurityUser securityUser(Server server, ObjectNode object);
+    public SecurityUser securityUser(Server server, Response response);
+    public Map<String, SecurityUser> securityUsers(Server server, Response response);
 
-    public SecurityGroup securityGroup();
-    public SecurityGroup securityGroup(ObjectNode object);
-    public SecurityGroup securityGroup(Response response);
-    public Map<String, SecurityGroup> securityGroups(Response response);
+    public SecurityGroup securityGroup(Server server);
+    public SecurityGroup securityGroup(Server server, ObjectNode object);
+    public SecurityGroup securityGroup(Server server, Response response);
+    public Map<String, SecurityGroup> securityGroups(Server server, Response response);
 
-    public SecurityPrincipal securityPrincipal(Response response);
-    public Map<String, SecurityPrincipal> securityPrincipals(Response response);
+    public SecurityPrincipal securityPrincipal(Server server, Response response);
+    public Map<String, SecurityPrincipal> securityPrincipals(Server server, Response response);
 
 
     // dynamic node registry

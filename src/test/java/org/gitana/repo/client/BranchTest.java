@@ -22,7 +22,6 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.services.Branches;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -37,31 +36,29 @@ public class BranchTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
-
-        Branches branches = repository.branches();
+        Repository repository = server.createRepository();
 
         // list branches (should have 1)
-        assertEquals(1, branches.list().size());
+        assertEquals(1, repository.listBranches().size());
 
         // get the master branch
-        Branch master = branches.read("master");
+        Branch master = repository.readBranch("master");
         assertNotNull(master);
         assertTrue(master.isMaster());
 
         // create three new branches
-        Branch branch1 = branches.create(master.getRootChangesetId());
-        Branch branch2 = branches.create(master.getRootChangesetId());
-        Branch branch3 = branches.create(master.getRootChangesetId());
+        Branch branch1 = repository.createBranch(master.getRootChangesetId());
+        Branch branch2 = repository.createBranch(master.getRootChangesetId());
+        Branch branch3 = repository.createBranch(master.getRootChangesetId());
 
         // list branches (should be 4)
-        assertEquals(4, branches.list().size());
+        assertEquals(4, repository.listBranches().size());
 
         // read branch 2 to verify
-        Branch verify2 = branches.read(branch2.getId());
+        Branch verify2 = repository.readBranch(branch2.getId());
         assertNotNull(verify2);
         assertEquals(branch2, verify2);
         assertFalse(verify2.isMaster());
@@ -72,8 +69,8 @@ public class BranchTest extends AbstractTestCase
         // create a branch with obj data
         ObjectNode obj = JsonUtil.createObject();
         obj.put("top", "jimmy");
-        Branch branch4 = branches.create(master.getRootChangesetId(), obj);
-        Branch verify4 = branches.read(branch4.getId());
+        Branch branch4 = repository.createBranch(master.getRootChangesetId(), obj);
+        Branch verify4 = repository.readBranch(branch4.getId());
         assertEquals("jimmy", verify4.getString("top"));
 
     }
@@ -84,24 +81,22 @@ public class BranchTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
-
-        Branches branches = repository.branches();
+        Repository repository = server.createRepository();
 
         // list branches (should have 1)
-        assertEquals(1, branches.list().size());
+        assertEquals(1, repository.listBranches().size());
 
         // get the master branch
-        Branch master = branches.read("master");
+        Branch master = repository.readBranch("master");
         assertNotNull(master);
         assertTrue(master.isMaster());
 
         // add authority to test users
-        SecurityUser daffy = gitana.users().create("testuser-" + System.currentTimeMillis() + "_1", "password");
-        SecurityUser bugs = gitana.users().create("testuser-" + System.currentTimeMillis() + "_2", "password");
+        SecurityUser daffy = server.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
+        SecurityUser bugs = server.createUser("testuser-" + System.currentTimeMillis() + "_2", "password");
 
         master.grant(daffy.getId(),"manager");
         master.grant(bugs.getId(),"consumer");

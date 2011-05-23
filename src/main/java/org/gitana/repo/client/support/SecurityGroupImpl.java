@@ -34,9 +34,9 @@ import java.util.Map;
  */
 public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements SecurityGroup
 {
-    public SecurityGroupImpl(Gitana gitana, ObjectNode obj, boolean isSaved)
+    public SecurityGroupImpl(Driver driver, Server server, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, obj, isSaved);
+        super(driver, server, obj, isSaved);
 
         init();
     }
@@ -68,6 +68,12 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
         getRemote().delete("/security/groups/" + getId());
     }
 
+    @Override
+    public void reload()
+    {
+        SecurityGroup group = getServer().readGroup(getId());
+        this.reload(group.getObject());
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,13 +83,13 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityGroup> parentMap()
+    public Map<String, SecurityGroup> fetchParentGroups()
     {
-        return parentMap(false);
+        return fetchParentGroups(false);
     }
 
     @Override
-    public Map<String, SecurityGroup> parentMap(boolean includeAncestors)
+    public Map<String, SecurityGroup> fetchParentGroups(boolean includeAncestors)
     {
         String url = "/security/groups/" + this.getId() + "/memberships";
         if (includeAncestors)
@@ -93,19 +99,19 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
 
         Response response = getRemote().get(url);
 
-        return getFactory().securityGroups(response);
+        return getFactory().securityGroups(getServer(), response);
     }
 
     @Override
-    public List<SecurityGroup> parentList()
+    public List<SecurityGroup> listParentGroups()
     {
-        return parentList(false);
+        return listParentGroups(false);
     }
 
     @Override
-    public List<SecurityGroup> parentList(boolean includeAncestors)
+    public List<SecurityGroup> listParentGroups(boolean includeAncestors)
     {
-        Map<String, SecurityGroup> map = parentMap(includeAncestors);
+        Map<String, SecurityGroup> map = fetchParentGroups(includeAncestors);
 
         List<SecurityGroup> list = new ArrayList<SecurityGroup>();
         for (SecurityGroup group : map.values())
@@ -123,13 +129,13 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityPrincipal> childMap()
+    public Map<String, SecurityPrincipal> fetchPrincipals()
     {
-        return childMap(false);
+        return fetchPrincipals(false);
     }
 
     @Override
-    public Map<String, SecurityPrincipal> childMap(boolean includeInherited)
+    public Map<String, SecurityPrincipal> fetchPrincipals(boolean includeInherited)
     {
         String url = "/security/groups/" + getId() + "/members";
         if (includeInherited)
@@ -139,19 +145,19 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
 
         Response response = getRemote().get(url);
 
-        return getFactory().securityPrincipals(response);
+        return getFactory().securityPrincipals(getServer(), response);
     }
 
     @Override
-    public List<SecurityPrincipal> childList()
+    public List<SecurityPrincipal> listPrincipals()
     {
-        return childList(false);
+        return listPrincipals(false);
     }
 
     @Override
-    public List<SecurityPrincipal> childList(boolean includeInherited)
+    public List<SecurityPrincipal> listPrincipals(boolean includeInherited)
     {
-        Map<String, SecurityPrincipal> map = childMap(includeInherited);
+        Map<String, SecurityPrincipal> map = fetchPrincipals(includeInherited);
 
         List<SecurityPrincipal> list = new ArrayList<SecurityPrincipal>();
         for (SecurityPrincipal principal : map.values())
@@ -163,25 +169,25 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     }
 
     @Override
-    public void add(SecurityPrincipal principal)
+    public void addPrincipal(SecurityPrincipal principal)
     {
-        add(principal.getId());
+        addPrincipal(principal.getId());
     }
 
     @Override
-    public void add(String principalId)
+    public void addPrincipal(String principalId)
     {
         getRemote().post("/security/groups/" + getId() + "/add/" + principalId);
     }
 
     @Override
-    public void remove(SecurityPrincipal principal)
+    public void removePrincipal(SecurityPrincipal principal)
     {
-        remove(principal.getId());
+        removePrincipal(principal.getId());
     }
 
     @Override
-    public void remove(String principalId)
+    public void removePrincipal(String principalId)
     {
         getRemote().post("/security/groups/" + getId() + "/remove/" + principalId);
     }

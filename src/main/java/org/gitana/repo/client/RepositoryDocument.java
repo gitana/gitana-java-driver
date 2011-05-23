@@ -19,32 +19,15 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.repo.client.services;
-
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.ObjectFactory;
-import org.gitana.repo.client.support.Remote;
+package org.gitana.repo.client;
 
 /**
  * @author uzi
  */
-public class AbstractService
-{
-    private Gitana gitana;
+public interface RepositoryDocument extends Document
+{	
+    public Repository getRepository();
+    public String getRepositoryId();
 
-    public AbstractService(Gitana gitana)
-    {
-        this.gitana = gitana;
-    }
-
-    protected Remote getRemote()
-    {
-        return this.gitana.getRemote();
-    }
-
-    protected ObjectFactory getFactory()
-    {
-        return this.gitana.getFactory();
-    }
-
+    public Server getServer();
 }

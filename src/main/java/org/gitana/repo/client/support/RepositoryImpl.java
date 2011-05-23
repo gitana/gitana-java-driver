@@ -22,34 +22,46 @@
 package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.Repository;
-import org.gitana.repo.client.Response;
+import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
-import org.gitana.repo.client.services.Branches;
-import org.gitana.repo.client.services.Changesets;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.support.RepositoryType;
+import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
  */
 public class RepositoryImpl extends DocumentImpl implements Repository
 {
-    private Gitana gitana;
+    private Driver driver;
+    private Server server;
 
-    protected RepositoryImpl(Gitana gitana, ObjectNode obj, boolean isSaved)
+    protected RepositoryImpl(Driver driver, Server server, ObjectNode obj, boolean isSaved)
     {
         super(obj, isSaved);
 
-        this.gitana = gitana;
+        this.driver = driver;
+        this.server = server;
     }
 
     protected Remote getRemote()
     {
-        return gitana.getRemote();
+        return driver.getRemote();
+    }
+
+    protected ObjectFactory getFactory()
+    {
+        return driver.getFactory();
+    }
+
+    @Override
+    public Server getServer()
+    {
+        return this.server;
     }
 
     @Override
@@ -73,16 +85,12 @@ public class RepositoryImpl extends DocumentImpl implements Repository
         return equals;
     }
 
-    public Branches branches()
-    {
-        return new Branches(this.gitana, this);
-    }
 
-    public Changesets changesets()
-    {
-        return new Changesets(this.gitana, this);
-    }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SELF
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void update()
@@ -95,6 +103,20 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     {
         getRemote().delete("/repositories/" + getId());
     }
+
+    @Override
+    public void reload()
+    {
+        Repository repository = getServer().readRepository(getId());
+        this.reload(repository.getObject());
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public ACL getACL()
@@ -130,6 +152,91 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     {
         revoke(principalId, "all");
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BRANCHES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, Branch> fetchBranches()
+    {
+        Response response = getRemote().get("/repositories/" + getId() + "/branches");
+
+        return getFactory().branches(this, response);
+    }
+
+    @Override
+    public List<Branch> listBranches()
+    {
+        Map<String, Branch> map = fetchBranches();
+
+        List<Branch> list = new ArrayList<Branch>();
+        for (Branch branch : map.values())
+        {
+            list.add(branch);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Branch readBranch(String branchId)
+    {
+        Branch branch = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getId() + "/branches/" + branchId);
+            branch = getFactory().branch(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return branch;
+    }
+
+    @Override
+    public Branch createBranch(String changesetId)
+    {
+        return createBranch(changesetId, JsonUtil.createObject());
+    }
+
+    @Override
+    public Branch createBranch(String changesetId, ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post("/repositories/" + getId() + "/branches?changeset=" + changesetId, object);
+
+        String branchId = response.getId();
+        return readBranch(branchId);
+    }
+
+    @Override
+    public Map<String, Branch> queryBranches(ObjectNode query)
+    {
+        Response response = getRemote().post("/repositories/" + getId() + "/branches/query", query);
+
+        return getFactory().branches(this, response);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FILES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void uploadFile(String filename, byte[] bytes, String contentType)

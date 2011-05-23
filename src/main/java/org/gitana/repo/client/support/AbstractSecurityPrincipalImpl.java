@@ -23,9 +23,10 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Gitana;
+import org.gitana.repo.client.Driver;
 import org.gitana.repo.client.ObjectFactory;
 import org.gitana.repo.client.SecurityPrincipal;
+import org.gitana.repo.client.Server;
 import org.gitana.security.PrincipalType;
 
 import java.util.ArrayList;
@@ -36,23 +37,30 @@ import java.util.List;
  */
 public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl implements SecurityPrincipal
 {
-    private Gitana gitana;
+    private Driver driver;
+    private Server server;
 
-    public AbstractSecurityPrincipalImpl(Gitana gitana, ObjectNode obj, boolean isSaved)
+    public AbstractSecurityPrincipalImpl(Driver driver, Server server, ObjectNode obj, boolean isSaved)
     {
     	super(obj, isSaved);
 
-        this.gitana = gitana;
+        this.driver = driver;
+        this.server = server;
     }
 
     protected Remote getRemote()
     {
-        return gitana.getRemote();
+        return driver.getRemote();
     }
 
     protected ObjectFactory getFactory()
     {
-        return gitana.getFactory();
+        return driver.getFactory();
+    }
+
+    protected Server getServer()
+    {
+        return server;
     }
 
     @Override
@@ -91,10 +99,21 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         return authorities;
     }
 
-    // BINARIES
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ATTACHMENTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void uploadAttachment(String id, String contentType, byte[] bytes)
+    public void uploadAttachment(byte[] bytes, String contentType)
+    {
+        uploadAttachment("default", bytes, contentType);
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
     {
         // build the uri
         String uri = "/security";
@@ -106,7 +125,7 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         {
             uri += "/groups";
         }
-        uri += "/" + this.getId() + "/attachment/" + id;
+        uri += "/" + this.getId() + "/attachment/" + attachmentId;
 
         try
         {
@@ -119,7 +138,13 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
     }
 
     @Override
-    public byte[] downloadAttachment(String id)
+    public byte[] downloadAttachment()
+    {
+        return downloadAttachment("default");
+    }
+
+    @Override
+    public byte[] downloadAttachment(String attachmentId)
     {
         // build the uri
         String uri = "/security";
@@ -131,7 +156,7 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         {
             uri += "/groups";
         }
-        uri += "/" + this.getId() + "/attachment/" + id;
+        uri += "/" + this.getId() + "/attachment/" + attachmentId;
 
         byte[] bytes = null;
         try

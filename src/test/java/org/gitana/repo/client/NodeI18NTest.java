@@ -41,13 +41,13 @@ public class NodeI18NTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
+        Branch master = repository.readBranch("master");
 
         // locales
         Locale SPANISH = I18NUtil.parseLocale("es_ES");
@@ -60,22 +60,22 @@ public class NodeI18NTest extends AbstractTestCase
 
         // create a node
         ObjectNode data1 = NodeBuilder.start("title").is("We didn't start the fire").and("author").is("Billy Joel").get();
-        Node node1 = master.nodes().create(data1);
+        Node node1 = master.createNode(data1);
 
         // create a translation into spanish (edition = 1.0)
         ObjectNode spanish1 = NodeBuilder.start("title").is("No hemos encendido el fuego").and("author").is("Guillermo Joel").get();
-        node1.translations().create("1.0", SPANISH, spanish1);
+        node1.createTranslation("1.0", SPANISH, spanish1);
 
         // create a translation into german (edition = 1.0)
         ObjectNode german1 = NodeBuilder.start("title").is("Wir begannen auch nicht das Feuer").and("author").is("Billy Joel").get();
-        node1.translations().create("1.0", GERMAN, german1);
+        node1.createTranslation("1.0", GERMAN, german1);
 
         // verify spanish translation
-        Node spanishTranslation1 = node1.translations().read("1.0", SPANISH);
+        Node spanishTranslation1 = node1.readTranslation("1.0", SPANISH);
         assertEquals("Guillermo Joel", spanishTranslation1.getString("author"));
 
         // verify german translation
-        Node germanTranslation1 = node1.translations().read("1.0", GERMAN);
+        Node germanTranslation1 = node1.readTranslation("1.0", GERMAN);
         assertEquals("Wir begannen auch nicht das Feuer", germanTranslation1.getString("title"));
 
 
@@ -85,10 +85,10 @@ public class NodeI18NTest extends AbstractTestCase
 
         // create an edition 2.0 translation into polish
         ObjectNode polish1 = NodeBuilder.start("title").is("Nie rozpocz?li?my ogie?").and("author").is("Joel").get();
-        node1.translations().create("2.0", POLISH, polish1);
+        node1.createTranslation("2.0", POLISH, polish1);
 
         // verify polish translation for edition 2.0
-        Node polishTranslation1 = node1.translations().read("2.0", POLISH);
+        Node polishTranslation1 = node1.readTranslation("2.0", POLISH);
         assertEquals("Joel", polishTranslation1.getString("author"));
 
 
@@ -96,33 +96,33 @@ public class NodeI18NTest extends AbstractTestCase
 
         // verify that no polish translation exists for 1.0
         // we should get back the original node (english)
-        Node polishTranslation2 = node1.translations().read("1.0", POLISH);
+        Node polishTranslation2 = node1.readTranslation("1.0", POLISH);
         assertEquals("Billy Joel", polishTranslation2.getString("author"));
 
         // verify that no spanish translation exists for 2.0
         // we should get back the original node (english)
-        Node spanishTranslation2 = node1.translations().read("2.0", SPANISH);
+        Node spanishTranslation2 = node1.readTranslation("2.0", SPANISH);
         assertEquals("Billy Joel", spanishTranslation2.getString("author"));
 
         // verify that a spanish translation still exists for 1.0
-        Node spanishTranslation3 = node1.translations().read("1.0", SPANISH);
+        Node spanishTranslation3 = node1.readTranslation("1.0", SPANISH);
         assertEquals("Guillermo Joel", spanishTranslation3.getString("author"));
 
 
         // EDITIONS
 
         // check the editions available for the master node
-        List<String> editions = node1.translations().getEditions();
+        List<String> editions = node1.getTranslationEditions();
         assertEquals(2, editions.size());
 
         // check the number of locales in edition 1.0
         // spanish and german
-        List<Locale> locales1 = node1.translations().getLocales("1.0");
+        List<Locale> locales1 = node1.getTranslationLocales("1.0");
         assertEquals(2, locales1.size());
 
         // check the number of locales in edition 2.0
         // just polish
-        List<Locale> locales2 = node1.translations().getLocales("2.0");
+        List<Locale> locales2 = node1.getTranslationLocales("2.0");
         assertEquals(1, locales2.size());
 
     }

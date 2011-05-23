@@ -22,10 +22,7 @@
 package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.Response;
-import org.gitana.repo.client.SecurityGroup;
-import org.gitana.repo.client.SecurityUser;
+import org.gitana.repo.client.*;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.MD5;
 
@@ -38,9 +35,9 @@ import java.util.Map;
  */
 public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements SecurityUser
 {
-    public SecurityUserImpl(Gitana gitana, ObjectNode obj, boolean isSaved)
+    public SecurityUserImpl(Driver driver, Server server, ObjectNode obj, boolean isSaved)
     {
-    	super(gitana, obj, isSaved);
+    	super(driver, server, obj, isSaved);
 
         init();
     }
@@ -88,6 +85,13 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
         getRemote().delete("/security/users/" + getId());
     }
 
+    @Override
+    public void reload()
+    {
+        SecurityUser user = getServer().readUser(getId());
+        this.reload(user.getObject());
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -96,13 +100,13 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityGroup> parentMap()
+    public Map<String, SecurityGroup> fetchParentGroups()
     {
-        return parentMap(false);
+        return fetchParentGroups(false);
     }
 
     @Override
-    public Map<String, SecurityGroup> parentMap(boolean includeAncestors)
+    public Map<String, SecurityGroup> fetchParentGroups(boolean includeAncestors)
     {
         String url = "/security/users/" + this.getId() + "/memberships";
         if (includeAncestors)
@@ -112,19 +116,19 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
 
         Response response = getRemote().get(url);
 
-        return getFactory().securityGroups(response);
+        return getFactory().securityGroups(getServer(), response);
     }
 
     @Override
-    public List<SecurityGroup> parentList()
+    public List<SecurityGroup> listParentGroups()
     {
-        return parentList(false);
+        return listParentGroups(false);
     }
 
     @Override
-    public List<SecurityGroup> parentList(boolean includeAncestors)
+    public List<SecurityGroup> listParentGroups(boolean includeAncestors)
     {
-        Map<String, SecurityGroup> map = parentMap(includeAncestors);
+        Map<String, SecurityGroup> map = fetchParentGroups(includeAncestors);
 
         List<SecurityGroup> list = new ArrayList<SecurityGroup>();
         for (SecurityGroup group : map.values())

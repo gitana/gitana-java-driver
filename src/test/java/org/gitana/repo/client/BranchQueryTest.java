@@ -40,40 +40,39 @@ public class BranchQueryTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repo = gitana.repositories().create();
+        Repository repo = server.createRepository();
 
         String test = "test-" + System.currentTimeMillis();
 
         // create two branches
-        // TODO: use object builder
-        Branch branch1 = repo.branches().create("0:root", JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1','test2']}"));
+        Branch branch1 = repo.createBranch("0:root", JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1','test2']}"));
         assertEquals(2, branch1.getArray("tag").size());
-        Branch branch2 = repo.branches().create("0:root", JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1'], 'length': 10}"));
+        Branch branch2 = repo.createBranch("0:root", JsonUtil.createObject("{'test': '" + test + "', 'tag':['test1'], 'length': 10}"));
         assertEquals(10, branch2.getInt("length"));
 
         // find the branches with "tag=test1"
         ObjectNode query1 = QueryBuilder.start("test").is(test).and("tag").is("test1").get();
-        Map<String, Branch> results1 = repo.branches().query(query1);
+        Map<String, Branch> results1 = repo.queryBranches(query1);
         assertEquals(2, results1.size());
 
         // find the branches with "length=10"
         ObjectNode query2 = QueryBuilder.start("test").is(test).and("length").is(10).get();
-        Map<String, Branch> results2 = repo.branches().query(query2);
+        Map<String, Branch> results2 = repo.queryBranches(query2);
         assertEquals(1, results2.size());
 
         // find the branches with "length > 10"
         // @see http://www.mongodb.org/display/DOCS/Advanced+Queries
         ObjectNode query3 = QueryBuilder.start("test").is(test).and("length").greaterThan(10).get();
-        Map<String, Branch> results3 = repo.branches().query(query3);
+        Map<String, Branch> results3 = repo.queryBranches(query3);
         assertEquals(0, results3.size());
 
         // find the branches with "tag=test1" and "length > 1" and "length < 19"
         // @see http://www.mongodb.org/display/DOCS/Advanced+Queries
         ObjectNode query4 = QueryBuilder.start("test").is(test).and("tag").is("test1").and("length").greaterThan(1).and("length").lessThan(19).get();
-        Map<String, Branch> results4 = repo.branches().query(query4);
+        Map<String, Branch> results4 = repo.queryBranches(query4);
         assertEquals(1, results4.size());
 
     }

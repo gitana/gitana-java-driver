@@ -24,16 +24,14 @@ package org.gitana.repo.client.nodes;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Document;
 import org.gitana.repo.client.Repository;
+import org.gitana.repo.client.Selfable;
 import org.gitana.repo.namespace.QName;
 
 /**
  * @author uzi
  */
-public interface BaseNode extends Document
+public interface BaseNode extends Document, Selfable
 {
-    // default collection location
-    public final static String DEFAULT_COLLECTION_ID = "nodes";
-
 	// additional metadata fields
     public final static String FIELD_FEATURES = "_features";
     public final static String FIELD_QNAME = "_qname";
@@ -61,14 +59,4 @@ public interface BaseNode extends Document
             
     // flags
     public boolean isDeleted();
-
-    /**
-     * Update
-     */
-    public void update();
-
-    /**
-     * Delete
-     */
-    public void delete();
 }

@@ -23,7 +23,7 @@ package org.gitana.repo.client.types;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Gitana;
+import org.gitana.repo.client.Driver;
 import org.gitana.repo.client.nodes.NodeImpl;
 
 /**
@@ -31,9 +31,9 @@ import org.gitana.repo.client.nodes.NodeImpl;
  */
 public class FormImpl extends NodeImpl implements Form
 {
-    public FormImpl(Gitana gitana, Branch branch, ObjectNode obj, boolean isSaved)
+    public FormImpl(Driver driver, Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(gitana, branch, obj, isSaved);
+        super(driver, branch, obj, isSaved);
     }
 
 }

@@ -40,25 +40,25 @@ public class TraversalTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
+        Branch master = repository.readBranch("master");
 
         // define a bad guy
         QName baddie = QName.create("boo:baddie");
-        master.definitions().defineType(baddie);
+        master.defineType(baddie);
 
         // create some wizards
-        Node harry = master.nodes().create();
-        Node hermione = master.nodes().create();
-        Node ron = master.nodes().create();
-        Node voldemort = master.nodes().create(baddie); // type = baddie
-        Node dumbledore = master.nodes().create();
-        Node dudley = master.nodes().create();
+        Node harry = master.createNode();
+        Node hermione = master.createNode();
+        Node ron = master.createNode();
+        Node voldemort = master.createNode(baddie); // type = baddie
+        Node dumbledore = master.createNode();
+        Node dudley = master.createNode();
 
         // QNames
         QName friends = QName.create("boo:friends");
@@ -67,10 +67,10 @@ public class TraversalTest extends AbstractTestCase
         QName wantsToKill = QName.create("boo:wants_to_kill");
 
         // association types
-        master.definitions().defineAssociationType(friends);
-        master.definitions().defineAssociationType(enemies);
-        master.definitions().defineAssociationType(taught);
-        master.definitions().defineAssociationType(wantsToKill);
+        master.defineAssociationType(friends);
+        master.defineAssociationType(enemies);
+        master.defineAssociationType(taught);
+        master.defineAssociationType(wantsToKill);
 
         // the three friends
         harry.associate(hermione, friends, Direction.BOTH);

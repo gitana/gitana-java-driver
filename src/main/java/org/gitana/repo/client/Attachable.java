@@ -21,32 +21,41 @@
 
 package org.gitana.repo.client;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author uzi
  */
-public interface SecurityGroup extends SecurityPrincipal
+public interface Attachable
 {
-    // CHILDREN
+    /**
+     * Uploads the default attachment.
+     *
+     * @param bytes
+     * @param contentType
+     */
+    public void uploadAttachment(byte[] bytes, String contentType);
 
-    public Map<String, SecurityPrincipal> fetchPrincipals();
+    /**
+     * Uploads an attachment.
+     *
+     * @param attachmentId
+     * @param bytes
+     * @param contentType
+     */
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType);
 
-    public Map<String, SecurityPrincipal> fetchPrincipals(boolean includeInherited);
+    /**
+     * Downloads the default attachment.
+     *
+     * @return attachment
+     */
+    public byte[] downloadAttachment();
 
-    public List<SecurityPrincipal> listPrincipals();
-
-    public List<SecurityPrincipal> listPrincipals(boolean includeInherited);
-
-
-    // ADD / REMOVE CHILDREN
-
-    public void addPrincipal(SecurityPrincipal principal);
-
-    public void addPrincipal(String principalId);
-
-    public void removePrincipal(SecurityPrincipal principal);
-
-    public void removePrincipal(String principalId);
+    /**
+     * Downloads an attachment.
+     *
+     * @param attachmentId
+     *
+     * @return attachment
+     */
+    public byte[] downloadAttachment(String attachmentId);
 }

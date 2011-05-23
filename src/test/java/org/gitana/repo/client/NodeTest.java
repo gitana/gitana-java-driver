@@ -22,7 +22,6 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.services.Nodes;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
@@ -37,28 +36,25 @@ public class NodeTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
-
-        // nodes
-        Nodes nodes = master.nodes();
+        Branch master = repository.readBranch("master");
 
         // create three nodes
-        Node node1 = nodes.create();
-        Node node2 = nodes.create();
-        Node node3 = nodes.create();
+        Node node1 = master.createNode();
+        Node node2 = master.createNode();
+        Node node3 = master.createNode();
 
         // read nodes back (verify)
-        Node verify1 = nodes.read(node1.getId());
+        Node verify1 = master.readNode(node1.getId());
         assertNotNull(verify1);
-        Node verify2 = nodes.read(node2.getId());
+        Node verify2 = master.readNode(node2.getId());
         assertNotNull(verify2);
-        Node verify3 = nodes.read(node3.getId());
+        Node verify3 = master.readNode(node3.getId());
         assertNotNull(verify3);
 
         // update a node
@@ -66,14 +62,14 @@ public class NodeTest extends AbstractTestCase
         node2.update();
 
         // read node back to verify
-        Node verify4 = nodes.read(node2.getId());
+        Node verify4 = master.readNode(node2.getId());
         assertEquals("rose", verify4.getString("axl"));
 
         // delete the second node
         node2.delete();
 
         // verify that we can't read it
-        Node verify5 = nodes.read(node2.getId());
+        Node verify5 = master.readNode(node2.getId());
         assertNull(verify5);
     }
 
@@ -84,19 +80,16 @@ public class NodeTest extends AbstractTestCase
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Server server = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = gitana.repositories().create();
+        Repository repository = server.createRepository();
 
         // get the master branch
-        Branch master = repository.branches().read("master");
-
-        // nodes
-        Nodes nodes = master.nodes();
+        Branch master = repository.readBranch("master");
 
         // create a node
-        Node node = nodes.create();
+        Node node = master.createNode();
 
         // upload
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/daffy.jpeg");
@@ -111,7 +104,7 @@ public class NodeTest extends AbstractTestCase
         node.update();
 
         // read node back to verify
-        Node verify2 = nodes.read(node.getId());
+        Node verify2 = master.readNode(node.getId());
         assertEquals("rose", verify2.getString("axl"));
 
         verify = node.downloadAttachment("thumb");

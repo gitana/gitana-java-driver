@@ -1,0 +1,452 @@
+/**
+ * Copyright 2010 Gitana Software, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information, please contact Gitana Software, Inc. at this
+ * address:
+ *
+ *   info@gitanasoftware.com
+ */
+
+package org.gitana.repo.client.support;
+
+import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.*;
+import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.util.DriverUtil;
+import org.gitana.security.PrincipalType;
+import org.gitana.util.JsonUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author uzi
+ */
+public class ServerImpl implements Server
+{
+    private Driver driver;
+
+    public ServerImpl(Driver driver)
+    {
+        this.driver = driver;
+
+        this.init();
+    }
+
+    protected void init()
+    {
+    }
+
+    protected Remote getRemote()
+    {
+        return driver.getRemote();
+    }
+
+    public ObjectFactory getFactory()
+    {
+        return driver.getFactory();
+    }
+
+    /*
+    @Override
+    public boolean equals(Object object)
+    {
+        boolean equals = false;
+
+        if (object instanceof Server)
+        {
+            Server other = (Server) object;
+
+            return (this.gitana.)
+            equals = (this.getId().equals(other.getId())) && (this.getType().equals(other.getType()));
+        }
+
+        return equals;
+    }
+    */
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // REPOSITORIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, Repository> fetchRepositories()
+    {
+        Response response = getRemote().get("/repositories");
+
+        return getFactory().repositories(this, response);
+    }
+
+    @Override
+    public List<Repository> listRepositories()
+    {
+        Map<String, Repository> map = fetchRepositories();
+
+        List<Repository> list = new ArrayList<Repository>();
+        for (Repository repository : map.values())
+        {
+            list.add(repository);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Repository readRepository(String repositoryId)
+    {
+        Repository repository = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + repositoryId);
+            repository = getFactory().repository(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return repository;
+    }
+
+    @Override
+    public Repository createRepository()
+    {
+        return createRepository(JsonUtil.createObject());
+    }
+
+    @Override
+    public Repository createRepository(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post("/repositories", object);
+
+        String repositoryId = response.getId();
+        return readRepository(repositoryId);
+    }
+
+    @Override
+    public Map<String, Repository> queryRepositories(ObjectNode query)
+    {
+        Response response = getRemote().post("/repositories/query", query);
+
+        return getFactory().repositories(this, response);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ACL getACL()
+    {
+        Response response = getRemote().get("/acl");
+
+        return DriverUtil.toACL(response);
+    }
+
+    @Override
+    public List<String> getAuthorities(String principalId)
+    {
+        Response response = getRemote().get("/acl/" + principalId);
+
+        return DriverUtil.toStringList(response);
+    }
+
+    @Override
+    public void grant(String principalId, String authorityId)
+    {
+        getRemote().post("/acl/" + principalId + "/grant/" + authorityId);
+    }
+
+    @Override
+    public void revoke(String principalId, String authorityId)
+    {
+        getRemote().post("/acl/" + principalId + "/revoke/" + authorityId);
+    }
+
+    @Override
+    public void revokeAll(String principalId)
+    {
+        revoke(principalId, "all");
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SECURITY GROUPS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, SecurityGroup> fetchGroups()
+    {
+        Response response = getRemote().get("/security/groups");
+
+        return getFactory().securityGroups(this, response);
+    }
+
+    @Override
+    public List<SecurityGroup> listGroups()
+    {
+        Map<String, SecurityGroup> map = fetchGroups();
+
+        List<SecurityGroup> list = new ArrayList<SecurityGroup>();
+        for (SecurityGroup group : map.values())
+        {
+            list.add(group);
+        }
+
+        return list;
+    }
+
+    @Override
+    public SecurityGroup readGroup(String groupId)
+    {
+        SecurityGroup group = null;
+
+        try
+        {
+            Response response = getRemote().get("/security/groups/" + groupId);
+            group = getFactory().securityGroup(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return group;
+    }
+
+    @Override
+    public SecurityGroup createGroup(String groupId)
+    {
+        ObjectNode object = JsonUtil.createObject();
+        object.put(SecurityGroup.FIELD_PRINCIPAL_ID, groupId);
+
+        return createGroup(object);
+    }
+
+    @Override
+    public SecurityGroup createGroup(ObjectNode object)
+    {
+        if (object == null)
+        {
+            throw new RuntimeException("Object required");
+        }
+
+        // ensure object has principal id
+        if (!object.has(SecurityGroup.FIELD_PRINCIPAL_ID))
+        {
+            throw new RuntimeException("Missing principal id");
+        }
+
+        object.put(SecurityGroup.FIELD_PRINCIPAL_TYPE, PrincipalType.GROUP.toString());
+
+        Response response = getRemote().post("/security/groups", object);
+
+        // NOTE: "_doc" doesn't come back in response?
+        //String groupId = response.getId();
+        String groupId = object.get(SecurityGroup.FIELD_PRINCIPAL_ID).getTextValue();
+        return readGroup(groupId);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SECURITY USERS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, SecurityUser> fetchUsers()
+    {
+        Response response = getRemote().get("/security/users");
+
+        return getFactory().securityUsers(this, response);
+    }
+
+    @Override
+    public List<SecurityUser> listUsers()
+    {
+        Map<String, SecurityUser> map = fetchUsers();
+
+        List<SecurityUser> list = new ArrayList<SecurityUser>();
+        for (SecurityUser user : map.values())
+        {
+            list.add(user);
+        }
+
+        return list;
+    }
+
+    @Override
+    public SecurityUser readUser(String userId)
+    {
+        SecurityUser user = null;
+
+        try
+        {
+            Response response = getRemote().get("/security/users/" + userId);
+            user = getFactory().securityUser(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return user;
+    }
+
+    @Override
+    public SecurityUser createUser(String userId, String password)
+    {
+        ObjectNode object = JsonUtil.createObject();
+        object.put(SecurityUser.FIELD_PRINCIPAL_ID, userId);
+
+        SecurityUser user = getFactory().securityUser(this, object);
+        user.setPassword(password);
+
+        return createUser(user.getObject());
+    }
+
+    @Override
+    public SecurityUser createUser(ObjectNode object)
+    {
+        if (object == null)
+        {
+            throw new RuntimeException("Object required");
+        }
+
+        // ensure object has principal id and password
+        if (!object.has(SecurityUser.FIELD_PRINCIPAL_ID))
+        {
+            throw new RuntimeException("Missing principal id");
+        }
+        if (!object.has(SecurityUser.FIELD_MD5_PASSWORD))
+        {
+            throw new RuntimeException("Missing MD5 password");
+        }
+
+        object.put(SecurityUser.FIELD_PRINCIPAL_TYPE, PrincipalType.USER.toString());
+
+        Response response = getRemote().post("/security/users", object);
+
+        // NOTE: "_doc" doesn't come back for the user...
+        //String userId = response.getId();
+        String userId = object.get(SecurityUser.FIELD_PRINCIPAL_ID).getTextValue();
+        return readUser(userId);
+    }
+
+    @Override
+    public void updateUser(SecurityUser user)
+    {
+        getRemote().put("/security/users/" + user.getId(), user.getObject());
+    }
+
+    @Override
+    public void deleteUser(SecurityUser user)
+    {
+        deleteUser(user.getId());
+    }
+
+    @Override
+    public void deleteUser(String userId)
+    {
+        getRemote().delete("/security/users/" + userId);
+    }
+
+    @Override
+    public Map<String, SecurityGroup> fetchMemberships(SecurityUser user)
+    {
+        return fetchMemberships(user.getId());
+    }
+
+    @Override
+    public Map<String, SecurityGroup> fetchMemberships(String userId)
+    {
+        return fetchMemberships(userId, false);
+    }
+
+    @Override
+    public Map<String, SecurityGroup> fetchMemberships(SecurityUser user, boolean includeIndirectMemberships)
+    {
+        return fetchMemberships(user.getId(), includeIndirectMemberships);
+    }
+
+    @Override
+    public Map<String, SecurityGroup> fetchMemberships(String userId, boolean includeIndirectMemberships)
+    {
+        String url = "/security/users/" + userId + "/memberships";
+        if (includeIndirectMemberships)
+        {
+            url += "?indirect=true";
+        }
+
+        Response response = getRemote().get(url);
+
+        return getFactory().securityGroups(this, response);
+    }
+
+    @Override
+    public List<SecurityGroup> listMemberships(SecurityUser user)
+    {
+        return listMemberships(user.getId());
+    }
+
+    @Override
+    public List<SecurityGroup> listMemberships(String userId)
+    {
+        return listMemberships(userId, false);
+    }
+
+    @Override
+    public List<SecurityGroup> listMemberships(SecurityUser user, boolean includeIndirectMemberships)
+    {
+        return listMemberships(user.getId(), includeIndirectMemberships);
+    }
+
+    @Override
+    public List<SecurityGroup> listMemberships(String userId, boolean includeIndirectMemberships)
+    {
+        Map<String, SecurityGroup> map = fetchMemberships(userId);
+
+        List<SecurityGroup> list = new ArrayList<SecurityGroup>();
+        for (SecurityGroup group : map.values())
+        {
+            list.add(group);
+        }
+
+        return list;
+    }
+}

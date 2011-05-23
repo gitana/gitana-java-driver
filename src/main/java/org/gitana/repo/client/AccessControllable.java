@@ -19,34 +19,21 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.repo.client.services;
+package org.gitana.repo.client;
 
-import org.gitana.repo.client.Gitana;
-import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
-import org.gitana.repo.client.util.DriverUtil;
 
 import java.util.List;
 
 /**
  * @author uzi
  */
-public class Server extends AbstractService
+public interface AccessControllable
 {
-    public Server(Gitana gitana)
-    {
-        super(gitana);
-    }
-
     /**
      * @return access control list
      */
-    public ACL getACL()
-    {
-        Response response = getRemote().get("/acl");
-
-        return DriverUtil.toACL(response);
-    }
+    public ACL getACL();
 
     /**
      * Retrieve the authorities that a principal has.
@@ -54,12 +41,7 @@ public class Server extends AbstractService
      * @param principalId
      * @return list
      */
-    public List<String> getAuthorities(String principalId)
-    {
-        Response response = getRemote().get("/acl/" + principalId);
-
-        return DriverUtil.toStringList(response);
-    }
+    public List<String> getAuthorities(String principalId);
 
     /**
      * Grants an authority to a principal.
@@ -67,10 +49,7 @@ public class Server extends AbstractService
      * @param principalId
      * @param authorityId
      */
-    public void grant(String principalId, String authorityId)
-    {
-        getRemote().post("/acl/" + principalId + "/grant/" + authorityId);
-    }
+    public void grant(String principalId, String authorityId);
 
     /**
      * Revokes an authority for a principal.
@@ -78,19 +57,12 @@ public class Server extends AbstractService
      * @param principalId
      * @param authorityId
      */
-    public void revoke(String principalId, String authorityId)
-    {
-        getRemote().post("/acl/" + principalId + "/revoke/" + authorityId);
-    }
+    public void revoke(String principalId, String authorityId);
 
     /**
      * Revoke all authorities for a principal.
      *
      * @param principalId
      */
-    public void revokeAll(String principalId)
-    {
-        revoke(principalId, "all");
-    }
-
+    public void revokeAll(String principalId);
 }
