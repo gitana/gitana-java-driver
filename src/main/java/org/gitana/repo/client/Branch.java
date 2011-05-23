@@ -22,12 +22,14 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.types.AssociationDefinition;
 import org.gitana.repo.client.types.TypeDefinition;
 import org.gitana.repo.namespace.QName;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -48,17 +50,17 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
 
     // root
     public void setRootChangesetId(String rootChangesetId);
-    public String getRootChangesetId();    
+    public String getRootChangesetId();
 
     // current
     public void setTipChangesetId(String tipChangesetId);
     public String getTipChangesetId();
-    
+
     public boolean isReadOnly();
     public boolean isSnapshot();
 
     public boolean isFrozen();
-    
+
     // helpers
     public String getJoinBranchId();
     public String getRootBranchId();
@@ -219,4 +221,30 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return
      */
     public AssociationDefinition defineAssociationType(QName definitionQName, ObjectNode object);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // IMPORT/EXPORT
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Export the HEAD of this branch as a publication archive.
+     *
+     * @return publication zip file
+     *
+     * @throws Exception
+     */
+    public BinaryObject exportPublication();
+
+    /**
+     * Imports a publication archive into the branch.
+     *
+     * @parma binary
+     * @return
+     * @throws Exception
+     */
+    public void importPublication(BinaryObject binary);
+
 }

@@ -149,12 +149,20 @@ public class RemoteImpl implements Remote
     @Override
     public Response post(String uri, byte[] bytes, String mimetype)
     {
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+
+        return post(uri, in, bytes.length, mimetype);
+    }
+
+    @Override
+    public Response post(String uri, InputStream in, long length, String mimetype)
+    {
         Response response = null;
         try
         {
             String URL = buildURL(uri, true);
 
-            byte[] x = HttpUtilEx.POST(client, URL, bytes, mimetype);
+            byte[] x = HttpUtilEx.POST(client, URL, in, length, mimetype);
             response = toResult(x);
 
             if (!response.isOk())
@@ -345,7 +353,20 @@ public class RemoteImpl implements Remote
 	}
 
     @Override
-	public byte[] download(String uri)
+    public byte[] downloadBytes(String uri)
+        throws Exception
+    {
+        GetMethod method = download(uri);
+
+        InputStream in = method.getResponseBodyAsStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        FileCopyUtils.copy(in, out);
+
+        return out.toByteArray();
+    }
+
+    @Override
+	public GetMethod download(String uri)
         throws Exception
 	{
         String URL = buildURL(uri, false);
@@ -357,11 +378,7 @@ public class RemoteImpl implements Remote
             throw new RuntimeException("Download failed");
         }
 
-		InputStream in = method.getResponseBodyAsStream();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        FileCopyUtils.copy(in, baos);
-
-		return baos.toByteArray();
+        return method;
 	}
 
     private ObjectNode toObjectNode(byte[] response)

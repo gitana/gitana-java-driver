@@ -21,10 +21,12 @@
 
 package org.gitana.repo.client.support;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.client.Response;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -37,6 +39,8 @@ public interface Remote
     public Response post(String uri, ObjectNode object);
 
     public Response post(String uri, byte[] bytes, String mimetype);
+
+    public Response post(String uri, InputStream in, long length, String mimetype);
 
     public Response get(String uri);
 
@@ -52,5 +56,7 @@ public interface Remote
 
 	public void upload(String uri, byte[] bytes, String mimetype) throws Exception;
 
-	public byte[] download(String uri) throws Exception;
+	public byte[] downloadBytes(String uri) throws Exception;
+
+    public GetMethod download(String uri) throws Exception;
 }

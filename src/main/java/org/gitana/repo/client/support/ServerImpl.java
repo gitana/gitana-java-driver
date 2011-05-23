@@ -449,4 +449,40 @@ public class ServerImpl implements Server
 
         return list;
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // JOBS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, Job> queryJobs(ObjectNode query)
+    {
+        Response response = getRemote().post("/jobs", query);
+
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public Job readJob(String jobId)
+    {
+        Job job = null;
+
+        try
+        {
+            Response response = getRemote().get("/jobs/" + jobId);
+            job = getFactory().job(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return job;
+    }
+
 }

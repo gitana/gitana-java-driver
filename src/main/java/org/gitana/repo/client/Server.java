@@ -120,4 +120,13 @@ public interface Server extends AccessControllable
 
     public List<SecurityGroup> listMemberships(String userId, boolean includeIndirectMemberships);
 
+
+    ////////////////////
+    // JOBS
+    ////////////////////
+
+    public Map<String, Job> queryJobs(ObjectNode query);
+
+    public Job readJob(String jobId);
+
 }

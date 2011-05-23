@@ -264,7 +264,7 @@ public class RepositoryImpl extends DocumentImpl implements Repository
 
         try
         {
-            bytes = getRemote().download("/repositories/" + this.getId() + "/files/" + filename);
+            bytes = getRemote().downloadBytes("/repositories/" + this.getId() + "/files/" + filename);
         }
         catch (Exception ex)
         {
@@ -273,5 +273,4 @@ public class RepositoryImpl extends DocumentImpl implements Repository
 
         return bytes;
     }
-
 }

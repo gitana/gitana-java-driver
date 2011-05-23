@@ -486,5 +486,35 @@ public class ObjectFactoryImpl implements ObjectFactory
         return node;
     }
 
+    @Override
+    public Job job(Server server, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new JobImpl(driver, server, response.getObjectNode(), true);
+    }
+
+    @Override
+    public Map<String, Job> jobs(Server server, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        Map<String, Job> map = new HashMap<String, Job>();
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Job job = new JobImpl(driver, server, object, true);
+            map.put(job.getId(), job);
+        }
+
+        return map;
+    }
+
+
 
 }

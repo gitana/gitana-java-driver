@@ -21,12 +21,11 @@
 
 package org.gitana.repo.client.support;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
-import org.gitana.repo.client.Branch;
-import org.gitana.repo.client.Driver;
-import org.gitana.repo.client.Repository;
-import org.gitana.repo.client.Response;
+import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.types.AssociationDefinition;
@@ -35,6 +34,7 @@ import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 import org.gitana.util.JsonUtil;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -462,6 +462,126 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         object.put("description", definitionQName.toString());
 
         return (AssociationDefinition) createNode(object);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // IMPORT/EXPORT
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public BinaryObject exportPublication()
+    {
+        //
+        // start the export
+        //
+        Response response1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export");
+        String jobId = response1.getId();
+
+
+        //
+        // query job service until job completes or fails
+        //
+        Job job = null;
+        try
+        {
+            boolean complete = false;
+            while (!complete)
+            {
+                job = getServer().readJob(jobId);
+                if (job == null)
+                {
+                    throw new Exception("No job found: " + jobId);
+                }
+                if (job.isError())
+                {
+                    throw new Exception("Job: " + job.getId() + " failed with: " + job.getStackTrace());
+                }
+                if (job.isFinished())
+                {
+                    complete = true;
+                }
+
+                if (!complete)
+                {
+                    Thread.sleep(200);
+                }
+            }
+        }
+        catch (Exception ie)
+        {
+            throw new RuntimeException(ie);
+        }
+
+
+        //
+        // read back export
+        //
+        BinaryObject binary = null;
+        try
+        {
+            GetMethod method = getRemote().download("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export/" + job.getId());
+
+            InputStream in = method.getResponseBodyAsStream();
+            String contentType = method.getResponseHeader("Content-Type").getValue();
+            long contentLength = method.getResponseContentLength();
+
+            binary = new BinaryObject(job.getId(), contentType, contentLength, in);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return binary;
+    }
+
+    @Override
+    public void importPublication(BinaryObject binary)
+    {
+        // post binary to server and get back job id
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/import", binary.getInputStream(), binary.getLength(), binary.getContentType());
+        String jobId = response.getId();
+
+
+        //
+        // query job service until job completes or fails
+        //
+        Job job = null;
+        try
+        {
+            boolean complete = false;
+            while (!complete)
+            {
+                job = getServer().readJob(jobId);
+                if (job.isError())
+                {
+                    complete = true;
+                }
+                if (job.isFinished())
+                {
+                    complete = true;
+                }
+
+                if (!complete)
+                {
+                    Thread.sleep(200);
+                }
+            }
+        }
+        catch (InterruptedException ie)
+        {
+            throw new RuntimeException(ie);
+        }
+        if (job.isError())
+        {
+            throw new RuntimeException("Job: " + job.getId() + " failed with: " + job.getStackTrace());
+        }
+
+
+        // if we made it this far, the job completed successfully
     }
 
 }

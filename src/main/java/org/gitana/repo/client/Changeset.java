@@ -28,9 +28,6 @@ import java.util.List;
  */
 public interface Changeset extends RepositoryDocument
 {
-    // default collection location
-    public final static String DEFAULT_COLLECTION_ID = "changesets";
-        
     // change document properties
     public final static String FIELD_REV = "revision";
     public final static String FIELD_TAGS = "tags";

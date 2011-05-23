@@ -156,7 +156,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         byte[] bytes = null;
         try
         {
-            bytes = getRemote().download(uri);
+            bytes = getRemote().downloadBytes(uri);
         }
         catch (Exception ex)
         {

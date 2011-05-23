@@ -80,4 +80,9 @@ public interface ObjectFactory
 
     // produces a node (raw function)
     public BaseNode produce(Branch branch, ObjectNode object, boolean isSaved);
+
+    // jobs
+    public Job job(Server server, Response response);
+    public Map<String, Job> jobs(Server server, Response response);
+
 }

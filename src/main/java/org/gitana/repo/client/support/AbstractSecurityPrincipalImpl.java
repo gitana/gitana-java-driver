@@ -161,7 +161,7 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         byte[] bytes = null;
         try
         {
-            bytes = getRemote().download(uri);
+            bytes = getRemote().downloadBytes(uri);
         }
         catch (Exception ex)
         {
