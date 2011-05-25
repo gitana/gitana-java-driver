@@ -23,6 +23,7 @@ package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
+import org.gitana.repo.association.Directionality;
 import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
@@ -73,9 +74,9 @@ public class TraversalTest extends AbstractTestCase
         master.defineAssociationType(wantsToKill);
 
         // the three friends
-        harry.associate(hermione, friends, Direction.BOTH);
-        harry.associate(ron, friends, Direction.BOTH);
-        hermione.associate(ron, friends, Direction.BOTH);
+        harry.associate(hermione, friends, Directionality.UNDIRECTED);
+        harry.associate(ron, friends, Directionality.UNDIRECTED);
+        hermione.associate(ron, friends, Directionality.UNDIRECTED);
 
         // voldemort wants to kill harry
         voldemort.associate(harry, wantsToKill);

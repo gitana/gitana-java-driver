@@ -23,9 +23,9 @@ package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
+import org.gitana.repo.association.Directionality;
 import org.gitana.repo.client.AccessControllable;
 import org.gitana.repo.client.Attachable;
-import org.gitana.repo.client.Selfable;
 import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.namespace.QName;
 
@@ -87,10 +87,10 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @param otherNode
      * @param associationTypeQName
-     * @param direction
+     * @param directionality
      * @return association
      */
-    public Association associate(Node otherNode, QName associationTypeQName, Direction direction);
+    public Association associate(Node otherNode, QName associationTypeQName, Directionality directionality);
 
     /**
      * Unassociates a target node from this node.
@@ -105,9 +105,9 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @param otherNode
      * @param associationTypeQName
-     * @param direction
+     * @param directionality
      */
-    public void unassociate(Node otherNode, QName associationTypeQName, Direction direction);
+    public void unassociate(Node otherNode, QName associationTypeQName, Directionality directionality);
 
     /**
      * Runs a traversal around this node using the given configuration.

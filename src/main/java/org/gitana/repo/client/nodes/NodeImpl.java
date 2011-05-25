@@ -24,6 +24,7 @@ package org.gitana.repo.client.nodes;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
+import org.gitana.repo.association.Directionality;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Driver;
 import org.gitana.repo.client.Response;
@@ -176,7 +177,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public Map<String, Association> associations()
     {
-        return associations(Direction.BOTH);
+        return associations(Direction.ANY);
     }
 
     @Override
@@ -188,7 +189,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public Map<String, Association> associations(QName associationTypeQName)
     {
-        return associations(associationTypeQName, Direction.BOTH);
+        return associations(associationTypeQName, Direction.ANY);
     }
 
     @Override
@@ -223,16 +224,22 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public Association associate(Node targetNode, QName associationTypeQName)
     {
-        return associate(targetNode, associationTypeQName, Direction.OUTGOING);
+        return associate(targetNode, associationTypeQName, Directionality.DIRECTED);
     }
 
     @Override
-    public Association associate(Node otherNode, QName associationTypeQName, Direction direction)
+    public Association associate(Node otherNode, QName associationTypeQName, Directionality directionality)
     {
         String sourceNodeId = getId();
         String targetNodeId = otherNode.getId();
 
-        Response r1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/associate?node=" + targetNodeId + "&type=" + associationTypeQName.toString() + "&direction=" + direction.toString());
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/associate?node=" + targetNodeId + "&type=" + associationTypeQName.toString();
+        if (!Directionality.DIRECTED.equals(directionality))
+        {
+            uri += "&directionality=" + directionality.toString();
+        }
+
+        Response r1 = getRemote().post(uri);
 
         String associationId = r1.getId();
 
@@ -244,16 +251,22 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public void unassociate(Node targetNode, QName associationTypeQName)
     {
-        unassociate(targetNode, associationTypeQName, Direction.OUTGOING);
+        unassociate(targetNode, associationTypeQName, Directionality.DIRECTED);
     }
 
     @Override
-    public void unassociate(Node otherNode, QName associationTypeQName, Direction direction)
+    public void unassociate(Node otherNode, QName associationTypeQName, Directionality directionality)
     {
         String sourceNodeId = getId();
         String targetNodeId = otherNode.getId();
 
-        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/unassociate?node=" + targetNodeId + "&type=" + associationTypeQName.toString() + "&direction=" + direction.toString());
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + sourceNodeId + "/unassociate?node=" + targetNodeId + "&type=" + associationTypeQName.toString();
+        if (!Directionality.DIRECTED.equals(directionality))
+        {
+            uri += "&directionality=" + directionality.toString();
+        }
+
+        getRemote().post(uri);
     }
 
 
