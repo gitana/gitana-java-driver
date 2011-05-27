@@ -34,25 +34,86 @@ import java.util.Map;
  */
 public interface Remote
 {
-    public Response post(String uri);
-
-    public Response post(String uri, ObjectNode object);
-
-    public Response post(String uri, byte[] bytes, String mimetype);
-
-    public Response post(String uri, InputStream in, long length, String mimetype);
-
     public Response get(String uri);
+
+    public Response get(String uri, Map<String, String> params);
 
     public Response delete(String uri);
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // POST
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Response post(String uri);
+
+    public Response post(String uri, Map<String, String> params);
+
+    public Response post(String uri, ObjectNode object);
+
+    public Response post(String uri, Map<String, String> params, ObjectNode object);
+
+    public Response post(String uri, byte[] bytes, String mimetype);
+
+    public Response post(String uri, Map<String, String> params, byte[] bytes, String mimetype);
+
+    public Response post(String uri, InputStream in, long length, String mimetype);
+
+    public Response post(String uri, Map<String, String> params, InputStream in, long length, String mimetype);
+
+    /**
+     * Performs a multipart post.
+     *
+     * @param uri
+     * @param params
+     * @param object
+     * @param payload
+     * @return
+     */
+    public Response post(String uri, Map<String, String> params, ObjectNode object, HttpPayload payload);
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PUT
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Response put(String uri);
+
+    public Response put(String uri, Map<String, String> params);
+
     public Response put(String uri, ObjectNode object);
+
+    public Response put(String uri, Map<String, String> params, ObjectNode object);
 
     public Response put(String uri, byte[] bytes, String mimetype);
 
-    public Response post(String uri, Map<String, String> params, ObjectNode object, HttpPayload payload);
+    public Response put(String uri, Map<String, String> params, byte[] bytes, String mimetype);
 
+    public Response put(String uri, InputStream in, long length, String mimetype);
+
+    public Response put(String uri, Map<String, String> params, InputStream in, long length, String mimetype);
+
+    /**
+     * Performs a multipart put.
+     *
+     * @param uri
+     * @param params
+     * @param object
+     * @param payload
+     * @return
+     */
     public Response put(String uri, Map<String, String> params, ObjectNode object, HttpPayload payload);
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // UPLOAD AND DOWNLOAD
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void upload(String uri, byte[] bytes, String mimetype) throws Exception;
 

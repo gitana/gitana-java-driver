@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.node.NodeBuilder;
 import org.gitana.repo.query.QueryBuilder;
+import org.gitana.repo.support.Pagination;
 import org.junit.Test;
 
 import java.util.Map;
@@ -48,8 +49,6 @@ public class NodeQueryTest extends AbstractTestCase
 
         // master branch
         Branch master = repo.readBranch("master");
-
-        String test = "test-" + System.currentTimeMillis();
 
         // create some nodes
         ObjectNode obj1 = NodeBuilder.start("city").is("milwaukee").and("country").is("usa").and("zipcode").is("53221").get();
@@ -113,7 +112,21 @@ public class NodeQueryTest extends AbstractTestCase
         Map<String, Node> results6 = master.queryNodes(query6);
         assertEquals(3, results6.size());
 
+        // run a paginated query
+        ObjectNode query7 = QueryBuilder.start("country").is("usa").get();
+        Pagination pagination7 = new Pagination();
+        pagination7.setSkip(0);
+        pagination7.setLimit(3);
+        Map<String, Node> results7 = master.queryNodes(query7, pagination7);
+        assertEquals(3, results7.size());
 
+        // next page
+        ObjectNode query8 = QueryBuilder.start("country").is("usa").get();
+        Pagination pagination8 = new Pagination();
+        pagination8.setSkip(3);
+        pagination8.setLimit(3);
+        Map<String, Node> results8 = master.queryNodes(query8, pagination8);
+        assertEquals(2, results8.size());
 
     }
 }

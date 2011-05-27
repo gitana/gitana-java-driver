@@ -28,8 +28,8 @@ import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.types.AssociationDefinition;
 import org.gitana.repo.client.types.TypeDefinition;
 import org.gitana.repo.namespace.QName;
+import org.gitana.repo.support.Pagination;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -87,9 +87,27 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
     /**
      * Retrieves the mount nodes for this branch.
      *
+     * @param pagination
+     *
+     * @return a map of node objects keyed by node id
+     */
+    public Map<String, Node> fetchNodes(Pagination pagination);
+
+    /**
+     * Retrieves the mount nodes for this branch.
+     *
      * @return list of repositories
      */
     public List<Node> listNodes();
+
+    /**
+     * Retrieves the mount nodes for this branch.
+     *
+     * @param pagination
+     *
+     * @return list of repositories
+     */
+    public List<Node> listNodes(Pagination pagination);
 
     /**
      * Reads a single node from the branch.
@@ -132,6 +150,16 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return map of nodes
      */
     public Map<String, Node> queryNodes(ObjectNode query);
+
+    /**
+     * Performs a query for nodes.
+     *
+     * @param query
+     * @param pagination
+     *
+     * @return map of nodes
+     */
+    public Map<String, Node> queryNodes(ObjectNode query, Pagination pagination);
 
     /**
      * Full-text search

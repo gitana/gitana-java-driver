@@ -32,7 +32,7 @@ public class ACL
 
     public ACL()
     {
-        map = new HashMap<String, ACLEntry>();
+        map = new LinkedHashMap<String, ACLEntry>();
     }
 
     public void add(String principal, ACLEntry entry)

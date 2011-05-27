@@ -37,7 +37,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -72,30 +72,46 @@ public class RemoteImpl implements Remote
 
     private String buildURL(String uri, boolean expand)
     {
+        return buildURL(uri, null, expand);
+    }
+
+    private String buildURL(String uri, Map<String, String> params, boolean expand)
+    {
+        if (params == null)
+        {
+            params = new LinkedHashMap<String, String>();
+        }
+
+        if (expand)
+        {
+            buildParams(params);
+        }
+
+        return buildURL(uri, params);
+    }
+
+    private String buildURL(String uri, Map<String, String> params)
+    {
         StringBuilder sb = new StringBuilder();
         sb.append(this.remoteURL);
         sb.append(uri);
 
-        if (expand)
+        boolean added = false;
+        if (uri.indexOf("?") > -1)
         {
-            boolean added = false;
-            if (uri.indexOf("?") > -1)
-            {
-                added = true;
-            }
+            added = true;
+        }
 
-            if (this.metadata)
-            {
-                sb.append((added ? "&" : "?"));
-                sb.append("metadata=true");
-                added = true;
-            }
-            if (this.full)
-            {
-                sb.append((added ? "&" : "?"));
-                sb.append("full=true");
-                added = true;
-            }
+        for (String name : params.keySet())
+        {
+            String value = params.get(name);
+
+            sb.append((added ? "&" : "?"));
+            sb.append(name);
+            sb.append("=");
+            sb.append(value);
+
+            added = true;
         }
 
         return sb.toString();
@@ -114,77 +130,18 @@ public class RemoteImpl implements Remote
     }
 
     @Override
-    public Response post(String uri)
-    {
-        Response response = null;
-        try
-        {
-            String URL = buildURL(uri, true);
-
-            byte[] x = HttpUtilEx.POST(client, URL);
-            response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-        return response;
-    }
-
-    @Override
-    public Response post(String uri, ObjectNode object)
-    {
-        byte[] x = JsonUtil.stringify(object, false).getBytes();
-        String mimetype = "application/json";
-
-        return post(uri, x, mimetype);
-    }
-
-    @Override
-    public Response post(String uri, byte[] bytes, String mimetype)
-    {
-        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-
-        return post(uri, in, bytes.length, mimetype);
-    }
-
-    @Override
-    public Response post(String uri, InputStream in, long length, String mimetype)
-    {
-        Response response = null;
-        try
-        {
-            String URL = buildURL(uri, true);
-
-            byte[] x = HttpUtilEx.POST(client, URL, in, length, mimetype);
-            response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-        return response;
-    }
-
-    @Override
     public Response get(String uri)
     {
+        return get(uri, null);
+    }
+
+    @Override
+    public Response get(String uri, Map<String, String> params)
+    {
         Response response = null;
         try
         {
-            String URL = buildURL(uri, true);
+            String URL = buildURL(uri, params, true);
 
             byte[] x = HttpUtilEx.GET(client, URL);
             response = toResult(x);
@@ -227,16 +184,26 @@ public class RemoteImpl implements Remote
     }
 
     @Override
-    public Response put(String uri, ObjectNode object)
+    public Response post(String uri)
+    {
+        return post(uri, (Map) null);
+    }
+
+    @Override
+    public Response post(String uri, Map<String, String> params)
     {
         Response response = null;
         try
         {
-            byte[] x = JsonUtil.stringify(object, false).getBytes();
-            String mimetype = "application/json";
+            String URL = buildURL(uri, params, true);
 
-            response = put(uri, x, mimetype);
+            byte[] x = HttpUtilEx.POST(client, URL);
+            response = toResult(x);
 
+            if (!response.isOk())
+            {
+                throw new RemoteServerException(response);
+            }
         }
         catch (Exception ex)
         {
@@ -247,14 +214,49 @@ public class RemoteImpl implements Remote
     }
 
     @Override
-    public Response put(String uri, byte[] bytes, String mimetype)
+    public Response post(String uri, ObjectNode object)
+    {
+        return post(uri, null, object);
+    }
+
+    @Override
+    public Response post(String uri, Map<String, String> params, ObjectNode object)
+    {
+        byte[] x = JsonUtil.stringify(object, false).getBytes();
+        String mimetype = "application/json";
+
+        return post(uri, params, x, mimetype);
+    }
+
+    @Override
+    public Response post(String uri, byte[] bytes, String mimetype)
+    {
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+        return post(uri, in, bytes.length, mimetype);
+    }
+
+    @Override
+    public Response post(String uri, Map<String, String> params, byte[] bytes, String mimetype)
+    {
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+        return post(uri, params, in, bytes.length, mimetype);
+    }
+
+    @Override
+    public Response post(String uri, InputStream in, long length, String mimetype)
+    {
+        return post(uri, null, in, length, mimetype);
+    }
+
+    @Override
+    public Response post(String uri, Map<String, String> params, InputStream in, long length, String mimetype)
     {
         Response response = null;
         try
         {
-            String URL = buildURL(uri, true);
+            String URL = buildURL(uri, params, true);
 
-            byte[] x = HttpUtilEx.PUT(client, URL, bytes, mimetype);
+            byte[] x = HttpUtilEx.POST(client, URL, in, length, mimetype);
             response = toResult(x);
 
             if (!response.isOk())
@@ -280,11 +282,100 @@ public class RemoteImpl implements Remote
 
             if (params == null)
             {
-                params = new HashMap<String, String>();
+                params = new LinkedHashMap<String, String>();
             }
             buildParams(params);
 
             byte[] x = HttpUtilEx.MULTIPART_POST(client, URL, params, object, payload);
+            response = toResult(x);
+
+            if (!response.isOk())
+            {
+                throw new RemoteServerException(response);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response put(String uri)
+    {
+        return put(uri, (Map) null);
+    }
+
+    @Override
+    public Response put(String uri, Map<String, String> params)
+    {
+        Response response = null;
+        try
+        {
+            String URL = buildURL(uri, params, true);
+
+            byte[] x = HttpUtilEx.PUT(client, URL);
+            response = toResult(x);
+
+            if (!response.isOk())
+            {
+                throw new RemoteServerException(response);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response put(String uri, ObjectNode object)
+    {
+        return put(uri, null, object);
+    }
+
+    @Override
+    public Response put(String uri, Map<String, String> params, ObjectNode object)
+    {
+        byte[] x = JsonUtil.stringify(object, false).getBytes();
+        String mimetype = "application/json";
+
+        return put(uri, params, x, mimetype);
+    }
+
+    @Override
+    public Response put(String uri, byte[] bytes, String mimetype)
+    {
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+        return put(uri, in, bytes.length, mimetype);
+    }
+
+    @Override
+    public Response put(String uri, Map<String, String> params, byte[] bytes, String mimetype)
+    {
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+        return put(uri, params, in, bytes.length, mimetype);
+    }
+
+    @Override
+    public Response put(String uri, InputStream in, long length, String mimetype)
+    {
+        return put(uri, null, in, length, mimetype);
+    }
+
+    @Override
+    public Response put(String uri, Map<String, String> params, InputStream in, long length, String mimetype)
+    {
+        Response response = null;
+        try
+        {
+            String URL = buildURL(uri, params, true);
+
+            byte[] x = HttpUtilEx.PUT(client, URL, in, length, mimetype);
             response = toResult(x);
 
             if (!response.isOk())
@@ -310,7 +401,7 @@ public class RemoteImpl implements Remote
 
             if (params == null)
             {
-                params = new HashMap<String, String>();
+                params = new LinkedHashMap<String, String>();
             }
             buildParams(params);
 

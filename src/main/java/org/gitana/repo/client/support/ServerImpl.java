@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
+import org.gitana.repo.support.Pagination;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
@@ -88,15 +89,28 @@ public class ServerImpl implements Server
     @Override
     public Map<String, Repository> fetchRepositories()
     {
-        Response response = getRemote().get("/repositories");
+        return fetchRepositories(null);
+    }
 
+    @Override
+    public Map<String, Repository> fetchRepositories(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories", params);
         return getFactory().repositories(this, response);
     }
 
     @Override
     public List<Repository> listRepositories()
     {
-        Map<String, Repository> map = fetchRepositories();
+        return listRepositories(null);
+    }
+
+    @Override
+    public List<Repository> listRepositories(Pagination pagination)
+    {
+        Map<String, Repository> map = fetchRepositories(pagination);
 
         List<Repository> list = new ArrayList<Repository>();
         for (Repository repository : map.values())
@@ -151,8 +165,15 @@ public class ServerImpl implements Server
     @Override
     public Map<String, Repository> queryRepositories(ObjectNode query)
     {
-        Response response = getRemote().post("/repositories/query", query);
+        return queryRepositories(query, null);
+    }
 
+    @Override
+    public Map<String, Repository> queryRepositories(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/repositories/query", params, query);
         return getFactory().repositories(this, response);
     }
 
@@ -207,15 +228,28 @@ public class ServerImpl implements Server
     @Override
     public Map<String, SecurityGroup> fetchGroups()
     {
-        Response response = getRemote().get("/security/groups");
+        return fetchGroups(null);
+    }
 
+    @Override
+    public Map<String, SecurityGroup> fetchGroups(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/security/groups", params);
         return getFactory().securityGroups(this, response);
     }
 
     @Override
     public List<SecurityGroup> listGroups()
     {
-        Map<String, SecurityGroup> map = fetchGroups();
+        return listGroups(null);
+    }
+
+    @Override
+    public List<SecurityGroup> listGroups(Pagination pagination)
+    {
+        Map<String, SecurityGroup> map = fetchGroups(pagination);
 
         List<SecurityGroup> list = new ArrayList<SecurityGroup>();
         for (SecurityGroup group : map.values())
@@ -289,15 +323,28 @@ public class ServerImpl implements Server
     @Override
     public Map<String, SecurityUser> fetchUsers()
     {
-        Response response = getRemote().get("/security/users");
+        return fetchUsers(null);
+    }
 
+    @Override
+    public Map<String, SecurityUser> fetchUsers(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/security/users", params);
         return getFactory().securityUsers(this, response);
     }
 
     @Override
     public List<SecurityUser> listUsers()
     {
-        Map<String, SecurityUser> map = fetchUsers();
+        return listUsers(null);
+    }
+
+    @Override
+    public List<SecurityUser> listUsers(Pagination pagination)
+    {
+        Map<String, SecurityUser> map = fetchUsers(pagination);
 
         List<SecurityUser> list = new ArrayList<SecurityUser>();
         for (SecurityUser user : map.values())
@@ -460,8 +507,15 @@ public class ServerImpl implements Server
     @Override
     public Map<String, Job> queryJobs(ObjectNode query)
     {
-        Response response = getRemote().post("/jobs", query);
+        return queryJobs(query, null);
+    }
 
+    @Override
+    public Map<String, Job> queryJobs(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/jobs", params, query);
         return getFactory().jobs(this, response);
     }
 

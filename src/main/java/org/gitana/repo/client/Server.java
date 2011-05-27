@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.support.Pagination;
 
 import java.util.List;
 import java.util.Map;
@@ -39,11 +40,29 @@ public interface Server extends AccessControllable
     public Map<String, Repository> fetchRepositories();
 
     /**
+     * Retrieves repositories from the server as a map.
+     *
+     * @param pagination
+     *
+     * @return a map of repository objects keyed by repository id
+     */
+    public Map<String, Repository> fetchRepositories(Pagination pagination);
+
+    /**
      * Retrieves repositories from the server as a list.
      *
      * @return list of repositories
      */
     public List<Repository> listRepositories();
+
+    /**
+     * Retrieves repositories from the server as a list.
+     *
+     * @param pagination
+     *
+     * @return list of repositories
+     */
+    public List<Repository> listRepositories(Pagination pagination);
 
     /**
      * Reads a single repository from the server.
@@ -78,9 +97,15 @@ public interface Server extends AccessControllable
      */
     public Map<String, Repository> queryRepositories(ObjectNode query);
 
+    public Map<String, Repository> queryRepositories(ObjectNode query, Pagination pagination);
+
     public Map<String, SecurityGroup> fetchGroups();
 
+    public Map<String, SecurityGroup> fetchGroups(Pagination pagination);
+
     public List<SecurityGroup> listGroups();
+
+    public List<SecurityGroup> listGroups(Pagination pagination);
 
     public SecurityGroup readGroup(String groupId);
 
@@ -90,7 +115,11 @@ public interface Server extends AccessControllable
 
     public Map<String, SecurityUser> fetchUsers();
 
+    public Map<String, SecurityUser> fetchUsers(Pagination pagination);
+
     public List<SecurityUser> listUsers();
+
+    public List<SecurityUser> listUsers(Pagination pagination);
 
     public SecurityUser readUser(String userId);
 
@@ -126,6 +155,8 @@ public interface Server extends AccessControllable
     ////////////////////
 
     public Map<String, Job> queryJobs(ObjectNode query);
+
+    public Map<String, Job> queryJobs(ObjectNode query, Pagination pagination);
 
     public Job readJob(String jobId);
 

@@ -26,9 +26,13 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.beans.ACLEntry;
+import org.gitana.repo.support.Pagination;
+import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -77,6 +81,40 @@ public class DriverUtil
         }
 
         return list;
+    }
+
+    public static Map<String, String> params()
+    {
+        return new LinkedHashMap<String, String>();
+    }
+
+    public static Map<String, String> params(Pagination pagination)
+    {
+        Map<String, String> params = params();
+
+        if (pagination != null)
+        {
+            // sorting
+            if (pagination.hasSorting())
+            {
+                String sort = JsonUtil.stringify((ObjectNode)pagination.toJSON().get("sort"), false);
+                params.put("sort", sort);
+            }
+
+            // skip
+            if (pagination.hasSkip())
+            {
+                params.put("skip", String.valueOf(pagination.getSkip()));
+            }
+
+            // limit
+            if (pagination.hasLimit())
+            {
+                params.put("limit", String.valueOf(pagination.getLimit()));
+            }
+        }
+
+        return params;
     }
 
 }

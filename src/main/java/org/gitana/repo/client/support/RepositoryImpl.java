@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
+import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.RepositoryType;
 import org.gitana.util.JsonUtil;
 
@@ -163,15 +164,28 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     @Override
     public Map<String, Branch> fetchBranches()
     {
-        Response response = getRemote().get("/repositories/" + getId() + "/branches");
+        return fetchBranches(null);
+    }
 
+    @Override
+    public Map<String, Branch> fetchBranches(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories/" + getId() + "/branches", params);
         return getFactory().branches(this, response);
     }
 
     @Override
     public List<Branch> listBranches()
     {
-        Map<String, Branch> map = fetchBranches();
+        return listBranches(null);
+    }
+
+    @Override
+    public List<Branch> listBranches(Pagination pagination)
+    {
+        Map<String, Branch> map = fetchBranches(pagination);
 
         List<Branch> list = new ArrayList<Branch>();
         for (Branch branch : map.values())
@@ -226,8 +240,15 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     @Override
     public Map<String, Branch> queryBranches(ObjectNode query)
     {
-        Response response = getRemote().post("/repositories/" + getId() + "/branches/query", query);
+        return queryBranches(query, null);
+    }
 
+    @Override
+    public Map<String, Branch> queryBranches(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/repositories/" + getId() + "/branches/query", params, query);
         return getFactory().branches(this, response);
     }
 

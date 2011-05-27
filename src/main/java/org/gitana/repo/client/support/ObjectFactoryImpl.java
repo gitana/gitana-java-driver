@@ -29,7 +29,7 @@ import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +39,7 @@ public class ObjectFactoryImpl implements ObjectFactory
 {
     private Driver driver;
 
-    private Map<QName, Class> registry = new HashMap<QName, Class>();
+    private Map<QName, Class> registry = new LinkedHashMap<QName, Class>();
 
     public ObjectFactoryImpl(Driver driver)
     {
@@ -82,7 +82,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Repository> map = new HashMap<String, Repository>();
+        Map<String, Repository> map = new LinkedHashMap<String, Repository>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Repository repository = new RepositoryImpl(driver, server, object, true);
@@ -128,7 +128,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Branch> map = new HashMap<String, Branch>();
+        Map<String, Branch> map = new LinkedHashMap<String, Branch>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Branch branch = new BranchImpl(driver, repository, object, true);
@@ -157,7 +157,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Changeset> map = new HashMap<String, Changeset>();
+        Map<String, Changeset> map = new LinkedHashMap<String, Changeset>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Changeset changeset = new ChangesetImpl(driver, repository, object, true);
@@ -205,7 +205,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Node> map = new HashMap<String, Node>();
+        Map<String, Node> map = new LinkedHashMap<String, Node>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Node node = (Node) produce(branch, object, true);
@@ -253,7 +253,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Association> map = new HashMap<String, Association>();
+        Map<String, Association> map = new LinkedHashMap<String, Association>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Association association = (Association) produce(branch, object, true);
@@ -299,7 +299,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, SecurityUser> map = new HashMap<String, SecurityUser>();
+        Map<String, SecurityUser> map = new LinkedHashMap<String, SecurityUser>();
         for (ObjectNode object : response.getObjectNodes())
         {
             SecurityUser user = new SecurityUserImpl(driver, server, object, true);
@@ -345,7 +345,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, SecurityGroup> map = new HashMap<String, SecurityGroup>();
+        Map<String, SecurityGroup> map = new LinkedHashMap<String, SecurityGroup>();
         for (ObjectNode object : response.getObjectNodes())
         {
             SecurityGroup group = new SecurityGroupImpl(driver, server, object, true);
@@ -388,7 +388,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, SecurityPrincipal> map = new HashMap<String, SecurityPrincipal>();
+        Map<String, SecurityPrincipal> map = new LinkedHashMap<String, SecurityPrincipal>();
         for (ObjectNode object : response.getObjectNodes())
         {
             SecurityPrincipal principal = securityPrincipal(server, object);
@@ -505,7 +505,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Job> map = new HashMap<String, Job>();
+        Map<String, Job> map = new LinkedHashMap<String, Job>();
         for (ObjectNode object : response.getObjectNodes())
         {
             Job job = new JobImpl(driver, server, object, true);

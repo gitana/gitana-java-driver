@@ -32,12 +32,10 @@ import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
+import org.gitana.repo.support.Pagination;
 import org.gitana.util.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Default "n:node" implementation for a node.
@@ -177,48 +175,64 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public Map<String, Association> associations()
     {
-        return associations(Direction.ANY);
+        return associations((Pagination) null);
+    }
+
+    @Override
+    public Map<String, Association> associations(Pagination pagination)
+    {
+        return associations(Direction.ANY, pagination);
     }
 
     @Override
     public Map<String, Association> associations(Direction direction)
     {
-        return associations(null, direction);
+        return associations(direction, (Pagination) null);
+    }
+
+    @Override
+    public Map<String, Association> associations(Direction direction, Pagination pagination)
+    {
+        return associations(null, direction, pagination);
     }
 
     @Override
     public Map<String, Association> associations(QName associationTypeQName)
     {
-        return associations(associationTypeQName, Direction.ANY);
+        return associations(associationTypeQName, (Pagination) null);
+    }
+
+    @Override
+    public Map<String, Association> associations(QName associationTypeQName, Pagination pagination)
+    {
+        return associations(associationTypeQName, Direction.ANY, pagination);
     }
 
     @Override
     public Map<String, Association> associations(QName associationTypeQName, Direction direction)
     {
+        return associations(associationTypeQName, direction, (Pagination) null);
+    }
+
+    @Override
+    public Map<String, Association> associations(QName associationTypeQName, Direction direction, Pagination pagination)
+    {
         String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/associations";
 
-        boolean first = true;
-
-        // direction
+        // build params (from pagination)
+        Map<String, String> params = DriverUtil.params(pagination);
         if (direction != null)
         {
-            uri += (first ? "?" : "&");
-            uri = uri + "direction=" + direction.toString();
-            first = false;
+            params.put("direction", direction.toString());
         }
-
-        // associationTypeQName type qname
         if (associationTypeQName != null)
         {
-            uri += (first ? "?" : "&");
-            uri = uri + "type=" + associationTypeQName.toString();
-            first = false;
+            params.put("type", associationTypeQName.toString());
         }
 
-        Response response = getRemote().get(uri);
+        Response response = getRemote().get(uri, params);
 
         return getFactory().associations(getBranch(), response);
-
     }
 
     @Override

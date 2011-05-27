@@ -30,7 +30,7 @@ import org.gitana.repo.client.nodes.Node;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class TypeDefinitionImpl extends AbstractDefinitionImpl implements TypeDe
 
     private Map<String, HasFormAssociation> _convert(Map<String, Association> map)
     {
-        Map<String, HasFormAssociation> converted = new HashMap<String, HasFormAssociation>();
+        Map<String, HasFormAssociation> converted = new LinkedHashMap<String, HasFormAssociation>();
         for (Association association : map.values())
         {
             converted.put(association.getId(), (HasFormAssociation) association);

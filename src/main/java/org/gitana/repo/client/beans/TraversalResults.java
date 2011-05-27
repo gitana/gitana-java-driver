@@ -27,11 +27,10 @@ import org.gitana.repo.client.ObjectFactory;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.nodes.Association;
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.nodes.NodeImpl;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -44,8 +43,8 @@ public class TraversalResults
 
     public TraversalResults()
     {
-        this.nodes = new HashMap<String, Node>();
-        this.associations = new HashMap<String, Association>();
+        this.nodes = new LinkedHashMap<String, Node>();
+        this.associations = new LinkedHashMap<String, Association>();
     }
 
     public void parse(ObjectFactory factory, Branch branch, Response response)
@@ -72,11 +71,6 @@ public class TraversalResults
 
             ObjectNode obj = (ObjectNode) associations.get(fieldName);
 
-            Object x = factory.produce(branch, obj, true);
-            if (x instanceof NodeImpl)
-            {
-                int  a =3;
-            }
             Association association = (Association) factory.produce(branch, obj, true);
             this.associations.put(association.getId(), association);
         }

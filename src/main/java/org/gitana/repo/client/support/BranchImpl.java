@@ -32,13 +32,14 @@ import org.gitana.repo.client.types.AssociationDefinition;
 import org.gitana.repo.client.types.TypeDefinition;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
+import org.gitana.repo.support.Pagination;
 import org.gitana.util.JsonUtil;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -246,15 +247,28 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public Map<String, Node> fetchNodes()
     {
-        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes");
+        return fetchNodes(null);
+    }
 
+    @Override
+    public Map<String, Node> fetchNodes(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes", params);
         return getFactory().nodes(this, response);
     }
 
     @Override
     public List<Node> listNodes()
     {
-        Map<String, Node> map = fetchNodes();
+        return listNodes(null);
+    }
+
+    @Override
+    public List<Node> listNodes(Pagination pagination)
+    {
+        Map<String, Node> map = fetchNodes(pagination);
 
         List<Node> list = new ArrayList<Node>();
         for (Node node : map.values())
@@ -323,8 +337,15 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public Map<String, Node> queryNodes(ObjectNode query)
     {
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes/query", query);
+        return queryNodes(query, null);
+    }
 
+    @Override
+    public Map<String, Node> queryNodes(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes/query", params, query);
         return getFactory().nodes(this, response);
     }
 
@@ -377,7 +398,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
 
         Map<String, Node> nodes = getFactory().nodes(this, response);
 
-        Map<QName, Node> definitions = new HashMap<QName, Node>();
+        Map<QName, Node> definitions = new LinkedHashMap<QName, Node>();
         for (Node node: nodes.values())
         {
             definitions.put(node.getQName(), node);
