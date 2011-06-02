@@ -54,12 +54,12 @@ public class AssociationTest extends AbstractTestCase
         master.defineAssociationType(references);
 
         // create some nodes
-        Node node1 = master.createNode();
-        Node node2 = master.createNode();
-        Node node3 = master.createNode();
-        Node node4 = master.createNode();
-        Node node5 = master.createNode();
-        Node node6 = master.createNode();
+        Node node1 = (Node) master.createNode();
+        Node node2 = (Node) master.createNode();
+        Node node3 = (Node) master.createNode();
+        Node node4 = (Node) master.createNode();
+        Node node5 = (Node) master.createNode();
+        Node node6 = (Node) master.createNode();
 
         // relate them
         //

@@ -22,6 +22,7 @@
 package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.association.Directionality;
 import org.gitana.repo.client.Changeset;
 import org.gitana.repo.namespace.QName;
 
@@ -40,6 +41,7 @@ public interface Association extends BaseNode
     public final static String FIELD_TARGET_TYPE = "target_type";    
     public final static String FIELD_TARGET_CHANGESET = "target_changeset";
     public final static String FIELD_TIMESTAMP = "timestamp";
+    public final static String FIELD_DIRECTIONALITY = "directionality";
 
     // source accessor
     public QName getSourceNodeTypeQName();
@@ -77,5 +79,10 @@ public interface Association extends BaseNode
      * @return timestamp
      */
     public ObjectNode getTimestamp();
+
+    // orientation
+    public Directionality getDirectionality();
+    public void setDirectionality(Directionality directionality);
+
     
 }

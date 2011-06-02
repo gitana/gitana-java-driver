@@ -23,6 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
+import org.gitana.repo.client.types.Person;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.MD5;
 
@@ -192,6 +193,18 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
     public void setEmail(String email)
     {
         set(FIELD_EMAIL, email);
+    }
+
+    @Override
+    public Person readPerson(Branch branch)
+    {
+        return readPerson(branch, false);
+    }
+
+    @Override
+    public Person readPerson(Branch branch, boolean createIfNotFound)
+    {
+        return branch.readPerson(getName(), createIfNotFound);
     }
 
 }

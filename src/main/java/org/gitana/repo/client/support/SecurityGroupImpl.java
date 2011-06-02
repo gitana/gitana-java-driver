@@ -23,6 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
+import org.gitana.repo.client.types.Group;
 import org.gitana.security.PrincipalType;
 
 import java.util.ArrayList;
@@ -190,6 +191,18 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     public void removePrincipal(String principalId)
     {
         getRemote().post("/security/groups/" + getId() + "/remove/" + principalId);
+    }
+
+    @Override
+    public Group readGroup(Branch branch)
+    {
+        return readGroup(branch, false);
+    }
+
+    @Override
+    public Group readGroup(Branch branch, boolean createIfNotFound)
+    {
+        return branch.readGroup(getName(), createIfNotFound);
     }
 
 }

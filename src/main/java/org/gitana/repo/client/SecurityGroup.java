@@ -21,6 +21,8 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.client.types.Group;
+
 import java.util.List;
 import java.util.Map;
 
@@ -49,4 +51,7 @@ public interface SecurityGroup extends SecurityPrincipal
     public void removePrincipal(SecurityPrincipal principal);
 
     public void removePrincipal(String principalId);
+
+    public Group readGroup(Branch branch);
+    public Group readGroup(Branch branch, boolean createIfNotFound);
 }

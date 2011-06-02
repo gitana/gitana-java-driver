@@ -22,6 +22,7 @@
 package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.association.Directionality;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Changeset;
 import org.gitana.repo.client.Driver;
@@ -177,7 +178,7 @@ public class AssociationImpl extends BaseNodeImpl implements Association
     {
     	if (this.sourceNode == null)
     	{
-            this.sourceNode = this.getBranch().readNode(getSourceNodeId());
+            this.sourceNode = (Node) this.getBranch().readNode(getSourceNodeId());
     	}
     	
     	return this.sourceNode;
@@ -202,7 +203,7 @@ public class AssociationImpl extends BaseNodeImpl implements Association
     {
     	if (this.targetNode == null)
     	{
-            this.targetNode = this.getBranch().readNode(getTargetNodeId());
+            this.targetNode = (Node) this.getBranch().readNode(getTargetNodeId());
     	}
     	
     	return this.targetNode;
@@ -283,6 +284,25 @@ public class AssociationImpl extends BaseNodeImpl implements Association
     public ObjectNode getTimestamp()
     {
         return getObject(FIELD_TIMESTAMP);
+    }
+
+    @Override
+    public Directionality getDirectionality()
+    {
+        Directionality directionality = null;
+
+        if (getString(FIELD_DIRECTIONALITY) != null)
+        {
+            directionality = Directionality.valueOf(getString(FIELD_DIRECTIONALITY));
+        }
+
+        return directionality;
+    }
+
+    @Override
+    public void setDirectionality(Directionality directionality)
+    {
+        set(FIELD_DIRECTIONALITY, directionality.toString());
     }
 
 }

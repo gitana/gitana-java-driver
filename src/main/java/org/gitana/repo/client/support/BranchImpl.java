@@ -27,9 +27,9 @@ import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.types.AssociationDefinition;
-import org.gitana.repo.client.types.TypeDefinition;
+import org.gitana.repo.client.types.*;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
@@ -256,7 +256,9 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes", params);
-        return getFactory().nodes(this, response);
+        Map<String, BaseNode> baseNodes = getFactory().nodes(this, response);
+
+        return DriverUtil.toNodes(baseNodes);
     }
 
     @Override
@@ -280,14 +282,14 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Node readNode(String nodeId)
+    public BaseNode readNode(String nodeId)
     {
-        Node node = null;
+        BaseNode baseNode = null;
 
         try
         {
             Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes/" + nodeId);
-            node = getFactory().node(this, response);
+            baseNode = getFactory().node(this, response);
         }
         catch (Exception ex)
         {
@@ -296,17 +298,17 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
             // TODO: information so that we can detect a proper 404
         }
 
-        return node;
+        return baseNode;
     }
 
     @Override
-    public Node createNode()
+    public BaseNode createNode()
     {
         return createNode(JsonUtil.createObject());
     }
 
     @Override
-    public Node createNode(QName typeQName)
+    public BaseNode createNode(QName typeQName)
     {
         ObjectNode object = JsonUtil.createObject();
         object.put("_type", typeQName.toString());
@@ -315,7 +317,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Node createNode(ObjectNode object)
+    public BaseNode createNode(ObjectNode object)
     {
         // allow for null object
         if (object == null)
@@ -326,7 +328,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes", object);
 
         String nodeId = response.getId();
-        Node node = readNode(nodeId);
+        BaseNode node = readNode(nodeId);
 
         // mark the branch as being dirty (since the tip will have moved)
         this.markDirty();
@@ -335,13 +337,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Map<String, Node> queryNodes(ObjectNode query)
+    public Map<String, BaseNode> queryNodes(ObjectNode query)
     {
         return queryNodes(query, null);
     }
 
     @Override
-    public Map<String, Node> queryNodes(ObjectNode query, Pagination pagination)
+    public Map<String, BaseNode> queryNodes(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -350,7 +352,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Map<String, Node> searchNodes(String text)
+    public Map<String, BaseNode> searchNodes(String text)
     {
         // url encode the text
         try
@@ -368,19 +370,19 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Node readPerson (String userId, boolean createIfNotFound)
+    public Person readPerson (String userId, boolean createIfNotFound)
     {
         // invoke
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/person/" + userId + "?createIfNotFound=" + createIfNotFound);
-        return getFactory().node(this, response);
+        return (Person) getFactory().node(this, response);
     }
 
     @Override
-    public Node readGroup (String groupId, boolean createIfNotFound)
+    public Group readGroup (String groupId, boolean createIfNotFound)
     {
         // invoke
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/group/" + groupId + "?createIfNotFound=" + createIfNotFound);
-        return getFactory().node(this, response);
+        return (Group) getFactory().node(this, response);
     }
 
 
@@ -392,44 +394,44 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<QName, Node> fetchDefinitions()
+    public Map<QName, Definition> fetchDefinitions()
     {
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/definitions");
 
-        Map<String, Node> nodes = getFactory().nodes(this, response);
+        Map<String, BaseNode> nodes = getFactory().nodes(this, response);
 
-        Map<QName, Node> definitions = new LinkedHashMap<QName, Node>();
-        for (Node node: nodes.values())
+        Map<QName, Definition> definitions = new LinkedHashMap<QName, Definition>();
+        for (BaseNode node: nodes.values())
         {
-            definitions.put(node.getQName(), node);
+            definitions.put(node.getQName(), (Definition) node);
         }
 
         return definitions;
     }
 
     @Override
-    public List<Node> listDefinitions()
+    public List<Definition> listDefinitions()
     {
-        Map<QName, Node> map = fetchDefinitions();
+        Map<QName, Definition> map = fetchDefinitions();
 
-        List<Node> list = new ArrayList<Node>();
-        for (Node node : map.values())
+        List<Definition> list = new ArrayList<Definition>();
+        for (Definition definition : map.values())
         {
-            list.add(node);
+            list.add(definition);
         }
 
         return list;
     }
 
     @Override
-    public Node readDefinition(QName qname)
+    public Definition readDefinition(QName qname)
     {
-        Node node = null;
+        Definition definition = null;
 
         try
         {
             Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/definitions/" + qname.toString());
-            node = getFactory().node(this, response);
+            definition = (Definition) getFactory().node(this, response);
         }
         catch (Exception ex)
         {
@@ -438,7 +440,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
             // TODO: information so that we can detect a proper 404
         }
 
-        return node;
+        return definition;
     }
 
     @Override

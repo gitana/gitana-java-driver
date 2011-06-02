@@ -21,6 +21,7 @@
 
 package org.gitana.repo.client.types;
 
+import org.gitana.repo.client.SecurityGroup;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
 
@@ -30,4 +31,11 @@ import org.gitana.repo.namespace.QName;
 public interface Group extends Node
 {
     public final static QName QNAME = QName.create("n:group");
+
+    public final static String FIELD_PRINCIPAL_ID = "principal-id";
+
+    public String getPrincipalId();
+
+    public SecurityGroup getSecurityGroup();
+
 }

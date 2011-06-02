@@ -21,6 +21,8 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.client.types.Person;
+
 /**
  * @author uzi
  */
@@ -92,4 +94,7 @@ public interface SecurityUser extends SecurityPrincipal
      * @param email
      */
     public void setEmail(String email);
+
+    public Person readPerson(Branch branch);
+    public Person readPerson(Branch branch, boolean createIfNotFound);
 }

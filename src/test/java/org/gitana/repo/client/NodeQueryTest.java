@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.node.NodeBuilder;
 import org.gitana.repo.query.QueryBuilder;
@@ -52,26 +53,26 @@ public class NodeQueryTest extends AbstractTestCase
 
         // create some nodes
         ObjectNode obj1 = NodeBuilder.start("city").is("milwaukee").and("country").is("usa").and("zipcode").is("53221").get();
-        Node node1 = master.createNode(obj1);
+        Node node1 = (Node) master.createNode(obj1);
         ObjectNode obj2 = NodeBuilder.start("city").is("chicago").and("country").is("usa").and("zipcode").is("60613").get();
-        Node node2 = master.createNode(obj2);
+        Node node2 = (Node) master.createNode(obj2);
         ObjectNode obj3 = NodeBuilder.start("city").is("ithaca").and("country").is("usa").and("zipcode").is("14850").get();
-        Node node3 = master.createNode(obj3);
+        Node node3 = (Node) master.createNode(obj3);
         ObjectNode obj4 = NodeBuilder.start("city").is("austin").and("country").is("usa").and("zipcode").is("78730").get();
-        Node node4 = master.createNode(obj4);
+        Node node4 = (Node) master.createNode(obj4);
         ObjectNode obj5 = NodeBuilder.start("city").is("boston").and("country").is("usa").and("zipcode").is("02138").get();
-        Node node5 = master.createNode(obj5);
+        Node node5 = (Node) master.createNode(obj5);
         ObjectNode obj6 = NodeBuilder.start("city").is("la paz").and("country").is("bolivia").and("zipcode").is("N/A").get();
-        Node node6 = master.createNode(obj6);
+        Node node6 = (Node) master.createNode(obj6);
 
         // query for all nodes in the USA
         ObjectNode query1 = QueryBuilder.start("country").is("usa").get();
-        Map<String, Node> results1 = master.queryNodes(query1);
+        Map<String, BaseNode> results1 = master.queryNodes(query1);
         assertEquals(5, results1.size());
 
         // query for all nodes in Bolivia (should fine 1)
         ObjectNode query2 = QueryBuilder.start("country").is("bolivia").get();
-        Map<String, Node> results2 = master.queryNodes(query2);
+        Map<String, BaseNode> results2 = master.queryNodes(query2);
         assertEquals(1, results2.size());
 
         // query for all nodes that are in chicago or ithaca
@@ -79,7 +80,7 @@ public class NodeQueryTest extends AbstractTestCase
                 QueryBuilder.start("city").is("chicago").get(),
                 QueryBuilder.start("city").is("ithaca").get())
                 .get();
-        Map<String, Node> results3 = master.queryNodes(query3);
+        Map<String, BaseNode> results3 = master.queryNodes(query3);
         assertEquals(2, results3.size());
 
 
@@ -88,28 +89,28 @@ public class NodeQueryTest extends AbstractTestCase
 
         // add another city in Bolivia
         ObjectNode obj7 = NodeBuilder.start("city").is("sucre").and("country").is("bolivia").and("zipcode").is("N/A").get();
-        Node node7 = branch.createNode(obj7);
+        Node node7 = (Node) branch.createNode(obj7);
 
         // query for nodes in bolivia (should now find 2)
         ObjectNode query4 = QueryBuilder.start("country").is("bolivia").get();
-        Map<String, Node> results4 = branch.queryNodes(query4);
+        Map<String, BaseNode> results4 = branch.queryNodes(query4);
         assertEquals(2, results4.size());
 
 
         // query the master branch (should still return 1)
         ObjectNode query5 = QueryBuilder.start("country").is("bolivia").get();
-        Map<String, Node> results5 = master.queryNodes(query5);
+        Map<String, BaseNode> results5 = master.queryNodes(query5);
         assertEquals(1, results5.size());
 
 
         // create a container
         ObjectNode obj8 = NodeBuilder.start("city").is("san francisco").hasType("n:node").isContainer().hasQName("o:123").get();
-        Node node8 = master.createNode(obj8);
+        Node node8 = (Node) master.createNode(obj8);
 
         // find all nodes that are containers (using dot notation)
         // there should be three (the root node (qname = n:root), the users node (qname = r:users) and node8)
         ObjectNode query6 = QueryBuilder.start("_features.f:container.active").is(true).get();
-        Map<String, Node> results6 = master.queryNodes(query6);
+        Map<String, BaseNode> results6 = master.queryNodes(query6);
         assertEquals(3, results6.size());
 
         // run a paginated query
@@ -117,7 +118,7 @@ public class NodeQueryTest extends AbstractTestCase
         Pagination pagination7 = new Pagination();
         pagination7.setSkip(0);
         pagination7.setLimit(3);
-        Map<String, Node> results7 = master.queryNodes(query7, pagination7);
+        Map<String, BaseNode> results7 = master.queryNodes(query7, pagination7);
         assertEquals(3, results7.size());
 
         // next page
@@ -125,7 +126,7 @@ public class NodeQueryTest extends AbstractTestCase
         Pagination pagination8 = new Pagination();
         pagination8.setSkip(3);
         pagination8.setLimit(3);
-        Map<String, Node> results8 = master.queryNodes(query8, pagination8);
+        Map<String, BaseNode> results8 = master.queryNodes(query8, pagination8);
         assertEquals(2, results8.size());
 
     }

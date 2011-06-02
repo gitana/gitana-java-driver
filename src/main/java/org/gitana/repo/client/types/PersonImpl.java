@@ -24,6 +24,7 @@ package org.gitana.repo.client.types;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Driver;
+import org.gitana.repo.client.SecurityUser;
 import org.gitana.repo.client.nodes.NodeImpl;
 
 /**
@@ -36,4 +37,15 @@ public class PersonImpl extends NodeImpl implements Person
         super(driver, branch, obj, isSaved);
     }
 
+    @Override
+    public String getPrincipalId()
+    {
+        return getString(FIELD_PRINCIPAL_ID);
+    }
+
+    @Override
+    public SecurityUser getSecurityUser()
+    {
+        return getBranch().getServer().readUser(getPrincipalId());
+    }
 }

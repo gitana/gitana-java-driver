@@ -24,9 +24,9 @@ package org.gitana.repo.client;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
-import org.gitana.repo.client.types.AssociationDefinition;
-import org.gitana.repo.client.types.TypeDefinition;
+import org.gitana.repo.client.types.*;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
 
@@ -116,14 +116,14 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return node
      */
-    public Node readNode(String nodeId);
+    public BaseNode readNode(String nodeId);
 
     /**
      * Creates an empty node on the branch.
      *
      * @return branch
      */
-    public Node createNode();
+    public BaseNode createNode();
 
     /**
      * Creates an empty node on the branch.
@@ -132,7 +132,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return branch
      */
-    public Node createNode(QName typeQName);
+    public BaseNode createNode(QName typeQName);
 
     /**
      * Creates a node on the branch.
@@ -141,7 +141,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return node
      */
-    public Node createNode(ObjectNode object);
+    public BaseNode createNode(ObjectNode object);
 
     /**
      * Performs a query for nodes.
@@ -149,7 +149,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param query
      * @return map of nodes
      */
-    public Map<String, Node> queryNodes(ObjectNode query);
+    public Map<String, BaseNode> queryNodes(ObjectNode query);
 
     /**
      * Performs a query for nodes.
@@ -159,7 +159,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return map of nodes
      */
-    public Map<String, Node> queryNodes(ObjectNode query, Pagination pagination);
+    public Map<String, BaseNode> queryNodes(ObjectNode query, Pagination pagination);
 
     /**
      * Full-text search
@@ -167,7 +167,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param text
      * @return map of nodes
      */
-    public Map<String, Node> searchNodes(String text);
+    public Map<String, BaseNode> searchNodes(String text);
 
     /**
      * Reads the person object for a security user.
@@ -176,7 +176,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param createIfNotFound whether to create the person object if it isn't found
      * @return Person node
      */
-    public Node readPerson (String userId, boolean createIfNotFound);
+    public Person readPerson (String userId, boolean createIfNotFound);
 
     /**
      *  Reads the group object for a security group.
@@ -185,7 +185,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param createIfNotFound whether to create the group object if it isn't found
      * @return Group node
      */
-    public Node readGroup (String groupId, boolean createIfNotFound);
+    public Group readGroup (String groupId, boolean createIfNotFound);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,14 +199,14 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return a map of node objects keyed by node id
      */
-    public Map<QName, Node> fetchDefinitions();
+    public Map<QName, Definition> fetchDefinitions();
 
     /**
      * Retrieves definitions for the branch.
      *
      * @return list of nodes
      */
-    public List<Node> listDefinitions();
+    public List<Definition> listDefinitions();
 
     /**
      * Reads a definition
@@ -215,7 +215,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return node
      */
-    public Node readDefinition(QName qname);
+    public Definition readDefinition(QName qname);
 
     /**
      * Creates a type definition.

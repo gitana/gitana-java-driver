@@ -54,12 +54,12 @@ public class TraversalTest extends AbstractTestCase
         master.defineType(baddie);
 
         // create some wizards
-        Node harry = master.createNode();
-        Node hermione = master.createNode();
-        Node ron = master.createNode();
-        Node voldemort = master.createNode(baddie); // type = baddie
-        Node dumbledore = master.createNode();
-        Node dudley = master.createNode();
+        Node harry = (Node) master.createNode();
+        Node hermione = (Node) master.createNode();
+        Node ron = (Node) master.createNode();
+        Node voldemort = (Node) master.createNode(baddie); // type = baddie
+        Node dumbledore = (Node) master.createNode();
+        Node dudley = (Node) master.createNode();
 
         // QNames
         QName friends = QName.create("boo:friends");

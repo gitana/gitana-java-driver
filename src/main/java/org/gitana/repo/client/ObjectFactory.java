@@ -24,7 +24,6 @@ package org.gitana.repo.client;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.nodes.Association;
 import org.gitana.repo.client.nodes.BaseNode;
-import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
 
 import java.util.Map;
@@ -51,10 +50,10 @@ public interface ObjectFactory
     public Map<String, Changeset> changesets(Repository repository, Response response);
 
     // in-memory
-    public Node node(Branch branch, QName typeQName);
-    public Node node(Branch branch, QName typeQName, ObjectNode object);
-    public Node node(Branch branch, Response response);
-    public Map<String, Node> nodes(Branch branch, Response response);
+    public BaseNode node(Branch branch, QName typeQName);
+    public BaseNode node(Branch branch, QName typeQName, ObjectNode object);
+    public BaseNode node(Branch branch, Response response);
+    public Map<String, BaseNode> nodes(Branch branch, Response response);
 
     public Association association(Branch branch, QName typeQName);
     public Association association(Branch branch, QName typeQName, ObjectNode object);

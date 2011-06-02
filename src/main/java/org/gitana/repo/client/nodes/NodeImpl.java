@@ -341,7 +341,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         String nodeId = r1.getId();
 
         Response r2 = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + nodeId);
-        return getFactory().node(getBranch(), r2);
+        return (Node) getFactory().node(getBranch(), r2);
     }
 
     @Override
@@ -396,7 +396,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         }
 
         Response response = getRemote().get(uri);
-        return getFactory().node(getBranch(), response);
+        return (Node) getFactory().node(getBranch(), response);
     }
 
 }

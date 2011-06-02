@@ -26,6 +26,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.beans.ACLEntry;
+import org.gitana.repo.client.nodes.BaseNode;
+import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.support.Pagination;
 import org.gitana.util.JsonUtil;
 
@@ -115,6 +117,18 @@ public class DriverUtil
         }
 
         return params;
+    }
+
+    public static Map<String, Node> toNodes(Map<String, BaseNode> baseNodes)
+    {
+        Map<String, Node> nodes = new LinkedHashMap<String, Node>();
+
+        for (BaseNode baseNode: baseNodes.values())
+        {
+            nodes.put(baseNode.getId(), (Node) baseNode);
+        }
+
+        return nodes;
     }
 
 }

@@ -45,16 +45,16 @@ public class NodeTest extends AbstractTestCase
         Branch master = repository.readBranch("master");
 
         // create three nodes
-        Node node1 = master.createNode();
-        Node node2 = master.createNode();
-        Node node3 = master.createNode();
+        Node node1 = (Node) master.createNode();
+        Node node2 = (Node) master.createNode();
+        Node node3 = (Node) master.createNode();
 
         // read nodes back (verify)
-        Node verify1 = master.readNode(node1.getId());
+        Node verify1 = (Node) master.readNode(node1.getId());
         assertNotNull(verify1);
-        Node verify2 = master.readNode(node2.getId());
+        Node verify2 = (Node) master.readNode(node2.getId());
         assertNotNull(verify2);
-        Node verify3 = master.readNode(node3.getId());
+        Node verify3 = (Node) master.readNode(node3.getId());
         assertNotNull(verify3);
 
         // update a node
@@ -62,14 +62,14 @@ public class NodeTest extends AbstractTestCase
         node2.update();
 
         // read node back to verify
-        Node verify4 = master.readNode(node2.getId());
+        Node verify4 = (Node) master.readNode(node2.getId());
         assertEquals("rose", verify4.getString("axl"));
 
         // delete the second node
         node2.delete();
 
         // verify that we can't read it
-        Node verify5 = master.readNode(node2.getId());
+        Node verify5 = (Node) master.readNode(node2.getId());
         assertNull(verify5);
     }
 
@@ -89,7 +89,7 @@ public class NodeTest extends AbstractTestCase
         Branch master = repository.readBranch("master");
 
         // create a node
-        Node node = master.createNode();
+        Node node = (Node) master.createNode();
 
         // upload
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/daffy.jpeg");
@@ -104,7 +104,7 @@ public class NodeTest extends AbstractTestCase
         node.update();
 
         // read node back to verify
-        Node verify2 = master.readNode(node.getId());
+        Node verify2 = (Node) master.readNode(node.getId());
         assertEquals("rose", verify2.getString("axl"));
 
         verify = node.downloadAttachment("thumb");

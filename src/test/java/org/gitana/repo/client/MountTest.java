@@ -49,7 +49,7 @@ public class MountTest extends AbstractTestCase
         List<Node> mounts1 = master.listNodes();
 
         // create a new mount
-        Node node1 = master.createNode();
+        Node node1 = (Node) master.createNode();
         node1.mount("scoobydoo");
 
         // assert mount nodes size + 1

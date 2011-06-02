@@ -24,6 +24,7 @@ package org.gitana.repo.client.types;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Driver;
+import org.gitana.repo.client.SecurityGroup;
 import org.gitana.repo.client.nodes.NodeImpl;
 
 /**
@@ -36,4 +37,15 @@ public class GroupImpl extends NodeImpl implements Group
         super(driver, branch, obj, isSaved);
     }
 
+    @Override
+    public String getPrincipalId()
+    {
+        return getString(FIELD_PRINCIPAL_ID);
+    }
+
+    @Override
+    public SecurityGroup getSecurityGroup()
+    {
+        return this.getBranch().getServer().readGroup(getPrincipalId());
+    }
 }

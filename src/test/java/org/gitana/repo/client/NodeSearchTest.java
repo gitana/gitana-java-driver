@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.node.NodeBuilder;
 import org.gitana.util.ClasspathUtil;
@@ -53,30 +54,30 @@ public class NodeSearchTest extends AbstractTestCase
 
         // create first node
         ObjectNode obj1 = NodeBuilder.start("title").is("Gone with the Wind").and("author").is("Margaret Mitchell").get();
-        Node node1 = master.createNode(obj1);
+        Node node1 = (Node) master.createNode(obj1);
 
         // create second node
         ObjectNode obj2 = NodeBuilder.start("title").is("To Kill a Mockingbird").and("author").is("Harper Lee").get();
-        Node node2 = master.createNode(obj2);
+        Node node2 = (Node) master.createNode(obj2);
 
         // create third node
         ObjectNode obj3 = NodeBuilder.start("title").is("War and Peace").and("author").is("Leo Tolstoy").get();
-        Node node3 = master.createNode(obj3);
+        Node node3 = (Node) master.createNode(obj3);
 
         // create fourth node
         ObjectNode obj4 = NodeBuilder.start("title").is("The Sound and the Fury").and("author").is("William Faulkner").get();
-        Node node4 = master.createNode(obj4);
+        Node node4 = (Node) master.createNode(obj4);
 
         // here we wait a little bit for the asynchronous indexing on the server side to complete
         Thread.sleep(2000);
 
 
         // search #1
-        Map<String, Node> results1 = master.searchNodes("Gone");
+        Map<String, BaseNode> results1 = master.searchNodes("Gone");
         assertEquals(1, results1.size());
 
         // search #2
-        Map<String, Node> results2 = master.searchNodes("Harper");
+        Map<String, BaseNode> results2 = master.searchNodes("Harper");
         assertEquals(1, results2.size());
 
 
@@ -94,11 +95,11 @@ public class NodeSearchTest extends AbstractTestCase
 
 
         // now let's query for some text from the PDF
-        Map<String, Node> results3 = master.searchNodes("Georgia");
+        Map<String, BaseNode> results3 = master.searchNodes("Georgia");
         assertEquals(1, results3.size());
 
         // now let's query for some text from the PDF
-        Map<String, Node> results4 = master.searchNodes("Miss Scarlett");
+        Map<String, BaseNode> results4 = master.searchNodes("Miss Scarlett");
         assertEquals(1, results4.size());
 
     }

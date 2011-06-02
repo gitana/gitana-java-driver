@@ -60,7 +60,7 @@ public class NodeI18NTest extends AbstractTestCase
 
         // create a node
         ObjectNode data1 = NodeBuilder.start("title").is("We didn't start the fire").and("author").is("Billy Joel").get();
-        Node node1 = master.createNode(data1);
+        Node node1 = (Node) master.createNode(data1);
 
         // create a translation into spanish (edition = 1.0)
         ObjectNode spanish1 = NodeBuilder.start("title").is("No hemos encendido el fuego").and("author").is("Guillermo Joel").get();

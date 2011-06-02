@@ -168,13 +168,13 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Node node(Branch branch, QName typeQName)
+    public BaseNode node(Branch branch, QName typeQName)
     {
         return node(branch, typeQName, JsonUtil.createObject());
     }
 
     @Override
-    public Node node(Branch branch, QName typeQName, ObjectNode object)
+    public BaseNode node(Branch branch, QName typeQName, ObjectNode object)
     {
         if (object == null)
         {
@@ -183,32 +183,32 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         object.put(Node.FIELD_TYPE_QNAME, typeQName.toString());
 
-        return (Node) produce(branch, object, false);
+        return produce(branch, object, false);
     }
 
     @Override
-    public Node node(Branch branch, Response response)
+    public BaseNode node(Branch branch, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return (Node) produce(branch, response.getObjectNode(), true);
+        return produce(branch, response.getObjectNode(), true);
     }
 
     @Override
-    public Map<String, Node> nodes(Branch branch, Response response)
+    public Map<String, BaseNode> nodes(Branch branch, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Node> map = new LinkedHashMap<String, Node>();
+        Map<String, BaseNode> map = new LinkedHashMap<String, BaseNode>();
         for (ObjectNode object : response.getObjectNodes())
         {
-            Node node = (Node) produce(branch, object, true);
+            BaseNode node = produce(branch, object, true);
             map.put(node.getId(), node);
         }
 

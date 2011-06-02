@@ -51,11 +51,11 @@ public class BranchPublicationTest extends AbstractTestCase
         Branch master1 = repo1.readBranch("master");
 
         // create a bunch of nodes
-        Node node1 = master1.createNode();
-        Node node2 = master1.createNode();
-        Node node3 = master1.createNode(JSONBuilder.start("def").is("jam").get());
-        Node node4 = master1.createNode();
-        Node node5 = master1.createNode();
+        Node node1 = (Node) master1.createNode();
+        Node node2 = (Node) master1.createNode();
+        Node node3 = (Node) master1.createNode(JSONBuilder.start("def").is("jam").get());
+        Node node4 = (Node) master1.createNode();
+        Node node5 = (Node) master1.createNode();
 
         // connect together
         QName aChild = QName.create("a:child");
@@ -90,7 +90,7 @@ public class BranchPublicationTest extends AbstractTestCase
 
 
         // verify it worked
-        Node x1 = master2.readNode(node1.getId());
+        Node x1 = (Node) master2.readNode(node1.getId());
         assertNotNull(x1);
         assertEquals(node1.associations().size(), x1.associations().size());
 

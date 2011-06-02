@@ -160,7 +160,7 @@ public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
     @Override
     public void reload()
     {
-        Node node = getBranch().readNode(getId());
-        this.reload(node);
+        BaseNode baseNode = getBranch().readNode(getId());
+        this.reload(baseNode);
     }
 }
