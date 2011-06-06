@@ -27,10 +27,11 @@ import org.gitana.repo.client.ObjectFactory;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.nodes.Association;
 import org.gitana.repo.client.nodes.Node;
+import org.gitana.repo.support.ResultMap;
+import org.gitana.repo.support.ResultMapImpl;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -38,13 +39,13 @@ import java.util.Map;
  */
 public class TraversalResults
 {
-    private Map<String, Node> nodes;
-    private Map<String, Association> associations;
+    private ResultMap<Node> nodes;
+    private ResultMap<Association> associations;
 
     public TraversalResults()
     {
-        this.nodes = new LinkedHashMap<String, Node>();
-        this.associations = new LinkedHashMap<String, Association>();
+        this.nodes = new ResultMapImpl<Node>();
+        this.associations = new ResultMapImpl<Association>();
     }
 
     public void parse(ObjectFactory factory, Branch branch, Response response)
@@ -78,13 +79,13 @@ public class TraversalResults
 
     public void setNodes(Map<String, Node> nodes)
     {
-        this.nodes.clear();;
+        this.nodes.clear();
         this.nodes.putAll(nodes);
     }
 
-    public Map<String, Node> getNodes()
+    public ResultMap<Node> getNodes()
     {
-        return Collections.unmodifiableMap(this.nodes);
+        return nodes;
     }
 
     public void setAssociations(Map<String, Association> associations)
@@ -93,8 +94,8 @@ public class TraversalResults
         this.associations.putAll(associations);
     }
 
-    public Map<String, Association> getAssociations()
+    public ResultMap<Association> getAssociations()
     {
-        return Collections.unmodifiableMap(this.associations);
+        return associations;
     }
 }

@@ -23,9 +23,9 @@ package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author uzi
@@ -37,7 +37,7 @@ public interface Server extends AccessControllable
      *
      * @return a map of repository objects keyed by repository id
      */
-    public Map<String, Repository> fetchRepositories();
+    public ResultMap<Repository> fetchRepositories();
 
     /**
      * Retrieves repositories from the server as a map.
@@ -46,7 +46,7 @@ public interface Server extends AccessControllable
      *
      * @return a map of repository objects keyed by repository id
      */
-    public Map<String, Repository> fetchRepositories(Pagination pagination);
+    public ResultMap<Repository> fetchRepositories(Pagination pagination);
 
     /**
      * Retrieves repositories from the server as a list.
@@ -95,13 +95,13 @@ public interface Server extends AccessControllable
      * @param query
      * @return
      */
-    public Map<String, Repository> queryRepositories(ObjectNode query);
+    public ResultMap<Repository> queryRepositories(ObjectNode query);
 
-    public Map<String, Repository> queryRepositories(ObjectNode query, Pagination pagination);
+    public ResultMap<Repository> queryRepositories(ObjectNode query, Pagination pagination);
 
-    public Map<String, SecurityGroup> fetchGroups();
+    public ResultMap<SecurityGroup> fetchGroups();
 
-    public Map<String, SecurityGroup> fetchGroups(Pagination pagination);
+    public ResultMap<SecurityGroup> fetchGroups(Pagination pagination);
 
     public List<SecurityGroup> listGroups();
 
@@ -113,9 +113,9 @@ public interface Server extends AccessControllable
 
     public SecurityGroup createGroup(ObjectNode object);
 
-    public Map<String, SecurityUser> fetchUsers();
+    public ResultMap<SecurityUser> fetchUsers();
 
-    public Map<String, SecurityUser> fetchUsers(Pagination pagination);
+    public ResultMap<SecurityUser> fetchUsers(Pagination pagination);
 
     public List<SecurityUser> listUsers();
 
@@ -133,13 +133,13 @@ public interface Server extends AccessControllable
 
     public void deleteUser(String userId);
 
-    public Map<String, SecurityGroup> fetchMemberships(SecurityUser user);
+    public ResultMap<SecurityGroup> fetchMemberships(SecurityUser user);
 
-    public Map<String, SecurityGroup> fetchMemberships(String userId);
+    public ResultMap<SecurityGroup> fetchMemberships(String userId);
 
-    public Map<String, SecurityGroup> fetchMemberships(SecurityUser user, boolean includeIndirectMemberships);
+    public ResultMap<SecurityGroup> fetchMemberships(SecurityUser user, boolean includeIndirectMemberships);
 
-    public Map<String, SecurityGroup> fetchMemberships(String userId, boolean includeIndirectMemberships);
+    public ResultMap<SecurityGroup> fetchMemberships(String userId, boolean includeIndirectMemberships);
 
     public List<SecurityGroup> listMemberships(SecurityUser user);
 
@@ -154,9 +154,9 @@ public interface Server extends AccessControllable
     // JOBS
     ////////////////////
 
-    public Map<String, Job> queryJobs(ObjectNode query);
+    public ResultMap<Job> queryJobs(ObjectNode query);
 
-    public Map<String, Job> queryJobs(ObjectNode query, Pagination pagination);
+    public ResultMap<Job> queryJobs(ObjectNode query, Pagination pagination);
 
     public Job readJob(String jobId);
 

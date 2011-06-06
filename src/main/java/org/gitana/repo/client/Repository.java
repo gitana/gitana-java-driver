@@ -24,9 +24,9 @@ package org.gitana.repo.client;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.RepositoryType;
+import org.gitana.repo.support.ResultMap;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author uzi
@@ -55,7 +55,7 @@ public interface Repository extends Document, AccessControllable, Selfable
      *
      * @return a map of branch objects keyed by branch id
      */
-    public Map<String, Branch> fetchBranches();
+    public ResultMap<Branch> fetchBranches();
 
     /**
      * Retrieves branches for the repository
@@ -64,7 +64,7 @@ public interface Repository extends Document, AccessControllable, Selfable
      *
      * @return a map of branch objects keyed by branch id
      */
-    public Map<String, Branch> fetchBranches(Pagination pagination);
+    public ResultMap<Branch> fetchBranches(Pagination pagination);
 
     /**
      * Retrieves nodes for the branch.
@@ -115,7 +115,7 @@ public interface Repository extends Document, AccessControllable, Selfable
      * @param query
      * @return
      */
-    public Map<String, Branch> queryBranches(ObjectNode query);
+    public ResultMap<Branch> queryBranches(ObjectNode query);
 
     /**
      * Performs a query over the branch index.
@@ -125,7 +125,7 @@ public interface Repository extends Document, AccessControllable, Selfable
      *
      * @return
      */
-    public Map<String, Branch> queryBranches(ObjectNode query, Pagination pagination);
+    public ResultMap<Branch> queryBranches(ObjectNode query, Pagination pagination);
 
     /**
      * Uploads a file into the repository file system.

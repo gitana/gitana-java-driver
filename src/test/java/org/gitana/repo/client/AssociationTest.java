@@ -21,9 +21,14 @@
 
 package org.gitana.repo.client;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
+import org.gitana.repo.client.nodes.Association;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
+import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
@@ -101,4 +106,64 @@ public class AssociationTest extends AbstractTestCase
 
     }
 
+    @Test
+    public void testPagination()
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Server server = gitana.authenticate("admin", "admin");
+
+        // create a repository
+        Repository repository = server.createRepository();
+
+        // get the master branch
+        Branch master = repository.readBranch("master");
+
+        // create a node
+        Node source = (Node) master.createNode();
+
+        // create a whole bunch of target nodes and associate them
+        for (int i = 0; i < 20; i++)
+        {
+            ObjectNode data = JsonUtil.createObject();
+            data.put("value", i + 1);
+
+            Node target = (Node) master.createNode(data);
+
+            source.associate(target, QName.create("a:child"));
+        }
+
+        // pagination size 10, offset 0
+        Pagination pagination = new Pagination();
+        pagination.setSkip(0);
+        pagination.setLimit(10);
+
+        // first ten
+        ResultMap<Association> associations1 = source.associations(QName.create("a:child"), pagination);
+        assertEquals(10, associations1.size());
+        assertEquals(20, associations1.totalRows());
+        assertEquals(0, associations1.offset());
+
+        // second ten
+        pagination.setSkip(10);
+        ResultMap<Association> associations2 = source.associations(QName.create("a:child"), pagination);
+        assertEquals(10, associations2.size());
+        assertEquals(20, associations2.totalRows());
+        assertEquals(10, associations2.offset());
+
+        // ensure first set is correct
+        for (Association association: associations1.values())
+        {
+            int value = association.getTargetNode().getInt("value");
+            assertTrue(value > 0 && value <= 10);
+        }
+
+        // ensure second set is correct
+        for (Association association: associations2.values())
+        {
+            int value = association.getTargetNode().getInt("value");
+            assertTrue(value > 10 && value <= 20);
+        }
+    }
 }

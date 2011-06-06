@@ -29,10 +29,10 @@ import org.gitana.repo.client.Attachable;
 import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author uzi
@@ -44,7 +44,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @return map
      */
-    public Map<String, Association> associations();
+    public ResultMap<Association> associations();
 
     /**
      * Lists all associations in ANY direction involving this node.
@@ -53,7 +53,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @return map
      */
-    public Map<String, Association> associations(Pagination pagination);
+    public ResultMap<Association> associations(Pagination pagination);
 
     /**
      * Lists all association in the given direction involving this node.
@@ -62,7 +62,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @return map
      */
-    public Map<String, Association> associations(Direction direction);
+    public ResultMap<Association> associations(Direction direction);
 
     /**
      * Lists all association in the given direction involving this node.
@@ -72,7 +72,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @return map
      */
-    public Map<String, Association> associations(Direction direction, Pagination pagination);
+    public ResultMap<Association> associations(Direction direction, Pagination pagination);
 
     /**
      * Lists all associations of the given type in ANY direction involving this node.
@@ -80,7 +80,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      * @param associationTypeQName
      * @return map
      */
-    public Map<String, Association> associations(QName associationTypeQName);
+    public ResultMap<Association> associations(QName associationTypeQName);
 
     /**
      * Lists all associations of the given type in ANY direction involving this node.
@@ -90,7 +90,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @return map
      */
-    public Map<String, Association> associations(QName associationTypeQName, Pagination pagination);
+    public ResultMap<Association> associations(QName associationTypeQName, Pagination pagination);
 
     /**
      * Lists all associations of the given type in the specified direction.
@@ -99,7 +99,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      * @param direction
      * @return map
      */
-    public Map<String, Association> associations(QName associationTypeQName, Direction direction);
+    public ResultMap<Association> associations(QName associationTypeQName, Direction direction);
 
     /**
      * Lists all associations of the given type in the specified direction.
@@ -110,7 +110,7 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      *
      * @return map
      */
-    public Map<String, Association> associations(QName associationTypeQName, Direction direction, Pagination pagination);
+    public ResultMap<Association> associations(QName associationTypeQName, Direction direction, Pagination pagination);
 
     /**
      * Associates a target node to this source node.

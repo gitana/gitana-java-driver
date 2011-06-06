@@ -113,72 +113,71 @@ public class DocumentImpl implements Document
     @Override
 	public void reload(ObjectNode source)
 	{
-		// create a copy of the incoming object
-    	ObjectNode candidate = JsonUtil.copyObject(source);
+        boolean merge = true;
+        if (source.has(Document.FIELD_ID))
+        {
+            if (source.get(Document.FIELD_ID).getTextValue().equals(getId()))
+            {
+                merge = false;
+            }
+        }
 
-		// strip out things that we definitely never ingest from the candidate
-    	candidate.remove("_id");
-    	candidate.remove("_system");
+        ObjectNode replacement = null;
+        if (merge)
+        {
+            // create a copy of our properties
+            ObjectNode original = JsonUtil.copyObject(getObject());
 
-		// copy out values that we want to keep from our own object
-		String _id = null;
-		if (has("_id"))
-		{
-			_id = getString("_id");
-		}
-		ObjectNode _system = null;
-		if (has("_system"))
-		{
-			_system = getObject("_system");
-		}
-		String _type = null;
-		if (has("_type"))
-		{
-			_type = getString("_type");
-		}
-		ObjectNode _features = null;
-		if (has("_features"))
-		{
-			_features = getObject("_features");
-		}
-		String _doc = null;
-		if (has("_doc"))
-		{
-			_doc = getString("_doc");
-		}
+            // create a copy of the incoming object
+            ObjectNode incoming = JsonUtil.copyObject(source);
 
-		// clear our own object
-		this.object.removeAll();
+            // merge properties
+            replacement = mergeProperties(original, incoming);
+        }
+        else
+        {
+            replacement = JsonUtil.copyObject(source);
+        }
 
-		// push all the candidate elements in
-		this.object.putAll(candidate);
+        // if the replacement doesn't have "_system", copy from original
+        if (!replacement.has(Document.SYSTEM))
+        {
+            mergePropertyIfExists(this.getObject(), replacement, Document.SYSTEM);
+        }
 
-		// copy in any values that we retained from our own object
-		if (_id != null)
-		{
-			set("_id", _id);
-		}
+        // only hard condition - make sure _id copies over
+        if (this.has("_id"))
+        {
+            replacement.put("_id", this.getString("_id"));
+        }
 
-		if (_system != null)
-		{
-			set("_system", _system);
-		}
-
-		if (_type != null && !has("_type"))
-		{
-			set("_type", _type);
-		}
-
-		if (_features != null && !has("_features"))
-		{
-			set("_features", _features);
-		}
-
-		if (_doc != null && !has("_doc"))
-		{
-			set("_doc", _doc);
-		}
+        // clear our own object and push new properties
+        this.object.removeAll();
+        this.object.putAll(replacement);
 	}
+
+    protected ObjectNode mergeProperties(ObjectNode original, ObjectNode incoming)
+    {
+        ObjectNode merged = JsonUtil.createObject();
+
+        // copy everything in from incoming
+        merged.putAll(incoming);
+
+        // things we always retain
+        //mergePropertyIfExists(original, merged, "_id");
+        mergePropertyIfExists(original, merged, Document.SYSTEM);
+        mergePropertyIfExists(original, merged, Document.FIELD_ID);
+
+        return merged;
+    }
+
+    protected void mergePropertyIfExists(ObjectNode source, ObjectNode target, String propertyName)
+    {
+        if (source.has(propertyName))
+        {
+            target.put(propertyName, source.get(propertyName));
+        }
+    }
 
     @Override
     public boolean isSaved()

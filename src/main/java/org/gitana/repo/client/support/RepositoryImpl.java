@@ -27,6 +27,7 @@ import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.RepositoryType;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -162,13 +163,13 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, Branch> fetchBranches()
+    public ResultMap<Branch> fetchBranches()
     {
         return fetchBranches(null);
     }
 
     @Override
-    public Map<String, Branch> fetchBranches(Pagination pagination)
+    public ResultMap<Branch> fetchBranches(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -238,13 +239,13 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     }
 
     @Override
-    public Map<String, Branch> queryBranches(ObjectNode query)
+    public ResultMap<Branch> queryBranches(ObjectNode query)
     {
         return queryBranches(query, null);
     }
 
     @Override
-    public Map<String, Branch> queryBranches(ObjectNode query, Pagination pagination)
+    public ResultMap<Branch> queryBranches(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 

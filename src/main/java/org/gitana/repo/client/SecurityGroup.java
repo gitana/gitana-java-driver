@@ -22,9 +22,9 @@
 package org.gitana.repo.client;
 
 import org.gitana.repo.client.types.Group;
+import org.gitana.repo.support.ResultMap;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author uzi
@@ -33,9 +33,9 @@ public interface SecurityGroup extends SecurityPrincipal
 {
     // CHILDREN
 
-    public Map<String, SecurityPrincipal> fetchPrincipals();
+    public ResultMap<SecurityPrincipal> fetchPrincipals();
 
-    public Map<String, SecurityPrincipal> fetchPrincipals(boolean includeInherited);
+    public ResultMap<SecurityPrincipal> fetchPrincipals(boolean includeInherited);
 
     public List<SecurityPrincipal> listPrincipals();
 

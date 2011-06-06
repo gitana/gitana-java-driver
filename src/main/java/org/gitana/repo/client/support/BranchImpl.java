@@ -33,6 +33,7 @@ import org.gitana.repo.client.types.*;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
 import java.io.InputStream;
@@ -245,18 +246,18 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, Node> fetchNodes()
+    public ResultMap<Node> fetchNodes()
     {
         return fetchNodes(null);
     }
 
     @Override
-    public Map<String, Node> fetchNodes(Pagination pagination)
+    public ResultMap<Node> fetchNodes(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes", params);
-        Map<String, BaseNode> baseNodes = getFactory().nodes(this, response);
+        ResultMap<BaseNode> baseNodes = getFactory().nodes(this, response);
 
         return DriverUtil.toNodes(baseNodes);
     }
@@ -337,13 +338,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Map<String, BaseNode> queryNodes(ObjectNode query)
+    public ResultMap<BaseNode> queryNodes(ObjectNode query)
     {
         return queryNodes(query, null);
     }
 
     @Override
-    public Map<String, BaseNode> queryNodes(ObjectNode query, Pagination pagination)
+    public ResultMap<BaseNode> queryNodes(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -352,7 +353,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Map<String, BaseNode> searchNodes(String text)
+    public ResultMap<BaseNode> searchNodes(String text)
     {
         // url encode the text
         try

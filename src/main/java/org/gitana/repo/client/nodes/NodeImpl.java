@@ -33,9 +33,13 @@ import org.gitana.repo.client.beans.TraversalResults;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Default "n:node" implementation for a node.
@@ -173,49 +177,49 @@ public class NodeImpl extends BaseNodeImpl implements Node
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, Association> associations()
+    public ResultMap<Association> associations()
     {
         return associations((Pagination) null);
     }
 
     @Override
-    public Map<String, Association> associations(Pagination pagination)
+    public ResultMap<Association> associations(Pagination pagination)
     {
         return associations(Direction.ANY, pagination);
     }
 
     @Override
-    public Map<String, Association> associations(Direction direction)
+    public ResultMap<Association> associations(Direction direction)
     {
         return associations(direction, (Pagination) null);
     }
 
     @Override
-    public Map<String, Association> associations(Direction direction, Pagination pagination)
+    public ResultMap<Association> associations(Direction direction, Pagination pagination)
     {
         return associations(null, direction, pagination);
     }
 
     @Override
-    public Map<String, Association> associations(QName associationTypeQName)
+    public ResultMap<Association> associations(QName associationTypeQName)
     {
         return associations(associationTypeQName, (Pagination) null);
     }
 
     @Override
-    public Map<String, Association> associations(QName associationTypeQName, Pagination pagination)
+    public ResultMap<Association> associations(QName associationTypeQName, Pagination pagination)
     {
         return associations(associationTypeQName, Direction.ANY, pagination);
     }
 
     @Override
-    public Map<String, Association> associations(QName associationTypeQName, Direction direction)
+    public ResultMap<Association> associations(QName associationTypeQName, Direction direction)
     {
         return associations(associationTypeQName, direction, (Pagination) null);
     }
 
     @Override
-    public Map<String, Association> associations(QName associationTypeQName, Direction direction, Pagination pagination)
+    public ResultMap<Association> associations(QName associationTypeQName, Direction direction, Pagination pagination)
     {
         String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/associations";
 

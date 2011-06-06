@@ -21,11 +21,11 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author uzi
@@ -53,9 +53,9 @@ public interface SecurityPrincipal extends Document, Principal, Attachable, Self
 
     // PARENTS
 
-    public Map<String, SecurityGroup> fetchParentGroups();
+    public ResultMap<SecurityGroup> fetchParentGroups();
 
-    public Map<String, SecurityGroup> fetchParentGroups(boolean includeAncestors);
+    public ResultMap<SecurityGroup> fetchParentGroups(boolean includeAncestors);
 
     public List<SecurityGroup> listParentGroups();
 

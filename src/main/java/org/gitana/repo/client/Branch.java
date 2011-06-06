@@ -29,6 +29,7 @@ import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.client.types.*;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return a map of node objects keyed by node id
      */
-    public Map<String, Node> fetchNodes();
+    public ResultMap<Node> fetchNodes();
 
     /**
      * Retrieves the mount nodes for this branch.
@@ -91,7 +92,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return a map of node objects keyed by node id
      */
-    public Map<String, Node> fetchNodes(Pagination pagination);
+    public ResultMap<Node> fetchNodes(Pagination pagination);
 
     /**
      * Retrieves the mount nodes for this branch.
@@ -149,7 +150,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param query
      * @return map of nodes
      */
-    public Map<String, BaseNode> queryNodes(ObjectNode query);
+    public ResultMap<BaseNode> queryNodes(ObjectNode query);
 
     /**
      * Performs a query for nodes.
@@ -159,7 +160,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @return map of nodes
      */
-    public Map<String, BaseNode> queryNodes(ObjectNode query, Pagination pagination);
+    public ResultMap<BaseNode> queryNodes(ObjectNode query, Pagination pagination);
 
     /**
      * Full-text search
@@ -167,7 +168,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param text
      * @return map of nodes
      */
-    public Map<String, BaseNode> searchNodes(String text);
+    public ResultMap<BaseNode> searchNodes(String text);
 
     /**
      * Reads the person object for a security user.

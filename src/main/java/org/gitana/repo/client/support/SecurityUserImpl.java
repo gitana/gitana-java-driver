@@ -24,6 +24,7 @@ package org.gitana.repo.client.support;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.types.Person;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.MD5;
 
@@ -101,13 +102,13 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityGroup> fetchParentGroups()
+    public ResultMap<SecurityGroup> fetchParentGroups()
     {
         return fetchParentGroups(false);
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchParentGroups(boolean includeAncestors)
+    public ResultMap<SecurityGroup> fetchParentGroups(boolean includeAncestors)
     {
         String url = "/security/users/" + this.getId() + "/memberships";
         if (includeAncestors)

@@ -22,6 +22,10 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.JSONBuilder;
+import org.gitana.repo.query.QueryBuilder;
+import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -106,4 +110,71 @@ public class BranchTest extends AbstractTestCase
         assertNotNull(master.getAuthorities(bugs.getId()));
         assertTrue(master.getAuthorities(bugs.getId()).size() > 0);
     }
+
+    @Test
+    public void testPagination()
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Server server = gitana.authenticate("admin", "admin");
+
+        // create a repository
+        Repository repository = server.createRepository();
+
+        // create a bunch of branches
+        repository.createBranch("0:root", JSONBuilder.start("value").is(1).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(2).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(3).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(4).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(5).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(6).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(7).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(8).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(9).get());
+        repository.createBranch("0:root", JSONBuilder.start("value").is(10).get());
+
+        // list branches (should have 11)
+        assertEquals(11, repository.listBranches().size());
+
+        // test size 5
+        Pagination pagination = new Pagination();
+        pagination.setSkip(0);
+        pagination.setLimit(5);
+        assertEquals(5, repository.listBranches(pagination).size());
+
+        // test size 7 offset 2
+        pagination.setSkip(2);
+        assertEquals(5, repository.listBranches(pagination).size());
+
+        // query for all branches with a "value" > 0
+        ObjectNode query = QueryBuilder.start("value").greaterThan(0).get();
+
+        // query size 5, offset 0
+        pagination.setSkip(0);
+        ResultMap<Branch> branches1 = repository.queryBranches(query, pagination);
+        assertTrue(branches1.offset() == 0);
+        assertTrue(branches1.totalRows() == 10);
+        assertTrue(branches1.size() == 5);
+
+        // query next 5
+        pagination.setSkip(5);
+        ResultMap<Branch> branches2 = repository.queryBranches(query, pagination);
+        assertTrue(branches2.offset() == 5);
+        assertTrue(branches2.totalRows() == 10);
+        assertTrue(branches2.size() == 5);
+
+        // ensure first batch is correct
+        for (Branch branch: branches1.values())
+        {
+            assertTrue(branch.getInt("value") <= 5);
+        }
+
+        // ensure second batch is correct
+        for (Branch branch: branches2.values())
+        {
+            assertTrue(branch.getInt("value") > 5 && branch.getInt("value") <= 10);
+        }
+    }
+
 }

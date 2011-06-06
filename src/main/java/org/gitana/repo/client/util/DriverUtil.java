@@ -29,6 +29,8 @@ import org.gitana.repo.client.beans.ACLEntry;
 import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
+import org.gitana.repo.support.ResultMapImpl;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -119,9 +121,9 @@ public class DriverUtil
         return params;
     }
 
-    public static Map<String, Node> toNodes(Map<String, BaseNode> baseNodes)
+    public static ResultMap<Node> toNodes(ResultMap<BaseNode> baseNodes)
     {
-        Map<String, Node> nodes = new LinkedHashMap<String, Node>();
+        ResultMap nodes = new ResultMapImpl(baseNodes.offset(), baseNodes.totalRows());
 
         for (BaseNode baseNode: baseNodes.values())
         {

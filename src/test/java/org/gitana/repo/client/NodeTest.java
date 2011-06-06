@@ -21,8 +21,14 @@
 
 package org.gitana.repo.client;
 
+import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
+import org.gitana.repo.query.QueryBuilder;
+import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
@@ -109,6 +115,65 @@ public class NodeTest extends AbstractTestCase
 
         verify = node.downloadAttachment("thumb");
         assertEquals(bytes.length, verify.length);
+    }
+
+    @Test
+    public void testPagination()
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Server server = gitana.authenticate("admin", "admin");
+
+        // create a repository
+        Repository repository = server.createRepository();
+
+        // get the master branch
+        Branch master = repository.readBranch("master");
+
+        // create a whole bunch of nodes
+        for (int i = 0; i < 20; i++)
+        {
+            ObjectNode data = JsonUtil.createObject();
+            data.put("value", i + 1);
+
+            master.createNode(data);
+        }
+
+        // pagination size 10, offset 0
+        Pagination pagination = new Pagination();
+        pagination.setSkip(0);
+        pagination.setLimit(10);
+
+        // query
+        ObjectNode query = QueryBuilder.start("value").greaterThan(0).get();
+
+        // first ten
+        ResultMap<BaseNode> nodes1 = master.queryNodes(query, pagination);
+        assertEquals(10, nodes1.size());
+        assertEquals(20, nodes1.totalRows());
+        assertEquals(0, nodes1.offset());
+
+        // second ten
+        pagination.setSkip(10);
+        ResultMap<BaseNode> nodes2 = master.queryNodes(query, pagination);
+        assertEquals(10, nodes2.size());
+        assertEquals(20, nodes2.totalRows());
+        assertEquals(10, nodes2.offset());
+
+        // ensure first set is correct
+        for (BaseNode node: nodes1.values())
+        {
+            int value = node.getInt("value");
+            assertTrue(value > 0 && value <= 10);
+        }
+
+        // ensure second set is correct
+        for (BaseNode node: nodes2.values())
+        {
+            int value = node.getInt("value");
+            assertTrue(value > 10 && value <= 20);
+        }
     }
 
 }

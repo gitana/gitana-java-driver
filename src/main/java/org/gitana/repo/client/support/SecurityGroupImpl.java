@@ -24,6 +24,7 @@ package org.gitana.repo.client.support;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.types.Group;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 
 import java.util.ArrayList;
@@ -84,13 +85,13 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityGroup> fetchParentGroups()
+    public ResultMap<SecurityGroup> fetchParentGroups()
     {
         return fetchParentGroups(false);
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchParentGroups(boolean includeAncestors)
+    public ResultMap<SecurityGroup> fetchParentGroups(boolean includeAncestors)
     {
         String url = "/security/groups/" + this.getId() + "/memberships";
         if (includeAncestors)
@@ -130,13 +131,13 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityPrincipal> fetchPrincipals()
+    public ResultMap<SecurityPrincipal> fetchPrincipals()
     {
         return fetchPrincipals(false);
     }
 
     @Override
-    public Map<String, SecurityPrincipal> fetchPrincipals(boolean includeInherited)
+    public ResultMap<SecurityPrincipal> fetchPrincipals(boolean includeInherited)
     {
         String url = "/security/groups/" + getId() + "/members";
         if (includeInherited)

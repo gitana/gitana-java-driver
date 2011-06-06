@@ -26,6 +26,7 @@ import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
@@ -87,13 +88,13 @@ public class ServerImpl implements Server
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, Repository> fetchRepositories()
+    public ResultMap<Repository> fetchRepositories()
     {
         return fetchRepositories(null);
     }
 
     @Override
-    public Map<String, Repository> fetchRepositories(Pagination pagination)
+    public ResultMap<Repository> fetchRepositories(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -163,13 +164,13 @@ public class ServerImpl implements Server
     }
 
     @Override
-    public Map<String, Repository> queryRepositories(ObjectNode query)
+    public ResultMap<Repository> queryRepositories(ObjectNode query)
     {
         return queryRepositories(query, null);
     }
 
     @Override
-    public Map<String, Repository> queryRepositories(ObjectNode query, Pagination pagination)
+    public ResultMap<Repository> queryRepositories(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -226,13 +227,13 @@ public class ServerImpl implements Server
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityGroup> fetchGroups()
+    public ResultMap<SecurityGroup> fetchGroups()
     {
         return fetchGroups(null);
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchGroups(Pagination pagination)
+    public ResultMap<SecurityGroup> fetchGroups(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -321,13 +322,13 @@ public class ServerImpl implements Server
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, SecurityUser> fetchUsers()
+    public ResultMap<SecurityUser> fetchUsers()
     {
         return fetchUsers(null);
     }
 
     @Override
-    public Map<String, SecurityUser> fetchUsers(Pagination pagination)
+    public ResultMap<SecurityUser> fetchUsers(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
@@ -434,25 +435,25 @@ public class ServerImpl implements Server
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchMemberships(SecurityUser user)
+    public ResultMap<SecurityGroup> fetchMemberships(SecurityUser user)
     {
         return fetchMemberships(user.getId());
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchMemberships(String userId)
+    public ResultMap<SecurityGroup> fetchMemberships(String userId)
     {
         return fetchMemberships(userId, false);
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchMemberships(SecurityUser user, boolean includeIndirectMemberships)
+    public ResultMap<SecurityGroup> fetchMemberships(SecurityUser user, boolean includeIndirectMemberships)
     {
         return fetchMemberships(user.getId(), includeIndirectMemberships);
     }
 
     @Override
-    public Map<String, SecurityGroup> fetchMemberships(String userId, boolean includeIndirectMemberships)
+    public ResultMap<SecurityGroup> fetchMemberships(String userId, boolean includeIndirectMemberships)
     {
         String url = "/security/users/" + userId + "/memberships";
         if (includeIndirectMemberships)
@@ -505,13 +506,13 @@ public class ServerImpl implements Server
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Map<String, Job> queryJobs(ObjectNode query)
+    public ResultMap<Job> queryJobs(ObjectNode query)
     {
         return queryJobs(query, null);
     }
 
     @Override
-    public Map<String, Job> queryJobs(ObjectNode query, Pagination pagination)
+    public ResultMap<Job> queryJobs(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 

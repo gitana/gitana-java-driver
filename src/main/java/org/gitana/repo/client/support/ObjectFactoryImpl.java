@@ -25,6 +25,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.nodes.*;
 import org.gitana.repo.namespace.QName;
+import org.gitana.repo.support.ResultMap;
+import org.gitana.repo.support.ResultMapImpl;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
@@ -75,14 +77,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, Repository> repositories(Server server, Response response)
+    public ResultMap<Repository> repositories(Server server, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Repository> map = new LinkedHashMap<String, Repository>();
+        ResultMap<Repository> map = new ResultMapImpl<Repository>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             Repository repository = new RepositoryImpl(driver, server, object, true);
@@ -121,14 +123,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, Branch> branches(Repository repository, Response response)
+    public ResultMap<Branch> branches(Repository repository, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Branch> map = new LinkedHashMap<String, Branch>();
+        ResultMap<Branch> map = new ResultMapImpl<Branch>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             Branch branch = new BranchImpl(driver, repository, object, true);
@@ -150,14 +152,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, Changeset> changesets(Repository repository, Response response)
+    public ResultMap<Changeset> changesets(Repository repository, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Changeset> map = new LinkedHashMap<String, Changeset>();
+        ResultMap<Changeset> map = new ResultMapImpl<Changeset>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             Changeset changeset = new ChangesetImpl(driver, repository, object, true);
@@ -198,14 +200,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, BaseNode> nodes(Branch branch, Response response)
+    public ResultMap<BaseNode> nodes(Branch branch, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, BaseNode> map = new LinkedHashMap<String, BaseNode>();
+        ResultMap<BaseNode> map = new ResultMapImpl<BaseNode>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             BaseNode node = produce(branch, object, true);
@@ -246,14 +248,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, Association> associations(Branch branch, Response response)
+    public ResultMap<Association> associations(Branch branch, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Association> map = new LinkedHashMap<String, Association>();
+        ResultMap<Association> map = new ResultMapImpl<Association>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             Association association = (Association) produce(branch, object, true);
@@ -292,14 +294,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, SecurityUser> securityUsers(Server server, Response response)
+    public ResultMap<SecurityUser> securityUsers(Server server, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, SecurityUser> map = new LinkedHashMap<String, SecurityUser>();
+        ResultMap<SecurityUser> map = new ResultMapImpl<SecurityUser>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             SecurityUser user = new SecurityUserImpl(driver, server, object, true);
@@ -338,14 +340,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, SecurityGroup> securityGroups(Server server, Response response)
+    public ResultMap<SecurityGroup> securityGroups(Server server, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, SecurityGroup> map = new LinkedHashMap<String, SecurityGroup>();
+        ResultMap<SecurityGroup> map = new ResultMapImpl<SecurityGroup>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             SecurityGroup group = new SecurityGroupImpl(driver, server, object, true);
@@ -381,14 +383,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, SecurityPrincipal> securityPrincipals(Server server, Response response)
+    public ResultMap<SecurityPrincipal> securityPrincipals(Server server, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, SecurityPrincipal> map = new LinkedHashMap<String, SecurityPrincipal>();
+        ResultMap<SecurityPrincipal> map = new ResultMapImpl<SecurityPrincipal>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             SecurityPrincipal principal = securityPrincipal(server, object);
@@ -498,14 +500,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, Job> jobs(Server server, Response response)
+    public ResultMap<Job> jobs(Server server, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        Map<String, Job> map = new LinkedHashMap<String, Job>();
+        ResultMap<Job> map = new ResultMapImpl<Job>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
             Job job = new JobImpl(driver, server, object, true);
