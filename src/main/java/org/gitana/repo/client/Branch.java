@@ -276,4 +276,32 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public void importPublication(BinaryObject binary);
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FIND
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Queries and searches for nodes.
+     *
+     * @param query
+     * @param searchTerm
+     *
+     * @return
+     */
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm);
+
+    /**
+     * Queries and searches for nodes.
+     *
+     * @param query
+     * @param searchTerm
+     * @param pagination
+     *
+     * @return
+     */
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, Pagination pagination);
+
 }

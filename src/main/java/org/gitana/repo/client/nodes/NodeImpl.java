@@ -403,4 +403,36 @@ public class NodeImpl extends BaseNodeImpl implements Node
         return (Node) getFactory().node(getBranch(), response);
     }
 
+    @Override
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse)
+    {
+        return findNodes(query, searchTerm, traverse, null);
+    }
+
+    @Override
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, Pagination pagination)
+    {
+        String uri = "/repositories/" + this.getRepositoryId() + "/branches/" + this.getBranchId() + "/nodes/" + getId() + "/find";
+
+        ObjectNode payload = JsonUtil.createObject();
+        if (query != null)
+        {
+            payload.put("query", query);
+        }
+        if (searchTerm != null)
+        {
+            payload.put("search", searchTerm);
+        }
+        if (traverse != null)
+        {
+            payload.put("traverse", traverse);
+        }
+
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(uri, params, payload);
+
+        return getFactory().nodes(getBranch(), response);
+    }
+
 }

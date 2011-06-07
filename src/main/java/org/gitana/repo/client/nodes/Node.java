@@ -225,4 +225,26 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      */
     public Node readTranslation(String edition, Locale locale);
 
+    /**
+     * Queries and searches for nodes in the defined traversal space around this node.
+     *
+     * @param query
+     * @param searchTerm
+     * @param traverse
+     * @return
+     */
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse);
+
+    /**
+     * Queries and searches for nodes in the defined traversal space around this node.
+     *
+     * @param query
+     * @param searchTerm
+     * @param traverse
+     * @param pagination
+     *
+     * @return
+     */
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, Pagination pagination);
+
 }
