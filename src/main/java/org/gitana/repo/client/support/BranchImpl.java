@@ -617,7 +617,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, Pagination pagination)
     {
-        String uri = "/repositories/" + this.getRepositoryId() + "/branches/" + this.getId() + "/find";
+        String uri = "/repositories/" + this.getRepositoryId() + "/branches/" + this.getId() + "/nodes/find";
 
         ObjectNode payload = JsonUtil.createObject();
         if (query != null)

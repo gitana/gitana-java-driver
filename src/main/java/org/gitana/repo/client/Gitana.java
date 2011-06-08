@@ -24,11 +24,9 @@ package org.gitana.repo.client;
 import org.apache.commons.httpclient.HttpClient;
 import org.gitana.repo.client.exceptions.AuthenticationFailedException;
 import org.gitana.repo.client.exceptions.RemoteServerException;
-import org.gitana.repo.client.support.ObjectFactoryImpl;
 import org.gitana.repo.client.support.Remote;
 import org.gitana.repo.client.support.RemoteImpl;
 import org.gitana.repo.client.support.ServerImpl;
-import org.gitana.repo.client.types.*;
 
 import java.util.ResourceBundle;
 
@@ -106,4 +104,19 @@ public class Gitana
         // hand back server
         return new ServerImpl(driver);
     }
+
+    /**
+     * Authenticates with the given ticket.
+     *
+     * @param ticket
+     */
+    public Server authenticateWithTicket(String ticket)
+    {
+        // build driver instance
+        Driver driver = new Driver(this.host, this.port, null, ticket);
+
+        // hand back server
+        return new ServerImpl(driver);
+    }
+
 }
