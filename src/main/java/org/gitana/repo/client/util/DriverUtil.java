@@ -99,9 +99,9 @@ public class DriverUtil
         if (pagination != null)
         {
             // sorting
-            if (pagination.hasSorting())
+            if (pagination.getSorting().size() > 0)
             {
-                String sort = JsonUtil.stringify((ObjectNode)pagination.toJSON().get("sort"), false);
+                String sort = JsonUtil.stringify((ObjectNode)pagination.getSorting().toJSON(), false);
                 params.put("sort", sort);
             }
 
