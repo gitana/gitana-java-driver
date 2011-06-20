@@ -160,4 +160,11 @@ public interface Server extends AccessControllable
 
     public Job readJob(String jobId);
 
+
+    ////////////////////
+    // driver
+    ////////////////////
+
+    public Driver getDriver();
+
 }

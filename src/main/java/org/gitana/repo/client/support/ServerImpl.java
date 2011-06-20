@@ -62,6 +62,12 @@ public class ServerImpl implements Server
         return driver.getFactory();
     }
 
+    @Override
+    public Driver getDriver()
+    {
+        return driver;
+    }
+
     /*
     @Override
     public boolean equals(Object object)
