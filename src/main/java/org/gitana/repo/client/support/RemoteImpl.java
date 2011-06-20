@@ -26,6 +26,10 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.client.Response;
@@ -36,6 +40,7 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -437,6 +442,27 @@ public class RemoteImpl implements Remote
 		method.addRequestHeader(contentLength);
 
 		int sc = client.executeMethod(method);
+        if (sc != 200)
+        {
+            throw new RuntimeException("Upload failed");
+        }
+	}
+
+    @Override
+	public void upload(String uri, byte[] bytes, String mimetype, String fileName)
+        throws Exception
+	{
+        String URL = buildURL(uri, false);
+
+        PostMethod method = new PostMethod(URL);
+        Part[] parts = {
+                new FilePart(fileName, new ByteArrayPartSource(fileName, bytes) , mimetype,null)
+        };
+        method.setRequestEntity(
+                new MultipartRequestEntity(parts, method.getParams())
+        );
+
+        int sc = client.executeMethod(method);
         if (sc != 200)
         {
             throw new RuntimeException("Upload failed");

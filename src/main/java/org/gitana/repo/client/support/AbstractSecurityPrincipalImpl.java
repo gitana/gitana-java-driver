@@ -29,6 +29,7 @@ import org.gitana.repo.client.SecurityPrincipal;
 import org.gitana.repo.client.Server;
 import org.gitana.security.PrincipalType;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,6 +131,31 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         try
         {
             getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
+    {
+        // build the uri
+        String uri = "/security";
+        if (this.getPrincipalType().equals(PrincipalType.USER))
+        {
+            uri += "/users";
+        }
+        else if (this.getPrincipalType().equals(PrincipalType.GROUP))
+        {
+            uri += "/groups";
+        }
+        uri += "/" + this.getId() + "/attachment/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType, fileName);
         }
         catch (Exception ex)
         {
