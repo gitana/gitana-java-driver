@@ -21,6 +21,8 @@
 
 package org.gitana.repo.client;
 
+import java.io.File;
+
 /**
  * @author uzi
  */
@@ -42,6 +44,17 @@ public interface Attachable
      * @param contentType
      */
     public void uploadAttachment(String attachmentId, byte[] bytes, String contentType);
+
+    /**
+     * Uploads an attachment.
+     *
+     * @param attachmentId
+     * @param attachmentId
+     * @param bytes
+     * @param contentType
+     * @param fileName
+     */
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName);
 
     /**
      * Downloads the default attachment.

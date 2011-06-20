@@ -36,6 +36,7 @@ import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -132,6 +133,27 @@ public class NodeImpl extends BaseNodeImpl implements Node
         try
         {
             getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
+    {
+        if (attachmentId == null)
+        {
+            attachmentId = "default";
+        }
+
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType, fileName);
         }
         catch (Exception ex)
         {
