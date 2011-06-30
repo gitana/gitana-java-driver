@@ -23,15 +23,13 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Driver;
-import org.gitana.repo.client.ObjectFactory;
-import org.gitana.repo.client.SecurityPrincipal;
-import org.gitana.repo.client.Server;
+import org.gitana.repo.client.*;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -196,5 +194,58 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
 
         return bytes;
     }
+
+    @Override
+    public List<Attachment> listAttachments()
+    {
+        Map<String, Attachment> map = fetchAttachments();
+
+        List<Attachment> list = new ArrayList<Attachment>();
+        for (Attachment attachment : map.values())
+        {
+            list.add(attachment);
+        }
+
+        return list;
+    }
+
+    @Override
+    public ResultMap<Attachment> fetchAttachments()
+    {
+        // build the uri
+        String uri = "/security";
+        if (this.getPrincipalType().equals(PrincipalType.USER))
+        {
+            uri += "/users";
+        }
+        else if (this.getPrincipalType().equals(PrincipalType.GROUP))
+        {
+            uri += "/groups";
+        }
+        uri += "/" + this.getId() + "/attachment";
+
+        Response response = getRemote().get(uri);
+
+        return getFactory().attachments(this, response);
+    }
+
+    @Override
+    public String getDownloadUri(String attachmentId)
+    {
+        // build the uri
+        String uri = "/security";
+        if (this.getPrincipalType().equals(PrincipalType.USER))
+        {
+            uri += "/users";
+        }
+        else if (this.getPrincipalType().equals(PrincipalType.GROUP))
+        {
+            uri += "/groups";
+        }
+        uri += "/" + this.getId() + "/attachment/" + attachmentId;
+
+        return uri;
+    }
+
 
 }

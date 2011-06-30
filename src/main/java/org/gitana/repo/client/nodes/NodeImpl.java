@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.association.Directionality;
+import org.gitana.repo.client.Attachment;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Driver;
 import org.gitana.repo.client.Response;
@@ -36,7 +37,6 @@ import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -190,6 +190,35 @@ public class NodeImpl extends BaseNodeImpl implements Node
 
         return bytes;
     }
+
+    @Override
+    public List<Attachment> listAttachments()
+    {
+        Map<String, Attachment> map = fetchAttachments();
+
+        List<Attachment> list = new ArrayList<Attachment>();
+        for (Attachment attachment : map.values())
+        {
+            list.add(attachment);
+        }
+
+        return list;
+    }
+
+    @Override
+    public ResultMap<Attachment> fetchAttachments()
+    {
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments");
+
+        return getFactory().attachments(this, response);
+    }
+
+    @Override
+    public String getDownloadUri(String attachmentId)
+    {
+        return "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments/" + attachmentId;
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////

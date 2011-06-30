@@ -21,7 +21,9 @@
 
 package org.gitana.repo.client;
 
-import java.io.File;
+import org.gitana.repo.support.ResultMap;
+
+import java.util.List;
 
 /**
  * @author uzi
@@ -71,4 +73,24 @@ public interface Attachable
      * @return attachment
      */
     public byte[] downloadAttachment(String attachmentId);
+
+    /**
+     * @return list of attachments
+     */
+    public List<Attachment> listAttachments();
+
+    /**
+     * @return map of attachments
+     */
+    public ResultMap<Attachment> fetchAttachments();
+
+    /**
+     * Acquires the download URI for the attachment
+     *
+     * @param attachmentId
+     *
+     * @return uri
+     */
+    public String getDownloadUri(String attachmentId);
+
 }

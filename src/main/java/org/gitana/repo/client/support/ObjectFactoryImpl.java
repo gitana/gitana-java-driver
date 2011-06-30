@@ -517,6 +517,25 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public ResultMap<Attachment> attachments(Attachable attachable, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Attachment> map = new ResultMapImpl<Attachment>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Attachment attachment = new AttachmentImpl(driver, attachable, object);
+            map.put(attachment.getId(), attachment);
+        }
+
+        return map;
+    }
+
+
 
 
 }

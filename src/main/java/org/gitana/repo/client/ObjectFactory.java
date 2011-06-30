@@ -27,8 +27,6 @@ import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.ResultMap;
 
-import java.util.Map;
-
 /**
  * @author uzi
  */
@@ -84,5 +82,8 @@ public interface ObjectFactory
     // jobs
     public Job job(Server server, Response response);
     public ResultMap<Job> jobs(Server server, Response response);
+
+    // attachments
+    public ResultMap<Attachment> attachments(Attachable attachable, Response response);
 
 }
