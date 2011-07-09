@@ -32,7 +32,7 @@ import org.junit.Test;
 public class NodeAttachmentTest extends AbstractTestCase
 {
     @Test
-    public void testSearch()
+    public void testAttachments()
         throws Exception
     {
         Gitana gitana = new Gitana();

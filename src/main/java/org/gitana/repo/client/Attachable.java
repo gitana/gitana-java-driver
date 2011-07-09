@@ -21,9 +21,11 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.http.HttpPayload;
 import org.gitana.repo.support.ResultMap;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -57,6 +59,20 @@ public interface Attachable
      * @param fileName
      */
     public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName);
+
+    /**
+     * Uploads a group of attachments.
+     *
+     * @param payloads
+     */
+    public void uploadAttachments(HttpPayload... payloads );
+
+    /**
+     * Uploads a group of attachments.
+     *
+     * @param payloads
+     */
+    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads );
 
     /**
      * Downloads the default attachment.

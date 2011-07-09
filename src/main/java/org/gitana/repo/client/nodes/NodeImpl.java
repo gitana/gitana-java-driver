@@ -23,6 +23,7 @@ package org.gitana.repo.client.nodes;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.http.HttpPayload;
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.association.Directionality;
 import org.gitana.repo.client.Attachment;
@@ -37,10 +38,7 @@ import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Default "n:node" implementation for a node.
@@ -154,6 +152,30 @@ public class NodeImpl extends BaseNodeImpl implements Node
         try
         {
             getRemote().upload(uri, bytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachments(HttpPayload... payloads)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+
+        uploadAttachments(params, payloads);
+    }
+
+    @Override
+    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
+    {
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/attachments";
+
+        try
+        {
+            getRemote().upload(uri, params, payloads);
         }
         catch (Exception ex)
         {

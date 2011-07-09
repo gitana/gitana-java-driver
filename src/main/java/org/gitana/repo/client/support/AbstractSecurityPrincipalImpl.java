@@ -23,11 +23,13 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.http.HttpPayload;
 import org.gitana.repo.client.*;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -154,6 +156,39 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         try
         {
             getRemote().upload(uri, bytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachments(HttpPayload... payloads)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+
+        uploadAttachments(params, payloads);
+    }
+
+    @Override
+    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
+    {
+        // build the uri
+        String uri = "/security";
+        if (this.getPrincipalType().equals(PrincipalType.USER))
+        {
+            uri += "/users";
+        }
+        else if (this.getPrincipalType().equals(PrincipalType.GROUP))
+        {
+            uri += "/groups";
+        }
+        uri += "/" + this.getId() + "/attachment";
+
+        try
+        {
+            getRemote().upload(uri, params, payloads);
         }
         catch (Exception ex)
         {

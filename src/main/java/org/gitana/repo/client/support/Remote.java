@@ -26,7 +26,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.client.Response;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -119,6 +118,10 @@ public interface Remote
 	public void upload(String uri, byte[] bytes, String mimetype) throws Exception;
 
 	public void upload(String uri, byte[] bytes, String mimetype, String filename) throws Exception;
+
+    public void upload(String uri, HttpPayload... payloads) throws Exception;
+
+    public void upload(String uri, Map<String, String> params, HttpPayload... payloads) throws Exception;
 
 	public byte[] downloadBytes(String uri) throws Exception;
 

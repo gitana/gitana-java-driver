@@ -40,7 +40,6 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -468,6 +467,30 @@ public class RemoteImpl implements Remote
             throw new RuntimeException("Upload failed");
         }
 	}
+
+    @Override
+    public void upload(String uri, HttpPayload... payloads)
+        throws Exception
+    {
+        Map<String, String> params = new LinkedHashMap<String, String>();
+
+        upload(uri, params, payloads);
+    }
+
+    @Override
+    public void upload(String uri, Map<String, String> params, HttpPayload... payloads)
+        throws Exception
+    {
+        String URL = buildURL(uri, false);
+
+        Map<String, HttpPayload> payloadMap = new LinkedHashMap<String, HttpPayload>();
+        for (HttpPayload payload: payloads)
+        {
+            payloadMap.put(payload.getFilename(), payload);
+        }
+
+        HttpUtilEx.multipartPost(client, URL, params, payloadMap);
+    }
 
     @Override
     public byte[] downloadBytes(String uri)

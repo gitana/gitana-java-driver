@@ -205,5 +205,4 @@ public class SecurityGroupImpl extends AbstractSecurityPrincipalImpl implements 
     {
         return branch.readGroup(getName(), createIfNotFound);
     }
-
 }
