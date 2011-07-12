@@ -469,19 +469,25 @@ public class RemoteImpl implements Remote
 	}
 
     @Override
-    public void upload(String uri, HttpPayload... payloads)
+    public Response upload(String uri, HttpPayload... payloads)
         throws Exception
     {
         Map<String, String> params = new LinkedHashMap<String, String>();
 
-        upload(uri, params, payloads);
+        return upload(uri, params, payloads);
     }
 
     @Override
-    public void upload(String uri, Map<String, String> params, HttpPayload... payloads)
+    public Response upload(String uri, Map<String, String> params, HttpPayload... payloads)
         throws Exception
     {
         String URL = buildURL(uri, false);
+
+        if (params == null)
+        {
+            params = new LinkedHashMap<String, String>();
+        }
+        buildParams(params);
 
         Map<String, HttpPayload> payloadMap = new LinkedHashMap<String, HttpPayload>();
         for (HttpPayload payload: payloads)
@@ -489,7 +495,8 @@ public class RemoteImpl implements Remote
             payloadMap.put(payload.getFilename(), payload);
         }
 
-        HttpUtilEx.multipartPost(client, URL, params, payloadMap);
+        PostMethod method = HttpUtilEx.multipartPost(client, URL, params, payloadMap);
+        return toResult(method.getResponseBody());
     }
 
     @Override

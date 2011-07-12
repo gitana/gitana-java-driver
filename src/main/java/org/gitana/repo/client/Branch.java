@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.http.HttpPayload;
 import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.nodes.BaseNode;
@@ -143,6 +144,15 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return node
      */
     public BaseNode createNode(ObjectNode object);
+
+    /**
+     * Creates multiple nodes from binary payloads (single attachment each).
+     *
+     * @param params
+     * @param payloads
+     * @return
+     */
+    public Map<String, BaseNode> createNodes(Map<String, String> params, HttpPayload... payloads);
 
     /**
      * Performs a query for nodes.

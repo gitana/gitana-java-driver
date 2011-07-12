@@ -23,6 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.http.HttpPayload;
 import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.*;
@@ -39,10 +40,7 @@ import org.gitana.util.JsonUtil;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uzi
@@ -335,6 +333,30 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         this.markDirty();
 
         return node;
+    }
+
+    @Override
+    public Map<String, BaseNode> createNodes(Map<String, String> params, HttpPayload... payloads)
+    {
+        if (params == null)
+        {
+            params = new HashMap<String, String>();
+        }
+
+        // build the uri
+        String uri = "/repositories/" + getRepositoryId() + "/branches/" + getId() + "/nodes";
+
+        Response response = null;
+        try
+        {
+            response = getRemote().upload(uri, params, payloads);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return getFactory().nodes(this, response);
     }
 
     @Override

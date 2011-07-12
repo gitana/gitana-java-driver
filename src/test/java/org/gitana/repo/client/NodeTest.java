@@ -175,5 +175,4 @@ public class NodeTest extends AbstractTestCase
             assertTrue(value > 10 && value <= 20);
         }
     }
-
 }
