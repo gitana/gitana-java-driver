@@ -22,7 +22,9 @@
 package org.gitana.repo.client;
 
 import org.apache.commons.httpclient.Cookie;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.gitana.repo.client.support.ObjectFactoryImpl;
 import org.gitana.repo.client.support.Remote;
 import org.gitana.repo.client.support.RemoteImpl;
@@ -54,14 +56,18 @@ public class Driver
         this.username = username;
 
         // build a new http client
-        HttpClient httpClient = new HttpClient();
+        HttpClient client = new HttpClient();
+        client.getParams().setSoTimeout(0);
+
+        // disable retry on http calls
+        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
         // set a cookie into the http state
         Cookie cookie = buildCookie(ticket);
-        httpClient.getState().addCookie(cookie);
+        client.getState().addCookie(cookie);
 
         // build remote
-        this.remote = new RemoteImpl(httpClient, "http://" + host + ":" + port);
+        this.remote = new RemoteImpl(client, "http://" + host + ":" + port);
 
         this.init();
     }
