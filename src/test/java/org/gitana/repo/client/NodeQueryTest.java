@@ -109,7 +109,7 @@ public class NodeQueryTest extends AbstractTestCase
 
         // find all nodes that are containers (using dot notation)
         // there should be three (the root node (qname = n:root), the users node (qname = r:users) and node8)
-        ObjectNode query6 = QueryBuilder.start("_features.f:container.active").is(true).get();
+        ObjectNode query6 = QueryBuilder.start("_features.f:container").is(QueryBuilder.start("$exists").is(true).get()).get();
         Map<String, BaseNode> results6 = master.queryNodes(query6);
         assertEquals(3, results6.size());
 
