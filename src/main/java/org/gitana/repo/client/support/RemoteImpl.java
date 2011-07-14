@@ -443,7 +443,7 @@ public class RemoteImpl implements Remote
 		int sc = client.executeMethod(method);
         if (sc != 200)
         {
-            throw new RuntimeException("Upload failed");
+            throw new RuntimeException("Upload failed: " + method.getResponseBodyAsString());
         }
 	}
 
@@ -464,7 +464,7 @@ public class RemoteImpl implements Remote
         int sc = client.executeMethod(method);
         if (sc != 200)
         {
-            throw new RuntimeException("Upload failed");
+            throw new RuntimeException("Upload failed: " + method.getResponseBodyAsString());
         }
 	}
 

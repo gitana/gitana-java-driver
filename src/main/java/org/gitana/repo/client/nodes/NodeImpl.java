@@ -134,6 +134,8 @@ public class NodeImpl extends BaseNodeImpl implements Node
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
+
             throw new RuntimeException(ex);
         }
     }
