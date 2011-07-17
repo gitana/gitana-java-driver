@@ -21,14 +21,14 @@
 
 package org.gitana.repo.client;
 
-import org.apache.commons.httpclient.Cookie;
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.gitana.repo.client.support.ObjectFactoryImpl;
 import org.gitana.repo.client.support.Remote;
 import org.gitana.repo.client.support.RemoteImpl;
 import org.gitana.repo.client.types.*;
+import org.gitana.util.HttpUtil;
 
 /**
  * @author uzi
@@ -56,15 +56,11 @@ public class Driver
         this.username = username;
 
         // build a new http client
-        HttpClient client = new HttpClient();
-        client.getParams().setSoTimeout(0);
-
-        // disable retry on http calls
-        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+        DefaultHttpClient client = HttpUtil.buildClient();
 
         // set a cookie into the http state
         Cookie cookie = buildCookie(ticket);
-        client.getState().addCookie(cookie);
+        client.getCookieStore().addCookie(cookie);
 
         // build remote
         this.remote = new RemoteImpl(client, "http://" + host + ":" + port);
@@ -105,11 +101,11 @@ public class Driver
 
     private Cookie buildCookie(String ticket)
     {
-        Cookie cookie = new Cookie();
+        BasicClientCookie cookie = new BasicClientCookie(TICKET_COOKIE_NAME, ticket);
         cookie.setDomain(getDomain());
         cookie.setPath("/");
-        cookie.setName(TICKET_COOKIE_NAME);
-        cookie.setValue(ticket);
+        //cookie.setName(TICKET_COOKIE_NAME);
+        //cookie.setValue(ticket);
 
         return cookie;
     }

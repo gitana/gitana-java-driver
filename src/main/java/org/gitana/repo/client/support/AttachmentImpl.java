@@ -21,7 +21,7 @@
 
 package org.gitana.repo.client.support;
 
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.Attachable;
 import org.gitana.repo.client.Attachment;
@@ -86,8 +86,8 @@ public class AttachmentImpl implements Attachment
 
         try
         {
-            GetMethod method = driver.getRemote().download(attachable.getDownloadUri(getId()));
-            in = method.getResponseBodyAsStream();
+            HttpResponse httpResponse = driver.getRemote().download(attachable.getDownloadUri(getId()));
+            in = httpResponse.getEntity().getContent();
         }
         catch (Exception ex)
         {

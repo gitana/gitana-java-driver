@@ -21,7 +21,7 @@
 
 package org.gitana.repo.client.support;
 
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.binary.BinaryObject;
@@ -568,11 +568,11 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         BinaryObject binary = null;
         try
         {
-            GetMethod method = getRemote().download("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export/" + job.getId());
+            HttpResponse response = getRemote().download("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export/" + job.getId());
 
-            InputStream in = method.getResponseBodyAsStream();
-            String contentType = method.getResponseHeader("Content-Type").getValue();
-            long contentLength = method.getResponseContentLength();
+            InputStream in = response.getEntity().getContent();
+            String contentType = response.getEntity().getContentType().toString();
+            long contentLength = response.getEntity().getContentLength();
 
             binary = new BinaryObject(job.getId(), contentType, contentLength, in);
         }

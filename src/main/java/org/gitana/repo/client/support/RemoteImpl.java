@@ -21,25 +21,23 @@
 
 package org.gitana.repo.client.support;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
+import org.gitana.http.HttpPayloadContentBody;
 import org.gitana.repo.client.Response;
 import org.gitana.repo.client.exceptions.RemoteServerException;
+import org.gitana.util.HttpUtil;
 import org.gitana.util.HttpUtilEx;
 import org.gitana.util.JsonUtil;
-import org.springframework.util.FileCopyUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -429,43 +427,49 @@ public class RemoteImpl implements Remote
 	public void upload(String uri, byte[] bytes, String mimetype)
         throws Exception
 	{
-		InputStreamRequestEntity entity = new InputStreamRequestEntity(new ByteArrayInputStream(bytes));
+		InputStreamEntity entity = new InputStreamEntity(new ByteArrayInputStream(bytes), bytes.length);
+        entity.setContentType(mimetype);
 
         String URL = buildURL(uri, false);
-		PostMethod method = new PostMethod(URL);
-		method.setRequestEntity(entity);
+        HttpPost httpPost = new HttpPost(URL);
+        httpPost.setEntity(entity);
 
-		Header contentType = new Header("Content-Type", mimetype);
-		Header contentLength = new Header("Content-Length", String.valueOf(bytes.length));
-		method.addRequestHeader(contentType);
-		method.addRequestHeader(contentLength);
-
-		int sc = client.executeMethod(method);
-        if (sc != 200)
+        HttpResponse httpResponse = client.execute(httpPost);
+        if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Upload failed: " + method.getResponseBodyAsString());
+            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
         }
+
+        // consume the response fully so that the client connection can be reused
+        EntityUtils.consume(httpResponse.getEntity());
 	}
 
     @Override
-	public void upload(String uri, byte[] bytes, String mimetype, String fileName)
+	public void upload(String uri, byte[] bytes, String mimetype, String filename)
         throws Exception
 	{
         String URL = buildURL(uri, false);
 
-        PostMethod method = new PostMethod(URL);
-        Part[] parts = {
-                new FilePart(fileName, new ByteArrayPartSource(fileName, bytes) , mimetype,null)
-        };
-        method.setRequestEntity(
-                new MultipartRequestEntity(parts, method.getParams())
-        );
+        HttpPost httpPost = new HttpPost(URL);
 
-        int sc = client.executeMethod(method);
-        if (sc != 200)
+        HttpPayload payload = new HttpPayload();
+        payload.setBytes(bytes);
+        payload.setContentType(mimetype);
+        payload.setFilename(filename);
+        payload.setLength(bytes.length);
+
+        MultipartEntity entity = new MultipartEntity();
+        entity.addPart(filename, new HttpPayloadContentBody(payload));
+        httpPost.setEntity(entity);
+
+        HttpResponse httpResponse = client.execute(httpPost);
+        if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Upload failed: " + method.getResponseBodyAsString());
+            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
         }
+
+        // consume the response fully so that the client connection can be reused
+        EntityUtils.consume(httpResponse.getEntity());
 	}
 
     @Override
@@ -495,37 +499,34 @@ public class RemoteImpl implements Remote
             payloadMap.put(payload.getFilename(), payload);
         }
 
-        PostMethod method = HttpUtilEx.multipartPost(client, URL, params, payloadMap);
-        return toResult(method.getResponseBody());
+        HttpResponse response = HttpUtilEx.multipartPost(client, URL, params, payloadMap);
+        return toResult(EntityUtils.toByteArray(response.getEntity()));
     }
 
     @Override
     public byte[] downloadBytes(String uri)
         throws Exception
     {
-        GetMethod method = download(uri);
+        HttpResponse httpResponse = download(uri);
 
-        InputStream in = method.getResponseBodyAsStream();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileCopyUtils.copy(in, out);
-
-        return out.toByteArray();
+        return EntityUtils.toByteArray(httpResponse.getEntity());
     }
 
     @Override
-	public GetMethod download(String uri)
+	public HttpResponse download(String uri)
         throws Exception
 	{
         String URL = buildURL(uri, false);
-		GetMethod method = new GetMethod(URL);
 
-		int sc = client.executeMethod(method);
-        if (sc != 200)
+        HttpGet httpGet = new HttpGet(URL);
+
+        HttpResponse httpResponse = client.execute(httpGet);
+        if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Download failed");
+            throw new RuntimeException("Download failed: " + EntityUtils.toString(httpResponse.getEntity()));
         }
 
-        return method;
+        return httpResponse;
 	}
 
     private ObjectNode toObjectNode(byte[] response)

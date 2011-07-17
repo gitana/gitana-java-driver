@@ -21,9 +21,9 @@
 
 package org.gitana.repo.client;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.params.HttpConnectionParams;
 import org.gitana.repo.client.exceptions.AuthenticationFailedException;
 import org.gitana.repo.client.exceptions.RemoteServerException;
 import org.gitana.repo.client.support.Remote;
@@ -69,11 +69,10 @@ public class Gitana
 
     protected Remote getAnonymousRemote()
     {
-        HttpClient client = new HttpClient();
-        client.getParams().setSoTimeout(0);
-
-        // disable retry on http calls
-        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+        // build a new http client
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpConnectionParams.setSoTimeout(client.getParams(), 0);
+        client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
 
         return new RemoteImpl(client, "http://" + this.host + ":" + this.port);
     }

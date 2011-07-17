@@ -21,8 +21,7 @@
 
 package org.gitana.repo.client.support;
 
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpResponse;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.client.Response;
@@ -126,5 +125,5 @@ public interface Remote
 
 	public byte[] downloadBytes(String uri) throws Exception;
 
-    public GetMethod download(String uri) throws Exception;
+    public HttpResponse download(String uri) throws Exception;
 }
