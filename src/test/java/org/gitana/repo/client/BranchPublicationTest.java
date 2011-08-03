@@ -81,11 +81,8 @@ public class BranchPublicationTest extends AbstractTestCase
         // master branch
         Branch master2 = repo2.readBranch("master");
 
-        // create a new import archive from the export bytes
-        BinaryObject importArchive = new BinaryObject("import", exportArchive.getContentType(), exportArchive.getLength(), new ByteArrayInputStream(bytes));
-
         // import
-        master2.importPublication(importArchive);
+        master2.importPublication(new ByteArrayInputStream(bytes), exportArchive.getLength(), exportArchive.getContentType());
 
 
 

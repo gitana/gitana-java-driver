@@ -585,10 +585,10 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public void importPublication(BinaryObject binary)
+    public void importPublication(InputStream in, long length, String contentType)
     {
         // post binary to server and get back job id
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/import", binary.getInputStream(), binary.getLength(), binary.getContentType());
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/import", in, length, contentType);
         String jobId = response.getId();
 
 

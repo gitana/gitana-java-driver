@@ -32,6 +32,7 @@ import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -280,11 +281,13 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
     /**
      * Imports a publication archive into the branch.
      *
-     * @parma binary
+     * @param in
+     * @param length
+     * @param contentType
      * @return
      * @throws Exception
      */
-    public void importPublication(BinaryObject binary);
+    public void importPublication(InputStream in, long length, String contentType);
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
