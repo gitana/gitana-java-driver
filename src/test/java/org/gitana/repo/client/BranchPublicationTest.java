@@ -22,13 +22,12 @@
 package org.gitana.repo.client;
 
 import org.gitana.JSONBuilder;
-import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
-import org.gitana.util.StreamUtil;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * @author uzi
@@ -64,29 +63,46 @@ public class BranchPublicationTest extends AbstractTestCase
         node1.associate(node4, aChild);
         node4.associate(node5, aChild);
 
-        // export
-        BinaryObject exportArchive = master1.exportPublication();
+        // archive data
+        String groupId = "uzquiano";
+        String artifactId = "mike";
+        String versionId = "version" + System.currentTimeMillis();
 
-        // NOTE: the "exportArchive" doesn't contain the data - it's just a descriptor of what was exported
-        // it has an input stream
-        // so let's pull down the bytes
-        byte[] bytes = StreamUtil.getBytes(exportArchive.getInputStream());
+        // tell Gitana to export an archive of "master1" branch
+        master1.exportPublicationArchive(groupId, artifactId, versionId);
 
+        // ensure the archive exists
+        Archive archive = server.readArchive(groupId, artifactId, versionId);
+        assertNotNull(archive);
 
+        // download the archive
+        // verify it has size
+        byte[] bytes = server.downloadArchive(groupId, artifactId, versionId);
+        assertTrue(bytes.length > 0);
 
+        // delete the archive
+        server.deleteArchive(groupId, artifactId, versionId);
 
-        // create a new repository
+        // verify it was deleted
+        archive = server.readArchive(groupId, artifactId, versionId);
+        assertNull(archive);
+
+        // upload the archive anew
+        InputStream in = new ByteArrayInputStream(bytes);
+        server.uploadArchive(groupId, artifactId, versionId, in);
+
+        // verify the archive exists
+        archive = server.readArchive(groupId, artifactId, versionId);
+        assertNotNull(archive);
+
+        // create a new repo
         Repository repo2 = server.createRepository();
-
-        // master branch
         Branch master2 = repo2.readBranch("master");
 
-        // import
-        master2.importPublication(new ByteArrayInputStream(bytes), exportArchive.getLength(), exportArchive.getContentType());
+        // import the archive into the new repo
+        master2.importPublicationArchive(groupId, artifactId, versionId);
 
-
-
-        // verify it worked
+        // verify the branch has all the content
         Node x1 = (Node) master2.readNode(node1.getId());
         assertNotNull(x1);
         assertEquals(node1.associations().size(), x1.associations().size());

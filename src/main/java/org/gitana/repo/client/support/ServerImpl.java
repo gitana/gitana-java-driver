@@ -22,6 +22,7 @@
 package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
@@ -29,8 +30,12 @@ import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
+import org.gitana.util.StreamUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -522,7 +527,7 @@ public class ServerImpl implements Server
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().post("/jobs", params, query);
+        Response response = getRemote().post("/jobs/query", params, query);
         return getFactory().jobs(this, response);
     }
 
@@ -545,5 +550,103 @@ public class ServerImpl implements Server
 
         return job;
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ARCHIVES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Archive> queryArchives(ObjectNode query)
+    {
+        return queryArchives(query, null);
+    }
+
+    @Override
+    public ResultMap<Archive> queryArchives(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/archives/query", params, query);
+        return getFactory().archives(this, response);
+    }
+
+    @Override
+    public Archive readArchive(String groupId, String artifactId, String versionId)
+    {
+        Archive archive = null;
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("group", groupId);
+        params.put("artifact", artifactId);
+        params.put("version", versionId);
+
+        try
+        {
+            Response response = getRemote().get("/archives", params);
+            archive = getFactory().archive(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return archive;
+    }
+
+    @Override
+    public void deleteArchive(String groupId, String artifactId, String versionId)
+    {
+        try
+        {
+            Response response = getRemote().delete("/archives?group="+groupId+"&artifact="+artifactId+"&version="+versionId);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+    }
+
+    @Override
+    public void uploadArchive(String groupId, String artifactId, String versionId, InputStream in)
+        throws IOException
+    {
+        String contentType = MimeTypeMap.APPLICATION_ZIP;
+        byte[] bytes = StreamUtil.getBytes(in);
+        try
+        {
+            getRemote().upload("/archives/upload?group="+groupId+"&artifact="+artifactId+"&version="+versionId, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] downloadArchive(String groupId, String artifactId, String versionId)
+        throws IOException
+    {
+        byte[] bytes = null;
+
+        try
+        {
+            bytes = getRemote().downloadBytes("/archives/download?group="+groupId+"&artifact="+artifactId+"&version="+versionId);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return bytes;
+    }
+
+
 
 }

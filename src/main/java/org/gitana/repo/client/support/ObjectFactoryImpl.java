@@ -535,6 +535,34 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public Archive archive(Server server, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new ArchiveImpl(driver, server, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Archive> archives(Server server, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Archive> map = new ResultMapImpl<Archive>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Archive archive = new ArchiveImpl(driver, server, object, true);
+            map.put(archive.getId(), archive);
+        }
+
+        return map;
+    }
 
 
 

@@ -25,6 +25,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -166,5 +168,24 @@ public interface Server extends AccessControllable
     ////////////////////
 
     public Driver getDriver();
+
+
+    ////////////////////
+    // ARCHIVES
+    ////////////////////
+
+    public ResultMap<Archive> queryArchives(ObjectNode query);
+
+    public ResultMap<Archive> queryArchives(ObjectNode query, Pagination pagination);
+
+    public Archive readArchive(String groupId, String artifactId, String versionId);
+
+    public void deleteArchive(String groupId, String artifactId, String versionId);
+
+    public void uploadArchive(String groupId, String artifactId, String versionId, InputStream in)
+        throws IOException;
+
+    public byte[] downloadArchive(String groupId, String artifactId, String versionId)
+        throws IOException;
 
 }

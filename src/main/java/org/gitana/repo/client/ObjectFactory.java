@@ -86,4 +86,8 @@ public interface ObjectFactory
     // attachments
     public ResultMap<Attachment> attachments(Attachable attachable, Response response);
 
+    // archives
+    public Archive archive(Server server, Response response);
+    public ResultMap<Archive> archives(Server server, Response response);
+
 }

@@ -518,12 +518,12 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public BinaryObject exportPublication()
+    public BinaryObject exportPublicationArchive(String groupId, String artifactId, String versionId)
     {
         //
         // start the export
         //
-        Response response1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export");
+        Response response1 = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export?group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId);
         String jobId = response1.getId();
 
 
@@ -585,10 +585,10 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public void importPublication(InputStream in, long length, String contentType)
+    public void importPublicationArchive(String groupId, String artifactId, String versionId)
     {
         // post binary to server and get back job id
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/import", in, length, contentType);
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/import?group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId);
         String jobId = response.getId();
 
 
