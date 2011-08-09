@@ -27,6 +27,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
@@ -471,6 +472,49 @@ public class RemoteImpl implements Remote
         // consume the response fully so that the client connection can be reused
         EntityUtils.consume(httpResponse.getEntity());
 	}
+
+    @Override
+    public void upload(String uri, InputStream in, long length, String mimetype) throws Exception
+    {
+        InputStreamEntity entity = new InputStreamEntity(in, length);
+        entity.setContentType(mimetype);
+
+        String URL = buildURL(uri, false);
+        HttpPost httpPost = new HttpPost(URL);
+        httpPost.setEntity(entity);
+
+        HttpResponse httpResponse = client.execute(httpPost);
+        if (!HttpUtil.isOk(httpResponse))
+        {
+            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
+        }
+
+        // consume the response fully so that the client connection can be reused
+        EntityUtils.consume(httpResponse.getEntity());
+    }
+
+    @Override
+    public void upload(String uri, InputStream in, long length, String mimetype, String filename) throws Exception
+    {
+        String URL = buildURL(uri, false);
+
+        HttpPost httpPost = new HttpPost(URL);
+
+        InputStreamBody inputStreamBody = new InputStreamBody(in, mimetype, filename);
+
+        MultipartEntity entity = new MultipartEntity();
+        entity.addPart(filename, inputStreamBody);
+        httpPost.setEntity(entity);
+
+        HttpResponse httpResponse = client.execute(httpPost);
+        if (!HttpUtil.isOk(httpResponse))
+        {
+            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
+        }
+
+        // consume the response fully so that the client connection can be reused
+        EntityUtils.consume(httpResponse.getEntity());
+    }
 
     @Override
     public Response upload(String uri, HttpPayload... payloads)

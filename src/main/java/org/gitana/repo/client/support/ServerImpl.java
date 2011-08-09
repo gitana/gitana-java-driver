@@ -30,7 +30,6 @@ import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
-import org.gitana.util.StreamUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -614,14 +613,15 @@ public class ServerImpl implements Server
     }
 
     @Override
-    public void uploadArchive(String groupId, String artifactId, String versionId, InputStream in)
+    public void uploadArchive(String groupId, String artifactId, String versionId, InputStream in, long length)
         throws IOException
     {
         String contentType = MimeTypeMap.APPLICATION_ZIP;
-        byte[] bytes = StreamUtil.getBytes(in);
         try
         {
-            getRemote().upload("/archives/upload?group="+groupId+"&artifact="+artifactId+"&version="+versionId, bytes, contentType);
+            String uri = "/archives/upload?group="+groupId+"&artifact="+artifactId+"&version="+versionId;
+
+            getRemote().upload(uri, in, length, contentType);
         }
         catch (Exception ex)
         {

@@ -89,7 +89,7 @@ public class BranchPublicationTest extends AbstractTestCase
 
         // upload the archive anew
         InputStream in = new ByteArrayInputStream(bytes);
-        server.uploadArchive(groupId, artifactId, versionId, in);
+        server.uploadArchive(groupId, artifactId, versionId, in, bytes.length);
 
         // verify the archive exists
         archive = server.readArchive(groupId, artifactId, versionId);

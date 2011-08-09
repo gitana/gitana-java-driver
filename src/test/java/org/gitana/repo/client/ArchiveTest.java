@@ -26,6 +26,7 @@ import org.gitana.repo.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
@@ -44,8 +45,9 @@ public class ArchiveTest extends AbstractTestCase
 
         // create artifact 1
         // org/gitana/1.0.0/test-artifact1-1.0.0.zip
-        InputStream in1 = ClasspathUtil.streamFromClasspath("org/gitana/repo/client/archive.zip");
-        server.uploadArchive("org.gitana", "test-artifact1", "1.0.0", in1);
+        byte[] bytes1 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive.zip");
+        InputStream in1 = new ByteArrayInputStream(bytes1);
+        server.uploadArchive("org.gitana", "test-artifact1", "1.0.0", in1, bytes1.length);
         // verify
         Archive archive1 = server.readArchive("org.gitana", "test-artifact1", "1.0.0");
         assertNotNull(archive1);
@@ -53,8 +55,9 @@ public class ArchiveTest extends AbstractTestCase
 
         // create artifact 2
         // org/gitana/2.0.0/test-artifact2-2.0.0.zip
-        InputStream in2 = ClasspathUtil.streamFromClasspath("org/gitana/repo/client/archive.zip");
-        server.uploadArchive("org.gitana", "test-artifact2", "2.0.0", in2);
+        byte[] bytes2 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive.zip");
+        InputStream in2 = new ByteArrayInputStream(bytes2);
+        server.uploadArchive("org.gitana", "test-artifact2", "2.0.0", in2, bytes2.length);
         // verify
         Archive archive2 = server.readArchive("org.gitana", "test-artifact2", "2.0.0");
         assertNotNull(archive2);
@@ -62,8 +65,9 @@ public class ArchiveTest extends AbstractTestCase
 
         // create artifact 3
         // org/cloudcms/1.0.0/test-artifact3-1.0.0.zip
-        InputStream in3 = ClasspathUtil.streamFromClasspath("org/gitana/repo/client/archive.zip");
-        server.uploadArchive("org.cloudcms", "test-artifact3", "1.0.0", in3);
+        byte[] bytes3 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive.zip");
+        InputStream in3 = new ByteArrayInputStream(bytes3);
+        server.uploadArchive("org.cloudcms", "test-artifact3", "1.0.0", in3, bytes3.length);
         // verify
         Archive archive3 = server.readArchive("org.cloudcms", "test-artifact3", "1.0.0");
         assertNotNull(archive3);

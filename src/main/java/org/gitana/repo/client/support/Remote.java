@@ -119,6 +119,10 @@ public interface Remote
 
 	public void upload(String uri, byte[] bytes, String mimetype, String filename) throws Exception;
 
+    public void upload(String uri, InputStream in, long length, String mimetype) throws Exception;
+
+    public void upload(String uri, InputStream in, long length, String mimetype, String filename) throws Exception;
+
     public Response upload(String uri, HttpPayload... payloads) throws Exception;
 
     public Response upload(String uri, Map<String, String> params, HttpPayload... payloads) throws Exception;
