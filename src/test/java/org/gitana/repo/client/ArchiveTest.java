@@ -24,6 +24,7 @@ package org.gitana.repo.client;
 import org.gitana.repo.query.QueryBuilder;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
+import org.gitana.util.StreamUtil;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -45,9 +46,9 @@ public class ArchiveTest extends AbstractTestCase
 
         // create artifact 1
         // org/gitana/1.0.0/test-artifact1-1.0.0.zip
-        byte[] bytes1 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive.zip");
+        byte[] bytes1 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive1.zip");
         InputStream in1 = new ByteArrayInputStream(bytes1);
-        server.uploadArchive("org.gitana", "test-artifact1", "1.0.0", in1, bytes1.length);
+        server.uploadArchive(in1, bytes1.length);
         // verify
         Archive archive1 = server.readArchive("org.gitana", "test-artifact1", "1.0.0");
         assertNotNull(archive1);
@@ -55,9 +56,9 @@ public class ArchiveTest extends AbstractTestCase
 
         // create artifact 2
         // org/gitana/2.0.0/test-artifact2-2.0.0.zip
-        byte[] bytes2 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive.zip");
+        byte[] bytes2 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive2.zip");
         InputStream in2 = new ByteArrayInputStream(bytes2);
-        server.uploadArchive("org.gitana", "test-artifact2", "2.0.0", in2, bytes2.length);
+        server.uploadArchive(in2, bytes2.length);
         // verify
         Archive archive2 = server.readArchive("org.gitana", "test-artifact2", "2.0.0");
         assertNotNull(archive2);
@@ -65,9 +66,9 @@ public class ArchiveTest extends AbstractTestCase
 
         // create artifact 3
         // org/cloudcms/1.0.0/test-artifact3-1.0.0.zip
-        byte[] bytes3 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive.zip");
+        byte[] bytes3 = ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/archive3.zip");
         InputStream in3 = new ByteArrayInputStream(bytes3);
-        server.uploadArchive("org.cloudcms", "test-artifact3", "1.0.0", in3, bytes3.length);
+        server.uploadArchive(in3, bytes3.length);
         // verify
         Archive archive3 = server.readArchive("org.cloudcms", "test-artifact3", "1.0.0");
         assertNotNull(archive3);
@@ -90,7 +91,8 @@ public class ArchiveTest extends AbstractTestCase
 
 
         // read artifact #1
-        byte[] bytes = server.downloadArchive("org.gitana", "test-artifact1", "1.0.0");
+        InputStream in = server.downloadArchive("org.gitana", "test-artifact1", "1.0.0");
+        byte[] bytes = StreamUtil.getBytes(in);
         assertNotNull(bytes);
         assertTrue(bytes.length > 0);
 
@@ -109,7 +111,7 @@ public class ArchiveTest extends AbstractTestCase
         Exception ex = null;
         try
         {
-            bytes = server.downloadArchive("org.gitana", "test-artifact1", "1.0.0");
+            server.downloadArchive("org.gitana", "test-artifact1", "1.0.0");
         }
         catch(Exception e)
         {

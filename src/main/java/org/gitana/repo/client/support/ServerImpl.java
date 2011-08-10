@@ -21,6 +21,8 @@
 
 package org.gitana.repo.client.support;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.repo.client.*;
@@ -613,13 +615,13 @@ public class ServerImpl implements Server
     }
 
     @Override
-    public void uploadArchive(String groupId, String artifactId, String versionId, InputStream in, long length)
+    public void uploadArchive(InputStream in, long length)
         throws IOException
     {
         String contentType = MimeTypeMap.APPLICATION_ZIP;
         try
         {
-            String uri = "/archives/upload?group="+groupId+"&artifact="+artifactId+"&version="+versionId;
+            String uri = "/archives";
 
             getRemote().upload(uri, in, length, contentType);
         }
@@ -630,21 +632,26 @@ public class ServerImpl implements Server
     }
 
     @Override
-    public byte[] downloadArchive(String groupId, String artifactId, String versionId)
+    public InputStream downloadArchive(String groupId, String artifactId, String versionId)
         throws IOException
     {
-        byte[] bytes = null;
+        InputStream in = null;
 
+        HttpResponse response = null;
         try
         {
-            bytes = getRemote().downloadBytes("/archives/download?group="+groupId+"&artifact="+artifactId+"&version="+versionId);
+            response = getRemote().download("/archives/download?group="+groupId+"&artifact="+artifactId+"&version="+versionId);
+
+            in = response.getEntity().getContent();
         }
         catch (Exception ex)
         {
+            try { EntityUtils.consume(response.getEntity()); } catch (Exception ex2) { }
+
             throw new RuntimeException(ex);
         }
 
-        return bytes;
+        return in;
     }
 
 

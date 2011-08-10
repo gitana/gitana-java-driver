@@ -21,10 +21,8 @@
 
 package org.gitana.repo.client.support;
 
-import org.apache.http.HttpResponse;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
-import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
@@ -37,7 +35,6 @@ import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -518,7 +515,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public BinaryObject exportPublicationArchive(String groupId, String artifactId, String versionId)
+    public Archive exportPublicationArchive(String groupId, String artifactId, String versionId)
     {
         //
         // start the export
@@ -563,25 +560,9 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
 
 
         //
-        // read back export
+        // read archive
         //
-        BinaryObject binary = null;
-        try
-        {
-            HttpResponse response = getRemote().download("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/export/" + job.getId());
-
-            InputStream in = response.getEntity().getContent();
-            String contentType = response.getEntity().getContentType().toString();
-            long contentLength = response.getEntity().getContentLength();
-
-            binary = new BinaryObject(job.getId(), contentType, contentLength, in);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-        return binary;
+        return getServer().readArchive(groupId, artifactId, versionId);
     }
 
     @Override

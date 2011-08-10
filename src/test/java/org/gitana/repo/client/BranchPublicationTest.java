@@ -24,6 +24,7 @@ package org.gitana.repo.client;
 import org.gitana.JSONBuilder;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.namespace.QName;
+import org.gitana.util.StreamUtil;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -69,15 +70,17 @@ public class BranchPublicationTest extends AbstractTestCase
         String versionId = "version" + System.currentTimeMillis();
 
         // tell Gitana to export an archive of "master1" branch
-        master1.exportPublicationArchive(groupId, artifactId, versionId);
+        Archive archive = master1.exportPublicationArchive(groupId, artifactId, versionId);
+        assertNotNull(archive);
 
-        // ensure the archive exists
-        Archive archive = server.readArchive(groupId, artifactId, versionId);
+        // ensure we can read it back manually
+        archive = server.readArchive(groupId, artifactId, versionId);
         assertNotNull(archive);
 
         // download the archive
         // verify it has size
-        byte[] bytes = server.downloadArchive(groupId, artifactId, versionId);
+        InputStream in = server.downloadArchive(groupId, artifactId, versionId);
+        byte[] bytes = StreamUtil.getBytes(in);
         assertTrue(bytes.length > 0);
 
         // delete the archive
@@ -88,8 +91,8 @@ public class BranchPublicationTest extends AbstractTestCase
         assertNull(archive);
 
         // upload the archive anew
-        InputStream in = new ByteArrayInputStream(bytes);
-        server.uploadArchive(groupId, artifactId, versionId, in, bytes.length);
+        in = new ByteArrayInputStream(bytes);
+        server.uploadArchive(in, bytes.length);
 
         // verify the archive exists
         archive = server.readArchive(groupId, artifactId, versionId);

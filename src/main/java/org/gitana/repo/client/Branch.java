@@ -275,11 +275,11 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @param artifactId
      * @param versionId
      *
-     * @return publication zip file
+     * @return publication archive
      *
      * @throws Exception
      */
-    public BinaryObject exportPublicationArchive(String groupId, String artifactId, String versionId);
+    public Archive exportPublicationArchive(String groupId, String artifactId, String versionId);
 
     /**
      * Imports a publication archive into the branch.

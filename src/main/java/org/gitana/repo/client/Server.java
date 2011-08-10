@@ -182,10 +182,10 @@ public interface Server extends AccessControllable
 
     public void deleteArchive(String groupId, String artifactId, String versionId);
 
-    public void uploadArchive(String groupId, String artifactId, String versionId, InputStream in, long length)
+    public void uploadArchive(InputStream in, long length)
         throws IOException;
 
-    public byte[] downloadArchive(String groupId, String artifactId, String versionId)
+    public InputStream downloadArchive(String groupId, String artifactId, String versionId)
         throws IOException;
 
 }
