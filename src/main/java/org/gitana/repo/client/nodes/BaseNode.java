@@ -59,4 +59,9 @@ public interface BaseNode extends Document, Selfable
             
     // flags
     public boolean isDeleted();
+
+    /**
+     * Touches the node.
+     */
+    public void touch();
 }

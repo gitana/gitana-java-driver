@@ -71,6 +71,9 @@ public class NodeTest extends AbstractTestCase
         Node verify4 = (Node) master.readNode(node2.getId());
         assertEquals("rose", verify4.getString("axl"));
 
+        // touch the node for giggles
+        node2.touch();
+
         // delete the second node
         node2.delete();
 

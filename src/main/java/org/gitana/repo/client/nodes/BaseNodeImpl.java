@@ -163,4 +163,10 @@ public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
         BaseNode baseNode = getBranch().readNode(getId());
         this.reload(baseNode);
     }
+
+    @Override
+    public void touch()
+    {
+        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/touch");
+    }
 }
