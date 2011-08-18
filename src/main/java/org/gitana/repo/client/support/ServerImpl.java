@@ -326,6 +326,21 @@ public class ServerImpl implements Server
         return readGroup(groupId);
     }
 
+    @Override
+    public ResultMap<SecurityGroup> queryGroups(ObjectNode query)
+    {
+        return queryGroups(query, null);
+    }
+
+    @Override
+    public ResultMap<SecurityGroup> queryGroups(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/security/groups/query", params, query);
+        return getFactory().securityGroups(this, response);
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -444,6 +459,21 @@ public class ServerImpl implements Server
     public void deleteUser(String userId)
     {
         getRemote().delete("/security/users/" + userId);
+    }
+
+    @Override
+    public ResultMap<SecurityUser> queryUsers(ObjectNode query)
+    {
+        return queryUsers(query, null);
+    }
+
+    @Override
+    public ResultMap<SecurityUser> queryUsers(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/security/users/query", params, query);
+        return getFactory().securityUsers(this, response);
     }
 
     @Override

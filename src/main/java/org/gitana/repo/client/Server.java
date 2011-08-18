@@ -115,6 +115,10 @@ public interface Server extends AccessControllable
 
     public SecurityGroup createGroup(ObjectNode object);
 
+    public ResultMap<SecurityGroup> queryGroups(ObjectNode query);
+
+    public ResultMap<SecurityGroup> queryGroups(ObjectNode query, Pagination pagination);
+
     public ResultMap<SecurityUser> fetchUsers();
 
     public ResultMap<SecurityUser> fetchUsers(Pagination pagination);
@@ -134,6 +138,10 @@ public interface Server extends AccessControllable
     public void deleteUser(SecurityUser user);
 
     public void deleteUser(String userId);
+
+    public ResultMap<SecurityUser> queryUsers(ObjectNode query);
+
+    public ResultMap<SecurityUser> queryUsers(ObjectNode query, Pagination pagination);
 
     public ResultMap<SecurityGroup> fetchMemberships(SecurityUser user);
 

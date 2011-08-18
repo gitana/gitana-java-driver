@@ -21,7 +21,9 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 import java.util.Map;
@@ -210,4 +212,109 @@ public class SecurityTest extends AbstractTestCase
         byte[] test2 = bugs.downloadAttachment("avatar");
         assertEquals(bugsBytes.length, test2.length);
     }
+
+    @Test
+    public void testUserQuery()
+        throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Server server = gitana.authenticate("admin", "admin");
+
+        String tag = "tag_" + System.currentTimeMillis();
+
+        // create test user #1
+        String name1 = "testuser1_" + System.currentTimeMillis();
+        SecurityUser user1 = server.createUser(name1, "password");
+        user1.set("tag", tag);
+        user1.set("season", "summer");
+        user1.set("month", "june");
+        user1.update();
+
+        // create test user #2
+        String name2 = "testuser2_" + System.currentTimeMillis();
+        SecurityUser user2 = server.createUser(name2, "password");
+        user2.set("tag", tag);
+        user2.set("season", "summer");
+        user2.set("month", "july");
+        user2.update();
+
+        // create test user #3
+        String name3 = "testuser3_" + System.currentTimeMillis();
+        SecurityUser user3 = server.createUser(name3, "password");
+        user3.set("tag", tag);
+        user3.set("season", "summer");
+        user3.set("month", "august");
+        user3.update();
+
+        // create test user #4
+        String name4 = "testuser4_" + System.currentTimeMillis();
+        SecurityUser user4 = server.createUser(name4, "password");
+        user4.set("tag", tag);
+        user4.set("season", "autumn");
+        user4.set("month", "august");
+        user4.update();
+
+        // query test #1
+        ResultMap<SecurityUser> users1 = server.queryUsers(JsonUtil.createObject("{'tag': '" + tag + "', 'season':'summer'}"));
+        assertEquals(3, users1.size());
+
+        // query test #2
+        ResultMap<SecurityUser> users2 = server.queryUsers(JsonUtil.createObject("{'tag': '" + tag + "', 'season':'autumn'}"));
+        assertEquals(1, users2.size());
+    }
+
+    @Test
+    public void testGroupQuery()
+        throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Server server = gitana.authenticate("admin", "admin");
+
+        String tag = "tag_" + System.currentTimeMillis();
+
+        // create test group #1
+        String name1 = "testgroup1_" + System.currentTimeMillis();
+        SecurityGroup group1 = server.createGroup(name1);
+        group1.set("tag", tag);
+        group1.set("season", "summer");
+        group1.set("month", "june");
+        group1.update();
+
+        // create test group #2
+        String name2 = "testgroup2_" + System.currentTimeMillis();
+        SecurityGroup group2 = server.createGroup(name2);
+        group2.set("tag", tag);
+        group2.set("season", "summer");
+        group2.set("month", "july");
+        group2.update();
+
+        // create test group #3
+        String name3 = "testgroup3_" + System.currentTimeMillis();
+        SecurityGroup group3 = server.createGroup(name3);
+        group3.set("tag", tag);
+        group3.set("season", "summer");
+        group3.set("month", "august");
+        group3.update();
+
+        // create test group #4
+        String name4 = "testgroup4_" + System.currentTimeMillis();
+        SecurityGroup group4 = server.createGroup(name4);
+        group4.set("tag", tag);
+        group4.set("season", "autumn");
+        group4.set("month", "august");
+        group4.update();
+
+        // query test #1
+        ResultMap<SecurityGroup> groups1 = server.queryGroups(JsonUtil.createObject("{'tag': '" + tag + "', 'season':'summer'}"));
+        assertEquals(3, groups1.size());
+
+        // query test #2
+        ResultMap<SecurityGroup> groups2 = server.queryGroups(JsonUtil.createObject("{'tag': '" + tag + "', 'season':'autumn'}"));
+        assertEquals(1, groups2.size());
+    }
+
 }
