@@ -65,4 +65,13 @@ public interface AccessControllable
      * @param principalId
      */
     public void revokeAll(String principalId);
+
+    /**
+     * Checks whether the principal has the given authority over this object.
+     *
+     * @param principalId
+     * @param authorityId
+     * @return
+     */
+    public boolean hasAuthority(String principalId, String authorityId);
 }

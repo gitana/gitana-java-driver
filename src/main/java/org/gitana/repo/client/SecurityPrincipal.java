@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface SecurityPrincipal extends Document, Principal, Attachable, Selfable
+public interface SecurityPrincipal extends Document, Principal, Attachable, Selfable, AccessControllable
 {
     // default collection location
     public final static String DEFAULT_COLLECTION_ID = "principals";

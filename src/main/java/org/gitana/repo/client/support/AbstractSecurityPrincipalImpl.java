@@ -25,6 +25,8 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.client.*;
+import org.gitana.repo.client.beans.ACL;
+import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 
@@ -281,6 +283,62 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
 
         return uri;
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ACL getACL()
+    {
+        Response response = getRemote().get("/security/principals/" + getName() + "/acl");
+
+        return DriverUtil.toACL(response);
+    }
+
+    @Override
+    public List<String> getAuthorities(String principalId)
+    {
+        Response response = getRemote().get("/security/principals/" + getName() + "/acl/" + principalId);
+
+        return DriverUtil.toStringList(response);
+    }
+
+    @Override
+    public void grant(String principalId, String authorityId)
+    {
+        getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/grant/" + authorityId);
+    }
+
+    @Override
+    public void revoke(String principalId, String authorityId)
+    {
+        getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/revoke/" + authorityId);
+    }
+
+    @Override
+    public void revokeAll(String principalId)
+    {
+        revoke(principalId, "all");
+    }
+
+    @Override
+    public boolean hasAuthority(String principalId, String authorityId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/check/" + authorityId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
 
 
 }

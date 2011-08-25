@@ -155,6 +155,20 @@ public class RepositoryImpl extends DocumentImpl implements Repository
         revoke(principalId, "all");
     }
 
+    @Override
+    public boolean hasAuthority(String principalId, String authorityId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/repositories/" + getId() + "/acl/" + principalId + "/check/" + authorityId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
