@@ -653,4 +653,38 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         return getFactory().nodes(this, response);
     }
 
+    @Override
+    public NodeList createList(String listKey, QName itemTypeQName)
+    {
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/lists/" + listKey + "?type=" + itemTypeQName.toString());
+
+        String nodeId = response.getId();
+        NodeList nodeList = (NodeList) readNode(nodeId);
+
+        // mark the branch as being dirty (since the tip will have moved)
+        this.markDirty();
+
+        return nodeList;
+    }
+
+    @Override
+    public NodeList readList(String listKey)
+    {
+        NodeList nodeList = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/lists/" + listKey);
+            nodeList = (NodeList) getFactory().node(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return nodeList;
+    }
+
 }

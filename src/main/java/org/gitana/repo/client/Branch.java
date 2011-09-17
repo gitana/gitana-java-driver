@@ -23,7 +23,6 @@ package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
-import org.gitana.repo.binary.BinaryObject;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
@@ -321,4 +320,27 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, Pagination pagination);
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // NODE LISTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Creates a new node list.
+     *
+     * @param listKey
+     * @param itemTypeQName
+     * @return
+     */
+    public NodeList createList(String listKey, QName itemTypeQName);
+
+    /**
+     * Reads a node list.
+     *
+     * @param listKey
+     * @return
+     */
+    public NodeList readList(String listKey);
 }

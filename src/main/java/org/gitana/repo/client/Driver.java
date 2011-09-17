@@ -87,6 +87,7 @@ public class Driver
         factory.register(HasMountAssociation.QNAME, HasMountAssociationImpl.class);
         factory.register(HasTranslationAssociation.QNAME, HasTranslationAssociationImpl.class);
         factory.register(LinkedAssociation.QNAME, LinkedAssociationImpl.class);
+        factory.register(NodeList.QNAME, NodeListImpl.class);
         factory.register(OwnedAssociation.QNAME, OwnedAssociationImpl.class);
         factory.register(Person.QNAME, PersonImpl.class);
         factory.register(Rule.QNAME, RuleImpl.class);
