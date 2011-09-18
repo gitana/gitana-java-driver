@@ -103,7 +103,9 @@ public class NodeListImpl extends NodeImpl implements NodeList
     @Override
     public ResultMap<Node> listItems(Pagination pagination)
     {
-        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/lists/" + getListKey() + "/items");
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/lists/" + getListKey() + "/items", params);
 
         ResultMap<BaseNode> baseNodes = getFactory().nodes(this.getBranch(), response);
         ResultMap<Node> nodes = new ResultMapImpl<Node>(baseNodes.offset(), baseNodes.totalRows());

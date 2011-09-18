@@ -40,6 +40,8 @@ import org.gitana.util.JsonUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -108,6 +110,15 @@ public class RemoteImpl implements Remote
         for (String name : params.keySet())
         {
             String value = params.get(name);
+
+            try
+            {
+                value = URLEncoder.encode(value, "utf-8");
+            }
+            catch (UnsupportedEncodingException uee)
+            {
+                throw new RuntimeException("Unsupported encoding: utf-8");
+            }
 
             sb.append((added ? "&" : "?"));
             sb.append(name);
