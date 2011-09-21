@@ -81,9 +81,11 @@ public class NodeBulkAttachmentUploadTest extends AbstractTestCase
         params.put("attachmentId_0", "spoof1");
         node.uploadAttachments(params, payload1, payload2, payload3);
 
+        Thread.sleep(2000);
+
         // list attachment
         ResultMap<Attachment> attachments = node.fetchAttachments();
-        assertTrue(attachments.size() == 3);
+        assertEquals(3, attachments.size());
 
         assertNull(attachments.get("attachment1"));
         assertNotNull(attachments.get("attachment2"));
