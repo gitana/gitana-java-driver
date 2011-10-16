@@ -152,4 +152,65 @@ public interface Repository extends Document, AccessControllable, Selfable
      */
     public byte[] downloadFile(String filename);
 
+
+    /**
+     * Retrieves changesets for the repository
+     *
+     * @return a map of changeset objects keyed by changeset id
+     */
+    public ResultMap<Changeset> fetchChangesets();
+
+    /**
+     * Retrieves changesets for the repository
+     *
+     * @param pagination
+     *
+     * @return a map of changeset objects keyed by changeset id
+     */
+    public ResultMap<Changeset> fetchChangesets(Pagination pagination);
+
+    /**
+     * Retrieves changesets for the repository.
+     *
+     * @return list of repositories
+     */
+    public List<Changeset> listChangesets();
+
+    /**
+     * Retrieves changesets for the repository.
+     *
+     * @param pagination
+     *
+     * @return list of repositories
+     */
+    public List<Changeset> listChangesets(Pagination pagination);
+
+    /**
+     * Reads a single changeset.
+     *
+     * @param changesetId
+     *
+     * @return branch
+     */
+    public Changeset readChangeset(String changesetId);
+
+    /**
+     * Performs a query over the changeset index.
+     *
+     * @param query
+     * @return
+     */
+    public ResultMap<Changeset> queryChangesets(ObjectNode query);
+
+    /**
+     * Performs a query over the changeset index.
+     *
+     * @param query
+     * @param pagination
+     *
+     * @return
+     */
+    public ResultMap<Changeset> queryChangesets(ObjectNode query, Pagination pagination);
+
+
 }

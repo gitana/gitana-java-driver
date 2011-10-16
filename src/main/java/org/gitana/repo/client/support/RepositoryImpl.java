@@ -309,4 +309,74 @@ public class RepositoryImpl extends DocumentImpl implements Repository
 
         return bytes;
     }
+
+    @Override
+    public ResultMap<Changeset> fetchChangesets()
+    {
+        return fetchChangesets(null);
+    }
+
+    @Override
+    public ResultMap<Changeset> fetchChangesets(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories/" + getId() + "/changesets", params);
+        return getFactory().changesets(this, response);
+    }
+
+    @Override
+    public List<Changeset> listChangesets()
+    {
+        return listChangesets(null);
+    }
+
+    @Override
+    public List<Changeset> listChangesets(Pagination pagination)
+    {
+        Map<String, Changeset> map = fetchChangesets(pagination);
+
+        List<Changeset> list = new ArrayList<Changeset>();
+        for (Changeset changeset : map.values())
+        {
+            list.add(changeset);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Changeset readChangeset(String changesetId)
+    {
+        Changeset changeset = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getId() + "/changesets/" + changesetId);
+            changeset = getFactory().changeset(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return changeset;
+    }
+
+    @Override
+    public ResultMap<Changeset> queryChangesets(ObjectNode query)
+    {
+        return queryChangesets(query, null);
+    }
+
+    @Override
+    public ResultMap<Changeset> queryChangesets(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/repositories/" + getId() + "/changesets/query", params, query);
+        return getFactory().changesets(this, response);
+    }
 }
