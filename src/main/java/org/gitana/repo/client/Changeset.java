@@ -21,6 +21,10 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.client.nodes.BaseNode;
+import org.gitana.repo.client.nodes.Node;
+import org.gitana.repo.support.ResultMap;
+
 import java.util.List;
 
 /**
@@ -39,6 +43,8 @@ public interface Changeset extends RepositoryDocument
     public String getId();
     public int getRev();
 
+    public String getBranchId();
+
     public String getSummary();    
     public void setSummary(String summary);
 
@@ -52,5 +58,7 @@ public interface Changeset extends RepositoryDocument
     public boolean hasTag(String tag);    
     public void addTag(String tag);    
     public void removeTag(String tag);
+
+    public ResultMap<BaseNode> listNodes();
 
 }

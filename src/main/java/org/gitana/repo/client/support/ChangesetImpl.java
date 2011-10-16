@@ -23,9 +23,10 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Changeset;
-import org.gitana.repo.client.Driver;
-import org.gitana.repo.client.Repository;
+import org.gitana.repo.client.*;
+import org.gitana.repo.client.nodes.BaseNode;
+import org.gitana.repo.support.ResultMap;
+import org.gitana.repo.support.ResultMapImpl;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -70,6 +71,12 @@ public class ChangesetImpl extends AbstractRepositoryDocumentImpl implements Cha
     public void setSummary(String summary)
     {
         set(FIELD_SUMMARY, summary);
+    }
+
+    @Override
+    public String getBranchId()
+    {
+        return getString(FIELD_BRANCH);
     }
 
     @Override
@@ -183,5 +190,27 @@ public class ChangesetImpl extends AbstractRepositoryDocumentImpl implements Cha
     public void setActive(boolean active)
     {
         set(FIELD_ACTIVE, active);
+    }
+
+    @Override
+    public ResultMap<BaseNode> listNodes()
+    {
+        Response response = getRemote().get("/repositories/" + getRepositoryId() + "/changesets/" + this.getId() + "/nodes");
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        Branch branch = this.getRepository().readBranch(getBranchId());
+
+        ResultMap<BaseNode> map = new ResultMapImpl<BaseNode>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            BaseNode node = getFactory().produce(branch, object, true);
+            map.put(node.getId(), node);
+        }
+
+        return map;
+
     }
 }

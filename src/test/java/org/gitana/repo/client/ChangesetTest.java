@@ -21,8 +21,10 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
 import org.gitana.repo.support.Pagination;
+import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -79,5 +81,9 @@ public class ChangesetTest extends AbstractTestCase
         // assert paginated queries work
         assertEquals(3, repository.queryChangesets(JsonUtil.createObject(), pagination).size());
 
+        // check one of the changesets and make sure we can snag nodes off it
+        Changeset changeset6 = repository.fetchChangesets().get(n6.getChangesetId());
+        ResultMap<BaseNode> nodes6 = changeset6.listNodes();
+        assertTrue(nodes6.get(n6.getId()) != null);
     }
 }
