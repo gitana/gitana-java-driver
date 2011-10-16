@@ -22,10 +22,13 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.nodes.Association;
 import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.ResultMap;
+
+import java.util.Map;
 
 /**
  * @author uzi
@@ -89,5 +92,8 @@ public interface ObjectFactory
     // archives
     public Archive archive(Server server, Response response);
     public ResultMap<Archive> archives(Server server, Response response);
+
+    public Map<String, AuthorityGrant> authorityGrants(Response response);
+
 
 }

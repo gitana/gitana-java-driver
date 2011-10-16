@@ -23,6 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
@@ -238,13 +239,20 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     {
         boolean has = false;
 
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/acl/" + principalId + "/check/" + authorityId);
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/authorities/" + authorityId + "/check/" + principalId);
         if (response.getObjectNode().has("check"))
         {
             has = response.getObjectNode().get("check").getBooleanValue();
         }
 
         return has;
+    }
+
+    @Override
+    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    {
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/authorities");
+        return getFactory().authorityGrants(response);
     }
 
 

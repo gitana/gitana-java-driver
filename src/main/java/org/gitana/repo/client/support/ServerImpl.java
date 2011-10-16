@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
@@ -35,10 +36,7 @@ import org.gitana.util.JsonUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uzi
@@ -236,13 +234,20 @@ public class ServerImpl implements Server
     {
         boolean has = false;
 
-        Response response = getRemote().post("/acl/" + principalId + "/check/" + authorityId);
+        Response response = getRemote().post("/authorities/" + authorityId + "/check/" + principalId);
         if (response.getObjectNode().has("check"))
         {
             has = response.getObjectNode().get("check").getBooleanValue();
         }
 
         return has;
+    }
+
+    @Override
+    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    {
+        Response response = getRemote().post("/authorities");
+        return getFactory().authorityGrants(response);
     }
 
 

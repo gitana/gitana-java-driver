@@ -21,9 +21,11 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.beans.ACL;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -74,4 +76,12 @@ public interface AccessControllable
      * @return
      */
     public boolean hasAuthority(String principalId, String authorityId);
+
+    /**
+     * Acquires a map of authority grants for a set of principals.
+     *
+     * @param principalIds
+     * @return
+     */
+    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds);
 }

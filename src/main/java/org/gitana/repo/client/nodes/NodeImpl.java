@@ -26,6 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.repo.association.Direction;
 import org.gitana.repo.association.Directionality;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.Attachment;
 import org.gitana.repo.client.Branch;
 import org.gitana.repo.client.Driver;
@@ -109,13 +110,20 @@ public class NodeImpl extends BaseNodeImpl implements Node
     {
         boolean has = false;
 
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/check/" + authorityId);
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/authorities/" + authorityId + "/check/" + principalId);
         if (response.getObjectNode().has("check"))
         {
             has = response.getObjectNode().get("check").getBooleanValue();
         }
 
         return has;
+    }
+
+    @Override
+    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    {
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/authorities");
+        return getFactory().authorityGrants(response);
     }
 
 

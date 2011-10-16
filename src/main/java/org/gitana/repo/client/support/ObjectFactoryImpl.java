@@ -22,6 +22,7 @@
 package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.nodes.*;
 import org.gitana.repo.namespace.QName;
@@ -31,6 +32,7 @@ import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
 
 import java.lang.reflect.Constructor;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -564,6 +566,26 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public Map<String, AuthorityGrant> authorityGrants(Response response)
+    {
+        Map<String, AuthorityGrant> map = new LinkedHashMap<String, AuthorityGrant>();
+
+        ObjectNode json = response.getObjectNode();
+        Iterator<String> principalIds = json.getFieldNames();
+        while (principalIds.hasNext())
+        {
+            String principalId = principalIds.next();
+
+            ObjectNode object = JsonUtil.objectGetObject(json, principalId);
+
+            AuthorityGrant authorityGrant = AuthorityGrant.fromJSON(object);
+
+            map.put(principalId, authorityGrant);
+        }
+
+        return map;
+    }
 
 
 }

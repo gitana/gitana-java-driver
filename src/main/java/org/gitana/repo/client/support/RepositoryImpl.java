@@ -22,6 +22,7 @@
 package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
@@ -160,13 +161,20 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     {
         boolean has = false;
 
-        Response response = getRemote().post("/repositories/" + getId() + "/acl/" + principalId + "/check/" + authorityId);
+        Response response = getRemote().post("/repositories/" + getId() + "/authorities/" + authorityId + "/check/" + principalId);
         if (response.getObjectNode().has("check"))
         {
             has = response.getObjectNode().get("check").getBooleanValue();
         }
 
         return has;
+    }
+
+    @Override
+    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    {
+        Response response = getRemote().post("/repositories/" + getId() + "/authorities");
+        return getFactory().authorityGrants(response);
     }
 
 

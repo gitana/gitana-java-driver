@@ -24,6 +24,7 @@ package org.gitana.repo.client.support;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
+import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
@@ -339,6 +340,11 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         return has;
     }
 
-
+    @Override
+    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    {
+        Response response = getRemote().post("/security/principals/" + getName() + "/authorities");
+        return getFactory().authorityGrants(response);
+    }
 
 }
