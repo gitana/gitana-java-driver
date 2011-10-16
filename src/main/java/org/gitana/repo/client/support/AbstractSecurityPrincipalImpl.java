@@ -30,6 +30,7 @@ import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
+import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -341,10 +342,13 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
     }
 
     @Override
-    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds)
     {
-        Response response = getRemote().post("/security/principals/" + getName() + "/authorities");
-        return getFactory().authorityGrants(response);
+        ObjectNode object = JsonUtil.createObject();
+        JsonUtil.objectPut(object, "principals", principalIds);
+
+        Response response = getRemote().post("/security/principals/" + getName() + "/authorities", object);
+        return getFactory().principalAuthorityGrants(response);
     }
 
 }

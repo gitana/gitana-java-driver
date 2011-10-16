@@ -93,7 +93,7 @@ public interface ObjectFactory
     public Archive archive(Server server, Response response);
     public ResultMap<Archive> archives(Server server, Response response);
 
-    public Map<String, AuthorityGrant> authorityGrants(Response response);
+    public Map<String, Map<String, AuthorityGrant>> principalAuthorityGrants(Response response);
 
 
 }

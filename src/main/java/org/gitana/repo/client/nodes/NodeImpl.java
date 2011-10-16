@@ -120,10 +120,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
     }
 
     @Override
-    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds)
     {
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/authorities");
-        return getFactory().authorityGrants(response);
+        ObjectNode object = JsonUtil.createObject();
+        JsonUtil.objectPut(object, "principals", principalIds);
+
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/authorities", object);
+        return getFactory().principalAuthorityGrants(response);
     }
 
 

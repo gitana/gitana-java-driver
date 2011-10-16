@@ -567,9 +567,9 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Map<String, AuthorityGrant> authorityGrants(Response response)
+    public Map<String, Map<String, AuthorityGrant>> principalAuthorityGrants(Response response)
     {
-        Map<String, AuthorityGrant> map = new LinkedHashMap<String, AuthorityGrant>();
+        Map<String, Map<String, AuthorityGrant>> principalAuthorityGrants = new LinkedHashMap<String, Map<String, AuthorityGrant>>();
 
         ObjectNode json = response.getObjectNode();
         Iterator<String> principalIds = json.getFieldNames();
@@ -577,14 +577,24 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             String principalId = principalIds.next();
 
+            Map<String, AuthorityGrant> authorityGrants = new LinkedHashMap<String, AuthorityGrant>();
+
             ObjectNode object = JsonUtil.objectGetObject(json, principalId);
+            Iterator<String> grantIds = object.getFieldNames();
+            while (grantIds.hasNext())
+            {
+                String grantId = grantIds.next();
 
-            AuthorityGrant authorityGrant = AuthorityGrant.fromJSON(object);
+                ObjectNode grantObject = JsonUtil.objectGetObject(object, grantId);
+                AuthorityGrant authorityGrant = AuthorityGrant.fromJSON(grantObject);
 
-            map.put(principalId, authorityGrant);
+                authorityGrants.put(grantId, authorityGrant);
+            }
+
+            principalAuthorityGrants.put(principalId, authorityGrants);
         }
 
-        return map;
+        return principalAuthorityGrants;
     }
 
 

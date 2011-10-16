@@ -244,10 +244,13 @@ public class ServerImpl implements Server
     }
 
     @Override
-    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds)
     {
-        Response response = getRemote().post("/authorities");
-        return getFactory().authorityGrants(response);
+        ObjectNode object = JsonUtil.createObject();
+        JsonUtil.objectPut(object, "principals", principalIds);
+
+        Response response = getRemote().post("/authorities", object);
+        return getFactory().principalAuthorityGrants(response);
     }
 
 

@@ -83,5 +83,5 @@ public interface AccessControllable
      * @param principalIds
      * @return
      */
-    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds);
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds);
 }

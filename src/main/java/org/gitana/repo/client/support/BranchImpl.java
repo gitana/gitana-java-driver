@@ -249,10 +249,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
-    public Map<String, AuthorityGrant> getAuthorityGrants(List<String> principalIds)
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds)
     {
-        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/authorities");
-        return getFactory().authorityGrants(response);
+        ObjectNode object = JsonUtil.createObject();
+        JsonUtil.objectPut(object, "principals", principalIds);
+
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/authorities", object);
+        return getFactory().principalAuthorityGrants(response);
     }
 
 
