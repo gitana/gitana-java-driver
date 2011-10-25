@@ -86,6 +86,7 @@ public class JobTest extends AbstractTestCase
         // test out various methods
         ResultMap<Job> unstarted = server.listUnstartedJobs();
         ResultMap<Job> failed = server.listFailedJobs();
+        ResultMap<Job> finished = server.listFinishedJobs();
         ResultMap<Job> all = server.queryJobs(JsonUtil.createObject());
         assertTrue(all.size() > 0);
     }

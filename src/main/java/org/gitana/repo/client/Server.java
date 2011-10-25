@@ -187,6 +187,11 @@ public interface Server extends AccessControllable
     public ResultMap<Job> queryCandidateJobs(ObjectNode query);
     public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination);
 
+    public ResultMap<Job> listFinishedJobs();
+    public ResultMap<Job> listFinishedJobs(Pagination pagination);
+    public ResultMap<Job> queryFinishedJobs(ObjectNode query);
+    public ResultMap<Job> queryFinishedJobs(ObjectNode query, Pagination pagination);
+
     public Job readJob(String jobId);
 
     public void killJob(String jobId);

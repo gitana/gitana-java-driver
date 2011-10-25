@@ -705,6 +705,36 @@ public class ServerImpl implements Server
     }
 
     @Override
+    public ResultMap<Job> listFinishedJobs()
+    {
+        return listFinishedJobs(null);
+    }
+
+    @Override
+    public ResultMap<Job> listFinishedJobs(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/jobs/finished", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> queryFinishedJobs(ObjectNode query)
+    {
+        return queryFinishedJobs(query, null);
+    }
+
+    @Override
+    public ResultMap<Job> queryFinishedJobs(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/jobs/finished/query", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
     public Job readJob(String jobId)
     {
         Job job = null;
