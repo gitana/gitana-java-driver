@@ -565,7 +565,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
                 }
                 if (job.isError())
                 {
-                    throw new Exception("Job: " + job.getId() + " failed with: " + job.getStackTrace());
+                    throw new Exception("Job: " + job.getId() + " failed with: " + job.getLogEntries());
                 }
                 if (job.isFinished())
                 {
@@ -629,7 +629,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         }
         if (job.isError())
         {
-            throw new RuntimeException("Job: " + job.getId() + " failed with: " + job.getStackTrace());
+            throw new RuntimeException("Job: " + job.getId() + " failed with: " + job.getLogEntries());
         }
 
 

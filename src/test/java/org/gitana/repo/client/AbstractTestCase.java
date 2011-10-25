@@ -24,8 +24,6 @@ package org.gitana.repo.client;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 
-import java.util.ResourceBundle;
-
 /**
  * Base class for tests
  * 
@@ -33,27 +31,35 @@ import java.util.ResourceBundle;
  */
 @Ignore public abstract class AbstractTestCase extends TestCase
 {
-    private ResourceBundle config = null;
-
 	public void setUp() throws Exception
 	{
-        // load properties from classpath
-        this.config = ResourceBundle.getBundle("gitana");
 	}
 
 	public void tearDown() throws Exception
 	{
+        // wait for all jobs to finish
+        waitForZeroCandidateJobs();
+
         // force the garbage collector (during tests)
         System.gc();
 	}
 
-    protected String getHost()
+    protected void waitForZeroCandidateJobs()
     {
-        return this.config.getString("gitana.server.host");
-    }
+        // authenticate as admin/admin
+        Server server = new Gitana().authenticate("admin", "admin");
 
-    protected int getPort()
-    {
-        return Integer.valueOf(this.config.getString("gitana.server.port"));
+        // wait
+        while (server.listCandidateJobs().totalRows() > 0)
+        {
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException ie)
+            {
+                throw new RuntimeException(ie);
+            }
+        }
     }
 }

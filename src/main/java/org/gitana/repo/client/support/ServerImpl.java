@@ -585,6 +585,126 @@ public class ServerImpl implements Server
     }
 
     @Override
+    public ResultMap<Job> listUnstartedJobs()
+    {
+        return listUnstartedJobs(null);
+    }
+
+    @Override
+    public ResultMap<Job> listUnstartedJobs(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/jobs/unstarted", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> queryUnstartedJobs(ObjectNode query)
+    {
+        return queryUnstartedJobs(query, null);
+    }
+
+    @Override
+    public ResultMap<Job> queryUnstartedJobs(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/jobs/unstarted/query", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> listRunningJobs()
+    {
+        return listRunningJobs(null);
+    }
+
+    @Override
+    public ResultMap<Job> listRunningJobs(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/jobs/running", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> queryRunningJobs(ObjectNode query)
+    {
+        return queryRunningJobs(query, null);
+    }
+
+    @Override
+    public ResultMap<Job> queryRunningJobs(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/jobs/running/query", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> listFailedJobs()
+    {
+        return listFailedJobs(null);
+    }
+
+    @Override
+    public ResultMap<Job> listFailedJobs(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/jobs/failed", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> queryFailedJobs(ObjectNode query)
+    {
+        return queryFailedJobs(query, null);
+    }
+
+    @Override
+    public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/jobs/failed/query", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> listCandidateJobs()
+    {
+        return listCandidateJobs(null);
+    }
+
+    @Override
+    public ResultMap<Job> listCandidateJobs(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/jobs/candidate", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
+    public ResultMap<Job> queryCandidateJobs(ObjectNode query)
+    {
+        return queryCandidateJobs(query, null);
+    }
+
+    @Override
+    public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/jobs/candidate/query", params);
+        return getFactory().jobs(this, response);
+    }
+
+    @Override
     public Job readJob(String jobId)
     {
         Job job = null;
@@ -602,6 +722,12 @@ public class ServerImpl implements Server
         }
 
         return job;
+    }
+
+    @Override
+    public void killJob(String jobId)
+    {
+        getRemote().post("/jobs/" + jobId);
     }
 
 

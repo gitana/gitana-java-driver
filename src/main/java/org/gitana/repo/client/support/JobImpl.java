@@ -21,14 +21,14 @@
 
 package org.gitana.repo.client.support;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.repo.client.Driver;
-import org.gitana.repo.client.Job;
-import org.gitana.repo.client.ObjectFactory;
-import org.gitana.repo.client.Server;
+import org.gitana.repo.client.*;
 import org.gitana.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author uzi
@@ -56,10 +56,9 @@ public class JobImpl extends DocumentImpl implements Job
         return driver.getFactory();
     }
 
-    @Override
-    public Server getServer()
+    protected Server getServer()
     {
-        return this.server;
+        return server;
     }
 
     @Override
@@ -75,6 +74,18 @@ public class JobImpl extends DocumentImpl implements Job
         }
 
         return equals;
+    }
+
+    @Override
+    public String getType()
+    {
+        return getString(FIELD_TYPE);
+    }
+
+    @Override
+    public String getRunAs()
+    {
+        return getString(FIELD_RUN_AS);
     }
 
     @Override
@@ -102,6 +113,12 @@ public class JobImpl extends DocumentImpl implements Job
     }
 
     @Override
+    public boolean isSubmitted()
+    {
+        return getBoolean(FIELD_IS_SUBMITTED);
+    }
+
+    @Override
     public String getStartedBy()
     {
         return getString(FIELD_STARTED_BY);
@@ -111,6 +128,12 @@ public class JobImpl extends DocumentImpl implements Job
     public String getStoppedBy()
     {
         return getString(FIELD_STOPPED_BY);
+    }
+
+    @Override
+    public String getSubmittedBy()
+    {
+        return getString(FIELD_SUBMITTED_BY);
     }
 
     @Override
@@ -138,15 +161,54 @@ public class JobImpl extends DocumentImpl implements Job
     }
 
     @Override
-    public String getStackTrace()
+    public List<JobLogEntry> getLogEntries()
     {
-        return getString(FIELD_STACKTRACE);
+        List<JobLogEntry> list = new ArrayList<JobLogEntry>();
+
+        ArrayNode entries = getArray(FIELD_LOG_ENTRIES);
+        for (int i = 0; i < entries.size(); i++)
+        {
+            ObjectNode object = (ObjectNode) entries.get(i);
+
+            JobLogEntry entry = new JobLogEntry(object);
+            list.add(entry);
+        }
+
+        return list;
     }
 
     @Override
-    public String getMessage()
+    public int getPriority()
     {
-        return getString(FIELD_MESSAGE);
+        return getInt(FIELD_PRIORITY);
     }
 
+    public String getCurrentThreadId()
+    {
+        return getString(FIELD_CURRENT_THREAD);
+    }
+
+    @Override
+    public String getCurrentServerId()
+    {
+        return getString(FIELD_CURRENT_SERVER);
+    }
+
+    @Override
+    public long getCurrentServerTimestamp()
+    {
+        return getLong(FIELD_CURRENT_SERVER_TIMESTAMP);
+    }
+
+    @Override
+    public long getScheduleStart()
+    {
+        return getLong(FIELD_SCHEDULE_START_MS);
+    }
+
+    @Override
+    public int getAttempts()
+    {
+        return getInt(FIELD_ATTEMPTS);
+    }
 }

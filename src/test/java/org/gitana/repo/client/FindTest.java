@@ -166,9 +166,6 @@ public class FindTest extends AbstractTestCase
         Node sucre = (Node) master.createNode(sucreObject);
         sucre.uploadAttachment(ClasspathUtil.bytesFromClasspath("org/gitana/repo/client/bio_sucre.txt"), "text/plain");
 
-        // wait until indexing finishes
-        Thread.sleep(15000);
-
         // build associations
         earth.associate(usa, QName.create("a:child"));
         earth.associate(bolivia, QName.create("a:child"));
@@ -178,6 +175,9 @@ public class FindTest extends AbstractTestCase
         bolivia.associate(sucre, QName.create("a:child"));
         bolivia.associate(lapaz, QName.create("a:child"));
 
+        // wait until indexing finishes
+        Thread.sleep(20000);
+        waitForZeroCandidateJobs();
 
         // full search for gitana111
         ResultMap<BaseNode> search1 = master.searchNodes("gitana111");

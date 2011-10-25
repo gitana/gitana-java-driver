@@ -69,7 +69,8 @@ public class NodeSearchTest extends AbstractTestCase
         Node node4 = (Node) master.createNode(obj4);
 
         // here we wait a little bit for the asynchronous indexing on the server side to complete
-        Thread.sleep(2000);
+        Thread.sleep(10000);
+        waitForZeroCandidateJobs();
 
 
         // search #1

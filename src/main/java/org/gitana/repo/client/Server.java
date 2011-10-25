@@ -165,10 +165,31 @@ public interface Server extends AccessControllable
     ////////////////////
 
     public ResultMap<Job> queryJobs(ObjectNode query);
-
     public ResultMap<Job> queryJobs(ObjectNode query, Pagination pagination);
 
+    public ResultMap<Job> listUnstartedJobs();
+    public ResultMap<Job> listUnstartedJobs(Pagination pagination);
+    public ResultMap<Job> queryUnstartedJobs(ObjectNode query);
+    public ResultMap<Job> queryUnstartedJobs(ObjectNode query, Pagination pagination);
+
+    public ResultMap<Job> listRunningJobs();
+    public ResultMap<Job> listRunningJobs(Pagination pagination);
+    public ResultMap<Job> queryRunningJobs(ObjectNode query);
+    public ResultMap<Job> queryRunningJobs(ObjectNode query, Pagination pagination);
+
+    public ResultMap<Job> listFailedJobs();
+    public ResultMap<Job> listFailedJobs(Pagination pagination);
+    public ResultMap<Job> queryFailedJobs(ObjectNode query);
+    public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination);
+
+    public ResultMap<Job> listCandidateJobs();
+    public ResultMap<Job> listCandidateJobs(Pagination pagination);
+    public ResultMap<Job> queryCandidateJobs(ObjectNode query);
+    public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination);
+
     public Job readJob(String jobId);
+
+    public void killJob(String jobId);
 
 
     ////////////////////
