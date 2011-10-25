@@ -22,6 +22,7 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.support.JobLogEntry;
 
 import java.util.Calendar;
 import java.util.List;

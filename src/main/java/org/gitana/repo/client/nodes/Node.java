@@ -124,6 +124,18 @@ public interface Node extends BaseNode, AccessControllable, Attachable
     public Association associate(Node targetNode, QName associationTypeQName);
 
     /**
+     * Associates a target node to this source node.
+     *
+     * The direction is OUTGOING from this node to the specified node.
+     *
+     * @param targetNode
+     * @param associationTypeQName
+     * @param object
+     * @return association
+     */
+    public Association associate(Node targetNode, QName associationTypeQName, ObjectNode object);
+
+    /**
      * Associates this node with another.
      *
      * @param otherNode
@@ -132,6 +144,17 @@ public interface Node extends BaseNode, AccessControllable, Attachable
      * @return association
      */
     public Association associate(Node otherNode, QName associationTypeQName, Directionality directionality);
+
+    /**
+     * Associates this node with another.
+     *
+     * @param otherNode
+     * @param associationTypeQName
+     * @param directionality
+     * @param object
+     * @return association
+     */
+    public Association associate(Node otherNode, QName associationTypeQName, Directionality directionality, ObjectNode object);
 
     /**
      * Unassociates a target node from this node.

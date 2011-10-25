@@ -95,5 +95,8 @@ public interface ObjectFactory
 
     public Map<String, Map<String, AuthorityGrant>> principalAuthorityGrants(Response response);
 
+    // log entries
+    public LogEntry logEntry(Server server, Response response);
+    public ResultMap<LogEntry> logEntries(Server server, Response response);
 
 }

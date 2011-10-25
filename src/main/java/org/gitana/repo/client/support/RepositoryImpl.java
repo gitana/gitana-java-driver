@@ -390,4 +390,62 @@ public class RepositoryImpl extends DocumentImpl implements Repository
         Response response = getRemote().post("/repositories/" + getId() + "/changesets/query", params, query);
         return getFactory().changesets(this, response);
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // LOG ENTRIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<LogEntry> listLogEntries()
+    {
+        return listLogEntries(null);
+    }
+
+    @Override
+    public ResultMap<LogEntry> listLogEntries(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories/" + getId() + "/logs", params);
+        return getFactory().logEntries(getServer(), response);
+    }
+
+    @Override
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query)
+    {
+        return queryLogEntries(query, null);
+    }
+
+    @Override
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/repositories/" + getId() + "/logs/query", params, query);
+        return getFactory().logEntries(getServer(), response);
+    }
+
+    @Override
+    public LogEntry readLogEntry(String logEntryId)
+    {
+        LogEntry logEntry = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getId() + "/logs/" + logEntryId);
+            logEntry = getFactory().logEntry(getServer(), response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return logEntry;
+    }
+
 }

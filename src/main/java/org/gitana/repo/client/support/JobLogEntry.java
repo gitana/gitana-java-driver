@@ -19,10 +19,11 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.repo.client;
+package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.JobLogEntryType;
 import org.gitana.repo.support.GitanaObjectImpl;
 import org.gitana.util.DateUtil;
 import org.gitana.util.JsonUtil;

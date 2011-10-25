@@ -597,5 +597,34 @@ public class ObjectFactoryImpl implements ObjectFactory
         return principalAuthorityGrants;
     }
 
+    @Override
+    public LogEntry logEntry(Server server, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new LogEntryImpl(driver, server, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<LogEntry> logEntries(Server server, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<LogEntry> map = new ResultMapImpl<LogEntry>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            LogEntry logEntry = new LogEntryImpl(driver, server, object, true);
+            map.put(logEntry.getId(), logEntry);
+        }
+
+        return map;
+    }
+
 
 }

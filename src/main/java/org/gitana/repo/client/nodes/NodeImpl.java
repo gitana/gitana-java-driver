@@ -346,8 +346,25 @@ public class NodeImpl extends BaseNodeImpl implements Node
     }
 
     @Override
+    public Association associate(Node targetNode, QName associationTypeQName, ObjectNode object)
+    {
+        return associate(targetNode, associationTypeQName, Directionality.DIRECTED, object);
+    }
+
+    @Override
     public Association associate(Node otherNode, QName associationTypeQName, Directionality directionality)
     {
+        return associate(otherNode, associationTypeQName, directionality, null);
+    }
+
+    @Override
+    public Association associate(Node otherNode, QName associationTypeQName, Directionality directionality, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
         String sourceNodeId = getId();
         String targetNodeId = otherNode.getId();
 
@@ -357,7 +374,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
             uri += "&directionality=" + directionality.toString();
         }
 
-        Response r1 = getRemote().post(uri);
+        Response r1 = getRemote().post(uri, object);
 
         String associationId = r1.getId();
 

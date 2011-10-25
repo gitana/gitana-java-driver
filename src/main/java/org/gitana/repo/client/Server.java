@@ -217,4 +217,14 @@ public interface Server extends AccessControllable
     public InputStream downloadArchive(String groupId, String artifactId, String versionId)
         throws IOException;
 
+
+    ////////////////////
+    // LOGS
+    ////////////////////
+
+    public ResultMap<LogEntry> listLogEntries();
+    public ResultMap<LogEntry> listLogEntries(Pagination pagination);
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query);
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination);
+    public LogEntry readLogEntry(String logEntryId);
 }
