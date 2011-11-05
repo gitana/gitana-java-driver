@@ -99,4 +99,12 @@ public interface ObjectFactory
     public LogEntry logEntry(Server server, Response response);
     public ResultMap<LogEntry> logEntries(Server server, Response response);
 
+    // teams
+    public Team team(Server server, Teamable teamable, String teamKey, Response response);
+    public ResultMap<Team> teams(Server server, Teamable teamable, Response response);
+
+    // organizations
+    public Organization organization(Server server, Response response);
+    public ResultMap<Organization> organizations(Server server, Response response);
+
 }

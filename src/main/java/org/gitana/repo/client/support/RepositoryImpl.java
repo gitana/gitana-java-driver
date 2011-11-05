@@ -141,13 +141,13 @@ public class RepositoryImpl extends DocumentImpl implements Repository
     @Override
     public void grant(String principalId, String authorityId)
     {
-        getRemote().post("/repositories/" + getId() + "/acl/" + principalId + "/grant/" + authorityId);
+        getRemote().post("/repositories/" + getId() + "/acl/" + principalId + "/authorities/" + authorityId + "/grant");
     }
 
     @Override
     public void revoke(String principalId, String authorityId)
     {
-        getRemote().post("/repositories/" + getId() + "/acl/" + principalId + "/revoke/" + authorityId);
+        getRemote().post("/repositories/" + getId() + "/acl/" + principalId + "/authorities/" + authorityId + "/revoke");
     }
 
     @Override
@@ -448,4 +448,64 @@ public class RepositoryImpl extends DocumentImpl implements Repository
         return logEntry;
     }
 
+    @Override
+    public Team readTeam(String teamKey)
+    {
+        Team team = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getId() + "/teams/" + teamKey);
+            team = getFactory().team(getServer(), this, teamKey, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return team;
+    }
+
+    @Override
+    public ResultMap<Team> listTeams()
+    {
+        Map<String, String> params = DriverUtil.params();
+
+        Response response = getRemote().get("/repositories/" + getId() + "/teams", params);
+        return getFactory().teams(getServer(), this, response);
+    }
+
+    @Override
+    public Team createTeam(String teamKey)
+    {
+        return createTeam(teamKey, null);
+    }
+
+    @Override
+    public Team createTeam(String teamKey, ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        getRemote().post("/repositories/" + getId() + "/teams?key=" + teamKey, object);
+
+        return readTeam(teamKey);
+    }
+
+    @Override
+    public void deleteTeam(String teamKey)
+    {
+        getRemote().delete("/repositories/" + getId() + "/teams/" + teamKey);
+    }
+
+    @Override
+    public String getTeamableBaseUri()
+    {
+        return "/repositories/" + getId();
+    }
 }

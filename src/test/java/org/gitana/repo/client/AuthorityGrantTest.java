@@ -41,7 +41,18 @@ public class AuthorityGrantTest extends AbstractTestCase
         // authenticate
         Server server = gitana.authenticate("admin", "admin");
 
-        testAuthorityGrants(server, server);
+        // remove EVERYONE's collaborator right for the server
+        try
+        {
+            server.revokeAll("everyone");
+
+            testAuthorityGrants(server, server);
+        }
+        finally
+        {
+            // be sure to restore EVERYONE's collaborator right
+            server.grant("everyone", "collaborator");
+        }
     }
 
     @Test
@@ -90,6 +101,19 @@ public class AuthorityGrantTest extends AbstractTestCase
     }
 
     @Test
+    public void testOrganization()
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Server server = gitana.authenticate("admin", "admin");
+
+        Organization organization = server.createOrganization();
+
+        testAuthorityGrants(server, organization);
+    }
+
+    @Test
     public void testSecurityPrincipal()
     {
         Gitana gitana = new Gitana();
@@ -100,6 +124,9 @@ public class AuthorityGrantTest extends AbstractTestCase
         // create a group
         String groupId = "testsecurityprincipl-" + System.currentTimeMillis();
         SecurityGroup group = server.createGroup(groupId);
+
+        // revoke everyone's consumer right (which is the default)
+        group.revokeAll("everyone");
 
         testAuthorityGrants(server, group);
     }
@@ -123,8 +150,6 @@ public class AuthorityGrantTest extends AbstractTestCase
 
         // grant user2 manager rights to the server
         accessControllable.grant(userId2, "manager");
-
-        // NOTE: everyone already has consumer
 
         // get the list of authorities that user1 has
         // user1 should have 1 (user1/consumer direct)

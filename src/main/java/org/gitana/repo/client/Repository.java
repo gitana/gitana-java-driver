@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Repository extends Document, AccessControllable, Selfable
+public interface Repository extends Document, AccessControllable, Selfable, Teamable
 {
     public static final String FIELD_REPOSITORY_TYPE = "repositoryType";
 

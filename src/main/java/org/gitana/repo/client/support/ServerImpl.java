@@ -36,7 +36,10 @@ import org.gitana.util.JsonUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -155,7 +158,7 @@ public class ServerImpl implements Server
     @Override
     public Repository createRepository()
     {
-        return createRepository(JsonUtil.createObject());
+        return createRepository(null);
     }
 
     @Override
@@ -214,13 +217,13 @@ public class ServerImpl implements Server
     @Override
     public void grant(String principalId, String authorityId)
     {
-        getRemote().post("/acl/" + principalId + "/grant/" + authorityId);
+        getRemote().post("/acl/" + principalId + "/authorities/" + authorityId + "/grant");
     }
 
     @Override
     public void revoke(String principalId, String authorityId)
     {
-        getRemote().post("/acl/" + principalId + "/revoke/" + authorityId);
+        getRemote().post("/acl/" + principalId + "/authorities/" + authorityId + "/revoke");
     }
 
     @Override
@@ -917,6 +920,85 @@ public class ServerImpl implements Server
         }
 
         return logEntry;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ORGANIZATIONS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public ResultMap<Organization> listOrganizations()
+    {
+        return listOrganizations(null);
+    }
+
+    @Override
+    public ResultMap<Organization> listOrganizations(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/organizations", params);
+        return getFactory().organizations(this, response);
+    }
+
+    @Override
+    public ResultMap<Organization> queryOrganizations(ObjectNode query)
+    {
+        return queryOrganizations(query, null);
+    }
+
+    @Override
+    public ResultMap<Organization> queryOrganizations(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/organizations/query", params, query);
+        return getFactory().organizations(this, response);
+    }
+
+    @Override
+    public Organization readOrganization(String organizationId)
+    {
+        Organization organization = null;
+
+        try
+        {
+            Response response = getRemote().get("/organizations/" + organizationId);
+            organization = getFactory().organization(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return organization;
+    }
+
+    @Override
+    public Organization createOrganization()
+    {
+        return createOrganization(null);
+    }
+
+    @Override
+    public Organization createOrganization(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post("/organizations", object);
+
+        String organizationId = response.getId();
+        return readOrganization(organizationId);
     }
 
 }

@@ -90,13 +90,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public void grant(String principalId, String authorityId)
     {
-        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/grant/" + authorityId);
+        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/authorities/" + authorityId + "/grant");
     }
 
     @Override
     public void revoke(String principalId, String authorityId)
     {
-        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/revoke/" + authorityId);
+        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/acl/" + principalId + "/authorities/" + authorityId + "/revoke");
     }
 
     @Override

@@ -21,15 +21,15 @@
 
 package org.gitana.repo.client;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.GitanaObject;
 
 import java.util.Calendar;
 
 /**
  * @author uzi
  */
-public interface Document extends GitanaObject
+public interface Document extends GitanaObject, TitleDescription
 {	
     // holder: metadata object
     public final static String SYSTEM = "_system";
@@ -43,68 +43,19 @@ public interface Document extends GitanaObject
     public final static String SYSTEM_CREATED_ON = "created_on";
     public final static String SYSTEM_CREATED_BY = "created_by";
     
-    public final static String PERSISTED_ID = "_persisted_id";
-    
     /**
      * Gets the id of the document.
      * 
      * @return
      */
     public String getId();
-    
+
+    /**
+     * Sets the id of the document.
+     *
+     * @param id
+     */
     public void setId(String id);
-
-	/**
-	 * Hands back the underlying json object
-	 * 
-	 * @return
-	 */
-	public ObjectNode getObject();
-	
-	/**
-	 * @param fieldId
-	 * @return whether the document has the given field
-	 */
-	public boolean has(String fieldId);
-
-	/**
-	 * Gets a field value
-	 * 
-	 * @param fieldId
-	 * @return field value or null if not found
-	 */
-	public Object get(String fieldId);
-
-	/**
-	 * Sets a field value
-	 * 
-	 * @param fieldId
-	 * @param value
-	 */
-	public void set(String fieldId, Object value);
-
-	/**
-	 * Remove a field value
-	 * 
-	 * @param fieldId
-	 */
-	public void remove(String fieldId);
-	
-	/**
-	 * Gets an object field
-	 * 
-	 * @param fieldId
-	 * @return null if not founds
-	 */
-	public ObjectNode getObject(String fieldId);
-	
-	/**
-	 * Gets an array field
-	 * 
-	 * @param fieldId
-	 * @return null if not found
-	 */
-	public ArrayNode getArray(String fieldId);
 
     /**
      * Reloads the node from a persisted document (which represents the node).
@@ -144,10 +95,5 @@ public interface Document extends GitanaObject
     // metadata support
     public ObjectNode getSystemObject();
         
-    public boolean getBoolean(String fieldId);
-    public String getString(String fieldId);
-    public int getInt(String fieldId);
-    public long getLong(String fieldId);
-
-    public String toJSONString(boolean includeSystem, boolean pretty);
+    //public String toJSONString(boolean includeSystem, boolean pretty);
 }

@@ -31,9 +31,6 @@ import java.util.List;
  */
 public interface LogEntry extends Document
 {
-    // default collection location
-    public final static String DEFAULT_COLLECTION_ID = "logs";
-        
     // top level fields
     public final static String FIELD_PRINCIPAL_ID = "principalId";
     public final static String FIELD_REPOSITORY_ID = "repositoryId";

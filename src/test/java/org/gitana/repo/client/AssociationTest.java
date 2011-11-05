@@ -83,15 +83,15 @@ public class AssociationTest extends AbstractTestCase
         node4.associate(node6, references);
 
         // all association checks
-        assertEquals(3+2, node1.associations().size()); // node2, node3 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
-        assertEquals(2+2, node2.associations().size()); // node1 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
-        assertEquals(3+2, node3.associations().size()); // node1 [custom:isRelatedTo], node4 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
-        assertEquals(4+2, node4.associations().size()); // node3, node5 [custom:isRelatedTo], node4 [custom:references], a:created AND ALSO a:has_role(person), a:has_role(everyone)
-        assertEquals(2+2, node5.associations().size()); // node4 [custom:isRelatedTo], a:created AND ALSO a:has_role(person), a:has_role(everyone)
-        assertEquals(2+2, node6.associations().size()); // node4 [custom:references], a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(3+1, node1.associations().size()); // node2, node3 [custom:isRelatedTo], a:created AND ALSO a:has_role(person)
+        assertEquals(2+1, node2.associations().size()); // node1 [custom:isRelatedTo], a:created AND ALSO a:has_role(person)
+        assertEquals(3+1, node3.associations().size()); // node1 [custom:isRelatedTo], node4 [custom:isRelatedTo], a:created AND ALSO a:has_role(person)
+        assertEquals(4+1, node4.associations().size()); // node3, node5 [custom:isRelatedTo], node4 [custom:references], a:created AND ALSO a:has_role(person)
+        assertEquals(2+1, node5.associations().size()); // node4 [custom:isRelatedTo], a:created AND ALSO a:has_role(person)
+        assertEquals(2+1, node6.associations().size()); // node4 [custom:references], a:created AND ALSO a:has_role(person)
 
         // directional
-        assertEquals(2+2, node4.associations(Direction.INCOMING).size()); // node4, "admin" (a:created) AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(2+1, node4.associations(Direction.INCOMING).size()); // node4, "admin" (a:created) AND ALSO a:has_role(person)
         assertEquals(2, node4.associations(Direction.OUTGOING).size()); // node5, node6
 
         // typed checks
@@ -102,7 +102,7 @@ public class AssociationTest extends AbstractTestCase
         // additional
         assertEquals(0, node1.associations(references, Direction.OUTGOING).size());
         assertEquals(0, node1.associations(references, Direction.INCOMING).size());
-        assertEquals(1+2, node1.associations(Direction.INCOMING).size()); // a:created AND ALSO a:has_role(person), a:has_role(everyone)
+        assertEquals(1+1, node1.associations(Direction.INCOMING).size()); // a:created AND ALSO a:has_role(person)
 
     }
 

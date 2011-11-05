@@ -21,28 +21,13 @@
 
 package org.gitana.repo.client;
 
-import org.codehaus.jackson.node.ObjectNode;
-
-import java.io.Serializable;
-
 /**
  * @author uzi
  */
-public interface GitanaObject extends Serializable
+public interface TitleDescription
 {
-    // two fields that are generically supported across all Gitana objects
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_DESCRIPTION = "description";
-
-    /**
-     * @return json object node for this object
-     */
-    public ObjectNode toJSON();
-
-    /**
-     * @return json representation of this object
-     */
-    public String toJSONString(boolean pretty);
 
     /**
      * @return the title

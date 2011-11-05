@@ -626,5 +626,65 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public Team team(Server server, Teamable teamable, String teamKey, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new TeamImpl(server, teamable, teamKey, response.getObjectNode());
+    }
+
+    @Override
+    public ResultMap<Team> teams(Server server, Teamable teamable, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Team> map = new ResultMapImpl<Team>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            String teamKey = JsonUtil.objectGetString(object, "_doc");
+
+            Team team = new TeamImpl(server, teamable, teamKey, object);
+            map.put(team.getKey(), team);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Organization organization(Server server, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new OrganizationImpl(server, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Organization> organizations(Server server, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Organization> map = new ResultMapImpl<Organization>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Organization organization = new OrganizationImpl(server, object, true);
+            map.put(organization.getId(), organization);
+        }
+
+        return map;
+    }
+
 
 }

@@ -232,4 +232,32 @@ public interface Server extends AccessControllable
     public ResultMap<LogEntry> queryLogEntries(ObjectNode query);
     public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination);
     public LogEntry readLogEntry(String logEntryId);
+
+
+    ////////////////////
+    // ORGANIZATIONS
+    ////////////////////
+
+    public ResultMap<Organization> listOrganizations();
+    public ResultMap<Organization> listOrganizations(Pagination pagination);
+    public ResultMap<Organization> queryOrganizations(ObjectNode query);
+    public ResultMap<Organization> queryOrganizations(ObjectNode query, Pagination pagination);
+    public Organization readOrganization(String organizationId);
+
+    /**
+     * Creates an empty organization on the server.
+     *
+     * @return repository
+     */
+    public Organization createOrganization();
+
+    /**
+     * Creates an organization on the server.
+     *
+     * @param object
+     *
+     * @return repository
+     */
+    public Organization createOrganization(ObjectNode object);
+
 }

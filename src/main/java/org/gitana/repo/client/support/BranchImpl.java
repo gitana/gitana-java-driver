@@ -219,13 +219,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public void grant(String principalId, String authorityId)
     {
-        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/acl/" + principalId + "/grant/" + authorityId);
+        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/acl/" + principalId + "/authorities/" + authorityId + "/grant");
     }
 
     @Override
     public void revoke(String principalId, String authorityId)
     {
-        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/acl/" + principalId + "/revoke/" + authorityId);
+        getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getId() + "/acl/" + principalId + "/authorities/" + authorityId + "/revoke");
     }
 
     @Override
