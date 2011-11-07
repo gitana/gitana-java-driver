@@ -124,4 +124,29 @@ public class Gitana
         return new ServerImpl(driver);
     }
 
+    /**
+     * Pings the server and returns the number of milliseconds for pong to return.
+     * If the ping fails, an exception is thrown.
+     *
+     * @return milliseconds
+     */
+    public long ping()
+    {
+        long ping = -1;
+
+        long t1 = System.currentTimeMillis();
+        Response response = getAnonymousRemote().get("/ping");
+        long t2 = System.currentTimeMillis();
+        if (response.isOk())
+        {
+            ping = t2 - t1;
+        }
+        else
+        {
+            throw new RuntimeException("Ping call did not return ok: " + response.getMessage());
+        }
+
+        return ping;
+    }
+
 }
