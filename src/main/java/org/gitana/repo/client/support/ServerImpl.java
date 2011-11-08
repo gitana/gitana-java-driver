@@ -1001,4 +1001,21 @@ public class ServerImpl implements Server
         return readOrganization(organizationId);
     }
 
+    @Override
+    public void updateOrganization(Organization organization)
+    {
+        getRemote().put("/organizations/" + organization.getId(), organization.getObject());
+    }
+
+    @Override
+    public void deleteOrganization(Organization organization)
+    {
+        deleteUser(organization.getId());
+    }
+
+    @Override
+    public void deleteOrganization(String organizationId)
+    {
+        getRemote().delete("/organizations/" + organizationId);
+    }
 }

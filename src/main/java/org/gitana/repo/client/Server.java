@@ -260,4 +260,9 @@ public interface Server extends AccessControllable
      */
     public Organization createOrganization(ObjectNode object);
 
+    public void updateOrganization(Organization organization);
+
+    public void deleteOrganization(Organization organization);
+
+    public void deleteOrganization(String organizationId);
 }
