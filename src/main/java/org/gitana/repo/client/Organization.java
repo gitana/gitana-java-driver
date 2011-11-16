@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Organization extends Document, AccessControllable, Selfable, Teamable
+public interface Organization extends Document, AccessControllable, Selfable, Teamable, Attachable
 {
     public final static String FIELD_REPOSITORIES = "repositories";
 

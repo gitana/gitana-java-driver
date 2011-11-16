@@ -23,6 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.http.HttpPayload;
 import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
@@ -31,6 +32,7 @@ import org.gitana.repo.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -264,6 +266,131 @@ public class OrganizationImpl extends DocumentImpl implements Organization
     public void unassignRepository(String repositoryId)
     {
         getRemote().post("/organizations/" + getId() + "/repositories/" + repositoryId + "/unassign");
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ATTACHMENTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void uploadAttachment(byte[] bytes, String contentType)
+    {
+        uploadAttachment("default", bytes, contentType);
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
+    {
+        // build the uri
+        String uri = "/organizations/" + this.getId() + "/attachments/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
+    {
+        // build the uri
+        String uri = "/organizations/" + this.getId() + "/attachments/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachments(HttpPayload... payloads)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+
+        uploadAttachments(params, payloads);
+    }
+
+    @Override
+    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
+    {
+        // build the uri
+        String uri = "/organizations/" + this.getId() + "/attachments";
+
+        try
+        {
+            getRemote().upload(uri, params, payloads);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] downloadAttachment()
+    {
+        return downloadAttachment("default");
+    }
+
+    @Override
+    public byte[] downloadAttachment(String attachmentId)
+    {
+        // build the uri
+        String uri = "/organizations/" + this.getId() + "/attachments/" + attachmentId;
+
+        byte[] bytes = null;
+        try
+        {
+            bytes = getRemote().downloadBytes(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return bytes;
+    }
+
+    @Override
+    public List<Attachment> listAttachments()
+    {
+        Map<String, Attachment> map = fetchAttachments();
+
+        List<Attachment> list = new ArrayList<Attachment>();
+        for (Attachment attachment : map.values())
+        {
+            list.add(attachment);
+        }
+
+        return list;
+    }
+
+    @Override
+    public ResultMap<Attachment> fetchAttachments()
+    {
+        // build the uri
+        String uri = "/organizations/" + this.getId() + "/attachments";
+
+        Response response = getRemote().get(uri);
+
+        return getFactory().attachments(this, response);
+    }
+
+    @Override
+    public String getDownloadUri(String attachmentId)
+    {
+        return "/organizations/" + this.getId() + "/attachments/" + attachmentId;
     }
 
 }
