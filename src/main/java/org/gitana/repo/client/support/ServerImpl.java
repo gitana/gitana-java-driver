@@ -596,6 +596,23 @@ public class ServerImpl implements Server
         return list;
     }
 
+    @Override
+    public PermissionCheckResults checkPrincipalPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/security/principals/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //

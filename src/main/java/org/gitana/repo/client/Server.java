@@ -170,6 +170,8 @@ public interface Server extends AccessControllable
 
     public List<SecurityGroup> listMemberships(String userId, boolean includeIndirectMemberships);
 
+    public PermissionCheckResults checkPrincipalPermissions(List<PermissionCheck> list);
+
 
     ////////////////////
     // JOBS
