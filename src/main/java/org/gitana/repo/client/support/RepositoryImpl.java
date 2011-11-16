@@ -21,6 +21,7 @@
 
 package org.gitana.repo.client.support;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
@@ -180,6 +181,20 @@ public class RepositoryImpl extends DocumentImpl implements Repository
         return getFactory().principalAuthorityGrants(response);
     }
 
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/repositories/" + getId() + "/permissions/" + permissionId + "/check/" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -276,6 +291,22 @@ public class RepositoryImpl extends DocumentImpl implements Repository
 
         Response response = getRemote().post("/repositories/" + getId() + "/branches/query", params, query);
         return getFactory().branches(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkBranchPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/repositories/" + getId() + "/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
     }
 
 

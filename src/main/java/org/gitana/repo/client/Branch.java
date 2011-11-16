@@ -26,6 +26,8 @@ import org.gitana.http.HttpPayload;
 import org.gitana.repo.branch.BranchType;
 import org.gitana.repo.client.nodes.BaseNode;
 import org.gitana.repo.client.nodes.Node;
+import org.gitana.repo.client.support.PermissionCheck;
+import org.gitana.repo.client.support.PermissionCheckResults;
 import org.gitana.repo.client.types.*;
 import org.gitana.repo.namespace.QName;
 import org.gitana.repo.support.Pagination;
@@ -178,6 +180,14 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return map of nodes
      */
     public ResultMap<BaseNode> searchNodes(String text);
+
+    /**
+     * Check node permissions.
+     *
+     * @param list
+     * @return
+     */
+    public PermissionCheckResults checkNodePermissions(List<PermissionCheck> list);
 
     /**
      * Reads the person object for a security user.

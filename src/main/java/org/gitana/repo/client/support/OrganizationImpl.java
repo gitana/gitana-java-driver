@@ -149,6 +149,20 @@ public class OrganizationImpl extends DocumentImpl implements Organization
         return getFactory().principalAuthorityGrants(response);
     }
 
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/organizations/" + getId() + "/permissions/" + permissionId + "/check/" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //

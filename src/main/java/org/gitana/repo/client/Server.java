@@ -22,6 +22,8 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.support.PermissionCheck;
+import org.gitana.repo.client.support.PermissionCheckResults;
 import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 
@@ -90,6 +92,15 @@ public interface Server extends AccessControllable
      * @return repository
      */
     public Repository createRepository(ObjectNode object);
+
+    /**
+     * Checks permissions on multiple repository/principal combinations.
+     *
+     * @param list
+     * @return
+     */
+    public PermissionCheckResults checkRepositoryPermissions(List<PermissionCheck> list);
+
 
     /**
      * Performs a query over the repository index.
@@ -265,4 +276,9 @@ public interface Server extends AccessControllable
     public void deleteOrganization(Organization organization);
 
     public void deleteOrganization(String organizationId);
+
+    public PermissionCheckResults checkOrganizationPermissions(List<PermissionCheck> list);
+
+
+
 }

@@ -129,6 +129,20 @@ public class NodeImpl extends BaseNodeImpl implements Node
         return getFactory().principalAuthorityGrants(response);
     }
 
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/repositories/" + getRepositoryId() + "/branches/" + getBranchId() + "/nodes/" + getId() + "/permissions/" + permissionId + "/check/" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //

@@ -23,6 +23,7 @@ package org.gitana.repo.client.support;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.repo.authority.AuthorityGrant;
@@ -177,6 +178,22 @@ public class ServerImpl implements Server
     }
 
     @Override
+    public PermissionCheckResults checkRepositoryPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/repositories/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
+    @Override
     public ResultMap<Repository> queryRepositories(ObjectNode query)
     {
         return queryRepositories(query, null);
@@ -254,6 +271,20 @@ public class ServerImpl implements Server
 
         Response response = getRemote().post("/authorities", object);
         return getFactory().principalAuthorityGrants(response);
+    }
+
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/permissions/" + permissionId + "/check/" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
     }
 
 
@@ -1017,5 +1048,21 @@ public class ServerImpl implements Server
     public void deleteOrganization(String organizationId)
     {
         getRemote().delete("/organizations/" + organizationId);
+    }
+
+    @Override
+    public PermissionCheckResults checkOrganizationPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/organizations/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
     }
 }

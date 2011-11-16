@@ -22,6 +22,8 @@
 package org.gitana.repo.client;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.repo.client.support.PermissionCheck;
+import org.gitana.repo.client.support.PermissionCheckResults;
 import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.RepositoryType;
 import org.gitana.repo.support.ResultMap;
@@ -126,6 +128,14 @@ public interface Repository extends Document, AccessControllable, Selfable, Team
      * @return
      */
     public ResultMap<Branch> queryBranches(ObjectNode query, Pagination pagination);
+
+    /**
+     * Check branch permissions.
+     *
+     * @param list
+     * @return
+     */
+    public PermissionCheckResults checkBranchPermissions(List<PermissionCheck> list);
 
     /**
      * Uploads a file into the repository file system.

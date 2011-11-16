@@ -312,13 +312,13 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
     @Override
     public void grant(String principalId, String authorityId)
     {
-        getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/grant/" + authorityId);
+        getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/authorities/" + authorityId + "/grant");
     }
 
     @Override
     public void revoke(String principalId, String authorityId)
     {
-        getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/revoke/" + authorityId);
+        getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/authorities/" + authorityId + "/revoke");
     }
 
     @Override
@@ -332,7 +332,7 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
     {
         boolean has = false;
 
-        Response response = getRemote().post("/security/principals/" + getName() + "/acl/" + principalId + "/check/" + authorityId);
+        Response response = getRemote().post("/security/principals/" + getName() + "/authorities/" + authorityId + "/check/" + principalId);
         if (response.getObjectNode().has("check"))
         {
             has = response.getObjectNode().get("check").getBooleanValue();
@@ -349,6 +349,20 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
 
         Response response = getRemote().post("/security/principals/" + getName() + "/authorities", object);
         return getFactory().principalAuthorityGrants(response);
+    }
+
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post("/security/principals/" + getName() + "/permissions/" + permissionId + "/check/" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
     }
 
 }

@@ -84,4 +84,13 @@ public interface AccessControllable
      * @return
      */
     public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds);
+
+    /**
+     * Checks whether the principal has the given permission over this object.
+     *
+     * @param principalId
+     * @param permissionId
+     * @return
+     */
+    public boolean hasPermission(String principalId, String permissionId);
 }

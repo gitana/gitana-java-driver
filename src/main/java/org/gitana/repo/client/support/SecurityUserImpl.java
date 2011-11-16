@@ -207,5 +207,4 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
     {
         return branch.readPerson(getName(), createIfNotFound);
     }
-
 }
