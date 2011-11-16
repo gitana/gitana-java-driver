@@ -53,9 +53,17 @@ public class OrganizationTeamTest extends AbstractTestCase
         owners.addMember(user2.getId());
         assertEquals(3, owners.listMembers().size()); // admin + user1 + user2
 
+        // check each principal's organizations
+        assertEquals(1, user1.fetchOrganizations().size());
+        assertEquals(1, user2.fetchOrganizations().size());
+
         // remove a member
         owners.removeMember(user2.getId());
         assertEquals(2, owners.listMembers().size()); // admin + user1
+
+        // check each principal's organizations
+        assertEquals(1, user1.fetchOrganizations().size());
+        assertEquals(0, user2.fetchOrganizations().size());
 
         // create a new team
         Team grifters = organization.createTeam("grifters");

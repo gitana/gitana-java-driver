@@ -28,6 +28,7 @@ import org.gitana.repo.authority.AuthorityGrant;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.beans.ACL;
 import org.gitana.repo.client.util.DriverUtil;
+import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.JsonUtil;
@@ -363,6 +364,28 @@ public abstract class AbstractSecurityPrincipalImpl extends DocumentImpl impleme
         }
 
         return has;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // LIST ORGANIZATIONS WITH TEAMS THAT HAVE PRINCIPAL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Organization> fetchOrganizations()
+    {
+        return fetchOrganizations(null);
+    }
+
+    @Override
+    public ResultMap<Organization> fetchOrganizations(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/security/principals/" + getName() + "/organizations", params);
+        return getFactory().organizations(getServer(), response);
     }
 
 }

@@ -21,6 +21,7 @@
 
 package org.gitana.repo.client;
 
+import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 
@@ -60,5 +61,9 @@ public interface SecurityPrincipal extends Document, Principal, Attachable, Self
     public List<SecurityGroup> listParentGroups();
 
     public List<SecurityGroup> listParentGroups(boolean includeAncestors);
+
+    public ResultMap<Organization> fetchOrganizations();
+
+    public ResultMap<Organization> fetchOrganizations(Pagination pagination);
 
 }

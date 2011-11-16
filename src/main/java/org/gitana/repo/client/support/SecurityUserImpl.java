@@ -24,6 +24,7 @@ package org.gitana.repo.client.support;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.repo.client.*;
 import org.gitana.repo.client.types.Person;
+import org.gitana.repo.support.Pagination;
 import org.gitana.repo.support.ResultMap;
 import org.gitana.security.PrincipalType;
 import org.gitana.util.MD5;
@@ -140,6 +141,7 @@ public class SecurityUserImpl extends AbstractSecurityPrincipalImpl implements S
 
         return list;
     }
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
