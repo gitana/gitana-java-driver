@@ -33,8 +33,17 @@ import java.util.List;
  */
 public class RepositoryPermissionTest extends AbstractTestCase
 {
-    @Test
-    public void testBulkPermissions()
+    private String repositoryId1 = null;
+    private String repositoryId2 = null;
+    private String repositoryId3 = null;
+
+    private String userId1 = null;
+    private String userId2 = null;
+    private String userId3 = null;
+
+    private String userTestId = null;
+
+    private void setupBulkPermissions()
     {
         Gitana gitana = new Gitana();
 
@@ -48,11 +57,20 @@ public class RepositoryPermissionTest extends AbstractTestCase
         SecurityUser user1 = server.createUser("user1-" + System.currentTimeMillis(), "password");
         SecurityUser user2 = server.createUser("user2-" + System.currentTimeMillis(), "password");
         SecurityUser user3 = server.createUser("user3-" + System.currentTimeMillis(), "password");
+        SecurityUser userTest = server.createUser("usertest-" + System.currentTimeMillis(), "password");
 
         repository1.grant(user1.getName(), "MANAGER");
         repository1.grant(user2.getName(), "CONSUMER");
         repository2.grant(user2.getName(), "EDITOR");
         repository3.grant(user3.getName(), "CONSUMER");
+
+        this.repositoryId1 = repository1.getId();
+        this.repositoryId2 = repository2.getId();
+        this.repositoryId3 = repository3.getId();
+        this.userId1 = user1.getName();
+        this.userId2 = user2.getName();
+        this.userId3 = user3.getName();
+        this.userTestId = userTest.getName();
 
         // simple checks
         assertTrue(repository1.hasPermission(user1.getName(), "READ"));
@@ -65,70 +83,82 @@ public class RepositoryPermissionTest extends AbstractTestCase
         assertFalse(repository1.hasPermission(user3.getName(), "UPDATE"));
         assertFalse(repository1.hasPermission(user3.getName(), "DELETE"));
 
+    }
+
+    @Test
+    public void testBulkPermissions()
+    {
+        setupBulkPermissions();
+
+        // authenticate as the test user
+        // this is to ensure that a non-admin can check permissions
+        Gitana gitana = new Gitana();
+        Server server = gitana.authenticate(userTestId, "password");
+
         // define a bunch of permissions to check
         List<PermissionCheck> checks = new ArrayList<PermissionCheck>();
-        checks.add(new PermissionCheck(repository1.getId(), user1.getName(), "READ"));
-        checks.add(new PermissionCheck(repository1.getId(), user1.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository1.getId(), user1.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository1.getId(), user2.getName(), "READ"));
-        checks.add(new PermissionCheck(repository1.getId(), user2.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository1.getId(), user2.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository1.getId(), user3.getName(), "READ"));
-        checks.add(new PermissionCheck(repository1.getId(), user3.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository1.getId(), user3.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository2.getId(), user1.getName(), "READ"));
-        checks.add(new PermissionCheck(repository2.getId(), user1.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository2.getId(), user1.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository2.getId(), user2.getName(), "READ"));
-        checks.add(new PermissionCheck(repository2.getId(), user2.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository2.getId(), user2.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository2.getId(), user3.getName(), "READ"));
-        checks.add(new PermissionCheck(repository2.getId(), user3.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository2.getId(), user3.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository3.getId(), user1.getName(), "READ"));
-        checks.add(new PermissionCheck(repository3.getId(), user1.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository3.getId(), user1.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository3.getId(), user2.getName(), "READ"));
-        checks.add(new PermissionCheck(repository3.getId(), user2.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository3.getId(), user2.getName(), "DELETE"));
-        checks.add(new PermissionCheck(repository3.getId(), user3.getName(), "READ"));
-        checks.add(new PermissionCheck(repository3.getId(), user3.getName(), "UPDATE"));
-        checks.add(new PermissionCheck(repository3.getId(), user3.getName(), "DELETE"));
+        checks.add(new PermissionCheck(repositoryId1, userId1, "READ"));
+        checks.add(new PermissionCheck(repositoryId1, userId1, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId1, userId1, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId1, userId2, "READ"));
+        checks.add(new PermissionCheck(repositoryId1, userId2, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId1, userId2, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId1, userId3, "READ"));
+        checks.add(new PermissionCheck(repositoryId1, userId3, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId1, userId3, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId2, userId1, "READ"));
+        checks.add(new PermissionCheck(repositoryId2, userId1, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId2, userId1, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId2, userId2, "READ"));
+        checks.add(new PermissionCheck(repositoryId2, userId2, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId2, userId2, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId2, userId3, "READ"));
+        checks.add(new PermissionCheck(repositoryId2, userId3, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId2, userId3, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId3, userId1, "READ"));
+        checks.add(new PermissionCheck(repositoryId3, userId1, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId3, userId1, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId3, userId2, "READ"));
+        checks.add(new PermissionCheck(repositoryId3, userId2, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId3, userId2, "DELETE"));
+        checks.add(new PermissionCheck(repositoryId3, userId3, "READ"));
+        checks.add(new PermissionCheck(repositoryId3, userId3, "UPDATE"));
+        checks.add(new PermissionCheck(repositoryId3, userId3, "DELETE"));
 
         // check
         PermissionCheckResults results = server.checkRepositoryPermissions(checks);
 
         // assert (repo1)
-        assertTrue(results.check(repository1.getId(), user1.getName(), "READ"));
-        assertTrue(results.check(repository1.getId(), user1.getName(), "UPDATE"));
-        assertTrue(results.check(repository1.getId(), user1.getName(), "DELETE"));
-        assertTrue(results.check(repository1.getId(), user2.getName(), "READ"));
-        assertFalse(results.check(repository1.getId(), user2.getName(), "UPDATE"));
-        assertFalse(results.check(repository1.getId(), user2.getName(), "DELETE"));
-        assertFalse(results.check(repository1.getId(), user3.getName(), "READ"));
-        assertFalse(results.check(repository1.getId(), user3.getName(), "UPDATE"));
-        assertFalse(results.check(repository1.getId(), user3.getName(), "DELETE"));
+        assertTrue(results.check(repositoryId1, userId1, "READ"));
+        assertTrue(results.check(repositoryId1, userId1, "UPDATE"));
+        assertTrue(results.check(repositoryId1, userId1, "DELETE"));
+        assertTrue(results.check(repositoryId1, userId2, "READ"));
+        assertFalse(results.check(repositoryId1, userId2, "UPDATE"));
+        assertFalse(results.check(repositoryId1, userId2, "DELETE"));
+        assertFalse(results.check(repositoryId1, userId3, "READ"));
+        assertFalse(results.check(repositoryId1, userId3, "UPDATE"));
+        assertFalse(results.check(repositoryId1, userId3, "DELETE"));
 
         // assert (repo2)
-        assertFalse(results.check(repository2.getId(), user1.getName(), "READ"));
-        assertFalse(results.check(repository2.getId(), user1.getName(), "UPDATE"));
-        assertFalse(results.check(repository2.getId(), user1.getName(), "DELETE"));
-        assertTrue(results.check(repository2.getId(), user2.getName(), "READ"));
-        assertTrue(results.check(repository2.getId(), user2.getName(), "UPDATE"));
-        assertTrue(results.check(repository2.getId(), user2.getName(), "DELETE"));
-        assertFalse(results.check(repository2.getId(), user3.getName(), "READ"));
-        assertFalse(results.check(repository2.getId(), user3.getName(), "UPDATE"));
-        assertFalse(results.check(repository2.getId(), user3.getName(), "DELETE"));
+        assertFalse(results.check(repositoryId2, userId1, "READ"));
+        assertFalse(results.check(repositoryId2, userId1, "UPDATE"));
+        assertFalse(results.check(repositoryId2, userId1, "DELETE"));
+        assertTrue(results.check(repositoryId2, userId2, "READ"));
+        assertTrue(results.check(repositoryId2, userId2, "UPDATE"));
+        assertTrue(results.check(repositoryId2, userId2, "DELETE"));
+        assertFalse(results.check(repositoryId2, userId3, "READ"));
+        assertFalse(results.check(repositoryId2, userId3, "UPDATE"));
+        assertFalse(results.check(repositoryId2, userId3, "DELETE"));
 
         // assert (repo3)
-        assertFalse(results.check(repository3.getId(), user1.getName(), "READ"));
-        assertFalse(results.check(repository3.getId(), user1.getName(), "UPDATE"));
-        assertFalse(results.check(repository3.getId(), user1.getName(), "DELETE"));
-        assertFalse(results.check(repository3.getId(), user2.getName(), "READ"));
-        assertFalse(results.check(repository3.getId(), user2.getName(), "UPDATE"));
-        assertFalse(results.check(repository3.getId(), user2.getName(), "DELETE"));
-        assertTrue(results.check(repository3.getId(), user3.getName(), "READ"));
-        assertFalse(results.check(repository3.getId(), user3.getName(), "UPDATE"));
-        assertFalse(results.check(repository3.getId(), user3.getName(), "DELETE"));
+        assertFalse(results.check(repositoryId3, userId1, "READ"));
+        assertFalse(results.check(repositoryId3, userId1, "UPDATE"));
+        assertFalse(results.check(repositoryId3, userId1, "DELETE"));
+        assertFalse(results.check(repositoryId3, userId2, "READ"));
+        assertFalse(results.check(repositoryId3, userId2, "UPDATE"));
+        assertFalse(results.check(repositoryId3, userId2, "DELETE"));
+        assertTrue(results.check(repositoryId3, userId3, "READ"));
+        assertFalse(results.check(repositoryId3, userId3, "UPDATE"));
+        assertFalse(results.check(repositoryId3, userId3, "DELETE"));
     }
 }
