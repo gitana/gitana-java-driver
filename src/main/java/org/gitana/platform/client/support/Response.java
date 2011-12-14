@@ -1,0 +1,210 @@
+/**
+ * Copyright 2010 Gitana Software, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information, please contact Gitana Software, Inc. at this
+ * address:
+ *
+ *   info@gitanasoftware.com
+ */
+
+package org.gitana.platform.client.support;
+
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Wraps a JSON response from the Gitana server.
+ * 
+ * @author uzi
+ */
+public class Response
+{
+    public final static String FIELD_OK = "ok";
+    public final static String FIELD_ERROR = "error";
+    public final static String FIELD_TOTAL_ROWS = "total_rows";
+    public final static String FIELD_ROWS = "rows";
+    public final static String FIELD_OFFSET = "offset";
+    public final static String FIELD_MESSAGE = "message";
+    public final static String FIELD_STACKTRACE = "stacktrace";
+
+    private ObjectNode object;
+
+    public Response(ObjectNode object)
+    {
+        this.object = object;
+    }
+
+    public ObjectNode getObjectNode()
+    {
+        return this.object;
+    }
+
+    public boolean isStatusDocument()
+    {
+        return ((getObjectNode().has(FIELD_OK)) || (getObjectNode().has(FIELD_ERROR)));
+    }
+
+    public boolean isListDocument()
+    {
+        return ((getObjectNode().has(FIELD_TOTAL_ROWS)) && (getObjectNode().has(FIELD_ROWS)) && getObjectNode().has(FIELD_OFFSET));
+    }
+
+    public boolean isDataDocument()
+    {
+        return (!isStatusDocument() && !isListDocument());
+    }
+
+    public String getId()
+    {
+        return this.object.get("_doc").getTextValue();
+    }
+
+
+
+    //////////////////////////////////////////////////
+    //
+    // DATA DOCUMENT ACCESSORS
+    //
+    //////////////////////////////////////////////////
+
+    /*
+    public GitanaObject getObjectNode()
+    {
+
+    }
+    */
+
+
+
+
+    //////////////////////////////////////////////////
+    //
+    // LIST DOCUMENT ACCESSORS
+    //
+    //////////////////////////////////////////////////
+
+    public int getListTotalRows()
+    {
+        int totalRows = -1;
+
+        if (getObjectNode().has(FIELD_TOTAL_ROWS))
+        {
+            totalRows = getObjectNode().get(FIELD_TOTAL_ROWS).getIntValue();
+        }
+
+        return totalRows;
+    }
+
+    public int getListOffset()
+    {
+        int offset = -1;
+
+        if (getObjectNode().has(FIELD_OFFSET))
+        {
+            offset = getObjectNode().get(FIELD_OFFSET).getIntValue();
+        }
+
+        return offset;
+    }
+
+    public List<ObjectNode> getObjectNodes()
+    {
+        List<ObjectNode> objectNodes = new ArrayList<ObjectNode>();
+
+        ArrayNode arrayNode = (ArrayNode) getObjectNode().get(FIELD_ROWS);
+        if (arrayNode != null)
+        {
+            for (int i = 0; i < arrayNode.size(); i++)
+            {
+                ObjectNode objectNode = (ObjectNode) arrayNode.get(i);
+                objectNodes.add(objectNode);
+            }
+        }
+
+        return objectNodes;
+    }
+
+    /*
+    public List<GitanaObject> getObjects()
+    {
+
+    }
+    */
+
+
+
+
+    //////////////////////////////////////////////////
+    //
+    // STATUS DOCUMENT ACCESSORS
+    //
+    //////////////////////////////////////////////////
+
+    public boolean isOk()
+    {
+        // assume things are ok
+        boolean ok = true;
+
+        // status documents report their ok in an "ok" field
+        if (isStatusDocument())
+        {
+            if (getObjectNode().has(FIELD_OK))
+            {
+                ok = getObjectNode().get(FIELD_OK).getBooleanValue();
+            }
+        }
+
+        // any document type can specify an error
+        if (getObjectNode().has(FIELD_ERROR))
+        {
+            ok = false;
+        }
+
+        return ok;
+    }
+
+    public boolean isError()
+    {
+        return !isOk();
+    }
+
+    public String getMessage()
+    {
+        String message = null;
+
+        if (getObjectNode().has(FIELD_MESSAGE))
+        {
+            message = getObjectNode().get(FIELD_MESSAGE).getTextValue();
+        }
+
+        return message;
+    }
+
+    public String getStackTrace()
+    {
+        String stacktrace = null;
+
+        if (getObjectNode().has(FIELD_STACKTRACE))
+        {
+            stacktrace = getObjectNode().get(FIELD_STACKTRACE).getTextValue();
+        }
+
+        return stacktrace;        
+    }
+
+}
