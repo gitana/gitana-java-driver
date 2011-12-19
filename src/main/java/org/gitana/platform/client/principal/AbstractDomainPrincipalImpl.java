@@ -58,6 +58,18 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
     }
 
     @Override
+    public String getDomainQualifiedName()
+    {
+        return getDomainId() + "/" + getName();
+    }
+
+    @Override
+    public String getDomainQualifiedId()
+    {
+        return getDomainId() + "/" + getId();
+    }
+
+    @Override
     public String getName()
     {
         return getString(FIELD_NAME);

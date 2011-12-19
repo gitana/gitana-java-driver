@@ -22,6 +22,7 @@
 package org.gitana.platform.client.platform;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
@@ -244,5 +245,25 @@ public interface Platform extends DataStore
     public void deleteOrganization(String organizationId);
 
     public PermissionCheckResults checkOrganizationPermissions(List<PermissionCheck> list);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CONSUMERS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<Consumer> listConsumers();
+    public ResultMap<Consumer> listConsumers(Pagination pagination);
+    public ResultMap<Consumer> queryConsumers(ObjectNode query);
+    public ResultMap<Consumer> queryConsumers(ObjectNode query, Pagination pagination);
+    public Consumer readConsumer(String consumerKey);
+    public Consumer createConsumer();
+    public Consumer createConsumer(ObjectNode object);
+    public void updateConsumer(Consumer consumer);
+    public void deleteConsumer(Consumer consumer);
+    public void deleteConsumer(String consumerKey);
+    public Consumer lookupDefaultConsumerForTenant(String tenantId);
 
 }

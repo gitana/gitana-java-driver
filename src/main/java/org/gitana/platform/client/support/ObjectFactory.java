@@ -22,6 +22,7 @@
 package org.gitana.platform.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
@@ -30,6 +31,10 @@ import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
+import org.gitana.platform.client.management.Allocation;
+import org.gitana.platform.client.management.Management;
+import org.gitana.platform.client.management.Plan;
+import org.gitana.platform.client.management.Tenant;
 import org.gitana.platform.client.nodes.Association;
 import org.gitana.platform.client.nodes.BaseNode;
 import org.gitana.platform.client.organization.Organization;
@@ -121,6 +126,10 @@ public interface ObjectFactory
     public Organization organization(Platform platform, Response response);
     public ResultMap<Organization> organizations(Platform platform, Response response);
 
+    public Consumer consumer(Platform platform, ObjectNode object);
+    public Consumer consumer(Platform platform, Response response);
+    public ResultMap<Consumer> consumers(Platform platform, Response response);
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,5 +160,24 @@ public interface ObjectFactory
     // teams
     public Team team(Platform platform, Teamable teamable, String teamKey, Response response);
     public ResultMap<Team> teams(Platform platform, Teamable teamable, Response response);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MANAGEMENT
+    //
+
+    public Tenant tenant(Management management, ObjectNode object);
+    public Tenant tenant(Management management, Response response);
+    public ResultMap<Tenant> tenants(Management management, Response response);
+
+    public Plan plan(Management management, ObjectNode object);
+    public Plan plan(Management management, Response response);
+    public ResultMap<Plan> plans(Management management, Response response);
+
+    public Allocation allocation(Management management, ObjectNode object);
+    public Allocation allocation(Management management, Response response);
+    public ResultMap<Allocation> allocations(Management management, Response response);
 
 }

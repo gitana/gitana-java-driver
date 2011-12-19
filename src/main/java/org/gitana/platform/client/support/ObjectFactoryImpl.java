@@ -22,6 +22,8 @@
 package org.gitana.platform.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.ConsumerImpl;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.archive.ArchiveImpl;
 import org.gitana.platform.client.attachment.Attachable;
@@ -37,6 +39,7 @@ import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.job.JobImpl;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.log.LogEntryImpl;
+import org.gitana.platform.client.management.*;
 import org.gitana.platform.client.nodes.*;
 import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.organization.OrganizationImpl;
@@ -695,6 +698,46 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
+    public Consumer consumer(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new ConsumerImpl(platform, object, false);
+    }
+
+    @Override
+    public Consumer consumer(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new ConsumerImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Consumer> consumers(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Consumer> map = new ResultMapImpl<Consumer>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Consumer consumer = new ConsumerImpl(platform, object, true);
+            map.put(consumer.getId(), consumer);
+        }
+
+        return map;
+    }
+
+    @Override
     public Vault vault(Platform platform)
     {
         return vault(platform, JsonUtil.createObject());
@@ -735,6 +778,139 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             Vault vault = new VaultImpl(platform, object, true);
             map.put(vault.getId(), vault);
+        }
+
+        return map;
+    }
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MANAGEMENT
+    //
+
+    @Override
+    public Tenant tenant(Management management, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new TenantImpl(management, object, false);
+    }
+
+    @Override
+    public Tenant tenant(Management management, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new TenantImpl(management, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Tenant> tenants(Management management, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Tenant> map = new ResultMapImpl<Tenant>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Tenant tenant = new TenantImpl(management, object, true);
+            map.put(tenant.getId(), tenant);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Plan plan(Management management, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new PlanImpl(management, object, false);
+    }
+
+    @Override
+    public Plan plan(Management management, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new PlanImpl(management, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Plan> plans(Management management, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Plan> map = new ResultMapImpl<Plan>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Plan plan = new PlanImpl(management, object, true);
+            map.put(plan.getId(), plan);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Allocation allocation(Management management, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new AllocationImpl(management, object, false);
+    }
+
+    @Override
+    public Allocation allocation(Management management, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new AllocationImpl(management, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Allocation> allocations(Management management, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Allocation> map = new ResultMapImpl<Allocation>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Allocation allocation = new AllocationImpl(management, object, true);
+            map.put(allocation.getId(), allocation);
         }
 
         return map;

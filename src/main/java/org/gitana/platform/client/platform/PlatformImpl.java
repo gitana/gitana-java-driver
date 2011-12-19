@@ -23,6 +23,7 @@ package org.gitana.platform.client.platform;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
@@ -749,4 +750,121 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
         Response response = getRemote().post(getResourceUri() + "/vaults/permissions/check", object);
         return new PermissionCheckResults(response.getObjectNode());
     }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CONSUMERS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Consumer> listConsumers()
+    {
+        return listConsumers(null);
+    }
+
+    @Override
+    public ResultMap<Consumer> listConsumers(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/consumers", params);
+        return getFactory().consumers(this, response);
+    }
+
+    @Override
+    public ResultMap<Consumer> queryConsumers(ObjectNode query)
+    {
+        return queryConsumers(query, null);
+    }
+
+    @Override
+    public ResultMap<Consumer> queryConsumers(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/consumers/query", params, query);
+        return getFactory().consumers(this, response);
+    }
+
+    @Override
+    public Consumer readConsumer(String consumerKey)
+    {
+        Consumer consumer = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/consumers/" + consumerKey);
+            consumer = getFactory().consumer(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return consumer;
+    }
+
+    @Override
+    public Consumer createConsumer()
+    {
+        return createConsumer(null);
+    }
+
+    @Override
+    public Consumer createConsumer(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/consumers", object);
+
+        String consumerId = response.getId();
+        return readConsumer(consumerId);
+    }
+
+    @Override
+    public void updateConsumer(Consumer consumer)
+    {
+        getRemote().put("/consumers/" + consumer.getId(), consumer.getObject());
+    }
+
+    @Override
+    public void deleteConsumer(Consumer consumer)
+    {
+        deleteConsumer(consumer.getKey());
+    }
+
+    @Override
+    public void deleteConsumer(String consumerKey)
+    {
+        getRemote().delete("/consumers/" + consumerKey);
+    }
+
+    @Override
+    public Consumer lookupDefaultConsumerForTenant(String tenantId)
+    {
+        ObjectNode query = JsonUtil.createObject();
+        query.put(Consumer.FIELD_IS_TENANT_DEFAULT, true);
+        query.put(Consumer.FIELD_DEFAULT_TENANT_ID, tenantId);
+
+        Consumer consumer = null;
+
+        ResultMap<Consumer> consumers = queryConsumers(query);
+        if (consumers.size() > 0)
+        {
+            consumer = consumers.values().iterator().next();
+        }
+
+        return consumer;
+    }
+
+
 }
