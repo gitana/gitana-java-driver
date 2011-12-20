@@ -36,7 +36,7 @@ public class AllocationImpl extends AbstractManagementDocumentImpl implements Al
     @Override
     protected String getResourceUri()
     {
-        return "/plans/" + getId();
+        return "/tenants/" + getTenantId() + "/allocations/" + getId();
     }
 
     @Override
