@@ -23,6 +23,7 @@ package org.gitana.platform.client.management;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.datastore.DataStore;
+import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -32,6 +33,8 @@ import org.gitana.platform.support.ResultMap;
  */
 public interface Management extends DataStore
 {
+    public Platform getPlatform();
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // TENANTS

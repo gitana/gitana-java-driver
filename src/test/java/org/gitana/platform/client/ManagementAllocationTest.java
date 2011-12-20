@@ -112,6 +112,12 @@ public class ManagementAllocationTest extends AbstractTestCase
         ResultMap<Allocation> allocations = tenant.listAllocations();
         assertEquals(11+1, allocations.size()); // should be 11 + our default consumer (1)
 
+        // test out independent methods
+        assertEquals(2, tenant.listRepositories().size());
+        assertEquals(3, tenant.listDomains().size());
+        assertEquals(4, tenant.listVaults().size());
+        assertEquals(2+1, tenant.listConsumers().size()); // + 1 for default
+
         // delete the third domain
         domain3.delete();
 

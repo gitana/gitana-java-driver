@@ -61,7 +61,7 @@ public class ManagementImpl extends AbstractDataStoreImpl implements Management
     }
 
     @Override
-    protected Platform getPlatform()
+    public Platform getPlatform()
     {
         return platform;
     }

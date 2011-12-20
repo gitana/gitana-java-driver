@@ -22,8 +22,12 @@
 package org.gitana.platform.client.management;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -123,4 +127,65 @@ public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
     {
         getRemote().post(getResourceUri() + "/deallocate?tenantId=" + this.getId() + "&type=" + objectType + "&id=" + objectId);
     }
+
+    @Override
+    public ResultMap<Repository> listRepositories()
+    {
+        return listRepositories(null);
+    }
+
+    @Override
+    public ResultMap<Repository> listRepositories(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/repositories", params);
+        return getFactory().repositories(getManagement().getPlatform(), response);
+    }
+
+    @Override
+    public ResultMap<Domain> listDomains()
+    {
+        return listDomains(null);
+    }
+
+    @Override
+    public ResultMap<Domain> listDomains(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/domains", params);
+        return getFactory().domains(getManagement().getPlatform(), response);
+    }
+
+    @Override
+    public ResultMap<Vault> listVaults()
+    {
+        return listVaults(null);
+    }
+
+    @Override
+    public ResultMap<Vault> listVaults(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/vaults", params);
+        return getFactory().vaults(getManagement().getPlatform(), response);
+    }
+
+    @Override
+    public ResultMap<Consumer> listConsumers()
+    {
+        return listConsumers(null);
+    }
+
+    @Override
+    public ResultMap<Consumer> listConsumers(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/consumers", params);
+        return getFactory().consumers(getManagement().getPlatform(), response);
+    }
+
 }

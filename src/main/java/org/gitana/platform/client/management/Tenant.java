@@ -21,6 +21,10 @@
 
 package org.gitana.platform.client.management;
 
+import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -47,4 +51,19 @@ public interface Tenant extends ManagementDocument
     public ResultMap<Allocation> listAllocations(Pagination pagination);
     public void allocate(String objectType, String objectId);
     public void deallocate(String objectType, String objectId);
+
+    // list/query
+
+    public ResultMap<Repository> listRepositories();
+    public ResultMap<Repository> listRepositories(Pagination pagination);
+
+    public ResultMap<Domain> listDomains();
+    public ResultMap<Domain> listDomains(Pagination pagination);
+
+    public ResultMap<Vault> listVaults();
+    public ResultMap<Vault> listVaults(Pagination pagination);
+
+    public ResultMap<Consumer> listConsumers();
+    public ResultMap<Consumer> listConsumers(Pagination pagination);
+
 }
