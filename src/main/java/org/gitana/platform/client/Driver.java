@@ -35,6 +35,8 @@ public class Driver
 
     private ObjectFactory factory;
 
+    private AuthInfo authInfo;
+
     private String consumerKey;
     private String accessToken;
 
@@ -62,6 +64,21 @@ public class Driver
     public String getAccessToken()
     {
         return this.accessToken;
+    }
+
+    public void setAuthInfo(AuthInfo authInfo)
+    {
+        this.authInfo = authInfo;
+    }
+
+    public void removeAuthInfo()
+    {
+        this.authInfo = null;
+    }
+
+    public AuthInfo getAuthInfo()
+    {
+        return this.authInfo;
     }
 
     private void init()

@@ -188,8 +188,26 @@ public class Gitana
         Driver driver = new Driver(remote, this.consumerKey, accessTokenKey);
         DriverContext.setDriver(driver);
 
+        // perform handshake and populate driver with info
+        populateAuthenticationInformation(driver);
+
         // read back the platform
         return loadPlatform(driver);
+    }
+
+    protected void populateAuthenticationInformation(Driver driver)
+    {
+        try
+        {
+            Response response = driver.getRemote().get("/auth/info");
+
+            AuthInfo authInfo = new AuthInfo(response.getObjectNode());
+            driver.setAuthInfo(authInfo);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
     }
 
     protected Platform loadPlatform(Driver driver)
@@ -253,6 +271,9 @@ public class Gitana
         // build driver instance
         Driver driver = new Driver(remote, this.consumerKey, ticket);
         DriverContext.setDriver(driver);
+
+        // perform handshake and populate driver with info
+        populateAuthenticationInformation(driver);
 
         // read back the platform
         return loadPlatform(driver);
