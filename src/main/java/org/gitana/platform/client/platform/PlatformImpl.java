@@ -28,9 +28,9 @@ import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
@@ -449,52 +449,53 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
     }
 
 
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // ORGANIZATIONS
+    // STACKS
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     @Override
-    public ResultMap<Organization> listOrganizations()
+    public ResultMap<Stack> listStacks()
     {
-        return listOrganizations(null);
+        return listStacks(null);
     }
 
     @Override
-    public ResultMap<Organization> listOrganizations(Pagination pagination)
+    public ResultMap<Stack> listStacks(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().get("/organizations", params);
-        return getFactory().organizations(this, response);
+        Response response = getRemote().get("/stacks", params);
+        return getFactory().stacks(this, response);
     }
 
     @Override
-    public ResultMap<Organization> queryOrganizations(ObjectNode query)
+    public ResultMap<Stack> queryStacks(ObjectNode query)
     {
-        return queryOrganizations(query, null);
+        return queryStacks(query, null);
     }
 
     @Override
-    public ResultMap<Organization> queryOrganizations(ObjectNode query, Pagination pagination)
+    public ResultMap<Stack> queryStacks(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().post("/organizations/query", params, query);
-        return getFactory().organizations(this, response);
+        Response response = getRemote().post("/stacks/query", params, query);
+        return getFactory().stacks(this, response);
     }
 
     @Override
-    public Organization readOrganization(String organizationId)
+    public Stack readStack(String stackId)
     {
-        Organization organization = null;
+        Stack stack = null;
 
         try
         {
-            Response response = getRemote().get("/organizations/" + organizationId);
-            organization = getFactory().organization(this, response);
+            Response response = getRemote().get("/stacks/" + stackId);
+            stack = getFactory().stack(this, response);
         }
         catch (Exception ex)
         {
@@ -503,17 +504,17 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
             // TODO: information so that we can detect a proper 404
         }
 
-        return organization;
+        return stack;
     }
 
     @Override
-    public Organization createOrganization()
+    public Stack createStack()
     {
-        return createOrganization(null);
+        return createStack(null);
     }
 
     @Override
-    public Organization createOrganization(ObjectNode object)
+    public Stack createStack(ObjectNode object)
     {
         // allow for null object
         if (object == null)
@@ -521,32 +522,32 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
             object = JsonUtil.createObject();
         }
 
-        Response response = getRemote().post("/organizations", object);
+        Response response = getRemote().post("/stacks", object);
 
-        String organizationId = response.getId();
-        return readOrganization(organizationId);
+        String stackId = response.getId();
+        return readStack(stackId);
     }
 
     @Override
-    public void updateOrganization(Organization organization)
+    public void updateStack(Stack stack)
     {
-        getRemote().put("/organizations/" + organization.getId(), organization.getObject());
+        getRemote().put("/stacks/" + stack.getId(), stack.getObject());
     }
 
     @Override
-    public void deleteOrganization(Organization organization)
+    public void deleteStack(Stack stack)
     {
-        deleteOrganization(organization.getId());
+        deleteStack(stack.getId());
     }
 
     @Override
-    public void deleteOrganization(String organizationId)
+    public void deleteStack(String stackId)
     {
-        getRemote().delete("/organizations/" + organizationId);
+        getRemote().delete("/stacks/" + stackId);
     }
 
     @Override
-    public PermissionCheckResults checkOrganizationPermissions(List<PermissionCheck> list)
+    public PermissionCheckResults checkStackPermissions(List<PermissionCheck> list)
     {
         ArrayNode array = JsonUtil.createArray();
         for (PermissionCheck check: list)
@@ -557,7 +558,7 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
         ObjectNode object = JsonUtil.createObject();
         object.put("checks", array);
 
-        Response response = getRemote().post("/organizations/permissions/check", object);
+        Response response = getRemote().post("/stacks/permissions/check", object);
         return new PermissionCheckResults(response.getObjectNode());
     }
 

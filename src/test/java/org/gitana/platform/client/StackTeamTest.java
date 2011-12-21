@@ -22,9 +22,9 @@
 package org.gitana.platform.client;
 
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.team.Team;
 import org.junit.Ignore;
@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author uzi
  */
 @Ignore
-public class OrganizationTeamTest extends AbstractTestCase
+public class StackTeamTest extends AbstractTestCase
 {
     @Test
     public void testTeams()
@@ -46,11 +46,11 @@ public class OrganizationTeamTest extends AbstractTestCase
 
         Domain domain = platform.readDefaultDomain();
 
-        // create an organization
-        Organization organization = platform.createOrganization();
+        // create a stack
+        Stack stack = platform.createStack();
 
         // get the default owners team
-        Team owners = organization.readTeam("owners");
+        Team owners = stack.readTeam("owners");
         assertEquals(1, owners.listMembers().size()); // admin
 
         // create three users
@@ -78,7 +78,7 @@ public class OrganizationTeamTest extends AbstractTestCase
         //assertEquals(0, user2.listOrganizations().size());
 
         // create a new team
-        Team grifters = organization.createTeam("grifters");
+        Team grifters = stack.createTeam("grifters");
         grifters.addMember(user2.getId());
         assertEquals(1, grifters.listMembers().size()); // user2
         assertEquals(0, grifters.listAuthorities().size());

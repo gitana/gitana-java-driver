@@ -41,13 +41,13 @@ import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.log.LogEntryImpl;
 import org.gitana.platform.client.management.*;
 import org.gitana.platform.client.nodes.*;
-import org.gitana.platform.client.organization.Organization;
-import org.gitana.platform.client.organization.OrganizationImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformImpl;
 import org.gitana.platform.client.principal.DomainGroupImpl;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUserImpl;
+import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.stack.StackImpl;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.repository.RepositoryImpl;
 import org.gitana.platform.client.team.Team;
@@ -669,29 +669,29 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Organization organization(Platform platform, Response response)
+    public Stack stack(Platform platform, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new OrganizationImpl(platform, response.getObjectNode(), true);
+        return new StackImpl(platform, response.getObjectNode(), true);
     }
 
     @Override
-    public ResultMap<Organization> organizations(Platform platform, Response response)
+    public ResultMap<Stack> stacks(Platform platform, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        ResultMap<Organization> map = new ResultMapImpl<Organization>(response.getListOffset(), response.getListTotalRows());
+        ResultMap<Stack> map = new ResultMapImpl<Stack>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            Organization organization = new OrganizationImpl(platform, object, true);
-            map.put(organization.getId(), organization);
+            Stack project = new StackImpl(platform, object, true);
+            map.put(project.getId(), project);
         }
 
         return map;

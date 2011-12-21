@@ -24,10 +24,10 @@ package org.gitana.platform.client;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.nodes.Node;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.services.authority.AuthorityGrant;
@@ -109,16 +109,16 @@ public class AuthorityGrantTest extends AbstractTestCase
     }
 
     @Test
-    public void testOrganization()
+    public void testStack()
     {
         Gitana gitana = new Gitana();
 
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Organization organization = platform.createOrganization();
+        Stack stack = platform.createStack();
 
-        testAuthorityGrants(platform, organization);
+        testAuthorityGrants(platform, stack);
     }
 
     @Test

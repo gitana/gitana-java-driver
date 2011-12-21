@@ -40,4 +40,6 @@ public interface Teamable
     public void deleteTeam(String teamKey);
 
     public String getTeamableBaseUri();
+
+    public Team getOwnersTeam();
 }

@@ -27,9 +27,9 @@ import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
@@ -224,27 +224,21 @@ public interface Platform extends DataStore
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // ORGANIZATIONS
+    // STACKS
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ResultMap<Organization> listOrganizations();
-    public ResultMap<Organization> listOrganizations(Pagination pagination);
-    public ResultMap<Organization> queryOrganizations(ObjectNode query);
-    public ResultMap<Organization> queryOrganizations(ObjectNode query, Pagination pagination);
-    public Organization readOrganization(String organizationId);
-
-    public Organization createOrganization();
-
-    public Organization createOrganization(ObjectNode object);
-
-    public void updateOrganization(Organization organization);
-
-    public void deleteOrganization(Organization organization);
-
-    public void deleteOrganization(String organizationId);
-
-    public PermissionCheckResults checkOrganizationPermissions(List<PermissionCheck> list);
+    public ResultMap<Stack> listStacks();
+    public ResultMap<Stack> listStacks(Pagination pagination);
+    public ResultMap<Stack> queryStacks(ObjectNode query);
+    public ResultMap<Stack> queryStacks(ObjectNode query, Pagination pagination);
+    public Stack readStack(String projectId);
+    public Stack createStack();
+    public Stack createStack(ObjectNode object);
+    public void updateStack(Stack project);
+    public void deleteStack(Stack project);
+    public void deleteStack(String projectId);
+    public PermissionCheckResults checkStackPermissions(List<PermissionCheck> list);
 
 
 

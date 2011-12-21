@@ -37,9 +37,9 @@ import org.gitana.platform.client.management.Plan;
 import org.gitana.platform.client.management.Tenant;
 import org.gitana.platform.client.nodes.Association;
 import org.gitana.platform.client.nodes.BaseNode;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainPrincipal;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.Teamable;
@@ -122,9 +122,9 @@ public interface ObjectFactory
     public LogEntry logEntry(Platform platform, Response response);
     public ResultMap<LogEntry> logEntries(Platform platform, Response response);
 
-    // organizations
-    public Organization organization(Platform platform, Response response);
-    public ResultMap<Organization> organizations(Platform platform, Response response);
+    // projects
+    public Stack stack(Platform platform, Response response);
+    public ResultMap<Stack> stacks(Platform platform, Response response);
 
     public Consumer consumer(Platform platform, ObjectNode object);
     public Consumer consumer(Platform platform, Response response);

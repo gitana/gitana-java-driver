@@ -19,7 +19,7 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.organization;
+package org.gitana.platform.client.stack;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
@@ -41,9 +41,9 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class OrganizationImpl extends AbstractPlatformDocumentImpl implements Organization
+public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
 {
-    public OrganizationImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public StackImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
     }
@@ -51,7 +51,7 @@ public class OrganizationImpl extends AbstractPlatformDocumentImpl implements Or
     @Override
     protected String getResourceUri()
     {
-        return "/organizations/" + getId();
+        return "/stacks/" + getId();
     }
 
 
@@ -65,8 +65,9 @@ public class OrganizationImpl extends AbstractPlatformDocumentImpl implements Or
     @Override
     public void reload()
     {
-        Organization organization = getPlatform().readOrganization(this.getId());
-        this.reload(organization.getObject());
+        Stack project = getPlatform().readStack(this.getId());
+
+        this.reload(project.getObject());
     }
 
     @Override

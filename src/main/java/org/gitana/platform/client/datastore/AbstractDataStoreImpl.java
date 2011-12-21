@@ -263,4 +263,11 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     {
         return getResourceUri();
     }
+
+    @Override
+    public Team getOwnersTeam()
+    {
+        return this.readTeam("owners");
+    }
+
 }

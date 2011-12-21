@@ -22,8 +22,8 @@
 package org.gitana.platform.client;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * @author uzi
  */
-public class OrganizationTest extends AbstractTestCase
+public class StackTest extends AbstractTestCase
 {
     @Test
     public void testCRUD()
@@ -41,26 +41,26 @@ public class OrganizationTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        // create an organization
-        String title = "organization1-" + System.currentTimeMillis();
-        Organization organization1 = platform.createOrganization();
-        organization1.setTitle(title);
-        organization1.update();
+        // create an project
+        String title = "project1-" + System.currentTimeMillis();
+        Stack stack1 = platform.createStack();
+        stack1.setTitle(title);
+        stack1.update();
 
         // validate
-        ResultMap<Organization> organizations = platform.listOrganizations();
-        assertTrue(organizations.size() > 0);
-        assertNotNull(organizations.get(organization1.getId()));
+        ResultMap<Stack> stacks = platform.listStacks();
+        assertTrue(stacks.size() > 0);
+        assertNotNull(stacks.get(stack1.getId()));
 
         // query
         ObjectNode query = QueryBuilder.start("title").is(title).get();
-        organizations = platform.queryOrganizations(query);
-        assertEquals(1, organizations.size());
+        stacks = platform.queryStacks(query);
+        assertEquals(1, stacks.size());
 
         // delete
-        organization1.delete();
-        organizations = platform.queryOrganizations(query);
-        assertEquals(0, organizations.size());
+        stack1.delete();
+        stacks = platform.queryStacks(query);
+        assertEquals(0, stacks.size());
     }
 
 }

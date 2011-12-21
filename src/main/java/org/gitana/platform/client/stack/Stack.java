@@ -19,22 +19,17 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.organization;
+package org.gitana.platform.client.stack;
 
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
-import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.Teamable;
 
 /**
  * @author uzi
  */
-public interface Organization extends PlatformDocument, AccessControllable, Selfable, Teamable, Attachable
+public interface Stack extends PlatformDocument, AccessControllable, Selfable, Teamable, Attachable
 {
-    /**
-     * @return the organization owners team
-     */
-    public Team getOwnersTeam();
 }

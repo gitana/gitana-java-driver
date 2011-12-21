@@ -22,8 +22,8 @@
 package org.gitana.platform.client;
 
 import org.gitana.platform.client.attachment.Attachment;
-import org.gitana.platform.client.organization.Organization;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * @author uzi
  */
-public class OrganizationAttachmentTest extends AbstractTestCase
+public class StackAttachmentTest extends AbstractTestCase
 {
     @Test
     public void testAttachments()
@@ -42,18 +42,18 @@ public class OrganizationAttachmentTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        // create an organization
-        Organization organization = platform.createOrganization();
+        // create a stack
+        Stack stack = platform.createStack();
 
         // upload an attachment
         String filename = "testfilename-" + System.currentTimeMillis() + "-bugs.jpeg";
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/bugs.jpeg");
-        organization.uploadAttachment("attach1", bytes, "image/jpeg");
-        organization.uploadAttachment("attach2", bytes, "image/jpeg");
-        organization.uploadAttachment("attach3", bytes, "image/jpeg");
+        stack.uploadAttachment("attach1", bytes, "image/jpeg");
+        stack.uploadAttachment("attach2", bytes, "image/jpeg");
+        stack.uploadAttachment("attach3", bytes, "image/jpeg");
 
         // list attachment
-        ResultMap<Attachment> attachments = organization.listAttachments();
+        ResultMap<Attachment> attachments = stack.listAttachments();
         assertTrue(attachments.size() == 3);
 
         assertNotNull(attachments.get("attach1"));
