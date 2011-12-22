@@ -53,6 +53,8 @@ public interface Management extends DataStore
     public void deleteTenant(Tenant tenant);
     public void deleteTenant(String tenantId);
 
+    public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(DomainPrincipal principal, Pagination pagination);
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // PLANS

@@ -284,4 +284,14 @@ public class ManagementImpl extends AbstractDataStoreImpl implements Management
     {
         getRemote().delete("/plans/" + planKey);
     }
+
+    @Override
+    public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(DomainPrincipal principal, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+        params.put("id", principal.getDomainQualifiedId());
+
+        Response response = getRemote().post(getResourceUri() + "/tenants/withmember", params);
+        return getFactory().tenants(this, response);
+    }
 }
