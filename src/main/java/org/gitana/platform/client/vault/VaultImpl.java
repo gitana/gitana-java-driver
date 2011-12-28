@@ -101,7 +101,7 @@ public class VaultImpl extends AbstractDataStoreImpl implements Vault
     }
 
     @Override
-    public Archive readArchive(String groupId, String artifactId, String versionId)
+    public Archive lookupArchive(String groupId, String artifactId, String versionId)
     {
         Archive archive = null;
 
@@ -112,7 +112,7 @@ public class VaultImpl extends AbstractDataStoreImpl implements Vault
 
         try
         {
-            Response response = getRemote().get(getResourceUri() + "/archives", params);
+            Response response = getRemote().get(getResourceUri() + "/archives/lookup", params);
             archive = getFactory().archive(this, response);
         }
         catch (Exception ex)
@@ -126,11 +126,33 @@ public class VaultImpl extends AbstractDataStoreImpl implements Vault
     }
 
     @Override
-    public void deleteArchive(String groupId, String artifactId, String versionId)
+    public Archive readArchive(String archiveId)
+    {
+        Archive archive = null;
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/archives/" + archiveId, params);
+            archive = getFactory().archive(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return archive;
+    }
+
+    @Override
+    public void deleteArchive(String archiveId)
     {
         try
         {
-            Response response = getRemote().delete(getResourceUri() + "/archives?group="+groupId+"&artifact="+artifactId+"&version="+versionId);
+            Response response = getRemote().delete(getResourceUri() + "/archives/" + archiveId);
         }
         catch (Exception ex)
         {
@@ -156,7 +178,7 @@ public class VaultImpl extends AbstractDataStoreImpl implements Vault
     }
 
     @Override
-    public InputStream downloadArchive(String groupId, String artifactId, String versionId)
+    public InputStream downloadArchive(String archiveId)
         throws IOException
     {
         InputStream in = null;
@@ -164,7 +186,7 @@ public class VaultImpl extends AbstractDataStoreImpl implements Vault
         HttpResponse response = null;
         try
         {
-            response = getRemote().download(getResourceUri() + "/archives/download?group="+groupId+"&artifact="+artifactId+"&version="+versionId);
+            response = getRemote().download(getResourceUri() + "/archives/" + archiveId + "/download");
 
             in = response.getEntity().getContent();
         }

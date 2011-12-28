@@ -56,7 +56,7 @@ public class ArchiveTest extends AbstractTestCase
         InputStream in1 = new ByteArrayInputStream(bytes1);
         vault.uploadArchive(in1, bytes1.length);
         // verify
-        Archive archive1 = vault.readArchive("org.gitana", "test-artifact1", "1.0.0");
+        Archive archive1 = vault.lookupArchive("org.gitana", "test-artifact1", "1.0.0");
         assertNotNull(archive1);
 
 
@@ -66,7 +66,7 @@ public class ArchiveTest extends AbstractTestCase
         InputStream in2 = new ByteArrayInputStream(bytes2);
         vault.uploadArchive(in2, bytes2.length);
         // verify
-        Archive archive2 = vault.readArchive("org.gitana", "test-artifact2", "2.0.0");
+        Archive archive2 = vault.lookupArchive("org.gitana", "test-artifact2", "2.0.0");
         assertNotNull(archive2);
 
 
@@ -76,7 +76,7 @@ public class ArchiveTest extends AbstractTestCase
         InputStream in3 = new ByteArrayInputStream(bytes3);
         vault.uploadArchive(in3, bytes3.length);
         // verify
-        Archive archive3 = vault.readArchive("org.cloudcms", "test-artifact3", "1.0.0");
+        Archive archive3 = vault.lookupArchive("org.cloudcms", "test-artifact3", "1.0.0");
         assertNotNull(archive3);
 
 
@@ -97,14 +97,15 @@ public class ArchiveTest extends AbstractTestCase
 
 
         // read artifact #1
-        InputStream in = vault.downloadArchive("org.gitana", "test-artifact1", "1.0.0");
+        Archive arc1 = vault.lookupArchive("org.gitana", "test-artifact1", "1.0.0");
+        InputStream in = arc1.download();
         byte[] bytes = StreamUtil.getBytes(in);
         assertNotNull(bytes);
         assertTrue(bytes.length > 0);
 
 
         // delete artifact #1
-        vault.deleteArchive("org.gitana", "test-artifact1", "1.0.0");
+        vault.lookupArchive("org.gitana", "test-artifact1", "1.0.0").delete();
 
 
         // query for all artifacts with version "1.0.0"
@@ -117,7 +118,7 @@ public class ArchiveTest extends AbstractTestCase
         Exception ex = null;
         try
         {
-            vault.downloadArchive("org.gitana", "test-artifact1", "1.0.0");
+            vault.downloadArchive(arc1.getId());
         }
         catch(Exception e)
         {

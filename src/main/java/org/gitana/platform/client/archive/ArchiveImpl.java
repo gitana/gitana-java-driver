@@ -21,9 +21,14 @@
 
 package org.gitana.platform.client.archive;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.vault.AbstractVaultDocumentImpl;
 import org.gitana.platform.client.vault.Vault;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author uzi
@@ -89,5 +94,48 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     public String getVersionId()
     {
         return getString(FIELD_VERSION_ID);
+    }
+
+    @Override
+    public InputStream download()
+        throws IOException
+    {
+        InputStream in = null;
+
+        HttpResponse response = null;
+        try
+        {
+            response = getRemote().download(getResourceUri() + "/download");
+
+            in = response.getEntity().getContent();
+        }
+        catch (Exception ex)
+        {
+            try { EntityUtils.consume(response.getEntity()); } catch (Exception ex2) { }
+
+            throw new RuntimeException(ex);
+        }
+
+        return in;
+    }
+
+    @Override
+    public void update()
+    {
+        getRemote().put(getResourceUri(), getObject());
+    }
+
+    @Override
+    public void delete()
+    {
+        getRemote().delete(getResourceUri());
+    }
+
+    @Override
+    public void reload()
+    {
+        Archive archive = getVault().readArchive(getId());
+
+        this.reload(archive.getObject());
     }
 }

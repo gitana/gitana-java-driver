@@ -52,13 +52,15 @@ public interface Vault extends DataStore
 
     public ResultMap<Archive> queryArchives(ObjectNode query, Pagination pagination);
 
-    public Archive readArchive(String groupId, String artifactId, String versionId);
+    public Archive lookupArchive(String groupId, String artifactId, String versionId);
 
-    public void deleteArchive(String groupId, String artifactId, String versionId);
+    public Archive readArchive(String archiveId);
+
+    public void deleteArchive(String archiveId);
 
     public void uploadArchive(InputStream in, long length)
         throws IOException;
 
-    public InputStream downloadArchive(String groupId, String artifactId, String versionId)
+    public InputStream downloadArchive(String archiveId)
         throws IOException;
 }

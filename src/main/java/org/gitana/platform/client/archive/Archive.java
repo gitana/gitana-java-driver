@@ -21,12 +21,16 @@
 
 package org.gitana.platform.client.archive;
 
+import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.vault.VaultDocument;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author uzi
  */
-public interface Archive extends VaultDocument
+public interface Archive extends VaultDocument, Selfable
 {	
     public final static String FIELD_GROUP_ID = "group";
     public final static String FIELD_ARTIFACT_ID = "artifact";
@@ -38,4 +42,7 @@ public interface Archive extends VaultDocument
     public String getArtifactId();
     public void setVersionId(String versionId);
     public String getVersionId();
+
+    public InputStream download()
+        throws IOException;
 }

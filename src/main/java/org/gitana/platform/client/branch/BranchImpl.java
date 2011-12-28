@@ -601,7 +601,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         //
         // read archive
         //
-        return vault.readArchive(groupId, artifactId, versionId);
+        return vault.lookupArchive(groupId, artifactId, versionId);
     }
 
     @Override

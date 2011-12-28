@@ -82,20 +82,20 @@ public class BranchPublicationTest extends AbstractTestCase
         assertNotNull(archive);
 
         // ensure we can read it back manually
-        archive = vault.readArchive(groupId, artifactId, versionId);
+        archive = vault.lookupArchive(groupId, artifactId, versionId);
         assertNotNull(archive);
 
         // download the archive
         // verify it has size
-        InputStream in = vault.downloadArchive(groupId, artifactId, versionId);
+        InputStream in = vault.lookupArchive(groupId, artifactId, versionId).download();
         byte[] bytes = StreamUtil.getBytes(in);
         assertTrue(bytes.length > 0);
 
         // delete the archive
-        vault.deleteArchive(groupId, artifactId, versionId);
+        vault.lookupArchive(groupId, artifactId, versionId).delete();
 
         // verify it was deleted
-        archive = vault.readArchive(groupId, artifactId, versionId);
+        archive = vault.lookupArchive(groupId, artifactId, versionId);
         assertNull(archive);
 
         // upload the archive anew
@@ -103,7 +103,7 @@ public class BranchPublicationTest extends AbstractTestCase
         vault.uploadArchive(in, bytes.length);
 
         // verify the archive exists
-        archive = vault.readArchive(groupId, artifactId, versionId);
+        archive = vault.lookupArchive(groupId, artifactId, versionId);
         assertNotNull(archive);
 
         // create a new repo
