@@ -49,6 +49,8 @@ public interface DomainPrincipal extends Document, Principal, Attachable, Selfab
     public PrincipalType getType();
     public void setType(PrincipalType type);
 
+    public String getDomainId();
+
     public String getDomainQualifiedName();
 
     public String getDomainQualifiedId();
