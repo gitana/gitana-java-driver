@@ -21,6 +21,8 @@
 
 package org.gitana.platform.client.archive;
 
+import org.gitana.platform.client.attachment.Attachable;
+import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.vault.VaultDocument;
 
@@ -30,7 +32,7 @@ import java.io.InputStream;
 /**
  * @author uzi
  */
-public interface Archive extends VaultDocument, Selfable
+public interface Archive extends VaultDocument, Attachable, AccessControllable, Selfable
 {	
     public final static String FIELD_GROUP_ID = "group";
     public final static String FIELD_ARTIFACT_ID = "artifact";

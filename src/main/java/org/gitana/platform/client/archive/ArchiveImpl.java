@@ -24,11 +24,22 @@ package org.gitana.platform.client.archive;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.http.HttpPayload;
+import org.gitana.platform.client.attachment.Attachment;
+import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.AbstractVaultDocumentImpl;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.support.ResultMap;
+import org.gitana.util.JsonUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -119,6 +130,14 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
         return in;
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SELFABLE
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public void update()
     {
@@ -137,5 +156,189 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
         Archive archive = getVault().readArchive(getId());
 
         this.reload(archive.getObject());
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ACL getACL()
+    {
+        Response response = getRemote().get(getResourceUri() + "/acl/list");
+
+        return DriverUtil.toACL(response);
+    }
+
+    @Override
+    public List<String> getACL(String principalId)
+    {
+        Response response = getRemote().get(getResourceUri() + "/acl?id=" + principalId);
+
+        return DriverUtil.toStringList(response);
+    }
+
+    @Override
+    public void grant(String principalId, String authorityId)
+    {
+        getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/grant?id=" + principalId);
+    }
+
+    @Override
+    public void revoke(String principalId, String authorityId)
+    {
+        getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
+    }
+
+    @Override
+    public void revokeAll(String principalId)
+    {
+        revoke(principalId, "all");
+    }
+
+    @Override
+    public boolean hasAuthority(String principalId, String authorityId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
+    @Override
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds)
+    {
+        ObjectNode object = JsonUtil.createObject();
+        JsonUtil.objectPut(object, "principals", principalIds);
+
+        Response response = getRemote().post(getResourceUri() + "/authorities", object);
+        return getFactory().principalAuthorityGrants(response);
+    }
+
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ATTACHMENTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void uploadAttachment(byte[] bytes, String contentType)
+    {
+        uploadAttachment("default", bytes, contentType);
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
+    {
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+        try
+        {
+            getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
+    {
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+        try
+        {
+            getRemote().upload(uri, bytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachments(HttpPayload... payloads)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+
+        uploadAttachments(params, payloads);
+    }
+
+    @Override
+    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
+    {
+        String uri = getResourceUri() + "/attachments/";
+        try
+        {
+            getRemote().upload(uri, params, payloads);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] downloadAttachment()
+    {
+        return downloadAttachment("default");
+    }
+
+    @Override
+    public byte[] downloadAttachment(String attachmentId)
+    {
+        byte[] bytes = null;
+
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+        try
+        {
+            bytes = getRemote().downloadBytes(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return bytes;
+    }
+
+    @Override
+    public ResultMap<Attachment> listAttachments()
+    {
+        String uri = getResourceUri() + "/attachments";
+
+        Response response = getRemote().get(uri);
+
+        return getFactory().attachments(this, response);
+    }
+
+    @Override
+    public String getDownloadUri(String attachmentId)
+    {
+        return getResourceUri() + "/attachments/" + attachmentId;
     }
 }
