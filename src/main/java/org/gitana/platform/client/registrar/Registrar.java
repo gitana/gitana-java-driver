@@ -19,22 +19,21 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.datastore.DataStore;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.plan.Plan;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
+import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
 /**
  * @author uzi
  */
-public interface Management extends DataStore
+public interface Registrar extends PlatformDataStore
 {
-    public Platform getPlatform();
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // TENANTS

@@ -64,6 +64,11 @@ public class AuthInfo extends GitanaObjectImpl
         return getString("tenantDescription");
     }
 
+    public String getTenantRegistrarId()
+    {
+        return getString("tenantRegistrarId");
+    }
+
     public String getConsumerKey()
     {
         return getString("consumerKey");

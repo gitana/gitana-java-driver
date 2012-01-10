@@ -54,23 +54,34 @@ public class RepositoryPermissionTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Repository repository1 = platform.createRepository();
-        Repository repository2 = platform.createRepository();
-        Repository repository3 = platform.createRepository();
-
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         DomainUser user1 = domain.createUser("user1-" + System.currentTimeMillis(), "password");
         DomainUser user2 = domain.createUser("user2-" + System.currentTimeMillis(), "password");
         DomainUser user3 = domain.createUser("user3-" + System.currentTimeMillis(), "password");
         DomainUser userTest = domain.createUser("usertest-" + System.currentTimeMillis(), "password");
 
+        /*
+        // now add users to the tenant platform
+        platform.readTeam("consumers").addMember(user1.getDomainQualifiedId());
+        platform.readTeam("consumers").addMember(user2.getDomainQualifiedId());
+        platform.readTeam("consumers").addMember(user3.getDomainQualifiedId());
+        platform.readTeam("consumers").addMember(userTest.getDomainQualifiedId());
+        */
+
+        // create repositories
+        Repository repository1 = platform.createRepository();
+        Repository repository2 = platform.createRepository();
+        Repository repository3 = platform.createRepository();
+
+        // individual authority grants at the repository level
         repository1.grant(user1.getName(), "MANAGER");
         repository1.grant(user2.getName(), "CONSUMER");
         repository2.grant(user2.getName(), "EDITOR");
         repository3.grant(user3.getName(), "CONSUMER");
 
+        // figure out ids
         this.repositoryId1 = repository1.getId();
         this.repositoryId2 = repository2.getId();
         this.repositoryId3 = repository3.getId();

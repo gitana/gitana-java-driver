@@ -19,10 +19,13 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.tenant;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.registrar.Registrar;
+import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
@@ -31,7 +34,7 @@ import org.gitana.platform.support.ResultMap;
 /**
  * @author uzi
  */
-public interface Tenant extends ManagementDocument
+public interface Tenant extends RegistrarDocument
 {
     // fields
     public final static String FIELD_PLAN_KEY = "planKey";
@@ -47,10 +50,8 @@ public interface Tenant extends ManagementDocument
     public void setDomainId(String domainId);
     public String getDomainId();
 
-    public ResultMap<Allocation> listAllocations();
-    public ResultMap<Allocation> listAllocations(Pagination pagination);
-    public void allocate(String objectType, String objectId);
-    public void deallocate(String objectType, String objectId);
+    public ResultMap<ObjectNode> listAllocatedObjects();
+    public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination);
 
     // list/query
 
@@ -65,5 +66,15 @@ public interface Tenant extends ManagementDocument
 
     public ResultMap<Consumer> listConsumers();
     public ResultMap<Consumer> listConsumers(Pagination pagination);
+
+    public ResultMap<Registrar> listRegistrars();
+    public ResultMap<Registrar> listRegistrars(Pagination pagination);
+
+    /**
+     * Administrative method that will only work for the "owner" of the tenant.  Otherwise will return null.
+     *
+     * @return consumer
+     */
+    public Consumer readDefaultConsumer();
 
 }

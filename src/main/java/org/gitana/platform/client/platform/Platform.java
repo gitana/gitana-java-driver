@@ -23,14 +23,16 @@ package org.gitana.platform.client.platform;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
-import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -42,15 +44,10 @@ import java.util.List;
  */
 public interface Platform extends DataStore
 {
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // HELPERS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public Domain readDefaultDomain();
-    public Vault readDefaultVault();
-
+    /**
+     * @return the cluster instance
+     */
+    public Cluster getCluster();
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +151,7 @@ public interface Platform extends DataStore
 
     public ResultMap<Vault> listVaults(Pagination pagination);
 
-    public Vault readVault(String domainId);
+    public Vault readVault(String vaultId);
 
     public Vault createVault();
 
@@ -170,41 +167,49 @@ public interface Platform extends DataStore
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // JOBS
+    // REGISTRARS
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ResultMap<Job> queryJobs(ObjectNode query);
-    public ResultMap<Job> queryJobs(ObjectNode query, Pagination pagination);
+    public ResultMap<Registrar> listRegistrars();
 
-    public ResultMap<Job> listUnstartedJobs();
-    public ResultMap<Job> listUnstartedJobs(Pagination pagination);
-    public ResultMap<Job> queryUnstartedJobs(ObjectNode query);
-    public ResultMap<Job> queryUnstartedJobs(ObjectNode query, Pagination pagination);
+    public ResultMap<Registrar> listRegistrars(Pagination pagination);
 
-    public ResultMap<Job> listRunningJobs();
-    public ResultMap<Job> listRunningJobs(Pagination pagination);
-    public ResultMap<Job> queryRunningJobs(ObjectNode query);
-    public ResultMap<Job> queryRunningJobs(ObjectNode query, Pagination pagination);
+    public Registrar readRegistrar(String registrarId);
 
-    public ResultMap<Job> listFailedJobs();
-    public ResultMap<Job> listFailedJobs(Pagination pagination);
-    public ResultMap<Job> queryFailedJobs(ObjectNode query);
-    public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination);
+    public Registrar createRegistrar();
 
-    public ResultMap<Job> listCandidateJobs();
-    public ResultMap<Job> listCandidateJobs(Pagination pagination);
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query);
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination);
+    public Registrar createRegistrar(ObjectNode object);
 
-    public ResultMap<Job> listFinishedJobs();
-    public ResultMap<Job> listFinishedJobs(Pagination pagination);
-    public ResultMap<Job> queryFinishedJobs(ObjectNode query);
-    public ResultMap<Job> queryFinishedJobs(ObjectNode query, Pagination pagination);
+    public ResultMap<Registrar> queryRegistrars(ObjectNode query);
 
-    public Job readJob(String jobId);
+    public ResultMap<Registrar> queryRegistrars(ObjectNode query, Pagination pagination);
 
-    public void killJob(String jobId);
+    public PermissionCheckResults checkRegistrarPermissions(List<PermissionCheck> list);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // APPLICATIONS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<Application> listApplications();
+
+    public ResultMap<Application> listApplications(Pagination pagination);
+
+    public Application readApplication(String applicationId);
+
+    public Application createApplication();
+
+    public Application createApplication(ObjectNode object);
+
+    public ResultMap<Application> queryApplications(ObjectNode query);
+
+    public ResultMap<Application> queryApplications(ObjectNode query, Pagination pagination);
+
+    public PermissionCheckResults checkApplicationPermissions(List<PermissionCheck> list);
 
 
 
@@ -258,6 +263,7 @@ public interface Platform extends DataStore
     public void updateConsumer(Consumer consumer);
     public void deleteConsumer(Consumer consumer);
     public void deleteConsumer(String consumerKey);
-    public Consumer lookupDefaultConsumerForTenant(String tenantId);
+
+
 
 }

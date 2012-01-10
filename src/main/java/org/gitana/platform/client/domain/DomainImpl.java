@@ -23,9 +23,9 @@ package org.gitana.platform.client.domain;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainPrincipal;
@@ -44,27 +44,17 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class DomainImpl extends AbstractDataStoreImpl implements Domain
+public class DomainImpl extends AbstractPlatformDataStoreImpl implements Domain
 {
-    private Platform platform;
-
     public DomainImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-
-        this.platform = platform;
+        super(platform, obj, isSaved);
     }
 
     @Override
     public String getType()
     {
         return "domain";
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return this.platform;
     }
 
     @Override

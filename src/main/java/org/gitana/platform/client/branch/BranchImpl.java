@@ -572,7 +572,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
             boolean complete = false;
             while (!complete)
             {
-                job = getPlatform().readJob(jobId);
+                job = getCluster().readJob(jobId);
                 if (job == null)
                 {
                     throw new Exception("No job found: " + jobId);
@@ -621,7 +621,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
             boolean complete = false;
             while (!complete)
             {
-                job = getPlatform().readJob(jobId);
+                job = getCluster().readJob(jobId);
                 if (job.isError())
                 {
                     complete = true;
@@ -731,7 +731,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/logs", params);
-        return getFactory().logEntries(getPlatform(), response);
+        return getFactory().logEntries(getCluster(), response);
     }
 
     @Override
@@ -746,7 +746,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post(getResourceUri() + "/logs/query", params, query);
-        return getFactory().logEntries(getPlatform(), response);
+        return getFactory().logEntries(getCluster(), response);
     }
 
     @Override
@@ -757,7 +757,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         try
         {
             Response response = getRemote().get(getResourceUri() + "/logs/" + logEntryId);
-            logEntry = getFactory().logEntry(getPlatform(), response);
+            logEntry = getFactory().logEntry(getCluster(), response);
         }
         catch (Exception ex)
         {

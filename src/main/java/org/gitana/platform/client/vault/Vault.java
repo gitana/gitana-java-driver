@@ -23,8 +23,7 @@ package org.gitana.platform.client.vault;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.archive.Archive;
-import org.gitana.platform.client.datastore.DataStore;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -34,14 +33,8 @@ import java.io.InputStream;
 /**
  * @author uzi
  */
-public interface Vault extends DataStore
+public interface Vault extends PlatformDataStore
 {
-    /**
-     * @return platform
-     */
-    public Platform getPlatform();
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // ARCHIVES

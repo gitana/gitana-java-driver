@@ -28,10 +28,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.params.HttpConnectionParams;
+import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.cluster.ClusterImpl;
 import org.gitana.platform.client.exceptions.AuthenticationFailedException;
 import org.gitana.platform.client.exceptions.RemoteServerException;
 import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.platform.PlatformImpl;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Environment;
 import org.gitana.platform.client.support.RemoteImpl;
@@ -197,6 +198,7 @@ public class Gitana
 
     protected void populateAuthenticationInformation(Driver driver)
     {
+        // load authentication info
         try
         {
             Response response = driver.getRemote().get("/auth/info");
@@ -216,14 +218,17 @@ public class Gitana
         Platform platform = null;
         try
         {
+            Cluster cluster = new ClusterImpl("default");
+
             Response response = driver.getRemote().get("/");
-            platform = driver.getFactory().platform(response);
+            platform = driver.getFactory().platform(cluster, response);
         }
-        catch (Exception ex) { }
-        if (platform == null)
+        catch (Exception ex)
         {
-            platform = new PlatformImpl("default");
+            throw new RuntimeException(ex);
         }
+
+        driver.setPlatform(platform);
 
         return platform;
     }

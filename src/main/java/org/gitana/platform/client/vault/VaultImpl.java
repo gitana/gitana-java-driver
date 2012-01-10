@@ -26,7 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.archive.Archive;
-import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
+import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
@@ -41,27 +41,17 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class VaultImpl extends AbstractDataStoreImpl implements Vault
+public class VaultImpl extends AbstractPlatformDataStoreImpl implements Vault
 {
-    private Platform platform;
-
     public VaultImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-
-        this.platform = platform;
+        super(platform, obj, isSaved);
     }
 
     @Override
     public String getType()
     {
         return "vault";
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return this.platform;
     }
 
     @Override

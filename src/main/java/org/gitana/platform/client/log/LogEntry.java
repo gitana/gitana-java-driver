@@ -22,14 +22,14 @@
 package org.gitana.platform.client.log;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.platform.PlatformDocument;
+import org.gitana.platform.client.cluster.ClusterDocument;
 
 import java.util.List;
 
 /**
  * @author uzi
  */
-public interface LogEntry extends PlatformDocument
+public interface LogEntry extends ClusterDocument
 {
     // top level fields
     public final static String FIELD_PRINCIPAL_ID = "principalId";

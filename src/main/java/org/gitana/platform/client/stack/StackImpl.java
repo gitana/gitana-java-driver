@@ -178,7 +178,7 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         try
         {
             Response response = getRemote().get(getResourceUri() + "/teams/" + teamKey);
-            team = getFactory().team(getPlatform(), this, teamKey, response);
+            team = getFactory().team(getCluster(), this, teamKey, response);
         }
         catch (Exception ex)
         {
@@ -196,7 +196,7 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         Map<String, String> params = DriverUtil.params();
 
         Response response = getRemote().get(getResourceUri() + "/teams", params);
-        return getFactory().teams(getPlatform(), this, response);
+        return getFactory().teams(getCluster(), this, response);
     }
 
     @Override

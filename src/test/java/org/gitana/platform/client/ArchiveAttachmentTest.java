@@ -47,7 +47,7 @@ public class ArchiveAttachmentTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default vault
-        Vault vault = platform.readDefaultVault();
+        Vault vault = platform.readVault("default");
 
         // create artifact
         byte[] bytes1 = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/archive1.zip");

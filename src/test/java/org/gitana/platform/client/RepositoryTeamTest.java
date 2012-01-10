@@ -42,7 +42,7 @@ public class RepositoryTeamTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // repository
         Repository repository = platform.createRepository();

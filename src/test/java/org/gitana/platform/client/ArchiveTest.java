@@ -48,7 +48,7 @@ public class ArchiveTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default vault
-        Vault vault = platform.readDefaultVault();
+        Vault vault = platform.readVault("default");
 
         // create artifact 1
         // org/gitana/1.0.0/test-artifact1-1.0.0.zip

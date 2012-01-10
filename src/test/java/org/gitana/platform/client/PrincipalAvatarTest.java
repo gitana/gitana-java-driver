@@ -33,7 +33,7 @@ import java.io.IOException;
 /**
  * @author uzi
  */
-public class SecurityAvatarTest extends AbstractTestCase
+public class PrincipalAvatarTest extends AbstractTestCase
 {
     @Test
     public void testAvatar()
@@ -44,7 +44,7 @@ public class SecurityAvatarTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create user1
         String user1name = "testuser1_" + System.currentTimeMillis();

@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.datastore;
 
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;

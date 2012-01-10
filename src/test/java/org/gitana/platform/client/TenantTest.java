@@ -21,12 +21,12 @@
 
 package org.gitana.platform.client;
 
-import org.gitana.platform.client.management.Management;
-import org.gitana.platform.client.management.ManagementImpl;
-import org.gitana.platform.client.management.Tenant;
+import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
-import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.client.registrar.Registrar;
+import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
@@ -35,22 +35,64 @@ import org.junit.Test;
 public class TenantTest extends AbstractTestCase
 {
     @Test
-    public void testTenantTeams()
+    public void testTenantCRUD()
+        throws Exception
     {
         Gitana gitana = new Gitana();
 
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        // create a user
-        DomainUser user = platform.readDefaultDomain().createUser("user1-" + System.currentTimeMillis(), "pw");
+        // default registrar
+        Registrar registrar = platform.readRegistrar("default");
 
-        // create a tenant for this user
-        Management management = new ManagementImpl(platform, "default");
-        Tenant tenant = management.createTenant(user, "starter");
+        // count the current number of tenants
+        int currentSize = registrar.listTenants().size();
 
-        // verify we can find tenants with this user
-        ResultMap<Tenant> tenants = management.findTenantsWithPrincipalTeamMember(user, null);
-        assertEquals(1, tenants.size());
+        String tenantId = null;
+
+        String userName = "user-" + System.currentTimeMillis();
+        try
+        {
+            // create a domain
+            Domain domain = platform.createDomain();
+
+            // create a principal
+            DomainUser user = domain.createUser(userName, "pw");
+
+            // create a tenant for this principal (starter plan)
+            Tenant tenant = registrar.createTenant(user, "starter");
+            tenantId = tenant.getId();
+
+            // count tenants
+            assertEquals(currentSize + 1, registrar.listTenants().size());
+
+            // update the tenant
+            tenant.set("abc", "def");
+            registrar.updateTenant(tenant);
+
+            // read back and confirm
+            Tenant testTenant = registrar.readTenant(tenant.getId());
+            assertNotNull(testTenant);
+            assertEquals("def", testTenant.getString("abc"));
+
+            // delete the tenant
+            registrar.deleteTenant(tenantId);
+
+            // query and check sizes
+            int newSize = registrar.queryTenants(JsonUtil.createObject()).size();
+            assertEquals(currentSize, newSize);
+        }
+        finally
+        {
+            if (tenantId != null)
+            {
+                if (registrar.readTenant(tenantId) != null)
+                {
+                    registrar.deleteTenant(tenantId);
+                }
+            }
+        }
     }
+
 }

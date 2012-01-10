@@ -51,7 +51,7 @@ import org.junit.Ignore;
         Platform platform = new Gitana().authenticate("admin", "admin");
 
         // wait
-        while (platform.listCandidateJobs().totalRows() > 0)
+        while (platform.getCluster().listCandidateJobs().totalRows() > 0)
         {
             try
             {

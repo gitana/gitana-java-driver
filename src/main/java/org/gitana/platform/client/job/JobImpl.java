@@ -23,8 +23,8 @@ package org.gitana.platform.client.job;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.util.DateUtil;
 
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ import java.util.List;
 /**
  * @author uzi
  */
-public class JobImpl extends AbstractPlatformDocumentImpl implements Job
+public class JobImpl extends AbstractClusterDocumentImpl implements Job
 {
-    public JobImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public JobImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
-        super(platform, obj, isSaved);
+        super(cluster, obj, isSaved);
     }
 
     @Override

@@ -23,26 +23,27 @@ package org.gitana.platform.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
-import org.gitana.platform.client.management.Allocation;
-import org.gitana.platform.client.management.Management;
-import org.gitana.platform.client.management.Plan;
-import org.gitana.platform.client.management.Tenant;
 import org.gitana.platform.client.nodes.Association;
 import org.gitana.platform.client.nodes.BaseNode;
+import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainPrincipal;
-import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.Teamable;
+import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.QName;
@@ -55,7 +56,7 @@ import java.util.Map;
  */
 public interface ObjectFactory
 {
-    public Platform platform(Response response);
+    public Platform platform(Cluster cluster, Response response);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,21 +115,31 @@ public interface ObjectFactory
     // PLATFORM
     //
 
-    // jobs
-    public Job job(Platform platform, Response response);
-    public ResultMap<Job> jobs(Platform platform, Response response);
-
-    // log entries
-    public LogEntry logEntry(Platform platform, Response response);
-    public ResultMap<LogEntry> logEntries(Platform platform, Response response);
-
-    // projects
+    // stacks
     public Stack stack(Platform platform, Response response);
     public ResultMap<Stack> stacks(Platform platform, Response response);
 
+    // consumers
     public Consumer consumer(Platform platform, ObjectNode object);
     public Consumer consumer(Platform platform, Response response);
     public ResultMap<Consumer> consumers(Platform platform, Response response);
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLUSTER
+    //
+
+    // jobs
+    public Job job(Cluster cluster, Response response);
+    public ResultMap<Job> jobs(Cluster cluster, Response response);
+
+    // log entries
+    public LogEntry logEntry(Cluster cluster, Response response);
+    public ResultMap<LogEntry> logEntries(Cluster cluster, Response response);
+
 
 
 
@@ -150,6 +161,19 @@ public interface ObjectFactory
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
+    // VAULT
+    //
+
+    public Application application(Platform platform);
+    public Application application(Platform platform, ObjectNode object);
+    public Application application(Platform platform, Response response);
+    public ResultMap<Application> applications(Platform platform, Response response);
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // MISCELLANEOUS
     //
 
@@ -158,26 +182,29 @@ public interface ObjectFactory
     public Map<String, Map<String, AuthorityGrant>> principalAuthorityGrants(Response response);
 
     // teams
-    public Team team(Platform platform, Teamable teamable, String teamKey, Response response);
-    public ResultMap<Team> teams(Platform platform, Teamable teamable, Response response);
+    public Team team(Cluster cluster, Teamable teamable, String teamKey, Response response);
+    public ResultMap<Team> teams(Cluster cluster, Teamable teamable, Response response);
 
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // MANAGEMENT
+    // VAULT
     //
 
-    public Tenant tenant(Management management, ObjectNode object);
-    public Tenant tenant(Management management, Response response);
-    public ResultMap<Tenant> tenants(Management management, Response response);
+    public Registrar registrar(Platform platform);
+    public Registrar registrar(Platform platform, ObjectNode object);
+    public Registrar registrar(Platform platform, Response response);
+    public ResultMap<Registrar> registrars(Platform platform, Response response);
 
-    public Plan plan(Management management, ObjectNode object);
-    public Plan plan(Management management, Response response);
-    public ResultMap<Plan> plans(Management management, Response response);
+    // tenants
+    public Tenant tenant(Registrar management, ObjectNode object);
+    public Tenant tenant(Registrar management, Response response);
+    public ResultMap<Tenant> tenants(Registrar management, Response response);
 
-    public Allocation allocation(Management management, ObjectNode object);
-    public Allocation allocation(Management management, Response response);
-    public ResultMap<Allocation> allocations(Management management, Response response);
+    // plans
+    public Plan plan(Registrar management, ObjectNode object);
+    public Plan plan(Registrar management, Response response);
+    public ResultMap<Plan> plans(Registrar management, Response response);
 
 }

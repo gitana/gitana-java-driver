@@ -19,11 +19,10 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.platform;
+package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
@@ -32,15 +31,15 @@ import org.gitana.platform.client.support.Remote;
 /**
  * @author uzi
  */
-public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implements PlatformDocument
+public abstract class AbstractRegistrarDocumentImpl extends DocumentImpl implements RegistrarDocument
 {
-    private Platform platform;
+    private Registrar registrar;
 
-    public AbstractPlatformDocumentImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public AbstractRegistrarDocumentImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
     	super(obj, isSaved);
 
-        this.platform = platform;
+        this.registrar = registrar;
     }
 
     protected abstract String getResourceUri();
@@ -61,20 +60,15 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     }
 
     @Override
-    public Platform getPlatform()
+    public Registrar getRegistrar()
     {
-        return this.platform;
+        return this.registrar;
     }
 
     @Override
-    public String getPlatformId()
+    public String getRegistrarId()
     {
-        return getPlatform().getId();
-    }
-
-    protected Cluster getCluster()
-    {
-        return getPlatform().getCluster();
+        return getRegistrar().getId();
     }
 
 }

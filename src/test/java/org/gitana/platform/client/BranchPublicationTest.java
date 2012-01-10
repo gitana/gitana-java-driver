@@ -50,7 +50,7 @@ public class BranchPublicationTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default vault
-        Vault vault = platform.readDefaultVault();
+        Vault vault = platform.readVault("default");
 
         // create a repository
         Repository repo1 = platform.createRepository();

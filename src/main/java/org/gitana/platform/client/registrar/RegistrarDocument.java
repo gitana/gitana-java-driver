@@ -19,24 +19,15 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.registrar;
+
+import org.gitana.platform.client.document.Document;
 
 /**
  * @author uzi
  */
-public interface Allocation extends ManagementDocument
+public interface RegistrarDocument extends Document
 {
-    // fields
-    public final static String FIELD_TENANT_ID = "tenantId";
-    public final static String FIELD_OBJECT_TYPE = "objectType";
-    public final static String FIELD_OBJECT_ID = "objectId";
-
-    public String getTenantId();
-    public void setTenantId(String tenantId);
-
-    public String getObjectType();
-    public void setObjectType(String objectType);
-
-    public String getObjectId();
-    public void setObjectId(String objectId);
+    public Registrar getRegistrar();
+    public String getRegistrarId();
 }

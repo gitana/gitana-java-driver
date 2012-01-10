@@ -19,12 +19,12 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.platform;
+package org.gitana.platform.client.application;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
+import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
@@ -32,18 +32,18 @@ import org.gitana.platform.client.support.Remote;
 /**
  * @author uzi
  */
-public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implements PlatformDocument
+public abstract class AbstractApplicationDocumentImpl extends DocumentImpl implements ApplicationDocument
 {
-    private Platform platform;
+    private Application application;
 
-    public AbstractPlatformDocumentImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public AbstractApplicationDocumentImpl(Application application, ObjectNode obj, boolean isSaved)
     {
     	super(obj, isSaved);
 
-        this.platform = platform;
+        this.application = application;
     }
 
-    protected abstract String getResourceUri();
+    public abstract String getResourceUri();
 
     protected ObjectFactory getFactory()
     {
@@ -61,20 +61,21 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     }
 
     @Override
-    public Platform getPlatform()
+    public Application getApplication()
     {
-        return this.platform;
+        return this.application;
     }
 
     @Override
-    public String getPlatformId()
+    public String getApplicationId()
     {
-        return getPlatform().getId();
+        return getApplication().getId();
     }
 
-    protected Cluster getCluster()
+    @Override
+    public Platform getPlatform()
     {
-        return getPlatform().getCluster();
+        return getApplication().getPlatform();
     }
 
 }

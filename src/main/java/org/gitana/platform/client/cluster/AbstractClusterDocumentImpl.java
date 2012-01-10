@@ -19,7 +19,7 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.cluster;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
@@ -31,15 +31,15 @@ import org.gitana.platform.client.support.Remote;
 /**
  * @author uzi
  */
-public abstract class AbstractManagementDocumentImpl extends DocumentImpl implements ManagementDocument
+public abstract class AbstractClusterDocumentImpl extends DocumentImpl implements ClusterDocument
 {
-    private Management management;
+    private Cluster cluster;
 
-    public AbstractManagementDocumentImpl(Management management, ObjectNode obj, boolean isSaved)
+    public AbstractClusterDocumentImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
     	super(obj, isSaved);
 
-        this.management = management;
+        this.cluster = cluster;
     }
 
     protected abstract String getResourceUri();
@@ -60,15 +60,15 @@ public abstract class AbstractManagementDocumentImpl extends DocumentImpl implem
     }
 
     @Override
-    public Management getManagement()
+    public Cluster getCluster()
     {
-        return this.management;
+        return this.cluster;
     }
 
     @Override
-    public String getManagementId()
+    public String getClusterId()
     {
-        return getManagement().getId();
+        return getCluster().getId();
     }
 
 }

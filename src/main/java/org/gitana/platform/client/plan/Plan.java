@@ -19,12 +19,14 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.plan;
+
+import org.gitana.platform.client.registrar.RegistrarDocument;
 
 /**
  * @author uzi
  */
-public interface Plan extends ManagementDocument
+public interface Plan extends RegistrarDocument
 {
     // fields
     public final static String FIELD_PLAN_KEY = "planKey";

@@ -21,10 +21,9 @@
 
 package org.gitana.platform.client;
 
-import org.gitana.platform.client.management.Management;
-import org.gitana.platform.client.management.ManagementImpl;
-import org.gitana.platform.client.management.Plan;
+import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
 import org.junit.Test;
@@ -32,7 +31,7 @@ import org.junit.Test;
 /**
  * @author uzi
  */
-public class ManagementPlanTest extends AbstractTestCase
+public class PlanTest extends AbstractTestCase
 {
     @Test
     public void testDefaultPlans()
@@ -43,23 +42,24 @@ public class ManagementPlanTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Management management = new ManagementImpl(platform, "default");
+        // default registrar
+        Registrar registrar = platform.readRegistrar("default");
 
         // query to make sure that the default plans exist
 
-        Plan starter = management.readPlan("starter");
+        Plan starter = registrar.readPlan("starter");
         assertNotNull(starter);
 
-        Plan personal = management.readPlan("personal");
+        Plan personal = registrar.readPlan("personal");
         assertNotNull(personal);
 
-        Plan basic = management.readPlan("basic");
+        Plan basic = registrar.readPlan("basic");
         assertNotNull(basic);
 
-        Plan premium = management.readPlan("premium");
+        Plan premium = registrar.readPlan("premium");
         assertNotNull(premium);
 
-        Plan pro = management.readPlan("pro");
+        Plan pro = registrar.readPlan("pro");
         assertNotNull(pro);
     }
 
@@ -72,34 +72,35 @@ public class ManagementPlanTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Management management = new ManagementImpl(platform, "default");
+        // default registrar
+        Registrar registrar = platform.readRegistrar("default");
 
         // count current plans
-        int currentSize = management.listPlans().size();
+        int currentSize = registrar.listPlans().size();
 
         String planKey = "test-" + System.currentTimeMillis();
 
         try
         {
-            Plan plan = management.createPlan(planKey);
+            Plan plan = registrar.createPlan(planKey);
             assertEquals(planKey, plan.getPlanKey());
 
-            assertEquals(currentSize + 1, management.listPlans().size());
+            assertEquals(currentSize + 1, registrar.listPlans().size());
 
-            ResultMap<Plan> plans = management.queryPlans(QueryBuilder.start(Plan.FIELD_PLAN_KEY).is(planKey).get());
+            ResultMap<Plan> plans = registrar.queryPlans(QueryBuilder.start(Plan.FIELD_PLAN_KEY).is(planKey).get());
             assertEquals(1, plans.size());
 
             plan.set("abc", "def");
-            management.updatePlan(plan);
+            registrar.updatePlan(plan);
 
-            Plan testPlan = management.readPlan(planKey);
+            Plan testPlan = registrar.readPlan(planKey);
             assertEquals("def", testPlan.getString("abc"));
         }
         finally
         {
-            if (management.readPlan(planKey) != null)
+            if (registrar.readPlan(planKey) != null)
             {
-                management.deletePlan(planKey);
+                registrar.deletePlan(planKey);
             }
         }
     }

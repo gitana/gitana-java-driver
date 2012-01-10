@@ -19,18 +19,15 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.repository;
+package org.gitana.platform.client.cluster;
 
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.platform.PlatformDocument;
+import org.gitana.platform.client.document.Document;
 
 /**
  * @author uzi
  */
-public interface RepositoryDocument extends PlatformDocument
+public interface ClusterDocument extends Document
 {	
-    public Repository getRepository();
-    public String getRepositoryId();
-
-    public Platform getPlatform();
+    public Cluster getCluster();
+    public String getClusterId();
 }

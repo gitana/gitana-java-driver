@@ -24,6 +24,8 @@ package org.gitana.platform.client.support;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.api.ConsumerImpl;
+import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.application.ApplicationImpl;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.archive.ArchiveImpl;
 import org.gitana.platform.client.attachment.Attachable;
@@ -33,26 +35,32 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.branch.BranchImpl;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.changeset.ChangesetImpl;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.domain.DomainImpl;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.job.JobImpl;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.log.LogEntryImpl;
-import org.gitana.platform.client.management.*;
 import org.gitana.platform.client.nodes.*;
+import org.gitana.platform.client.plan.Plan;
+import org.gitana.platform.client.plan.PlanImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformImpl;
 import org.gitana.platform.client.principal.DomainGroupImpl;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUserImpl;
-import org.gitana.platform.client.stack.Stack;
-import org.gitana.platform.client.stack.StackImpl;
+import org.gitana.platform.client.registrar.Registrar;
+import org.gitana.platform.client.registrar.RegistrarImpl;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.repository.RepositoryImpl;
+import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.stack.StackImpl;
 import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.TeamImpl;
 import org.gitana.platform.client.team.Teamable;
+import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.client.tenant.TenantImpl;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.vault.VaultImpl;
 import org.gitana.platform.services.authority.AuthorityGrant;
@@ -75,14 +83,14 @@ public class ObjectFactoryImpl implements ObjectFactory
     private Map<QName, Class> registry = new LinkedHashMap<QName, Class>();
 
     @Override
-    public Platform platform(Response response)
+    public Platform platform(Cluster cluster, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new PlatformImpl(response.getObjectNode(), true);
+        return new PlatformImpl(cluster, response.getObjectNode(), true);
     }
 
     @Override
@@ -385,8 +393,6 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
-
-
     @Override
     public void register(QName typeQName, Class implementationClass)
     {
@@ -502,18 +508,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Job job(Platform platform, Response response)
+    public Job job(Cluster cluster, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new JobImpl(platform, response.getObjectNode(), true);
+        return new JobImpl(cluster, response.getObjectNode(), true);
     }
 
     @Override
-    public ResultMap<Job> jobs(Platform platform, Response response)
+    public ResultMap<Job> jobs(Cluster cluster, Response response)
     {
         if (!response.isListDocument())
         {
@@ -523,7 +529,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<Job> map = new ResultMapImpl<Job>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            Job job = new JobImpl(platform, object, true);
+            Job job = new JobImpl(cluster, object, true);
             map.put(job.getId(), job);
         }
 
@@ -609,18 +615,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public LogEntry logEntry(Platform platform, Response response)
+    public LogEntry logEntry(Cluster cluster, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new LogEntryImpl(platform, response.getObjectNode(), true);
+        return new LogEntryImpl(cluster, response.getObjectNode(), true);
     }
 
     @Override
-    public ResultMap<LogEntry> logEntries(Platform platform, Response response)
+    public ResultMap<LogEntry> logEntries(Cluster cluster, Response response)
     {
         if (!response.isListDocument())
         {
@@ -630,7 +636,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<LogEntry> map = new ResultMapImpl<LogEntry>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            LogEntry logEntry = new LogEntryImpl(platform, object, true);
+            LogEntry logEntry = new LogEntryImpl(cluster, object, true);
             map.put(logEntry.getId(), logEntry);
         }
 
@@ -638,18 +644,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Team team(Platform platform, Teamable teamable, String teamKey, Response response)
+    public Team team(Cluster cluster, Teamable teamable, String teamKey, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new TeamImpl(platform, teamable, teamKey, response.getObjectNode());
+        return new TeamImpl(cluster, teamable, teamKey, response.getObjectNode());
     }
 
     @Override
-    public ResultMap<Team> teams(Platform platform, Teamable teamable, Response response)
+    public ResultMap<Team> teams(Cluster cluster, Teamable teamable, Response response)
     {
         if (!response.isListDocument())
         {
@@ -661,7 +667,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             String teamKey = JsonUtil.objectGetString(object, "_doc");
 
-            Team team = new TeamImpl(platform, teamable, teamKey, object);
+            Team team = new TeamImpl(cluster, teamable, teamKey, object);
             map.put(team.getKey(), team);
         }
 
@@ -783,6 +789,97 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public Application application(Platform platform)
+    {
+        return application(platform, JsonUtil.createObject());
+    }
+
+    @Override
+    public Application application(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new ApplicationImpl(platform, object, false);
+    }
+
+    @Override
+    public Application application(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new ApplicationImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Application> applications(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Application> map = new ResultMapImpl<Application>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Application application = new ApplicationImpl(platform, object, true);
+            map.put(application.getId(), application);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Registrar registrar(Platform platform)
+    {
+        return registrar(platform, JsonUtil.createObject());
+    }
+
+    @Override
+    public Registrar registrar(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new RegistrarImpl(platform, object, false);
+    }
+
+    @Override
+    public Registrar registrar(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new RegistrarImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Registrar> registrars(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Registrar> map = new ResultMapImpl<Registrar>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Registrar registrar = new RegistrarImpl(platform, object, true);
+            map.put(registrar.getId(), registrar);
+        }
+
+        return map;
+    }
 
 
 
@@ -797,7 +894,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     //
 
     @Override
-    public Tenant tenant(Management management, ObjectNode object)
+    public Tenant tenant(Registrar management, ObjectNode object)
     {
         if (object == null)
         {
@@ -808,7 +905,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Tenant tenant(Management management, Response response)
+    public Tenant tenant(Registrar management, Response response)
     {
         if (!response.isDataDocument())
         {
@@ -819,7 +916,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public ResultMap<Tenant> tenants(Management management, Response response)
+    public ResultMap<Tenant> tenants(Registrar management, Response response)
     {
         if (!response.isListDocument())
         {
@@ -837,7 +934,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Plan plan(Management management, ObjectNode object)
+    public Plan plan(Registrar management, ObjectNode object)
     {
         if (object == null)
         {
@@ -848,7 +945,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Plan plan(Management management, Response response)
+    public Plan plan(Registrar management, Response response)
     {
         if (!response.isDataDocument())
         {
@@ -859,7 +956,7 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public ResultMap<Plan> plans(Management management, Response response)
+    public ResultMap<Plan> plans(Registrar management, Response response)
     {
         if (!response.isListDocument())
         {
@@ -871,46 +968,6 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             Plan plan = new PlanImpl(management, object, true);
             map.put(plan.getId(), plan);
-        }
-
-        return map;
-    }
-
-    @Override
-    public Allocation allocation(Management management, ObjectNode object)
-    {
-        if (object == null)
-        {
-            object = JsonUtil.createObject();
-        }
-
-        return new AllocationImpl(management, object, false);
-    }
-
-    @Override
-    public Allocation allocation(Management management, Response response)
-    {
-        if (!response.isDataDocument())
-        {
-            throw new RuntimeException("Response must be a data document");
-        }
-
-        return new AllocationImpl(management, response.getObjectNode(), true);
-    }
-
-    @Override
-    public ResultMap<Allocation> allocations(Management management, Response response)
-    {
-        if (!response.isListDocument())
-        {
-            throw new RuntimeException("Response must be a list document");
-        }
-
-        ResultMap<Allocation> map = new ResultMapImpl<Allocation>(response.getListOffset(), response.getListTotalRows());
-        for (ObjectNode object : response.getObjectNodes())
-        {
-            Allocation allocation = new AllocationImpl(management, object, true);
-            map.put(allocation.getId(), allocation);
         }
 
         return map;

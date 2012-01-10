@@ -19,18 +19,19 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.repository;
+package org.gitana.platform.client.application;
 
 import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.platform.PlatformDocument;
+import org.gitana.platform.client.platform.PlatformDataStore;
 
 /**
  * @author uzi
  */
-public interface RepositoryDocument extends PlatformDocument
-{	
-    public Repository getRepository();
-    public String getRepositoryId();
-
+public interface Application extends PlatformDataStore
+{
+    /**
+     * @return platform
+     */
     public Platform getPlatform();
+
 }

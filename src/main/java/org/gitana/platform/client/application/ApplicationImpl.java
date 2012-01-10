@@ -19,18 +19,38 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.repository;
+package org.gitana.platform.client.application;
 
+import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface RepositoryDocument extends PlatformDocument
-{	
-    public Repository getRepository();
-    public String getRepositoryId();
+public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Application
+{
+    public ApplicationImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    {
+        super(platform, obj, isSaved);
+    }
 
-    public Platform getPlatform();
+    @Override
+    public String getType()
+    {
+        return "application";
+    }
+
+    @Override
+    public String getResourceUri()
+    {
+        return "/applications/" + getId();
+    }
+
+    @Override
+    public void reload()
+    {
+        Application application = getPlatform().readApplication(getId());
+        this.reload(application.getObject());
+    }
 }

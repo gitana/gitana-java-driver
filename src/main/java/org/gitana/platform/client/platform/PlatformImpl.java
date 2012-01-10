@@ -24,14 +24,16 @@ package org.gitana.platform.client.platform;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
-import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
+import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
-import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
@@ -45,18 +47,11 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class PlatformImpl extends AbstractDataStoreImpl implements Platform
+public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platform
 {
-    public PlatformImpl(ObjectNode obj, boolean isSaved)
+    public PlatformImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-    }
-
-    public PlatformImpl(String platformId)
-    {
-        this(JsonUtil.createObject(), true);
-
-        setId(platformId);
+        super(cluster, obj, isSaved);
     }
 
     @Override
@@ -66,34 +61,17 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
     }
 
     @Override
-    protected Platform getPlatform()
-    {
-        return this;
-    }
-
-    @Override
     public String getResourceUri()
     {
         return "";
     }
 
     @Override
-    public Domain readDefaultDomain()
-    {
-        return readDomain("default");
-    }
-
-    @Override
-    public Vault readDefaultVault()
-    {
-        return readVault("default");
-    }
-
-    @Override
     public void reload()
     {
         Response response = getRemote().get(getResourceUri());
-        Platform platform = getFactory().platform(response);
+
+        Platform platform = getFactory().platform(getCluster(), response);
         this.reload(platform);
     }
 
@@ -195,205 +173,6 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // JOBS
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<Job> queryJobs(ObjectNode query)
-    {
-        return queryJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/query", params, query);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listUnstartedJobs()
-    {
-        return listUnstartedJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listUnstartedJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/unstarted", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryUnstartedJobs(ObjectNode query)
-    {
-        return queryUnstartedJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryUnstartedJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/unstarted/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listRunningJobs()
-    {
-        return listRunningJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listRunningJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/running", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryRunningJobs(ObjectNode query)
-    {
-        return queryRunningJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryRunningJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/running/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listFailedJobs()
-    {
-        return listFailedJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listFailedJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/failed", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryFailedJobs(ObjectNode query)
-    {
-        return queryFailedJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/failed/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listCandidateJobs()
-    {
-        return listCandidateJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listCandidateJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/candidate", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query)
-    {
-        return queryCandidateJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/candidate/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listFinishedJobs()
-    {
-        return listFinishedJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listFinishedJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/finished", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryFinishedJobs(ObjectNode query)
-    {
-        return queryFinishedJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryFinishedJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/finished/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public Job readJob(String jobId)
-    {
-        Job job = null;
-
-        try
-        {
-            Response response = getRemote().get("/jobs/" + jobId);
-            job = getFactory().job(this, response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return job;
-    }
-
-    @Override
-    public void killJob(String jobId)
-    {
-        getRemote().post("/jobs/" + jobId);
-    }
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
     // LOG ENTRIES
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -410,7 +189,7 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get("/logs", params);
-        return getFactory().logEntries(this, response);
+        return getFactory().logEntries(getCluster(), response);
     }
 
     @Override
@@ -425,7 +204,7 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post("/logs/query", params, query);
-        return getFactory().logEntries(this, response);
+        return getFactory().logEntries(getCluster(), response);
     }
 
     @Override
@@ -436,7 +215,7 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
         try
         {
             Response response = getRemote().get("/logs/" + logEntryId);
-            logEntry = getFactory().logEntry(this, response);
+            logEntry = getFactory().logEntry(getCluster(), response);
         }
         catch (Exception ex)
         {
@@ -756,6 +535,100 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
+    // APPLICATIONS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Application> listApplications()
+    {
+        return listApplications(null);
+    }
+
+    @Override
+    public ResultMap<Application> listApplications(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/applications", params);
+        return getFactory().applications(this, response);
+    }
+
+    @Override
+    public Application readApplication(String applicationId)
+    {
+        Application application = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/applications/" + applicationId);
+            application = getFactory().application(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return application;
+    }
+
+    @Override
+    public Application createApplication()
+    {
+        return createApplication(null);
+    }
+
+    @Override
+    public Application createApplication(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/applications", object);
+
+        String applicationId = response.getId();
+        return readApplication(applicationId);
+    }
+
+    @Override
+    public ResultMap<Application> queryApplications(ObjectNode query)
+    {
+        return queryApplications(query, null);
+    }
+
+    @Override
+    public ResultMap<Application> queryApplications(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/applications/query", params, query);
+        return getFactory().applications(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkApplicationPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post(getResourceUri() + "/vaults/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // CONSUMERS
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -849,23 +722,100 @@ public class PlatformImpl extends AbstractDataStoreImpl implements Platform
         getRemote().delete("/consumers/" + consumerKey);
     }
 
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // REGISTRARS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
-    public Consumer lookupDefaultConsumerForTenant(String tenantId)
+    public ResultMap<Registrar> listRegistrars()
     {
-        ObjectNode query = JsonUtil.createObject();
-        query.put(Consumer.FIELD_IS_TENANT_DEFAULT, true);
-        query.put(Consumer.FIELD_DEFAULT_TENANT_ID, tenantId);
-
-        Consumer consumer = null;
-
-        ResultMap<Consumer> consumers = queryConsumers(query);
-        if (consumers.size() > 0)
-        {
-            consumer = consumers.values().iterator().next();
-        }
-
-        return consumer;
+        return listRegistrars(null);
     }
 
+    @Override
+    public ResultMap<Registrar> listRegistrars(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/registrars", params);
+        return getFactory().registrars(this, response);
+    }
+
+    @Override
+    public Registrar readRegistrar(String registrarId)
+    {
+        Registrar registrar = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/registrars/" + registrarId);
+            registrar = getFactory().registrar(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return registrar;
+    }
+
+    @Override
+    public Registrar createRegistrar()
+    {
+        return createRegistrar(null);
+    }
+
+    @Override
+    public Registrar createRegistrar(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/registrars", object);
+
+        String registrarId = response.getId();
+        return readRegistrar(registrarId);
+    }
+
+    @Override
+    public ResultMap<Registrar> queryRegistrars(ObjectNode query)
+    {
+        return queryRegistrars(query, null);
+    }
+
+    @Override
+    public ResultMap<Registrar> queryRegistrars(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/registrars/query", params, query);
+        return getFactory().registrars(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkRegistrarPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post(getResourceUri() + "/registrars/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
 
 }

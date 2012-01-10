@@ -22,7 +22,7 @@
 package org.gitana.platform.client.job;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.platform.PlatformDocument;
+import org.gitana.platform.client.cluster.ClusterDocument;
 
 import java.util.Calendar;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Job extends PlatformDocument
+public interface Job extends ClusterDocument
 {	
     // fields
     public final static String FIELD_TYPE = "type";

@@ -23,6 +23,7 @@ package org.gitana.platform.client;
 
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.platform.Platform;
@@ -47,6 +48,9 @@ public class JobTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
+        // cluster
+        Cluster cluster = platform.getCluster();
+
         // create a repository
         Repository repo = platform.createRepository();
 
@@ -54,25 +58,29 @@ public class JobTest extends AbstractTestCase
         Branch master = repo.readBranch("master");
 
         // count jobs
-        int count1 = countJobs(platform);
+        int count1 = countTotalJobs(cluster);
 
         // create a node
         // the indexing for this node runs in-proc
         Node node = (Node) master.createNode();
+
+        // candidate jobs are jobs that are started but not running
+        // running jobs are jobs that are started AND running
+        int inflight1 = cluster.listCandidateJobs().size() + cluster.listRunningJobs().size();
 
         // upload an attachment
         // the indexing for this attachment will run as a job
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/gone.pdf");
         node.uploadAttachment(bytes, MimeTypeMap.APPLICATION_PDF);
 
-        // check candidates
-        ResultMap<Job> candidates = platform.listCandidateJobs();
-        assertTrue(candidates.size() > 0);
+        int inflight2 = cluster.listCandidateJobs().size() + cluster.listRunningJobs().size();
+
+        assertTrue(inflight2 > inflight1);
 
         Thread.sleep(4000);
 
         // count jobs
-        int count2 = countJobs(platform);
+        int count2 = countTotalJobs(cluster);
 
         assertTrue(count2 > count1);
 
@@ -80,26 +88,26 @@ public class JobTest extends AbstractTestCase
         Pagination pagination = new Pagination();
         pagination.setLimit(1);
         pagination.getSorting().addSortDescending("_system.created_on.ms");
-        ResultMap<Job> results = platform.queryJobs(JsonUtil.createObject(), pagination);
+        ResultMap<Job> results = cluster.queryJobs(JsonUtil.createObject(), pagination);
         Job job = results.values().iterator().next();
 
         // read job manually
-        job = platform.readJob(job.getId());
+        job = cluster.readJob(job.getId());
         assertEquals("index", job.getType());
 
         // test out various methods
-        ResultMap<Job> unstarted = platform.listUnstartedJobs();
-        ResultMap<Job> failed = platform.listFailedJobs();
-        ResultMap<Job> finished = platform.listFinishedJobs();
-        ResultMap<Job> all = platform.queryJobs(JsonUtil.createObject());
+        ResultMap<Job> unstarted = cluster.listUnstartedJobs();
+        ResultMap<Job> failed = cluster.listFailedJobs();
+        ResultMap<Job> finished = cluster.listFinishedJobs();
+        ResultMap<Job> all = cluster.queryJobs(JsonUtil.createObject());
         assertTrue(all.size() > 0);
     }
 
-    private int countJobs(Platform platform)
+    private int countTotalJobs(Cluster cluster)
     {
         Pagination pagination = new Pagination();
         pagination.setLimit(1);
-        ResultMap<Job> results = platform.queryJobs(JsonUtil.createObject(), pagination);
+        ResultMap<Job> results = cluster.queryJobs(JsonUtil.createObject(), pagination);
 
         return results.totalRows();
     }

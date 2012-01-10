@@ -19,18 +19,32 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.repository;
+package org.gitana.platform.client.cluster;
 
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.platform.PlatformDocument;
+import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 
 /**
  * @author uzi
  */
-public interface RepositoryDocument extends PlatformDocument
-{	
-    public Repository getRepository();
-    public String getRepositoryId();
+public abstract class AbstractClusterDataStoreImpl extends AbstractDataStoreImpl implements ClusterDataStore
+{
+    private Cluster cluster;
 
-    public Platform getPlatform();
+    protected AbstractClusterDataStoreImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
+    {
+        super(obj, isSaved);
+
+        this.cluster = cluster;
+    }
+
+    /**
+     * @return the cluster instance
+     */
+    public Cluster getCluster()
+    {
+        return this.cluster;
+    }
+
 }
+

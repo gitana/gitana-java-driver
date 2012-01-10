@@ -21,6 +21,8 @@
 
 package org.gitana.platform.client;
 
+import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.ObjectFactoryImpl;
 import org.gitana.platform.client.support.Remote;
@@ -36,6 +38,7 @@ public class Driver
     private ObjectFactory factory;
 
     private AuthInfo authInfo;
+    private Platform platform;
 
     private String consumerKey;
     private String accessToken;
@@ -79,6 +82,16 @@ public class Driver
     public AuthInfo getAuthInfo()
     {
         return this.authInfo;
+    }
+
+    public Platform getPlatform()
+    {
+        return this.platform;
+    }
+
+    public void setPlatform(Platform platform)
+    {
+        this.platform = platform;
     }
 
     private void init()

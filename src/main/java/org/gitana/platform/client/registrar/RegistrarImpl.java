@@ -19,13 +19,15 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
+import org.gitana.platform.client.plan.Plan;
+import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -36,48 +38,32 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class ManagementImpl extends AbstractDataStoreImpl implements Management
+public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Registrar
 {
-    private Platform platform;
-
-    public ManagementImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public RegistrarImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-
-        this.platform = platform;
-    }
-
-    public ManagementImpl(Platform platform, String managementId)
-    {
-        this(platform, JsonUtil.createObject(), true);
-
-        setId(managementId);
+        super(platform, obj, isSaved);
     }
 
     @Override
     public String getType()
     {
-        return "management";
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return platform;
+        return "registrar";
     }
 
     @Override
     public void reload()
     {
         Response response = getRemote().get(getResourceUri());
-        Platform platform = getFactory().platform(response);
-        this.reload(platform);
+
+        Registrar registrar = getFactory().registrar(getPlatform(), response);
+        this.reload(registrar);
     }
 
     @Override
     public String getResourceUri()
     {
-        return "";
+        return "/registrars/" + getId();
     }
 
 
@@ -180,7 +166,7 @@ public class ManagementImpl extends AbstractDataStoreImpl implements Management
     @Override
     public void updateTenant(Tenant tenant)
     {
-        getRemote().put("/tenants/" + tenant.getId(), tenant.getObject());
+        getRemote().put(getResourceUri() + "/tenants/" + tenant.getId(), tenant.getObject());
     }
 
     @Override
@@ -192,7 +178,7 @@ public class ManagementImpl extends AbstractDataStoreImpl implements Management
     @Override
     public void deleteTenant(String tenantId)
     {
-        getRemote().delete("/tenants/" + tenantId);
+        getRemote().delete(getResourceUri() + "/tenants/" + tenantId);
     }
 
     @Override
@@ -270,7 +256,7 @@ public class ManagementImpl extends AbstractDataStoreImpl implements Management
     @Override
     public void updatePlan(Plan plan)
     {
-        getRemote().put("/plans/" + plan.getId(), plan.getObject());
+        getRemote().put(getResourceUri() + "/plans/" + plan.getId(), plan.getObject());
     }
 
     @Override
@@ -282,7 +268,7 @@ public class ManagementImpl extends AbstractDataStoreImpl implements Management
     @Override
     public void deletePlan(String planKey)
     {
-        getRemote().delete("/plans/" + planKey);
+        getRemote().delete(getResourceUri() + "/plans/" + planKey);
     }
 
     @Override

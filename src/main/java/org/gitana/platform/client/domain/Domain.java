@@ -22,10 +22,9 @@
 package org.gitana.platform.client.domain;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
@@ -38,10 +37,8 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Domain extends DataStore
+public interface Domain extends PlatformDataStore
 {
-    public Platform getPlatform();
-
     public ResultMap<DomainPrincipal> listPrincipals();
     public ResultMap<DomainPrincipal> listPrincipals(Pagination pagination);
 

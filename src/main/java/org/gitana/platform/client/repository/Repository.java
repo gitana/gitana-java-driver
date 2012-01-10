@@ -29,6 +29,7 @@ import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -37,13 +38,8 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Repository extends DataStore
+public interface Repository extends PlatformDataStore
 {
-    /**
-     * @return platform
-     */
-    public Platform getPlatform();
-
     /**
      * Retrieves branches for the repository
      *

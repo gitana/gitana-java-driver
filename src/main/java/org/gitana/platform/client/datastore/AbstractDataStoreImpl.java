@@ -24,8 +24,8 @@ package org.gitana.platform.client.datastore;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
@@ -64,7 +64,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         return getDriver().getRemote();
     }
 
-    protected abstract Platform getPlatform();
+    public abstract Cluster getCluster();
 
     @Override
     public String getId()
@@ -211,7 +211,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         try
         {
             Response response = getRemote().get(getResourceUri() + "/teams/" + teamKey);
-            team = getFactory().team(getPlatform(), this, teamKey, response);
+            team = getFactory().team(getCluster(), this, teamKey, response);
         }
         catch (Exception ex)
         {
@@ -229,7 +229,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         Map<String, String> params = DriverUtil.params();
 
         Response response = getRemote().get(getResourceUri() + "/teams", params);
-        return getFactory().teams(getPlatform(), this, response);
+        return getFactory().teams(getCluster(), this, response);
     }
 
     @Override

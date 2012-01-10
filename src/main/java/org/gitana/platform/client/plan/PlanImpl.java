@@ -19,24 +19,26 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.plan;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
+import org.gitana.platform.client.registrar.Registrar;
 
 /**
  * @author uzi
  */
-public class PlanImpl extends AbstractManagementDocumentImpl implements Plan
+public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
 {
-    public PlanImpl(Management management, ObjectNode obj, boolean isSaved)
+    public PlanImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
-        super(management, obj, isSaved);
+        super(registrar, obj, isSaved);
     }
 
     @Override
     protected String getResourceUri()
     {
-        return "/plans/" + getId();
+        return "/registrars/" + getRegistrarId() + "/plans/" + getId();
     }
 
     @Override

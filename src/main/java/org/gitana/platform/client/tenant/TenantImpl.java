@@ -19,34 +19,39 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
+import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.ResultMapImpl;
+import org.gitana.util.JsonUtil;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author uzi
  */
-public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
+public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
 {
-    public TenantImpl(Management management, ObjectNode obj, boolean isSaved)
+    public TenantImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
-        super(management, obj, isSaved);
+        super(registrar, obj, isSaved);
     }
 
     @Override
     protected String getResourceUri()
     {
-        return "/tenants/" + getId();
+        return "/registrars/" + getRegistrarId() + "/tenants/" + getId();
     }
 
     @Override
@@ -102,30 +107,27 @@ public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
     }
 
     @Override
-    public ResultMap<Allocation> listAllocations()
+    public ResultMap<ObjectNode> listAllocatedObjects()
     {
-        return listAllocations(null);
+        return listAllocatedObjects(null);
     }
 
     @Override
-    public ResultMap<Allocation> listAllocations(Pagination pagination)
+    public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
+        Response response = getRemote().get(getResourceUri() + "/objects", params);
 
-        Response response = getRemote().get(getResourceUri() + "/allocations", params);
-        return getFactory().allocations(getManagement(), response);
-    }
+        ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();
 
-    @Override
-    public void allocate(String objectType, String objectId)
-    {
-        getRemote().post(getResourceUri() + "/allocate?tenantId=" + this.getId() + "&type=" + objectType + "&id=" + objectId);
-    }
+        List<ObjectNode> objects = response.getObjectNodes();
+        for (ObjectNode object: objects)
+        {
+            String id = object.get("_doc").getTextValue();
+            results.put(id, object);
+        }
 
-    @Override
-    public void deallocate(String objectType, String objectId)
-    {
-        getRemote().post(getResourceUri() + "/deallocate?tenantId=" + this.getId() + "&type=" + objectType + "&id=" + objectId);
+        return results;
     }
 
     @Override
@@ -140,7 +142,7 @@ public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/repositories", params);
-        return getFactory().repositories(getManagement().getPlatform(), response);
+        return getFactory().repositories(getRegistrar().getPlatform(), response);
     }
 
     @Override
@@ -155,7 +157,7 @@ public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/domains", params);
-        return getFactory().domains(getManagement().getPlatform(), response);
+        return getFactory().domains(getRegistrar().getPlatform(), response);
     }
 
     @Override
@@ -170,7 +172,7 @@ public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/vaults", params);
-        return getFactory().vaults(getManagement().getPlatform(), response);
+        return getFactory().vaults(getRegistrar().getPlatform(), response);
     }
 
     @Override
@@ -185,7 +187,42 @@ public class TenantImpl extends AbstractManagementDocumentImpl implements Tenant
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/consumers", params);
-        return getFactory().consumers(getManagement().getPlatform(), response);
+        return getFactory().consumers(getRegistrar().getPlatform(), response);
+    }
+
+    @Override
+    public ResultMap<Registrar> listRegistrars()
+    {
+        return listRegistrars(null);
+    }
+
+    @Override
+    public ResultMap<Registrar> listRegistrars(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/registrars", params);
+        return getFactory().registrars(getRegistrar().getPlatform(), response);
+    }
+
+    @Override
+    public Consumer readDefaultConsumer()
+    {
+        Consumer consumer = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/defaultconsumer");
+            consumer = getFactory().consumer(this.getRegistrar().getPlatform(), response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return consumer;
     }
 
 }

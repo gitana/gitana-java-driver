@@ -44,7 +44,7 @@ public class StackTeamTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create a stack
         Stack stack = platform.createStack();

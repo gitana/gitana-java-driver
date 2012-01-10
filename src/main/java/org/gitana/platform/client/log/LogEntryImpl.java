@@ -23,8 +23,8 @@ package org.gitana.platform.client.log;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -33,11 +33,11 @@ import java.util.List;
 /**
  * @author uzi
  */
-public class LogEntryImpl extends AbstractPlatformDocumentImpl implements LogEntry
+public class LogEntryImpl extends AbstractClusterDocumentImpl implements LogEntry
 {
-    public LogEntryImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public LogEntryImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
-        super(platform, obj, isSaved);
+        super(cluster, obj, isSaved);
     }
 
     @Override

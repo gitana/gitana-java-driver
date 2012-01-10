@@ -22,13 +22,15 @@
 package org.gitana.platform.client.api;
 
 import org.gitana.platform.client.platform.PlatformDocument;
+import org.gitana.platform.client.support.AccessControllable;
+import org.gitana.platform.client.support.Selfable;
 
 import java.util.List;
 
 /**
  * @author uzi
  */
-public interface Consumer extends PlatformDocument
+public interface Consumer extends PlatformDocument, AccessControllable, Selfable
 {
     public final static String FIELD_AUTH_TYPE = "authType";
     public final static String FIELD_KEY = "key";

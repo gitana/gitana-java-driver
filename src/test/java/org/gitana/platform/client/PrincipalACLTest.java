@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * @author uzi
  */
-public class SecurityACLTest extends AbstractTestCase
+public class PrincipalACLTest extends AbstractTestCase
 {
     @Test
     public void testACL()
@@ -38,7 +38,7 @@ public class SecurityACLTest extends AbstractTestCase
         Platform platform = new Gitana().authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create three users
         String userName1 = "testuser1_" + System.currentTimeMillis();
@@ -60,10 +60,10 @@ public class SecurityACLTest extends AbstractTestCase
 
 
         // verify that user1 can read and update user3
-        new Gitana().authenticate(userName1, "test").readDefaultDomain().readPrincipal(userName1).update();
+        new Gitana().authenticate(userName1, "test").readDomain("default").readPrincipal(userName1).update();
 
         // verify that user2 can read but NOT update user3
-        DomainUser u3 = (DomainUser) new Gitana().authenticate(userName2, "test").readDefaultDomain().readPrincipal(userName3);
+        DomainUser u3 = (DomainUser) new Gitana().authenticate(userName2, "test").readDomain("default").readPrincipal(userName3);
         Exception ex1 = null;
         try
         {
@@ -76,17 +76,17 @@ public class SecurityACLTest extends AbstractTestCase
         assertNotNull(ex1);
 
         // verify that user3 can read and update user3 (self manager)
-        new Gitana().authenticate(userName3, "test").readDefaultDomain().readPrincipal(userName3).update();
+        new Gitana().authenticate(userName3, "test").readDomain("default").readPrincipal(userName3).update();
 
         // revoke EVERYONE CONSUMER from user3
         user3.revokeAll("everyone");
 
         // verify that user2 cannot read user3
-        DomainUser testRead3 = (DomainUser) new Gitana().authenticate(userName2, "test").readDefaultDomain().readPrincipal(userName3);
+        DomainUser testRead3 = (DomainUser) new Gitana().authenticate(userName2, "test").readDomain("default").readPrincipal(userName3);
         assertNull(testRead3);
 
         // verify that user3 can read user3 (self manager)
-        new Gitana().authenticate(userName3, "test").readDefaultDomain().readPrincipal(userName3).update();
+        new Gitana().authenticate(userName3, "test").readDomain("default").readPrincipal(userName3).update();
     }
 
 }

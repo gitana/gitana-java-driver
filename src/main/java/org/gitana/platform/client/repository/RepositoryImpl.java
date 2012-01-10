@@ -25,10 +25,10 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
-import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
@@ -42,27 +42,17 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class RepositoryImpl extends AbstractDataStoreImpl implements Repository
+public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Repository
 {
-    private Platform platform;
-
     public RepositoryImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
-
-        this.platform = platform;
+        super(platform, obj, isSaved);
     }
 
     @Override
     public String getType()
     {
         return "repository";
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return this.platform;
     }
 
     @Override
@@ -292,7 +282,7 @@ public class RepositoryImpl extends AbstractDataStoreImpl implements Repository
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/logs", params);
-        return getFactory().logEntries(getPlatform(), response);
+        return getFactory().logEntries(getCluster(), response);
     }
 
     @Override
@@ -307,7 +297,7 @@ public class RepositoryImpl extends AbstractDataStoreImpl implements Repository
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post(getResourceUri() + "/logs/query", params, query);
-        return getFactory().logEntries(getPlatform(), response);
+        return getFactory().logEntries(getCluster(), response);
     }
 
     @Override
@@ -318,7 +308,7 @@ public class RepositoryImpl extends AbstractDataStoreImpl implements Repository
         try
         {
             Response response = getRemote().get(getResourceUri() + "/logs/" + logEntryId);
-            logEntry = getFactory().logEntry(getPlatform(), response);
+            logEntry = getFactory().logEntry(getCluster(), response);
         }
         catch (Exception ex)
         {

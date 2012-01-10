@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class SecurityTest extends AbstractTestCase
+public class PrincipalTest extends AbstractTestCase
 {
     @Test
     public void testUserCRUD()
@@ -46,7 +46,7 @@ public class SecurityTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create a user
         String name = "testuser" + System.currentTimeMillis();
@@ -93,7 +93,7 @@ public class SecurityTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create a group
         String name = "testgroup" + System.currentTimeMillis();
@@ -132,7 +132,7 @@ public class SecurityTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create six users
         DomainUser user1 = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
@@ -208,7 +208,7 @@ public class SecurityTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         // create two users
         DomainUser daffy = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
@@ -239,7 +239,7 @@ public class SecurityTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         String tag = "tag_" + System.currentTimeMillis();
 
@@ -294,7 +294,7 @@ public class SecurityTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // default domain
-        Domain domain = platform.readDefaultDomain();
+        Domain domain = platform.readDomain("default");
 
         String tag = "tag_" + System.currentTimeMillis();
 

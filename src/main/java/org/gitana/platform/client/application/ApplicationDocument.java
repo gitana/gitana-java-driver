@@ -19,15 +19,18 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.management;
+package org.gitana.platform.client.application;
 
 import org.gitana.platform.client.document.Document;
+import org.gitana.platform.client.platform.Platform;
 
 /**
  * @author uzi
  */
-public interface ManagementDocument extends Document
-{
-    public Management getManagement();
-    public String getManagementId();
+public interface ApplicationDocument extends Document
+{	
+    public Application getApplication();
+    public String getApplicationId();
+
+    public Platform getPlatform();
 }

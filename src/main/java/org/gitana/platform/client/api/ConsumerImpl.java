@@ -22,12 +22,18 @@
 package org.gitana.platform.client.api;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -182,4 +188,109 @@ public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consum
         set(FIELD_DEFAULT_TENANT_ID, tenantId);
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SELF
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void reload()
+    {
+        Stack project = getPlatform().readStack(this.getId());
+
+        this.reload(project.getObject());
+    }
+
+    @Override
+    public void update()
+    {
+        getRemote().put(getResourceUri(), getObject());
+    }
+
+    @Override
+    public void delete()
+    {
+        getRemote().delete(getResourceUri());
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACL
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ACL getACL()
+    {
+        Response response = getRemote().get(getResourceUri() + "/acl/list");
+
+        return DriverUtil.toACL(response);
+    }
+
+    @Override
+    public List<String> getACL(String principalId)
+    {
+        Response response = getRemote().get(getResourceUri() + "/acl?id=" + principalId);
+
+        return DriverUtil.toStringList(response);
+    }
+
+    @Override
+    public void grant(String principalId, String authorityId)
+    {
+        getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/grant?id=" + principalId);
+    }
+
+    @Override
+    public void revoke(String principalId, String authorityId)
+    {
+        getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
+    }
+
+    @Override
+    public void revokeAll(String principalId)
+    {
+        revoke(principalId, "all");
+    }
+
+    @Override
+    public boolean hasAuthority(String principalId, String authorityId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
+
+    @Override
+    public Map<String, Map<String, AuthorityGrant>> getAuthorityGrants(List<String> principalIds)
+    {
+        ObjectNode object = JsonUtil.createObject();
+        JsonUtil.objectPut(object, "principals", principalIds);
+
+        Response response = getRemote().post(getResourceUri() + "/authorities", object);
+        return getFactory().principalAuthorityGrants(response);
+    }
+
+    @Override
+    public boolean hasPermission(String principalId, String permissionId)
+    {
+        boolean has = false;
+
+        Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
+        if (response.getObjectNode().has("check"))
+        {
+            has = response.getObjectNode().get("check").getBooleanValue();
+        }
+
+        return has;
+    }
 }

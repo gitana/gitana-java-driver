@@ -24,6 +24,7 @@ package org.gitana.platform.client.team;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
+import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.DriverContext;
@@ -46,24 +47,24 @@ import java.util.Map;
  */
 public class TeamImpl extends GitanaObjectImpl implements Team
 {
-    private Platform platform;
-
     private String teamKey;
     private Teamable teamable;
 
-    public TeamImpl(Platform platform, Teamable teamable, String teamKey, ObjectNode objectNode)
+    private Cluster cluster;
+
+    public TeamImpl(Cluster cluster, Teamable teamable, String teamKey, ObjectNode objectNode)
     {
         super(objectNode);
 
-        this.platform = platform;
-
         this.teamable = teamable;
         this.teamKey = teamKey;
+
+        this.cluster = cluster;
     }
 
-    protected Platform getPlatform()
+    protected Cluster getCluster()
     {
-        return platform;
+        return this.cluster;
     }
 
     protected ObjectFactory getFactory()
@@ -138,8 +139,11 @@ public class TeamImpl extends GitanaObjectImpl implements Team
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
+        // TODO - what if the principals in the group don't exist in this domain?
+        Platform platform = DriverContext.getDriver().getPlatform();
+
         Response response = getRemote().get(getTeamable().getTeamableBaseUri() + "/teams/" + this.getKey() + "/members", params);
-        return getFactory().domainPrincipals(getPlatform(), response);
+        return getFactory().domainPrincipals(platform, response);
     }
 
     @Override
