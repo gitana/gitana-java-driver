@@ -264,6 +264,4 @@ public interface Platform extends DataStore
     public void deleteConsumer(Consumer consumer);
     public void deleteConsumer(String consumerKey);
 
-
-
 }

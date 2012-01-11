@@ -25,12 +25,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
@@ -347,6 +350,108 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
     public String getDownloadUri(String attachmentId)
     {
         return getResourceUri() + "/attachments/" + attachmentId;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // LOG ENTRIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<LogEntry> listLogEntries()
+    {
+        return listLogEntries(null);
+    }
+
+    @Override
+    public ResultMap<LogEntry> listLogEntries(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/logs", params);
+        return getFactory().logEntries(getCluster(), response);
+    }
+
+    @Override
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query)
+    {
+        return queryLogEntries(query, null);
+    }
+
+    @Override
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/logs/query", params, query);
+        return getFactory().logEntries(getCluster(), response);
+    }
+
+    @Override
+    public LogEntry readLogEntry(String logEntryId)
+    {
+        LogEntry logEntry = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/logs/" + logEntryId);
+            logEntry = getFactory().logEntry(getCluster(), response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return logEntry;
+    }
+
+    @Override
+    public void assignDataStore(PlatformDataStore datastore)
+    {
+        assignDataStore(datastore, null);
+    }
+
+    @Override
+    public void assignDataStore(PlatformDataStore datastore, String key)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", datastore.getId());
+        params.put("key", datastore.getId());
+        params.put("type", datastore.getType());
+        if (key != null)
+        {
+            params.put("key", key);
+        }
+
+        getRemote().post(getResourceUri() + "/datastores/assign", params);
+    }
+
+    @Override
+    public void unassignDataStore(String key)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("key", key);
+
+        getRemote().post(getResourceUri() + "/datastores/unassign", params);
+    }
+
+    @Override
+    public ResultMap<PlatformDataStore> listDataStores()
+    {
+        return listDataStores(null);
+    }
+
+    @Override
+    public ResultMap<PlatformDataStore> listDataStores(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/datastores", params);
+        return getFactory().platformDataStores(this.getPlatform(), response);
     }
 
 }

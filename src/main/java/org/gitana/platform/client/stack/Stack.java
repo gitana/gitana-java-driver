@@ -21,15 +21,39 @@
 
 package org.gitana.platform.client.stack;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.attachment.Attachable;
+import org.gitana.platform.client.datastore.DataStore;
+import org.gitana.platform.client.log.LogEntry;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.team.Teamable;
+import org.gitana.platform.support.Pagination;
+import org.gitana.platform.support.ResultMap;
 
 /**
  * @author uzi
  */
 public interface Stack extends PlatformDocument, AccessControllable, Selfable, Teamable, Attachable
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // LOGS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<LogEntry> listLogEntries();
+    public ResultMap<LogEntry> listLogEntries(Pagination pagination);
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query);
+    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination);
+    public LogEntry readLogEntry(String logEntryId);
+
+    public void assignDataStore(PlatformDataStore datastore);
+    public void assignDataStore(PlatformDataStore datastore, String key);
+    public void unassignDataStore(String key);
+
+    public ResultMap<PlatformDataStore> listDataStores();
+    public ResultMap<PlatformDataStore> listDataStores(Pagination pagination);
 }

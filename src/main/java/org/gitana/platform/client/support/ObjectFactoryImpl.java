@@ -46,6 +46,7 @@ import org.gitana.platform.client.nodes.*;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.plan.PlanImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.platform.PlatformImpl;
 import org.gitana.platform.client.principal.DomainGroupImpl;
 import org.gitana.platform.client.principal.DomainPrincipal;
@@ -71,6 +72,7 @@ import org.gitana.platform.support.ResultMapImpl;
 import org.gitana.util.JsonUtil;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -972,5 +974,62 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         return map;
     }
+
+
+
+
+
+    // MIXED CASE
+
+    public PlatformDataStore platformDataStore(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            throw new RuntimeException("Cannot determine what to do with empty object");
+        }
+
+        String type = JsonUtil.objectGetString(object, "datastoreType");
+
+        // find the method on this factory that has the same name as the type
+        Method method = null;
+        try
+        {
+            method = this.getClass().getMethod(type, new Class[] { Platform.class, ObjectNode.class});
+        }
+        catch (NoSuchMethodException nsme)
+        {
+            throw new RuntimeException(nsme);
+        }
+
+        PlatformDataStore datastore = null;
+        try
+        {
+            datastore = (PlatformDataStore) method.invoke(this, new Object[] { platform, object});
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return datastore;
+    }
+
+    public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<PlatformDataStore> map = new ResultMapImpl<PlatformDataStore>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            PlatformDataStore ds = platformDataStore(platform, object);
+            map.put(ds.getId(), ds);
+        }
+
+        return map;
+    }
+
 
 }

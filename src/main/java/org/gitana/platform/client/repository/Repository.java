@@ -177,16 +177,4 @@ public interface Repository extends PlatformDataStore
      * @return
      */
     public ResultMap<Changeset> queryChangesets(ObjectNode query, Pagination pagination);
-
-
-    ////////////////////
-    // LOGS
-    ////////////////////
-
-    public ResultMap<LogEntry> listLogEntries();
-    public ResultMap<LogEntry> listLogEntries(Pagination pagination);
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query);
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination);
-    public LogEntry readLogEntry(String logEntryId);
-
 }

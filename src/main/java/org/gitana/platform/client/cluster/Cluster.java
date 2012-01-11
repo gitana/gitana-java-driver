@@ -24,7 +24,6 @@ package org.gitana.platform.client.cluster;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -70,19 +69,4 @@ public interface Cluster extends DataStore
     public Job readJob(String jobId);
 
     public void killJob(String jobId);
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // LOGS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public ResultMap<LogEntry> listLogEntries();
-    public ResultMap<LogEntry> listLogEntries(Pagination pagination);
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query);
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination);
-    public LogEntry readLogEntry(String logEntryId);
 }

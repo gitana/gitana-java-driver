@@ -25,7 +25,6 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
-import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
@@ -261,63 +260,6 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
 
         Response response = getRemote().post("/repositories/" + getId() + "/changesets/query", params, query);
         return getFactory().changesets(this, response);
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // LOG ENTRIES
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<LogEntry> listLogEntries()
-    {
-        return listLogEntries(null);
-    }
-
-    @Override
-    public ResultMap<LogEntry> listLogEntries(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/logs", params);
-        return getFactory().logEntries(getCluster(), response);
-    }
-
-    @Override
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query)
-    {
-        return queryLogEntries(query, null);
-    }
-
-    @Override
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post(getResourceUri() + "/logs/query", params, query);
-        return getFactory().logEntries(getCluster(), response);
-    }
-
-    @Override
-    public LogEntry readLogEntry(String logEntryId)
-    {
-        LogEntry logEntry = null;
-
-        try
-        {
-            Response response = getRemote().get(getResourceUri() + "/logs/" + logEntryId);
-            logEntry = getFactory().logEntry(getCluster(), response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return logEntry;
     }
 
 }

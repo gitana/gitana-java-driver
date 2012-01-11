@@ -37,6 +37,7 @@ import org.gitana.platform.client.nodes.Association;
 import org.gitana.platform.client.nodes.BaseNode;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
@@ -206,5 +207,11 @@ public interface ObjectFactory
     public Plan plan(Registrar management, ObjectNode object);
     public Plan plan(Registrar management, Response response);
     public ResultMap<Plan> plans(Registrar management, Response response);
+
+
+
+
+    public PlatformDataStore platformDataStore(Platform platform, ObjectNode object);
+    public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response);
 
 }

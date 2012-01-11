@@ -27,7 +27,6 @@ import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.nodes.BaseNode;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -712,61 +711,5 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         return nodeList;
     }
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // LOG ENTRIES
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<LogEntry> listLogEntries()
-    {
-        return listLogEntries(null);
-    }
-
-    @Override
-    public ResultMap<LogEntry> listLogEntries(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/logs", params);
-        return getFactory().logEntries(getCluster(), response);
-    }
-
-    @Override
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query)
-    {
-        return queryLogEntries(query, null);
-    }
-
-    @Override
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post(getResourceUri() + "/logs/query", params, query);
-        return getFactory().logEntries(getCluster(), response);
-    }
-
-    @Override
-    public LogEntry readLogEntry(String logEntryId)
-    {
-        LogEntry logEntry = null;
-
-        try
-        {
-            Response response = getRemote().get(getResourceUri() + "/logs/" + logEntryId);
-            logEntry = getFactory().logEntry(getCluster(), response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return logEntry;
-    }
 
 }

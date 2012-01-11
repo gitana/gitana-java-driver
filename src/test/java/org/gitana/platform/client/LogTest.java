@@ -23,13 +23,17 @@ package org.gitana.platform.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
+import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.log.LogEntry;
+import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.QName;
-import org.gitana.platform.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
@@ -40,22 +44,61 @@ import org.junit.Test;
 public class LogTest extends AbstractTestCase
 {
     @Test
-    public void testQuery()
+    public void testLogs()
         throws Exception
     {
         Gitana gitana = new Gitana();
 
-        // authenticate
+        // authenticate as "admin"
         Platform platform = gitana.authenticate("admin", "admin");
-        ResultMap<LogEntry> serverLogs1 = platform.queryLogEntries(JsonUtil.createObject());
 
-        // create repo
-        Repository repo = platform.createRepository();
-        ResultMap<LogEntry> repoLogs1 = repo.queryLogEntries(JsonUtil.createObject());
+        // create a user on default domain
+        DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), "pw");
 
-        // master branch
-        Branch master = repo.readBranch("master");
-        ResultMap<LogEntry> branchLogs1 = master.queryLogEntries(JsonUtil.createObject());
+        // create a tenant for this user
+        Tenant tenant = platform.readRegistrar("default").createTenant(user, "starter");
+        Consumer consumer = tenant.readDefaultConsumer();
+
+
+
+        //
+        // AUTHENTICATE AS THE TENANT USER
+        //
+
+        gitana = new Gitana(consumer.getKey(), consumer.getSecret());
+        platform = gitana.authenticate(user.getName(), "pw");
+
+        // build a stack with repository, domain, vault...
+        Stack stack1 = platform.createStack();
+        Repository repository1 = platform.createRepository();
+        stack1.assignDataStore(repository1);
+        Domain domain1 = platform.createDomain();
+        stack1.assignDataStore(domain1);
+        Vault vault1 = platform.createVault();
+        stack1.assignDataStore(vault1);
+
+        // check stack datastore size
+        assertEquals(3, stack1.listDataStores().size());
+
+        // build another stack for giggles
+        Stack stack2 = platform.createStack();
+        Repository repository2 = platform.createRepository();
+        stack2.assignDataStore(repository2);
+
+
+        // check the base size of the platform logs
+        int platformSize1 = platform.queryLogEntries(JsonUtil.createObject()).size();
+
+        // check the base size of the stack #1 logs
+        int stack1Size1 = stack1.queryLogEntries(JsonUtil.createObject()).size();
+
+        // check the base size of the stack #2 logs
+        int stack2Size1 = stack2.queryLogEntries(JsonUtil.createObject()).size();
+
+
+        // now generate a log message on stack #1
+
+        Branch master = repository1.readBranch("master");
 
         // create a script node that just logs
         Node scriptNode = (Node) master.createNode();
@@ -74,17 +117,18 @@ public class LogTest extends AbstractTestCase
         // now update the node
         node.update();
 
-        // verify that branch logs are larger by 1
-        ResultMap<LogEntry> branchLogs2 = master.queryLogEntries(JsonUtil.createObject());
-        assertTrue(branchLogs2.totalRows() - branchLogs1.totalRows() == 1);
 
-        // verify that repo logs are larger by 1
-        ResultMap<LogEntry> repoLogs2 = repo.queryLogEntries(JsonUtil.createObject());
-        assertTrue(repoLogs2.totalRows() - repoLogs1.totalRows() == 1);
+        // verify that platform logs are larger by 1
+        int platformSize2 = platform.queryLogEntries(JsonUtil.createObject()).size();
+        assertTrue(platformSize2 - platformSize1 == 1);
 
-        // verify that server logs are larger by 1
-        ResultMap<LogEntry> serverLogs2 = platform.queryLogEntries(JsonUtil.createObject());
-        assertTrue(serverLogs2.totalRows() - serverLogs1.totalRows() >= 1); // might be > 1
+        // verify that stack #1 logs are larger by 1
+        int stack1Size2 = stack1.queryLogEntries(JsonUtil.createObject()).size();
+        assertTrue(stack1Size2 - stack1Size1 == 1);
+
+        // verify that stack #2 logs are unchanged
+        int stack2Size2 = stack2.queryLogEntries(JsonUtil.createObject()).size();
+        assertTrue(stack2Size2 - stack2Size1 == 0);
 
     }
 }

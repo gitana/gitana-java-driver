@@ -24,7 +24,6 @@ package org.gitana.platform.client.cluster;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
@@ -271,63 +270,4 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     {
         getRemote().post("/jobs/" + jobId);
     }
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // LOG ENTRIES
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<LogEntry> listLogEntries()
-    {
-        return listLogEntries(null);
-    }
-
-    @Override
-    public ResultMap<LogEntry> listLogEntries(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/logs", params);
-        return getFactory().logEntries(this, response);
-    }
-
-    @Override
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query)
-    {
-        return queryLogEntries(query, null);
-    }
-
-    @Override
-    public ResultMap<LogEntry> queryLogEntries(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/logs/query", params, query);
-        return getFactory().logEntries(this, response);
-    }
-
-    @Override
-    public LogEntry readLogEntry(String logEntryId)
-    {
-        LogEntry logEntry = null;
-
-        try
-        {
-            Response response = getRemote().get("/logs/" + logEntryId);
-            logEntry = getFactory().logEntry(this, response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return logEntry;
-    }
-
 }
