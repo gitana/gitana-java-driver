@@ -139,7 +139,7 @@ public class TeamImpl extends GitanaObjectImpl implements Team
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        // TODO - what if the principals in the group don't exist in this domain?
+        // TODO - what do we do it the principals in the group are in domains that are NOT part of this platform?
         Platform platform = DriverContext.getDriver().getPlatform();
 
         Response response = getRemote().get(getTeamable().getTeamableBaseUri() + "/teams/" + this.getKey() + "/members", params);
