@@ -174,12 +174,31 @@ public class Gitana
     }
 
     /**
+     * Authenticates using access tokens provided in properties file.
+     *
+     * @return platform
+     */
+    public Platform authenticate()
+    {
+        return authenticateWithTokens(null, null);
+    }
+
+    /**
      * Authenticates as the given principal via username/password credentials.
      *
      * @return server
      */
     public Platform authenticateWithTokens(String accessTokenKey, String accessTokenSecret)
     {
+        // load access token properties if not provided
+        if (accessTokenKey == null && accessTokenSecret == null)
+        {
+            ResourceBundle bundle = ResourceBundle.getBundle("gitana");
+
+            accessTokenKey = bundle.getString("gitana.accessTokenKey");
+            accessTokenSecret = bundle.getString("gitana.accessTokenSecret");
+        }
+
         RemoteImpl remote = createRemote();
 
         // pre-load authentication tokens onto remote
