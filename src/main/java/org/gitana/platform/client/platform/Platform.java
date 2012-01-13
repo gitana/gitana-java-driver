@@ -237,12 +237,12 @@ public interface Platform extends DataStore
     public ResultMap<Stack> listStacks(Pagination pagination);
     public ResultMap<Stack> queryStacks(ObjectNode query);
     public ResultMap<Stack> queryStacks(ObjectNode query, Pagination pagination);
-    public Stack readStack(String projectId);
+    public Stack readStack(String stackId);
     public Stack createStack();
     public Stack createStack(ObjectNode object);
-    public void updateStack(Stack project);
-    public void deleteStack(Stack project);
-    public void deleteStack(String projectId);
+    public void updateStack(Stack stack);
+    public void deleteStack(Stack stack);
+    public void deleteStack(String stackId);
     public PermissionCheckResults checkStackPermissions(List<PermissionCheck> list);
 
 
