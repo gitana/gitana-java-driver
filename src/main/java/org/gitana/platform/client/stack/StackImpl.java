@@ -454,4 +454,19 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         return getFactory().platformDataStores(this.getPlatform(), response);
     }
 
+    @Override
+    public ResultMap<PlatformDataStore> queryDataStores(ObjectNode query)
+    {
+        return queryDataStores(query, null);
+    }
+
+    @Override
+    public ResultMap<PlatformDataStore> queryDataStores(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/datastores/query", params, query);
+        return getFactory().platformDataStores(this.getPlatform(), response);
+    }
+
 }

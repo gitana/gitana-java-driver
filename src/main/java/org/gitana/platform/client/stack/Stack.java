@@ -23,7 +23,6 @@ package org.gitana.platform.client.stack;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.attachment.Attachable;
-import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.platform.PlatformDocument;
@@ -56,4 +55,8 @@ public interface Stack extends PlatformDocument, AccessControllable, Selfable, T
 
     public ResultMap<PlatformDataStore> listDataStores();
     public ResultMap<PlatformDataStore> listDataStores(Pagination pagination);
+
+    public ResultMap<PlatformDataStore> queryDataStores(ObjectNode query);
+    public ResultMap<PlatformDataStore> queryDataStores(ObjectNode query, Pagination pagination);
+
 }
