@@ -99,7 +99,7 @@ public class TenantObjectTest extends AbstractTestCase
 
         // validate via general queries
         assertEquals(5, platform.listRepositories().size());
-        assertEquals(4, platform.listDomains().size());
+        assertEquals(4+1, platform.listDomains().size()); // 1 custom, 1 default
         assertEquals(3, platform.listVaults().size());
         assertEquals(2+1, platform.listConsumers().size()); // 2 custom, 1 default
         assertEquals(1, platform.listRegistrars().size());
@@ -142,7 +142,7 @@ public class TenantObjectTest extends AbstractTestCase
 
         // validate via general queries
         assertEquals(1, platform.listRepositories().size());
-        assertEquals(2, platform.listDomains().size());
+        assertEquals(2+1, platform.listDomains().size()); // 2 custom, 1 default
         assertEquals(3, platform.listVaults().size());
         assertEquals(4+1, platform.listConsumers().size()); // 4 custom, 1 default
         assertEquals(5, platform.listRegistrars().size());
