@@ -469,4 +469,18 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         return getFactory().platformDataStores(this.getPlatform(), response);
     }
 
+    @Override
+    public boolean existsDataStore(String key)
+    {
+        boolean exists = false;
+
+        Response response = getRemote().post(getResourceUri() + "/datastores/exists?key=" + key);
+        if (response.getObjectNode().has("exists"))
+        {
+            exists = response.getObjectNode().get("exists").getBooleanValue();
+        }
+
+        return exists;
+    }
+
 }

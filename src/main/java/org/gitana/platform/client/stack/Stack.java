@@ -59,4 +59,5 @@ public interface Stack extends PlatformDocument, AccessControllable, Selfable, T
     public ResultMap<PlatformDataStore> queryDataStores(ObjectNode query);
     public ResultMap<PlatformDataStore> queryDataStores(ObjectNode query, Pagination pagination);
 
+    public boolean existsDataStore(String key);
 }

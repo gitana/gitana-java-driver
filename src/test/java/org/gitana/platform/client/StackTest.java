@@ -103,6 +103,11 @@ public class StackTest extends AbstractTestCase
         // query #3
         ObjectNode query3 = QueryBuilder.start("xyz").is("789").get();
         assertEquals(0, stack.queryDataStores(query3).size());
+        
+        // check exists
+        assertTrue(stack.existsDataStore(vault.getId()));
+        assertTrue(stack.existsDataStore(repository.getId()));
+        assertFalse(stack.existsDataStore("booya"));
 
         // remove the vault
         stack.unassignDataStore(vault.getId());
