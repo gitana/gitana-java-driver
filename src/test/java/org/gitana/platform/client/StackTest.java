@@ -108,6 +108,9 @@ public class StackTest extends AbstractTestCase
         assertTrue(stack.existsDataStore(vault.getId()));
         assertTrue(stack.existsDataStore(repository.getId()));
         assertFalse(stack.existsDataStore("booya"));
+        
+        // read directly
+        assertNotNull(stack.readDataStore(vault.getId()));
 
         // remove the vault
         stack.unassignDataStore(vault.getId());

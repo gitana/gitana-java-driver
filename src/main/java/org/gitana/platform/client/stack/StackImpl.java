@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
@@ -481,6 +482,27 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         }
 
         return exists;
+    }
+
+    @Override
+    public DataStore readDataStore(String key)
+    {
+        DataStore datastore = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/datastores/" + key);
+            datastore = getFactory().platformDataStore(getPlatform(), response.getObjectNode());
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return datastore;
+        
     }
 
 }
