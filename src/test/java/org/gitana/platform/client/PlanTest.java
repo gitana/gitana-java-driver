@@ -47,20 +47,8 @@ public class PlanTest extends AbstractTestCase
 
         // query to make sure that the default plans exist
 
-        Plan starter = registrar.readPlan("starter");
-        assertNotNull(starter);
-
-        Plan personal = registrar.readPlan("personal");
-        assertNotNull(personal);
-
-        Plan basic = registrar.readPlan("basic");
-        assertNotNull(basic);
-
-        Plan premium = registrar.readPlan("premium");
-        assertNotNull(premium);
-
-        Plan pro = registrar.readPlan("pro");
-        assertNotNull(pro);
+        Plan unlimited = registrar.readPlan("unlimited");
+        assertNotNull(unlimited);
     }
 
     @Test

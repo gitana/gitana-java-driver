@@ -52,7 +52,7 @@ public class ConsumerTest extends AbstractTestCase
 
         // create user #1 and tenant #1
         DomainUser user1 = domain.createUser("abc-" + System.currentTimeMillis(), "pw");
-        Tenant tenant1 = registrar.createTenant(user1, "starter");
+        Tenant tenant1 = registrar.createTenant(user1, "unlimited");
         Consumer tenantConsumer1 = tenant1.readDefaultConsumer();
 
         assertNotNull(tenantConsumer1);

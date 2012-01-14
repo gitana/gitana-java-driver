@@ -61,8 +61,20 @@ public class TenantTest extends AbstractTestCase
             DomainUser user = domain.createUser(userName, "pw");
 
             // create a tenant for this principal (starter plan)
-            Tenant tenant = registrar.createTenant(user, "starter");
+            Tenant tenant = registrar.createTenant(user, "unlimited");
             tenantId = tenant.getId();
+
+            // try to create another tenant with a plan that doesn't exist and assert we get an exception
+            Exception ex = null;
+            try
+            {
+                registrar.createTenant(user, "21k3j1k23j1l2");
+            }
+            catch (Exception exe)
+            {
+                ex = exe;
+            }
+            assertNotNull(ex);
 
             // count tenants
             assertEquals(currentSize + 1, registrar.listTenants().size());

@@ -56,7 +56,7 @@ public class LogTest extends AbstractTestCase
         DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), "pw");
 
         // create a tenant for this user
-        Tenant tenant = platform.readRegistrar("default").createTenant(user, "starter");
+        Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
         Consumer consumer = tenant.readDefaultConsumer();
 
 

@@ -52,14 +52,14 @@ public class TenantObjectTest extends AbstractTestCase
         // create a principal + tenant (#1)
         String userName1 = "user-" + System.currentTimeMillis();
         DomainUser user1 = domain.createUser(userName1, "pw");
-        Tenant tenant1 = registrar.createTenant(user1, "starter");
+        Tenant tenant1 = registrar.createTenant(user1, "unlimited");
         Consumer consumer1 = tenant1.readDefaultConsumer();
         assertNotNull(consumer1);
 
         // create a principal + tenant (#2)
         String userName2 = "user-" + System.currentTimeMillis();
         DomainUser user2 = domain.createUser(userName2, "pw");
-        Tenant tenant2 = registrar.createTenant(user2, "starter");
+        Tenant tenant2 = registrar.createTenant(user2, "unlimited");
         Consumer consumer2 = tenant2.readDefaultConsumer();
         assertNotNull(consumer2);
 

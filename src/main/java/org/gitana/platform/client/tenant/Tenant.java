@@ -41,6 +41,8 @@ public interface Tenant extends RegistrarDocument
     public final static String FIELD_PRINCIPAL_ID = "principalId";
     public final static String FIELD_DOMAIN_ID = "domainId";
 
+    public final static String FIELD_PLATFORM_ID = "platformId";
+
     public void setPlanKey(String planKey);
     public String getPlanKey();
 
@@ -49,6 +51,9 @@ public interface Tenant extends RegistrarDocument
 
     public void setDomainId(String domainId);
     public String getDomainId();
+
+    public void setPlatformId(String platformId);
+    public String getPlatformId();
 
     public ResultMap<ObjectNode> listAllocatedObjects();
     public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination);

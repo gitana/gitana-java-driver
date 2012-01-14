@@ -33,7 +33,6 @@ import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
-import org.gitana.util.JsonUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -104,6 +103,18 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     public String getDomainId()
     {
         return getString(FIELD_DOMAIN_ID);
+    }
+
+    @Override
+    public void setPlatformId(String platformId)
+    {
+        set(FIELD_PLATFORM_ID, platformId);
+    }
+
+    @Override
+    public String getPlatformId()
+    {
+        return getString(FIELD_PLATFORM_ID);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class TenantTeamTest extends AbstractTestCase
         Registrar registrar = platform.readRegistrar("default");
 
         // create a tenant for this user
-        Tenant tenant = registrar.createTenant(user, "starter");
+        Tenant tenant = registrar.createTenant(user, "unlimited");
 
         // verify we can find tenants with this user
         ResultMap<Tenant> tenants = registrar.findTenantsWithPrincipalTeamMember(user, null);
