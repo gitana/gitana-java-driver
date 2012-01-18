@@ -75,6 +75,19 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
         this.reload(platform);
     }
 
+    @Override
+    public String getDefaultDomainId()
+    {
+        return getString("defaultDomainId");
+    }
+
+    @Override
+    public Domain readDefaultDomain()
+    {
+        return readDomain(getDefaultDomainId());
+    }
+    
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //

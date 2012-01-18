@@ -48,6 +48,11 @@ public interface Platform extends DataStore
      * @return the cluster instance
      */
     public Cluster getCluster();
+    
+    public String getDefaultDomainId();
+    
+    public Domain readDefaultDomain();
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

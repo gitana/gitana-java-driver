@@ -23,7 +23,7 @@ package org.gitana.platform.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
-import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
@@ -162,7 +162,7 @@ public interface ObjectFactory
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // VAULT
+    // APPLICATION
     //
 
     public Application application(Platform platform);
@@ -170,6 +170,49 @@ public interface ObjectFactory
     public Application application(Platform platform, Response response);
     public ResultMap<Application> applications(Platform platform, Response response);
 
+    // settings
+    public Settings settings(Application application, Response response);
+    public ResultMap<Settings> settingsMap(Application application, Response response);
+
+    // registrations
+    public Registration registration(Application application, Response response);
+    public ResultMap<Registration> registrations(Application application, Response response);
+
+    // emails
+    public Email email(Application application, Response response);
+    public ResultMap<Email> emails(Application application, Response response);
+
+    // email providers
+    public EmailProvider emailProvider(Application application, Response response);
+    public ResultMap<EmailProvider> emailProviders(Application application, Response response);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // VAULT
+    //
+
+    public Registrar registrar(Platform platform);
+    public Registrar registrar(Platform platform, ObjectNode object);
+    public Registrar registrar(Platform platform, Response response);
+    public ResultMap<Registrar> registrars(Platform platform, Response response);
+
+    // tenants
+    public Tenant tenant(Registrar registrar, ObjectNode object);
+    public Tenant tenant(Registrar registrar, Response response);
+    public ResultMap<Tenant> tenants(Registrar registrar, Response response);
+
+    // plans
+    public Plan plan(Registrar registrar, ObjectNode object);
+    public Plan plan(Registrar registrar, Response response);
+    public ResultMap<Plan> plans(Registrar registrar, Response response);
+
+
+
+
+    public PlatformDataStore platformDataStore(Platform platform, ObjectNode object);
+    public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response);
 
 
 
@@ -185,33 +228,5 @@ public interface ObjectFactory
     // teams
     public Team team(Cluster cluster, Teamable teamable, String teamKey, Response response);
     public ResultMap<Team> teams(Cluster cluster, Teamable teamable, Response response);
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // VAULT
-    //
-
-    public Registrar registrar(Platform platform);
-    public Registrar registrar(Platform platform, ObjectNode object);
-    public Registrar registrar(Platform platform, Response response);
-    public ResultMap<Registrar> registrars(Platform platform, Response response);
-
-    // tenants
-    public Tenant tenant(Registrar management, ObjectNode object);
-    public Tenant tenant(Registrar management, Response response);
-    public ResultMap<Tenant> tenants(Registrar management, Response response);
-
-    // plans
-    public Plan plan(Registrar management, ObjectNode object);
-    public Plan plan(Registrar management, Response response);
-    public ResultMap<Plan> plans(Registrar management, Response response);
-
-
-
-
-    public PlatformDataStore platformDataStore(Platform platform, ObjectNode object);
-    public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response);
 
 }

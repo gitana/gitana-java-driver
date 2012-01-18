@@ -24,8 +24,7 @@ package org.gitana.platform.client.support;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
 import org.gitana.platform.client.api.ConsumerImpl;
-import org.gitana.platform.client.application.Application;
-import org.gitana.platform.client.application.ApplicationImpl;
+import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.archive.ArchiveImpl;
 import org.gitana.platform.client.attachment.Attachable;
@@ -838,6 +837,122 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
+    public Settings settings(Application application, Response response) 
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new SettingsImpl(application, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Settings> settingsMap(Application application, Response response) 
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Settings> map = new ResultMapImpl<Settings>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Settings settings = new SettingsImpl(application, object, true);
+            map.put(settings.getId(), settings);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Registration registration(Application application, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new RegistrationImpl(application, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Registration> registrations(Application application, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Registration> map = new ResultMapImpl<Registration>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Registration registration = new RegistrationImpl(application, object, true);
+            map.put(registration.getId(), registration);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Email email(Application application, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new EmailImpl(application, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Email> emails(Application application, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Email> map = new ResultMapImpl<Email>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Email email = new EmailImpl(application, object, true);
+            map.put(email.getId(), email);
+        }
+
+        return map;
+    }
+
+    @Override
+    public EmailProvider emailProvider(Application application, Response response) 
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new EmailProviderImpl(application, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<EmailProvider> emailProviders(Application application, Response response) 
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<EmailProvider> map = new ResultMapImpl<EmailProvider>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            EmailProvider emailProvider = new EmailProviderImpl(application, object, true);
+            map.put(emailProvider.getId(), emailProvider);
+        }
+
+        return map;
+    }
+
+    @Override
     public Registrar registrar(Platform platform)
     {
         return registrar(platform, JsonUtil.createObject());
@@ -896,29 +1011,29 @@ public class ObjectFactoryImpl implements ObjectFactory
     //
 
     @Override
-    public Tenant tenant(Registrar management, ObjectNode object)
+    public Tenant tenant(Registrar registrar, ObjectNode object)
     {
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        return new TenantImpl(management, object, false);
+        return new TenantImpl(registrar, object, false);
     }
 
     @Override
-    public Tenant tenant(Registrar management, Response response)
+    public Tenant tenant(Registrar registrar, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new TenantImpl(management, response.getObjectNode(), true);
+        return new TenantImpl(registrar, response.getObjectNode(), true);
     }
 
     @Override
-    public ResultMap<Tenant> tenants(Registrar management, Response response)
+    public ResultMap<Tenant> tenants(Registrar registrar, Response response)
     {
         if (!response.isListDocument())
         {
@@ -928,7 +1043,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<Tenant> map = new ResultMapImpl<Tenant>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            Tenant tenant = new TenantImpl(management, object, true);
+            Tenant tenant = new TenantImpl(registrar, object, true);
             map.put(tenant.getId(), tenant);
         }
 
@@ -936,29 +1051,29 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Plan plan(Registrar management, ObjectNode object)
+    public Plan plan(Registrar registrar, ObjectNode object)
     {
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        return new PlanImpl(management, object, false);
+        return new PlanImpl(registrar, object, false);
     }
 
     @Override
-    public Plan plan(Registrar management, Response response)
+    public Plan plan(Registrar registrar, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new PlanImpl(management, response.getObjectNode(), true);
+        return new PlanImpl(registrar, response.getObjectNode(), true);
     }
 
     @Override
-    public ResultMap<Plan> plans(Registrar management, Response response)
+    public ResultMap<Plan> plans(Registrar registrar, Response response)
     {
         if (!response.isListDocument())
         {
@@ -968,7 +1083,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<Plan> map = new ResultMapImpl<Plan>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            Plan plan = new PlanImpl(management, object, true);
+            Plan plan = new PlanImpl(registrar, object, true);
             map.put(plan.getId(), plan);
         }
 
