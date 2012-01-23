@@ -240,6 +240,12 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
     }
 
     @Override
+    public Email createEmail()
+    {
+        return createEmail(null);
+    }
+
+    @Override
     public Email createEmail(ObjectNode object)
     {
         if (object == null)
@@ -389,6 +395,12 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
         }
 
         return emailProvider;
+    }
+
+    @Override
+    public EmailProvider createEmailProvider()
+    {
+        return createEmailProvider(null);
     }
 
     @Override

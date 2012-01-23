@@ -22,11 +22,15 @@
 package org.gitana.platform.client.plan;
 
 import org.gitana.platform.client.registrar.RegistrarDocument;
+import org.gitana.platform.client.support.Selfable;
+import org.gitana.platform.services.payment.BillingSchedule;
+
+import java.math.BigDecimal;
 
 /**
  * @author uzi
  */
-public interface Plan extends RegistrarDocument
+public interface Plan extends RegistrarDocument, Selfable
 {
     // fields
     public final static String FIELD_PLAN_KEY = "planKey";
@@ -35,6 +39,11 @@ public interface Plan extends RegistrarDocument
     public final static String FIELD_MAX_TOTAL_STORAGE_OBJECT_COUNT = "maxTotalStorageObjectCount";
     public final static String FIELD_MAX_DATASTORE_COUNT = "maxDataStoreCount";
     public final static String FIELD_MAX_COLLABORATOR_COUNT = "maxCollaboratorCount";
+    
+    // billing
+    public final static String FIELD_REQUIRES_BILLING = "requiresBilling";
+    public final static String FIELD_BILLING_SCHEDULE = "billingSchedule";
+    public final static String FIELD_BILLING_PRICE = "billingPrice";
 
     public void setPlanKey(String planKey);
     public String getPlanKey();
@@ -50,4 +59,14 @@ public interface Plan extends RegistrarDocument
 
     public void setMaxCollaboratorCount(long maxCollaboratorCount);
     public long getMaxCollaboratorCount();
+
+    public boolean getRequiresBilling();
+    public void setRequiresBilling(boolean requiresBilling);
+
+    public BillingSchedule getBillingSchedule();
+    public void setBillingSchedule(BillingSchedule billingSchedule);
+
+    public BigDecimal getBillingPrice();
+    public void setBillingPrice(BigDecimal price);
+
 }

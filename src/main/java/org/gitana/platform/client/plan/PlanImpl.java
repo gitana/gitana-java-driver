@@ -24,6 +24,9 @@ package org.gitana.platform.client.plan;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
+import org.gitana.platform.services.payment.BillingSchedule;
+
+import java.math.BigDecimal;
 
 /**
  * @author uzi
@@ -55,6 +58,33 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
 
         return equals;
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SELFABLE
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void update()
+    {
+        getRemote().put(getResourceUri(), getObject());
+    }
+
+    @Override
+    public void delete()
+    {
+        getRemote().delete(getResourceUri());
+    }
+
+    @Override
+    public void reload()
+    {
+        Plan plan = getRegistrar().readPlan(getId());
+
+        this.reload(plan.getObject());
+    }
+    
 
     @Override
     public void setPlanKey(String planKey)
@@ -115,5 +145,49 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     {
         return getLong(FIELD_MAX_COLLABORATOR_COUNT);
     }
+
+    @Override
+    public boolean getRequiresBilling()
+    {
+        return getBoolean(FIELD_REQUIRES_BILLING);
+    }
+
+    @Override
+    public void setRequiresBilling(boolean requiresBilling)
+    {
+        set(FIELD_REQUIRES_BILLING, requiresBilling);
+    }
+
+    @Override
+    public BillingSchedule getBillingSchedule()
+    {
+        BillingSchedule paymentSchedule = null;
+
+        if (has(FIELD_BILLING_SCHEDULE))
+        {
+            paymentSchedule = BillingSchedule.valueOf(getString(FIELD_BILLING_SCHEDULE));
+        }
+
+        return paymentSchedule;
+    }
+
+    @Override
+    public void setBillingSchedule(BillingSchedule paymentSchedule)
+    {
+        set(FIELD_BILLING_SCHEDULE, paymentSchedule.toString());
+    }
+
+    @Override
+    public BigDecimal getBillingPrice()
+    {
+        return getBigDecimal(FIELD_BILLING_PRICE);
+    }
+
+    @Override
+    public void setBillingPrice(BigDecimal paymentPrice)
+    {
+        set(FIELD_BILLING_PRICE, paymentPrice);
+    }
+
 
 }
