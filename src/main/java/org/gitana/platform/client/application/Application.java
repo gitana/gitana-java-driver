@@ -96,6 +96,7 @@ public interface Application extends PlatformDataStore
 
     public Email readEmail(String emailId);
 
+    public Email createEmail();
     public Email createEmail(ObjectNode object);
     public Email createEmail(DomainUser to, String subject, String body, String fromEmailAddress);
     public Email createEmail(DomainUser to, String subject, String body, String fromEmailAddress, String ccEmailAddresses, String bccEmailAddresses);
@@ -123,6 +124,7 @@ public interface Application extends PlatformDataStore
 
     public EmailProvider readEmailProvider(String emailProviderId);
 
+    public EmailProvider createEmailProvider();
     public EmailProvider createEmailProvider(ObjectNode object);
 
     public ResultMap<EmailProvider> queryEmailProviders(ObjectNode query);

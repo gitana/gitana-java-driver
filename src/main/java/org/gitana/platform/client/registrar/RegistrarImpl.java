@@ -22,6 +22,7 @@
 package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.billing.PaymentMethodValidation;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
@@ -280,4 +281,22 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
         Response response = getRemote().post(getResourceUri() + "/tenants/withmember", params);
         return getFactory().tenants(this, response);
     }
+
+    @Override
+    public PaymentMethodValidation validateCreditCard(String holderName, String number, int expirationMonth, int expirationYear)
+    {
+        ObjectNode object = JsonUtil.createObject();
+
+        // TODO: populate
+
+        return new PaymentMethodValidation(object);
+    }
+
+    @Override
+    public PaymentMethodValidation validateCreditCard(ObjectNode object)
+    {
+        // TODO: run validation
+        return new PaymentMethodValidation(object);
+    }
+    
 }

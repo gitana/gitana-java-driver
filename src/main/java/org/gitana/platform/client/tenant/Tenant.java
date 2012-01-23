@@ -23,10 +23,13 @@ package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.billing.BillingTransaction;
+import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -34,7 +37,7 @@ import org.gitana.platform.support.ResultMap;
 /**
  * @author uzi
  */
-public interface Tenant extends RegistrarDocument
+public interface Tenant extends RegistrarDocument, Selfable
 {
     // fields
     public final static String FIELD_PLAN_KEY = "planKey";
@@ -42,6 +45,11 @@ public interface Tenant extends RegistrarDocument
     public final static String FIELD_DOMAIN_ID = "domainId";
 
     public final static String FIELD_PLATFORM_ID = "platformId";
+
+    // subscription (for recurring billing)
+    public final static String FIELD_BILLING_SUBSCRIPTION_ID = "billingSubscriptionId";
+    public final static String FIELD_BILLING_PAYMENT_METHOD_ID = "billingPaymentMethodId";
+
 
     public void setPlanKey(String planKey);
     public String getPlanKey();
@@ -81,5 +89,44 @@ public interface Tenant extends RegistrarDocument
      * @return consumer
      */
     public Consumer readDefaultConsumer();
+
+    // billing
+
+    public void setBillingSubscriptionId(String billingSubscriptionId);
+    public String getBillingSubscriptionId();
+
+    public void setBillingMethodPaymentId(String billingPaymentMethodId);
+    public String getBillingMethodPaymentId();
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PAYMENT METHODS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<PaymentMethod> listPaymentMethods();
+    public ResultMap<PaymentMethod> listPaymentMethods(Pagination pagination);
+    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query);
+    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query, Pagination pagination);
+    public PaymentMethod readPaymentMethod(String paymentMethodId);
+    public PaymentMethod createPaymentMethod(String holderName, String number, int expirationMonth, int expirationYear);
+    public PaymentMethod createPaymentMethod(ObjectNode object);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BILLING TRANSACTIONS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<BillingTransaction> listBillingTransactions();
+    public ResultMap<BillingTransaction> listBillingTransactions(Pagination pagination);
+    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query);
+    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query, Pagination pagination);
+    public BillingTransaction readBillingTransaction(String transactionId);
+
 
 }

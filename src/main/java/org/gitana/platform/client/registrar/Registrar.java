@@ -22,6 +22,7 @@
 package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.billing.PaymentMethodValidation;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
@@ -54,6 +55,8 @@ public interface Registrar extends PlatformDataStore
 
     public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(DomainPrincipal principal, Pagination pagination);
 
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // PLANS
@@ -70,5 +73,16 @@ public interface Registrar extends PlatformDataStore
     public void updatePlan(Plan plan);
     public void deletePlan(Plan plan);
     public void deletePlan(String planKey);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CREDIT CARDS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public PaymentMethodValidation validateCreditCard(String holderName, String number, int expirationMonth, int expirationYear);
+    public PaymentMethodValidation validateCreditCard(ObjectNode object);
 
 }
