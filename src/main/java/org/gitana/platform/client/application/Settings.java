@@ -21,11 +21,33 @@
 
 package org.gitana.platform.client.application;
 
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.support.Selfable;
 
 /**
  * @author uzi
  */
-public interface Settings extends ApplicationDocument, Selfable
-{
+public interface Settings extends ApplicationDocument, Selfable {
+    public static String ROOT_KEY = "settings";
+
+    public ObjectNode getSettings();
+
+    public Object getSetting(String settingKey);
+
+    public void setSetting(String settingKey, Object settingVal);
+
+    public ObjectNode getSettingAsObject(String settingKey);
+
+    public String getSettingAsString(String settingKey);
+
+    public boolean getSettingAsBoolean(String settingKey);
+
+    public ArrayNode getSettingAsArray(String settingKey);
+
+    public double getSettingAsDouble(String settingKey);
+
+    public long getSettingAsLong(String settingKey);
+
+    public int getSettingAsInt(String settingKey);
 }

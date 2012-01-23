@@ -21,7 +21,9 @@
 
 package org.gitana.platform.client.application;
 
-import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.*;
+import org.gitana.util.JsonUtil;
 
 /**
  * @author uzi
@@ -51,6 +53,135 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
         }
 
         return equals;
+    }
+
+    public ObjectNode getSettings()
+    {
+        ObjectNode settings = this.getObject(Settings.ROOT_KEY);
+        if (settings == null)
+        {
+            settings = this.getObject().putObject(Settings.ROOT_KEY);
+        }
+        return settings;
+    }
+
+    public Object getSetting(String settingKey)
+    {
+        return this.getSettings().get(settingKey);
+    }
+
+	public ObjectNode getSettingAsObject(String settingKey)
+	{
+		Object o = this.getSetting(settingKey);
+		ObjectNode obj = null;
+        if (o != null && o instanceof ObjectNode)
+		{
+			obj = (ObjectNode) o;
+		}
+
+		return obj;
+	}
+
+	public boolean getSettingAsBoolean(String settingKey)
+	{
+		boolean b = false;
+
+		Object value = this.getSetting(settingKey);
+		if (value != null && value instanceof BooleanNode)
+		{
+			b = ((BooleanNode)value).getBooleanValue();
+		}
+
+		return b;
+	}
+
+	public String getSettingAsString(String settingKey)
+	{
+		String s = null;
+
+		Object value = this.getSetting(settingKey);
+		if (value != null && value instanceof TextNode)
+		{
+			s = ((TextNode)value).getTextValue();
+		}
+
+		return this.getSettings().get(settingKey).getTextValue();
+	}
+
+	public ArrayNode getSettingAsArray(String settingKey)
+	{
+		ArrayNode array = null;
+
+		Object o = this.getSetting(settingKey);
+		if (o != null && o instanceof ArrayNode)
+		{
+			array = (ArrayNode) o;
+		}
+
+		return array;
+	}
+
+	public int getSettingAsInt(String settingKey)
+	{
+		Integer integer = null;
+
+		Object value = this.getSetting(settingKey);
+		if (value != null && value instanceof IntNode)
+		{
+			integer = ((IntNode)value).getIntValue();
+		}
+        else if (value != null && value instanceof DoubleNode)
+        {
+            integer = ((DoubleNode) value).getIntValue();
+        }
+        else
+        {
+            integer = -1;
+        }
+
+		return integer;
+	}
+
+    public long getSettingAsLong(String settingKey)
+    {
+        Long l = new Long(-1);
+
+        Object value = this.getSetting(settingKey);
+        if (value != null)
+        {
+            if (value instanceof LongNode)
+            {
+                l = ((LongNode)value).getLongValue();
+            }
+            else if (value instanceof IntNode)
+            {
+                l = ((IntNode)value).getLongValue();
+            }
+        }
+
+        return l;
+    }
+
+    public double getSettingAsDouble(String settingKey)
+    {
+        Double d = new Double(-1);
+
+        Object value = this.getSetting(settingKey);
+        if (value != null)
+        {
+            if (value instanceof DoubleNode)
+            {
+                d = ((DoubleNode) value).getDoubleValue();
+            }
+        }
+
+        return d;
+    }
+
+    public void setSetting(String settingKey, Object settingVal)
+    {
+        ObjectNode settings = this.getSettings();
+        JsonUtil.objectPut(settings, settingKey,settingVal);
     }
 
 

@@ -156,6 +156,11 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
             object = JsonUtil.createObject();
         }
 
+        if (object.get(Settings.ROOT_KEY) == null)
+        {
+            object.putObject(Settings.ROOT_KEY);
+        }
+
         Response response = getRemote().post(getResourceUri() + "/settings", object);
 
         String settingsId = response.getId();
