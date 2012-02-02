@@ -30,6 +30,8 @@ import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
 
 /**
+ * Abstract implementation of a platform document.
+ *
  * @author uzi
  */
 public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implements PlatformDocument
