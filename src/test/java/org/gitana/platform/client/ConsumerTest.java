@@ -88,7 +88,7 @@ public class ConsumerTest extends AbstractTestCase
         // query #1
         ResultMap<Consumer> q1 = platform.queryConsumers(
                 JSONBuilder.start(Consumer.FIELD_ALLOW_OPENDRIVER_AUTHENTICATION).is(true).get());
-        assertEquals(1, q1.size());
+        assertEquals(2, q1.size()); // this one + default consumer
 
         // query #2
         ResultMap<Consumer> q2 = platform.queryConsumers(

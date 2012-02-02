@@ -339,4 +339,30 @@ public class PrincipalTest extends AbstractTestCase
         assertEquals(1, groups2.size());
     }
 
+    @Test
+    public void testInvitations()
+            throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Platform platform = gitana.authenticate("admin", "admin");
+
+        // create a domain
+        // create a user
+        Domain mikeDomain = platform.createDomain();
+        DomainUser mike = mikeDomain.createUser("mike", "abc");
+
+        // create a domain
+        // create a user
+        Domain tonyDomain = platform.createDomain();
+        DomainUser tony = tonyDomain.createUser("tony", "abc");
+        
+        // invite tony into mike's domain
+        DomainUser tony2 = mikeDomain.inviteUser(tony);
+        
+        assertNotSame(tony2.getId(), tony.getId());
+
+    }
+    
 }
