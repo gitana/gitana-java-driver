@@ -26,7 +26,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.types.Person;
 import org.gitana.platform.services.principals.PrincipalType;
-import org.gitana.util.MD5;
+import org.gitana.util.JsonUtil;
 
 /**
  * @author uzi
@@ -49,22 +49,13 @@ public class DomainUserImpl extends AbstractDomainPrincipalImpl implements Domai
     }
 
     @Override
-    public String getMD5Password()
+    public void changePassword(String newPassword)
     {
-        return getString(FIELD_MD5_PASSWORD);
+        ObjectNode object = JsonUtil.createObject();
+        object.put("password", newPassword);
+
+        getRemote().post(getResourceUri() + "/changepassword", object);
     }
-
-    @Override
-    public void setPassword(String newPassword)
-    {
-        if (newPassword != null)
-        {
-            String passwordHash = MD5.Digest(newPassword.getBytes());
-
-            set(FIELD_MD5_PASSWORD, passwordHash);
-        }
-    }
-
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////

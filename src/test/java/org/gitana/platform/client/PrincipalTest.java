@@ -362,7 +362,49 @@ public class PrincipalTest extends AbstractTestCase
         DomainUser tony2 = mikeDomain.inviteUser(tony);
         
         assertNotSame(tony2.getId(), tony.getId());
-
     }
+
+    @Test
+    public void testChangePassword()
+            throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Platform platform = gitana.authenticate("admin", "admin");
+
+        // create a domain
+        // create a user
+        Domain mikeDomain = platform.createDomain();
+        DomainUser mike = mikeDomain.createUser("mike", "abc");
+        
+        // change password
+        mike.changePassword("def");
+        
+        // authenticate with old password (should fail)
+        Throwable ex1 = null;
+        try
+        {
+            gitana.authenticate(mike.getDomainQualifiedName(), "abc");
+        }
+        catch (Exception ex)
+        {
+            ex1 = ex;
+        }
+        assertNotNull(ex1);
+
+        // authenticate with new password (should succeed)
+        Throwable ex2 = null;
+        try
+        {
+            gitana.authenticate(mike.getDomainQualifiedName(), "def");
+        }
+        catch (Exception ex)
+        {
+            ex2 = ex;
+        }
+        assertNull(ex2);
+    }
+    
     
 }

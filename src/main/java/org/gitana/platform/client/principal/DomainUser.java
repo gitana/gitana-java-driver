@@ -30,23 +30,10 @@ import org.gitana.platform.client.types.Person;
 public interface DomainUser extends DomainPrincipal
 {
     // fields
-    public final static String FIELD_MD5_PASSWORD = "md5password";
     public final static String FIELD_FIRST_NAME = "firstName";
     public final static String FIELD_LAST_NAME = "lastName";
     public final static String FIELD_COMPANY_NAME = "companyName";
     public final static String FIELD_EMAIL = "email";
-
-    /**
-     * @return the MD5 password hash
-     */
-    public String getMD5Password();
-
-    /**
-     * Sets the user password.
-     * 
-     * @param newPassword
-     */
-    public void setPassword(String newPassword);
 
     /**
      * @return first name
@@ -98,4 +85,11 @@ public interface DomainUser extends DomainPrincipal
 
     public Person readPerson(Branch branch);
     public Person readPerson(Branch branch, boolean createIfNotFound);
+
+    /**
+     * Changes the password for this user.
+     *
+     * @param newPassword
+     */
+    public void changePassword(String newPassword);
 }
