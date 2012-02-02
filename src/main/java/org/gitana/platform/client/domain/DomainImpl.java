@@ -310,4 +310,13 @@ public class DomainImpl extends AbstractPlatformDataStoreImpl implements Domain
         return groups;
     }
 
+    @Override
+    public DomainUser inviteUser(DomainUser invitee)
+    {
+        Response response = getRemote().post(getResourceUri() + "/principals/invite?id=" + invitee.getDomainQualifiedId());
+
+        String principalId = response.getId();
+        return (DomainUser) readPrincipal(principalId);
+    }
+
 }

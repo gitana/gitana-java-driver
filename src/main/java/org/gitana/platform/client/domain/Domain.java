@@ -76,4 +76,5 @@ public interface Domain extends PlatformDataStore
     public ResultMap<DomainGroup> queryGroups(ObjectNode query);
     public ResultMap<DomainGroup> queryGroups(ObjectNode query, Pagination pagination);
 
+    public DomainUser inviteUser(DomainUser invitee);
 }
