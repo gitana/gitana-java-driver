@@ -106,15 +106,15 @@ public class AuthenticationGrantImpl extends AbstractPlatformDocumentImpl implem
     }
 
     @Override
-    public String getConsumerKey()
+    public String getClientId()
     {
-        return getString(FIELD_CONSUMER_KEY);
+        return getString(FIELD_CLIENT_ID);
     }
 
     @Override
-    public void setConsumerKey(String consumerKey)
+    public void setClientId(String clientId)
     {
-        set(FIELD_CONSUMER_KEY, consumerKey);
+        set(FIELD_CLIENT_ID, clientId);
     }
 
     @Override

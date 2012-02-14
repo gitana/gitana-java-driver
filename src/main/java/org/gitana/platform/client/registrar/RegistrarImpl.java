@@ -272,15 +272,17 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
         getRemote().delete(getResourceUri() + "/plans/" + planKey);
     }
 
+    /*
     @Override
-    public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(DomainPrincipal principal, Pagination pagination)
+    public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(String principalId, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
-        params.put("id", principal.getDomainQualifiedId());
+        params.put("id", principalId);
 
         Response response = getRemote().post(getResourceUri() + "/tenants/withmember", params);
         return getFactory().tenants(this, response);
     }
+    */
 
     @Override
     public PaymentMethodValidation validateCreditCard(String holderName, String number, int expirationMonth, int expirationYear)

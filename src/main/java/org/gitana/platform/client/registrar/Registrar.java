@@ -53,7 +53,7 @@ public interface Registrar extends PlatformDataStore
     public void deleteTenant(Tenant tenant);
     public void deleteTenant(String tenantId);
 
-    public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(DomainPrincipal principal, Pagination pagination);
+    //public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(String principalId, Pagination pagination);
 
 
 

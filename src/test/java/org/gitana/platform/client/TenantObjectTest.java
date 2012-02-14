@@ -21,7 +21,7 @@
 
 package org.gitana.platform.client;
 
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
@@ -50,26 +50,26 @@ public class TenantObjectTest extends AbstractTestCase
         Domain domain = platform.createDomain();
 
         // create a principal + tenant (#1)
-        String userName1 = "user-" + System.currentTimeMillis();
+        String userName1 = "user1-" + System.currentTimeMillis();
         DomainUser user1 = domain.createUser(userName1, "pw");
         Tenant tenant1 = registrar.createTenant(user1, "unlimited");
-        Consumer consumer1 = tenant1.readDefaultConsumer();
-        assertNotNull(consumer1);
+        Client client1 = tenant1.readDefaultClient();
+        assertNotNull(client1);
 
         // create a principal + tenant (#2)
-        String userName2 = "user-" + System.currentTimeMillis();
+        String userName2 = "user2-" + System.currentTimeMillis();
         DomainUser user2 = domain.createUser(userName2, "pw");
         Tenant tenant2 = registrar.createTenant(user2, "unlimited");
-        Consumer consumer2 = tenant2.readDefaultConsumer();
-        assertNotNull(consumer2);
+        Client client2 = tenant2.readDefaultClient();
+        assertNotNull(client2);
 
 
         //
         // now authenticate as the tenant principal #1
         //
 
-        gitana = new Gitana(consumer1.getKey(), consumer1.getSecret());
-        platform = gitana.authenticate(user1.getDomainQualifiedName(), "pw");
+        gitana = new Gitana(client1.getKey(), client1.getSecret());
+        platform = gitana.authenticateOnTenant(user1, "pw", tenant1);
 
         // now we create 12 things
         //
@@ -93,15 +93,15 @@ public class TenantObjectTest extends AbstractTestCase
         platform.createVault();
         platform.createVault();
         platform.createVault();
-        platform.createConsumer();
-        platform.createConsumer();
+        platform.createClient();
+        platform.createClient();
         platform.createRegistrar();
 
         // validate via general queries
         assertEquals(5, platform.listRepositories().size());
         assertEquals(4+1, platform.listDomains().size()); // 1 custom, 1 default
         assertEquals(3, platform.listVaults().size());
-        assertEquals(2+1, platform.listConsumers().size()); // 2 custom, 1 default
+        assertEquals(2+1, platform.listClients().size()); // 2 custom, 1 default
         assertEquals(1, platform.listRegistrars().size());
 
 
@@ -111,8 +111,8 @@ public class TenantObjectTest extends AbstractTestCase
         // now authenticate as the tenant principal #2
         //
 
-        gitana = new Gitana(consumer2.getKey(), consumer2.getSecret());
-        platform = gitana.authenticate(user2.getDomainQualifiedName(), "pw");
+        gitana = new Gitana(client2.getKey(), client2.getSecret());
+        platform = gitana.authenticate(user2.getName(), "pw");
 
         // now we create 15 things
         //
@@ -130,10 +130,10 @@ public class TenantObjectTest extends AbstractTestCase
         platform.createVault();
         platform.createVault();
         platform.createVault();
-        platform.createConsumer();
-        platform.createConsumer();
-        platform.createConsumer();
-        platform.createConsumer();
+        platform.createClient();
+        platform.createClient();
+        platform.createClient();
+        platform.createClient();
         platform.createRegistrar();
         platform.createRegistrar();
         platform.createRegistrar();
@@ -144,7 +144,7 @@ public class TenantObjectTest extends AbstractTestCase
         assertEquals(1, platform.listRepositories().size());
         assertEquals(2+1, platform.listDomains().size()); // 2 custom, 1 default
         assertEquals(3, platform.listVaults().size());
-        assertEquals(4+1, platform.listConsumers().size()); // 4 custom, 1 default
+        assertEquals(4+1, platform.listClients().size()); // 4 custom, 1 default
         assertEquals(5, platform.listRegistrars().size());
     }
 

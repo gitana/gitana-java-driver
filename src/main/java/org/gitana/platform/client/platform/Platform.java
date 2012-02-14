@@ -22,10 +22,11 @@
 package org.gitana.platform.client.platform;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.datastore.DataStore;
+import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -52,6 +53,10 @@ public interface Platform extends DataStore
     public String getDefaultDomainId();
     
     public Domain readDefaultDomain();
+
+    public String getDefaultDirectoryId();
+
+    public Directory readDefaultDirectory();
 
 
 
@@ -220,6 +225,32 @@ public interface Platform extends DataStore
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
+    // DIRECTORIES
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<Directory> listDirectories();
+
+    public ResultMap<Directory> listDirectories(Pagination pagination);
+
+    public Directory readDirectory(String directoryId);
+
+    public Directory createDirectory();
+
+    public Directory createDirectory(ObjectNode object);
+
+    public ResultMap<Directory> queryDirectories(ObjectNode query);
+
+    public ResultMap<Directory> queryDirectories(ObjectNode query, Pagination pagination);
+
+    public PermissionCheckResults checkDirectoryPermissions(List<PermissionCheck> list);
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // LOGS
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,19 +285,19 @@ public interface Platform extends DataStore
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // CONSUMERS
+    // CLIENTS
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ResultMap<Consumer> listConsumers();
-    public ResultMap<Consumer> listConsumers(Pagination pagination);
-    public ResultMap<Consumer> queryConsumers(ObjectNode query);
-    public ResultMap<Consumer> queryConsumers(ObjectNode query, Pagination pagination);
-    public Consumer readConsumer(String consumerKey);
-    public Consumer createConsumer();
-    public Consumer createConsumer(ObjectNode object);
-    public void updateConsumer(Consumer consumer);
-    public void deleteConsumer(Consumer consumer);
-    public void deleteConsumer(String consumerKey);
+    public ResultMap<Client> listClients();
+    public ResultMap<Client> listClients(Pagination pagination);
+    public ResultMap<Client> queryClients(ObjectNode query);
+    public ResultMap<Client> queryClients(ObjectNode query, Pagination pagination);
+    public Client readClient(String clientId);
+    public Client createClient();
+    public Client createClient(ObjectNode object);
+    public void updateClient(Client client);
+    public void deleteClient(Client client);
+    public void deleteClient(String clientId);
 
 }

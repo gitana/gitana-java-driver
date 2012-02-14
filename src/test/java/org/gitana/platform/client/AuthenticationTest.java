@@ -31,27 +31,27 @@ import org.junit.Test;
 public class AuthenticationTest extends AbstractTestCase
 {
     @Test
-    public void testTokenAuthentication()
+    public void testUsernamePasswordAuthentication()
     {
-        // loads the test consumer (via gitana.properties in test)
+        // loads the test client (via gitana.properties in test)
         Gitana gitana = new Gitana();
 
-        // tests authentication via oauth access tokens
-        String accessTokenKey = "db7f7538-bc53-410a-a347-f3ebff4b6b59";
-        String accessTokenSecret = "q8kUSxe+Nr7KF8A2yGYLibrqVcXcB6bktKHNzUGNiT6Gku1rklH0Djt7hsbzhk459IQ7XoW46BxVDfLSYgWo9yhxJUrZNsQG61noPiW3ovY=";
-        Platform platform = gitana.authenticateWithTokens(accessTokenKey, accessTokenSecret);
+        // tests authentication via username/password
+        Platform platform = gitana.authenticate("admin", "admin");
         Repository repository = platform.createRepository();
         assertNotNull(repository);
     }
 
     @Test
-    public void testUsernamePasswordAuthentication()
+    public void testCredentialsAuthentication()
     {
-        // loads the test consumer (via gitana.properties in test)
+        // loads the test client (via gitana.properties in test)
         Gitana gitana = new Gitana();
 
-        // tests authentication via username/password
-        Platform platform = gitana.authenticate("admin", "admin");
+        // tests authentication via authentication grant (custom credentials)
+        String credentialsUsername = "db7f7538-bc53-410a-a347-f3ebff4b6b59";
+        String credentialsPassword = "q8kUSxe+Nr7KF8A2yGYLibrqVcXcB6bktKHNzUGNiT6Gku1rklH0Djt7hsbzhk459IQ7XoW46BxVDfLSYgWo9yhxJUrZNsQG61noPiW3ovY=";
+        Platform platform = gitana.authenticate(credentialsUsername, credentialsPassword);
         Repository repository = platform.createRepository();
         assertNotNull(repository);
     }

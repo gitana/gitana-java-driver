@@ -22,7 +22,7 @@
 package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.domain.Domain;
@@ -77,8 +77,8 @@ public interface Tenant extends RegistrarDocument, Selfable
     public ResultMap<Vault> listVaults();
     public ResultMap<Vault> listVaults(Pagination pagination);
 
-    public ResultMap<Consumer> listConsumers();
-    public ResultMap<Consumer> listConsumers(Pagination pagination);
+    public ResultMap<Client> listClients();
+    public ResultMap<Client> listClients(Pagination pagination);
 
     public ResultMap<Registrar> listRegistrars();
     public ResultMap<Registrar> listRegistrars(Pagination pagination);
@@ -86,9 +86,9 @@ public interface Tenant extends RegistrarDocument, Selfable
     /**
      * Administrative method that will only work for the "owner" of the tenant.  Otherwise will return null.
      *
-     * @return consumer
+     * @return default client
      */
-    public Consumer readDefaultConsumer();
+    public Client readDefaultClient();
 
     // billing
 

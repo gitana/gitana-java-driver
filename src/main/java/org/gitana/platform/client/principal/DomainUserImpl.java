@@ -23,7 +23,9 @@ package org.gitana.platform.client.principal;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.types.Person;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.util.JsonUtil;
@@ -123,4 +125,53 @@ public class DomainUserImpl extends AbstractDomainPrincipalImpl implements Domai
     {
         return branch.readPerson(getName(), createIfNotFound);
     }
+
+    @Override
+    public boolean hasIdentity()
+    {
+        return (getDirectoryId() != null && getIdentityId() != null);
+    }
+
+    @Override
+    public String getDirectoryId()
+    {
+        return getString(FIELD_DIRECTORY_ID);
+    }
+
+    @Override
+    public String getIdentityId()
+    {
+        return getString(FIELD_IDENTITY_ID);
+    }
+
+    @Override
+    public Directory readDirectory()
+    {
+        Directory directory = null;
+
+        if (getDirectoryId() != null)
+        {
+            directory = getPlatform().readDirectory(getDirectoryId());
+        }
+
+        return directory;
+    }
+    
+    @Override
+    public Identity readIdentity()
+    {
+        Identity identity = null;
+
+        if (this.getDirectoryId() != null && this.getIdentityId() != null)
+        {
+            Directory directory = readDirectory();
+            if (directory != null)
+            {
+                identity = directory.readIdentity(getIdentityId());
+            }
+        }
+
+        return identity;
+    }
+
 }

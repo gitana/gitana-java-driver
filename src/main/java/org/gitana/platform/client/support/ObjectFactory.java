@@ -22,7 +22,7 @@
 package org.gitana.platform.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
@@ -32,7 +32,9 @@ import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.nodes.Association;
@@ -115,6 +117,22 @@ public interface ObjectFactory
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
+    // DIRECTORIES
+    //
+
+    public Directory directory(Platform platform);
+    public Directory directory(Platform platform, ObjectNode object);
+    public Directory directory(Platform platform, Response response);
+    public ResultMap<Directory> directories(Platform platform, Response response);
+
+    public Identity identity(Directory directory, ObjectNode object);
+    public Identity identity(Directory directory, Response response);
+    public ResultMap<Identity> identities(Directory directory, Response response);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // PLATFORM
     //
 
@@ -122,10 +140,10 @@ public interface ObjectFactory
     public Stack stack(Platform platform, Response response);
     public ResultMap<Stack> stacks(Platform platform, Response response);
 
-    // consumers
-    public Consumer consumer(Platform platform, ObjectNode object);
-    public Consumer consumer(Platform platform, Response response);
-    public ResultMap<Consumer> consumers(Platform platform, Response response);
+    // clients
+    public Client client(Platform platform, ObjectNode object);
+    public Client client(Platform platform, Response response);
+    public ResultMap<Client> clients(Platform platform, Response response);
 
 
 

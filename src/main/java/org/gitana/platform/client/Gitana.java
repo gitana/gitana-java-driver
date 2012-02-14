@@ -21,24 +21,22 @@
 
 package org.gitana.platform.client;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.params.HttpConnectionParams;
+import org.gitana.http.OAuth2HttpMethodExecutor;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
-import org.gitana.platform.client.exceptions.AuthenticationFailedException;
-import org.gitana.platform.client.exceptions.RemoteServerException;
+import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Environment;
 import org.gitana.platform.client.support.RemoteImpl;
 import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.tenant.Tenant;
 
-import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
@@ -46,15 +44,11 @@ import java.util.ResourceBundle;
  */
 public class Gitana
 {
-    public final static String TICKET_COOKIE_NAME = "GITANA_TICKET";
-
-    public final static String FIELD_TICKET = "ticket";
-
     private String baseUrl;
 
     private String environmentId;
-    private String consumerKey;
-    private String consumerSecret;
+    private String clientId;
+    private String clientSecret;
 
     /**
      * Creates a Gitana instance that loads all of its settings from a properties bundle.
@@ -65,21 +59,29 @@ public class Gitana
     }
 
     /**
-     * Creates a Gitana instance bound to a Gitana API consumer.
+     * Creates a Gitana instance bound to a Gitana API client.
      */
-    public Gitana(String consumerKey, String consumerSecret)
+    public Gitana(String clientId, String clientSecret)
     {
-        this(null, consumerKey, consumerSecret);
+        this(null, clientId, clientSecret);
     }
 
     /**
-     * Creates a Gitana instance bound to a given consumer on an environment.
+     * Creates a Gitana instance bound to a Gitana API client.
+     */
+    public Gitana(Client client)
+    {
+        this(null, client.getKey(), client.getSecret());
+    }
+    
+    /**
+     * Creates a Gitana instance bound to a given client on an environment.
      *
      * @param environmentId
-     * @param consumerKey
-     * @param consumerSecret
+     * @param clientId
+     * @param clientSecret
      */
-    public Gitana(String environmentId, String consumerKey, String consumerSecret)
+    public Gitana(String environmentId, String clientId, String clientSecret)
     {
         if (environmentId == null)
         {
@@ -92,18 +94,18 @@ public class Gitana
         ResourceBundle bundle = ResourceBundle.getBundle("gitana-environments");
         this.baseUrl = bundle.getString("gitana.environment." + environmentId + ".uri");
 
-        // load consumer properties if not provided
-        if (consumerKey == null && consumerSecret == null)
+        // load client properties if not provided
+        if (clientId == null && clientSecret == null)
         {
             bundle = ResourceBundle.getBundle("gitana");
 
-            this.consumerKey = bundle.getString("gitana.consumerKey");
-            this.consumerSecret = bundle.getString("gitana.consumerSecret");
+            this.clientId = bundle.getString("gitana.clientId");
+            this.clientSecret = bundle.getString("gitana.clientSecret");
         }
         else
         {
-            this.consumerKey = consumerKey;
-            this.consumerSecret = consumerSecret;
+            this.clientId = clientId;
+            this.clientSecret = clientSecret;
         }
     }
 
@@ -130,23 +132,16 @@ public class Gitana
     }
 
     /**
-     * Creates a remote that has the configured consumer keys plugged onto it.  This is useful only for calling
-     * authentication methods.  Authentication methods are unprotected but they require a consumer to be identified
-     * so that the oauth handshake can complete.
+     * Creates an anonymous remote instance.
      *
      * @return
      */
     protected RemoteImpl createRemote()
     {
-        RemoteImpl remote = createAnonymousRemote();
-
-        // plug our consumer keys onto the remote
-        OAuthConsumer oauthConsumer = new CommonsHttpOAuthConsumer(this.consumerKey, this.consumerSecret);
-        remote.setOAuthConsumer(oauthConsumer);
-
-        return remote;
+        return createAnonymousRemote();
     }
 
+    /*
     private String getDomain()
     {
         String domain = null;
@@ -172,48 +167,7 @@ public class Gitana
 
         return cookie;
     }
-
-    /**
-     * Authenticates using access tokens provided in properties file.
-     *
-     * @return platform
-     */
-    public Platform authenticate()
-    {
-        return authenticateWithTokens(null, null);
-    }
-
-    /**
-     * Authenticates as the given principal via username/password credentials.
-     *
-     * @return server
-     */
-    public Platform authenticateWithTokens(String accessTokenKey, String accessTokenSecret)
-    {
-        // load access token properties if not provided
-        if (accessTokenKey == null && accessTokenSecret == null)
-        {
-            ResourceBundle bundle = ResourceBundle.getBundle("gitana");
-
-            accessTokenKey = bundle.getString("gitana.accessTokenKey");
-            accessTokenSecret = bundle.getString("gitana.accessTokenSecret");
-        }
-
-        RemoteImpl remote = createRemote();
-
-        // pre-load authentication tokens onto remote
-        remote.getOAuthConsumer().setTokenWithSecret(accessTokenKey, accessTokenSecret);
-
-        // build driver and bind to thread local context
-        Driver driver = new Driver(remote, this.consumerKey, accessTokenKey);
-        DriverContext.setDriver(driver);
-
-        // perform handshake and populate driver with info
-        populateAuthenticationInformation(driver);
-
-        // read back the platform
-        return loadPlatform(driver);
-    }
+    */
 
     protected void populateAuthenticationInformation(Driver driver)
     {
@@ -253,47 +207,155 @@ public class Gitana
     }
 
     /**
-     * Authenticates as the given user.
+     * Authenticates using the user credentials stored in the Gitana resource bundle.
+     *
+     * @return platform
+     */
+    public Platform authenticate()
+    {
+        return authenticate((String)null, (String)null);
+    }
+
+    /**
+     * Authenticates as the given domain user.
+     *
+     * @param user
+     * @param password
+     * @return
+     */
+    public Platform authenticate(DomainUser user, String password)
+    {
+        return authenticate(user.getName(), password);
+    }
+
+    /**
+     * Authenticates as the given identity using a domain user that belongs to a domain on the given
+     * tenant.  If multiple users are found, the first one is picked.
+     * 
+     * @param identity
+     * @param password
+     * @param tenantId
+     * @return
+     */
+    public Platform authenticateOnTenant(Identity identity, String password, String tenantId)
+    {
+        DomainUser user = identity.findUserForTenant(tenantId);
+        if (user == null)
+        {
+            throw new RuntimeException("Unable to find user on tenant: " + tenantId + " for identity: " + identity.getId());
+        }
+        
+        return authenticate(user, password);
+    }
+
+    /**
+     * Authenticates the user's identity using a domain user that belongs to a domain on the given
+     * tenant.  If multiple users are found, the first one is picked.
+     *
+     * @param user
+     * @param password
+     * @param tenantId
+     * @return
+     */
+    public Platform authenticateOnTenant(DomainUser user, String password, String tenantId)
+    {
+        Identity identity = user.readIdentity();
+        if (identity == null)
+        {
+            throw new RuntimeException("The user: " + user.getId() + " with name: " + user.getName() + " does not have an identity associated with it");
+        }
+
+        return authenticateOnTenant(user.readIdentity(), password, tenantId);
+    }
+
+    /**
+     * Authenticates the user's identity using a domain user that belongs to a domain on the given
+     * tenant.  If multiple users are found, the first one is picked.
+     *
+     * @param user
+     * @param password
+     * @param tenant
+     * @return
+     */
+    public Platform authenticateOnTenant(DomainUser user, String password, Tenant tenant)
+    {
+        return authenticateOnTenant(user, password, tenant.getId());
+    }
+    
+    /**
+     * Authenticates to Gitana using the given credentials.
+     *
+     * These credentials can be any of the following:
+     *
+     *    username/password (assumes the default domain of the platform)
+     *    user id/password (assumes the default domain of the platform)
+     *    domain qualified username / password
+     *    domain qualified id / password
+     *    credential key / credential secret
+     *
+     * This utilizes the OAuth2 resource owner username/password flow.
      *
      * @param username
      * @param password
      */
     public Platform authenticate(String username, String password)
     {
+        // if username and password are null, authenticate using credentials supplied in properties file
+        if (username == null && password == null)
+        {
+            ResourceBundle bundle = ResourceBundle.getBundle("gitana");
+
+            username = bundle.getString("gitana.credentials.username");
+            password = bundle.getString("gitana.credentials.password");
+        }
+
         RemoteImpl remote = createRemote();
 
-        // we front-load the oauth access token with "ticket"
-        // this allows for two-legged oAuth (consumer only) where the third leg (user) is decided by a ticket instead
-        // of by an access token
-        remote.getOAuthConsumer().setTokenWithSecret("ticket", null);
-
-        // log in and fetch ticket anonymously
-        Response result = null;
-        try
-        {
-            result = remote.get("/auth/login?u=" + username + "&p=" + password);
-            if (result.isError())
-            {
-                throw new RemoteServerException(result);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new AuthenticationFailedException(ex);
-        }
-
-        // clear the special "ticket" token from the remote
-        //remote.getOAuthConsumer().setTokenWithSecret(null, null);
-
-        // we store the Gitana ticket as a cookie so that it will get picked up by the Gitana
-        // pre-authentication filter chain
-        // this is an alternative to using pure access tokens (which would require the secret on client side)
-        String ticket = result.getObjectNode().get(FIELD_TICKET).getTextValue();
-        Cookie cookie = buildCookie(TICKET_COOKIE_NAME, ticket);
-        remote.addCookie(cookie);
+        // apply OAuth2 HTTP Method Executor
+        OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
+        httpMethodExecutor.setUri(this.baseUrl + "/oauth/token");
+        httpMethodExecutor.setClientId(this.clientId);
+        httpMethodExecutor.setClientSecret(this.clientSecret);
+        httpMethodExecutor.setResourceOwnerPasswordCredentialsFlow(username, password);
+        //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
+        httpMethodExecutor.setRequestedScope("api");
+        remote.setHttpMethodExecutor(httpMethodExecutor);
 
         // build driver instance
-        Driver driver = new Driver(remote, this.consumerKey, ticket);
+        Driver driver = new Driver(remote);
+        DriverContext.setDriver(driver);
+
+        // perform handshake and populate driver with info
+        populateAuthenticationInformation(driver);
+
+        // read back the platform
+        return loadPlatform(driver);
+    }
+
+    /**
+     * Authenticates with the code supplied by the Authorization Flow authorization server call.
+     *
+     * @param code
+     * @param redirectUri
+     *
+     * @return platform
+     */
+    public Platform authenticateWithCode(String code, String redirectUri)
+    {
+        RemoteImpl remote = createRemote();
+
+        // apply OAuth2 HTTP Method Executor
+        OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
+        httpMethodExecutor.setUri(this.baseUrl + "/oauth/token");
+        httpMethodExecutor.setClientId(this.clientId);
+        httpMethodExecutor.setClientSecret(this.clientSecret);
+        httpMethodExecutor.setAuthorizationCodeFlow(code, redirectUri);
+        //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
+        httpMethodExecutor.setRequestedScope("api");
+        remote.setHttpMethodExecutor(httpMethodExecutor);
+
+        // build driver and bind to thread local context
+        Driver driver = new Driver(remote);
         DriverContext.setDriver(driver);
 
         // perform handshake and populate driver with info

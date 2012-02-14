@@ -22,6 +22,8 @@
 package org.gitana.platform.client.principal;
 
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.directory.Directory;
+import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.types.Person;
 
 /**
@@ -34,6 +36,10 @@ public interface DomainUser extends DomainPrincipal
     public final static String FIELD_LAST_NAME = "lastName";
     public final static String FIELD_COMPANY_NAME = "companyName";
     public final static String FIELD_EMAIL = "email";
+
+    // identity
+    public final static String FIELD_DIRECTORY_ID = "directoryId";
+    public final static String FIELD_IDENTITY_ID = "identityId";
 
     /**
      * @return first name
@@ -92,4 +98,11 @@ public interface DomainUser extends DomainPrincipal
      * @param newPassword
      */
     public void changePassword(String newPassword);
+
+    public boolean hasIdentity();
+    public String getDirectoryId();
+    public String getIdentityId();
+    public Directory readDirectory();
+    public Identity readIdentity();
+
 }

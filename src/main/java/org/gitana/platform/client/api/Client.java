@@ -25,28 +25,33 @@ import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * @author uzi
  */
-public interface Consumer extends PlatformDocument, AccessControllable, Selfable
+public interface Client extends PlatformDocument, AccessControllable, Selfable
 {
-    public final static String FIELD_AUTH_TYPE = "authType";
+    // client key and secret
     public final static String FIELD_KEY = "key";
     public final static String FIELD_SECRET = "secret";
 
+    // supported grant types
+    public final static String FIELD_AUTHORIZED_GRANT_TYPES = "authorizedGrantTypes";
+
+    // required scopes
+    public final static String FIELD_SCOPE = "scope";
+
+    // for Authentication Code grant, the registered redirect uri
+    public final static String FIELD_REGISTERED_REDIRECT_URI = "registeredRedirectUri";
+
+    // for any grant, constrain the domain URL (usually REFERRER) to a set of domains
     public final static String FIELD_DOMAIN_URLS = "domainUrls";
-    public final static String FIELD_AUTHORITIES = "authorities";
 
-    public final static String FIELD_ALLOW_TICKET_AUTHENTICATION = "allowTicketAuthentication";
-    public final static String FIELD_ALLOW_OPENDRIVER_AUTHENTICATION = "allowOpenDriverAuthentication";
-
+    // whether this is a tenant's default client
     public final static String FIELD_IS_TENANT_DEFAULT = "isTenantDefault";
     public final static String FIELD_DEFAULT_TENANT_ID = "defaultTenantId";
-
-    public String getAuthType();
-    public void setAuthType(String authType);
 
     public String getKey();
     public void setKey(String key);
@@ -57,19 +62,18 @@ public interface Consumer extends PlatformDocument, AccessControllable, Selfable
     public List<String> getDomainUrls();
     public void setDomainUrls(List<String> domainUrls);
 
-    public List<String> getAuthorities();
-    public void setAuthorities(List<String> authorities);
-
-    public boolean getAllowTicketAuthentication();
-    public void setAllowTicketAuthentication(boolean allowTicketAuthentication);
-
-    public boolean getAllowOpenDriverAuthentication();
-    public void setAllowOpenDriverAuthentication(boolean allowOpenDriverAuthentication);
-
     public boolean getIsTenantDefault();
     public void setIsTenantDefault(boolean isTenantDefault);
 
     public String getDefaultTenantId();
     public void setDefaultTenantId(String tenantId);
 
+    public Collection<String> getAuthorizedGrantTypes();
+    public void setAuthorizedGrantTypes(Collection<String> authorizedGrantTypes);
+
+    public Collection<String> getScope();
+    public void setScope(Collection<String> scope);
+
+    public String getRegisteredRedirectUri();
+    public void setRegisteredRedirectUri(String registeredRedirectUri);
 }

@@ -23,7 +23,7 @@ package org.gitana.platform.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.nodes.Node;
@@ -57,7 +57,7 @@ public class LogTest extends AbstractTestCase
 
         // create a tenant for this user
         Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
-        Consumer consumer = tenant.readDefaultConsumer();
+        Client client = tenant.readDefaultClient();
 
 
 
@@ -65,7 +65,7 @@ public class LogTest extends AbstractTestCase
         // AUTHENTICATE AS THE TENANT USER
         //
 
-        gitana = new Gitana(consumer.getKey(), consumer.getSecret());
+        gitana = new Gitana(client.getKey(), client.getSecret());
         platform = gitana.authenticate(user.getName(), "pw");
 
         // build a stack with repository, domain, vault...

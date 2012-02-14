@@ -19,27 +19,18 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client;
+package org.gitana.platform.client.directory;
 
-import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.platform.Platform;
-import org.junit.Test;
 
 /**
  * @author uzi
  */
-public class ServerTest extends AbstractTestCase
-{
-    @Test
-    public void testACL()
-    {
-        Gitana gitana = new Gitana();
+public interface DirectoryDocument extends Document
+{	
+    public Directory getDirectory();
+    public String getDirectoryId();
 
-        // authenticate
-        Platform platform = gitana.authenticate("admin", "admin");
-
-        // get the ACL
-        ACL acl = platform.getACL();
-        assert(acl.getEntries().size() > 0);
-    }
+    public Platform getPlatform();
 }

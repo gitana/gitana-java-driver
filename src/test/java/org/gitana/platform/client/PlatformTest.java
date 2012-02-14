@@ -21,34 +21,25 @@
 
 package org.gitana.platform.client;
 
-import org.gitana.platform.client.support.DriverContext;
+import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.platform.Platform;
 import org.junit.Test;
 
 /**
  * @author uzi
  */
-public class AuthInfoTest extends AbstractTestCase
+public class PlatformTest extends AbstractTestCase
 {
     @Test
-    public void testAuthInfo()
-        throws Exception
+    public void testACL()
     {
         Gitana gitana = new Gitana();
 
         // authenticate
-        gitana.authenticate("admin", "admin");
+        Platform platform = gitana.authenticate("admin", "admin");
 
-        // check driver properties
-        AuthInfo authInfo = DriverContext.getDriver().getAuthInfo();
-
-        // some things about the principal
-        assertEquals("default", authInfo.getPrincipalDomainId());
-        assertEquals("admin", authInfo.getPrincipalName());
-
-        // client key
-        assertEquals("eb9bcf0b-050d-4931-a11b-2231be0fd168", authInfo.getClientId());
-
-        // assert we have a tenant id
-        assertNotNull(authInfo.getTenantId());
+        // get the ACL
+        ACL acl = platform.getACL();
+        assert(acl.getEntries().size() > 0);
     }
 }
