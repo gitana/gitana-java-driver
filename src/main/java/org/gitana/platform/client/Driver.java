@@ -21,7 +21,6 @@
 
 package org.gitana.platform.client;
 
-import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.ObjectFactoryImpl;
@@ -40,33 +39,12 @@ public class Driver
     private AuthInfo authInfo;
     private Platform platform;
 
-    private String consumerKey;
-    private String accessToken;
-
-    public Driver(Remote remote, String consumerKey, String accessToken)
+    public Driver(Remote remote)
     {
         this.remote = remote;
-        this.consumerKey = consumerKey;
-        this.accessToken = accessToken;
 
         // initialize
         this.init();
-    }
-
-    /**
-     * @return the public consumer key for the application
-     */
-    public String getConsumerKey()
-    {
-        return this.consumerKey;
-    }
-
-    /**
-     * @return the public access token for the user
-     */
-    public String getAccessToken()
-    {
-        return this.accessToken;
     }
 
     public void setAuthInfo(AuthInfo authInfo)

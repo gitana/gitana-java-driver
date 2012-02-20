@@ -23,10 +23,11 @@ package org.gitana.platform.client.platform;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -86,7 +87,18 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     {
         return readDomain(getDefaultDomainId());
     }
-    
+
+    @Override
+    public String getDefaultDirectoryId()
+    {
+        return getString("defaultDirectoryId");
+    }
+
+    @Override
+    public Directory readDefaultDirectory()
+    {
+        return readDirectory(getDefaultDirectoryId());
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,6 +560,102 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
+    // DIRECTORIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Directory> listDirectories()
+    {
+        return listDirectories(null);
+    }
+
+    @Override
+    public ResultMap<Directory> listDirectories(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/directories", params);
+        return getFactory().directories(this, response);
+    }
+
+    @Override
+    public Directory readDirectory(String directoryId)
+    {
+        Directory directory = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/directories/" + directoryId);
+            directory = getFactory().directory(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return directory;
+    }
+
+    @Override
+    public Directory createDirectory()
+    {
+        return createDirectory(null);
+    }
+
+    @Override
+    public Directory createDirectory(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/directories", object);
+
+        String directoryId = response.getId();
+        return readDirectory(directoryId);
+    }
+
+    @Override
+    public ResultMap<Directory> queryDirectories(ObjectNode query)
+    {
+        return queryDirectories(query, null);
+    }
+
+    @Override
+    public ResultMap<Directory> queryDirectories(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/directories/query", params, query);
+        return getFactory().directories(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkDirectoryPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post(getResourceUri() + "/directories/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+    
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // APPLICATIONS
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -642,49 +750,49 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // CONSUMERS
+    // CLIENTS
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public ResultMap<Consumer> listConsumers()
+    public ResultMap<Client> listClients()
     {
-        return listConsumers(null);
+        return listClients(null);
     }
 
     @Override
-    public ResultMap<Consumer> listConsumers(Pagination pagination)
+    public ResultMap<Client> listClients(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().get(getResourceUri() + "/consumers", params);
-        return getFactory().consumers(this, response);
+        Response response = getRemote().get(getResourceUri() + "/clients", params);
+        return getFactory().clients(this, response);
     }
 
     @Override
-    public ResultMap<Consumer> queryConsumers(ObjectNode query)
+    public ResultMap<Client> queryClients(ObjectNode query)
     {
-        return queryConsumers(query, null);
+        return queryClients(query, null);
     }
 
     @Override
-    public ResultMap<Consumer> queryConsumers(ObjectNode query, Pagination pagination)
+    public ResultMap<Client> queryClients(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().post(getResourceUri() + "/consumers/query", params, query);
-        return getFactory().consumers(this, response);
+        Response response = getRemote().post(getResourceUri() + "/clients/query", params, query);
+        return getFactory().clients(this, response);
     }
 
     @Override
-    public Consumer readConsumer(String consumerKey)
+    public Client readClient(String clientId)
     {
-        Consumer consumer = null;
+        Client client = null;
 
         try
         {
-            Response response = getRemote().get(getResourceUri() + "/consumers/" + consumerKey);
-            consumer = getFactory().consumer(this, response);
+            Response response = getRemote().get(getResourceUri() + "/clients/" + clientId);
+            client = getFactory().client(this, response);
         }
         catch (Exception ex)
         {
@@ -693,17 +801,17 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
             // TODO: information so that we can detect a proper 404
         }
 
-        return consumer;
+        return client;
     }
 
     @Override
-    public Consumer createConsumer()
+    public Client createClient()
     {
-        return createConsumer(null);
+        return createClient(null);
     }
 
     @Override
-    public Consumer createConsumer(ObjectNode object)
+    public Client createClient(ObjectNode object)
     {
         // allow for null object
         if (object == null)
@@ -711,28 +819,28 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
             object = JsonUtil.createObject();
         }
 
-        Response response = getRemote().post(getResourceUri() + "/consumers", object);
+        Response response = getRemote().post(getResourceUri() + "/clients", object);
 
-        String consumerId = response.getId();
-        return readConsumer(consumerId);
+        String clientKey = response.getId();
+        return readClient(clientKey);
     }
 
     @Override
-    public void updateConsumer(Consumer consumer)
+    public void updateClient(Client client)
     {
-        getRemote().put("/consumers/" + consumer.getId(), consumer.getObject());
+        getRemote().put("/clients/" + client.getId(), client.getObject());
     }
 
     @Override
-    public void deleteConsumer(Consumer consumer)
+    public void deleteClient(Client client)
     {
-        deleteConsumer(consumer.getKey());
+        deleteClient(client.getId());
     }
 
     @Override
-    public void deleteConsumer(String consumerKey)
+    public void deleteClient(String clientId)
     {
-        getRemote().delete("/consumers/" + consumerKey);
+        getRemote().delete("/clients/" + clientId);
     }
 
 

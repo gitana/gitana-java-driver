@@ -22,7 +22,7 @@
 package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Consumer;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.domain.Domain;
@@ -240,18 +240,18 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     }
 
     @Override
-    public ResultMap<Consumer> listConsumers()
+    public ResultMap<Client> listClients()
     {
-        return listConsumers(null);
+        return listClients(null);
     }
 
     @Override
-    public ResultMap<Consumer> listConsumers(Pagination pagination)
+    public ResultMap<Client> listClients(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().get(getResourceUri() + "/consumers", params);
-        return getFactory().consumers(getRegistrar().getPlatform(), response);
+        Response response = getRemote().get(getResourceUri() + "/clients", params);
+        return getFactory().clients(getRegistrar().getPlatform(), response);
     }
 
     @Override
@@ -270,14 +270,14 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     }
 
     @Override
-    public Consumer readDefaultConsumer()
+    public Client readDefaultClient()
     {
-        Consumer consumer = null;
+        Client client = null;
 
         try
         {
-            Response response = getRemote().get(getResourceUri() + "/defaultconsumer");
-            consumer = getFactory().consumer(this.getRegistrar().getPlatform(), response);
+            Response response = getRemote().get(getResourceUri() + "/defaultclient");
+            client = getFactory().client(this.getRegistrar().getPlatform(), response);
         }
         catch (Exception ex)
         {
@@ -286,7 +286,7 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
             // TODO: information so that we can detect a proper 404
         }
 
-        return consumer;
+        return client;
     }
 
 

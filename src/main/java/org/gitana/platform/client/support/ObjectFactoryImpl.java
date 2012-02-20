@@ -22,8 +22,8 @@
 package org.gitana.platform.client.support;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Consumer;
-import org.gitana.platform.client.api.ConsumerImpl;
+import org.gitana.platform.client.api.Client;
+import org.gitana.platform.client.api.ClientImpl;
 import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.archive.ArchiveImpl;
@@ -39,8 +39,12 @@ import org.gitana.platform.client.branch.BranchImpl;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.changeset.ChangesetImpl;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.directory.Directory;
+import org.gitana.platform.client.directory.DirectoryImpl;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.domain.DomainImpl;
+import org.gitana.platform.client.identity.Identity;
+import org.gitana.platform.client.identity.IdentityImpl;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.job.JobImpl;
 import org.gitana.platform.client.log.LogEntry;
@@ -542,6 +546,89 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
+    public Directory directory(Platform platform)
+    {
+        return directory(platform, JsonUtil.createObject());
+    }
+
+    @Override
+    public Directory directory(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new DirectoryImpl(platform, object, false);
+    }
+
+    @Override
+    public Directory directory(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new DirectoryImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Directory> directories(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Directory> map = new ResultMapImpl<Directory>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Directory directory = new DirectoryImpl(platform, object, true);
+            map.put(directory.getId(), directory);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Identity identity(Directory directory, ObjectNode object)
+    {
+        return new IdentityImpl(directory, object, false);
+    }
+
+    @Override
+    public Identity identity(Directory directory, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        ObjectNode object = response.getObjectNode();
+
+        return new IdentityImpl(directory, object, true);
+    }
+
+    @Override
+    public ResultMap<Identity> identities(Directory directory, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Identity> map = new ResultMapImpl<Identity>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Identity identity = new IdentityImpl(directory, object, true);
+            map.put(identity.getId(), identity);
+        }
+
+        return map;
+    }    
+
+    @Override
     public ResultMap<Attachment> attachments(Attachable attachable, Response response)
     {
         if (!response.isListDocument())
@@ -709,40 +796,40 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public Consumer consumer(Platform platform, ObjectNode object)
+    public Client client(Platform platform, ObjectNode object)
     {
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        return new ConsumerImpl(platform, object, false);
+        return new ClientImpl(platform, object, false);
     }
 
     @Override
-    public Consumer consumer(Platform platform, Response response)
+    public Client client(Platform platform, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new ConsumerImpl(platform, response.getObjectNode(), true);
+        return new ClientImpl(platform, response.getObjectNode(), true);
     }
 
     @Override
-    public ResultMap<Consumer> consumers(Platform platform, Response response)
+    public ResultMap<Client> clients(Platform platform, Response response)
     {
         if (!response.isListDocument())
         {
             throw new RuntimeException("Response must be a list document");
         }
 
-        ResultMap<Consumer> map = new ResultMapImpl<Consumer>(response.getListOffset(), response.getListTotalRows());
+        ResultMap<Client> map = new ResultMapImpl<Client>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            Consumer consumer = new ConsumerImpl(platform, object, true);
-            map.put(consumer.getId(), consumer);
+            Client client = new ClientImpl(platform, object, true);
+            map.put(client.getId(), client);
         }
 
         return map;

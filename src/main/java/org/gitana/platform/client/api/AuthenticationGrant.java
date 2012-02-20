@@ -38,7 +38,7 @@ public interface AuthenticationGrant extends PlatformDocument
     public final static String FIELD_PRINCIPAL_ID = "principalId";
 
     // consumer
-    public final static String FIELD_CONSUMER_KEY = "consumerKey";
+    public final static String FIELD_CLIENT_ID = "clientId";
 
     // is this grant enabled?
     public final static String FIELD_ENABLED = "enabled";
@@ -55,8 +55,8 @@ public interface AuthenticationGrant extends PlatformDocument
     public String getPrincipalDomainId();
     public void setPrincipalDomainId(String principalDomainId);
 
-    public String getConsumerKey();
-    public void setConsumerKey(String consumerKey);
+    public String getClientId();
+    public void setClientId(String clientId);
 
     public boolean getEnabled();
     public void setEnable(boolean enabled);

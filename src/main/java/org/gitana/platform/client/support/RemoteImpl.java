@@ -21,11 +21,6 @@
 
 package org.gitana.platform.client.support;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -38,6 +33,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpInvoker;
+import org.gitana.http.HttpMethodExecutor;
 import org.gitana.http.HttpPayload;
 import org.gitana.http.HttpPayloadContentBody;
 import org.gitana.platform.client.exceptions.RemoteServerException;
@@ -62,8 +58,6 @@ public class RemoteImpl implements Remote
     private boolean full;
     private boolean metadata;
 
-    private OAuthConsumer oauthConsumer;
-
     public RemoteImpl(HttpClient client, String remoteURL)
     {
         this.remoteURL = remoteURL;
@@ -74,25 +68,9 @@ public class RemoteImpl implements Remote
         this.invoker = new HttpInvoker(client);
     }
 
-    protected void sign(HttpRequest request)
-        throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException
+    public void setHttpMethodExecutor(HttpMethodExecutor httpMethodExecutor)
     {
-        if (this.oauthConsumer != null)
-        {
-            this.oauthConsumer.sign(request);
-        }
-    }
-
-    public void setOAuthConsumer(OAuthConsumer oauthConsumer)
-    {
-        this.oauthConsumer = oauthConsumer;
-
-        this.invoker.setOAuthConsumer(oauthConsumer);
-    }
-
-    public OAuthConsumer getOAuthConsumer()
-    {
-        return this.oauthConsumer;
+        this.invoker.setHttpMethodExecutor(httpMethodExecutor);
     }
 
     public void addCookie(Cookie cookie)
@@ -480,10 +458,9 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpPost httpPost = new HttpPost(URL);
-        sign(httpPost);
         httpPost.setEntity(entity);
 
-        HttpResponse httpResponse = invoker.getClient().execute(httpPost);
+        HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
             throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
@@ -500,7 +477,6 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpPost httpPost = new HttpPost(URL);
-        sign(httpPost);
 
         HttpPayload payload = new HttpPayload();
         payload.setBytes(bytes);
@@ -512,7 +488,7 @@ public class RemoteImpl implements Remote
         entity.addPart(filename, new HttpPayloadContentBody(payload));
         httpPost.setEntity(entity);
 
-        HttpResponse httpResponse = invoker.getClient().execute(httpPost);
+        HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
             throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
@@ -530,10 +506,9 @@ public class RemoteImpl implements Remote
 
         String URL = buildURL(uri, false);
         HttpPost httpPost = new HttpPost(URL);
-        sign(httpPost);
         httpPost.setEntity(entity);
 
-        HttpResponse httpResponse = invoker.getClient().execute(httpPost);
+        HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
             throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
@@ -549,7 +524,6 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpPost httpPost = new HttpPost(URL);
-        sign(httpPost);
 
         InputStreamBody inputStreamBody = new InputStreamBody(in, mimetype, filename);
 
@@ -557,7 +531,7 @@ public class RemoteImpl implements Remote
         entity.addPart(filename, inputStreamBody);
         httpPost.setEntity(entity);
 
-        HttpResponse httpResponse = invoker.getClient().execute(httpPost);
+        HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
             throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
@@ -614,9 +588,8 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpGet httpGet = new HttpGet(URL);
-        sign(httpGet);
 
-        HttpResponse httpResponse = invoker.getClient().execute(httpGet);
+        HttpResponse httpResponse = invoker.execute(httpGet);
         if (!HttpUtil.isOk(httpResponse))
         {
             throw new RuntimeException("Download failed: " + EntityUtils.toString(httpResponse.getEntity()));

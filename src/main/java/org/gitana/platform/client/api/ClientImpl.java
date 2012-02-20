@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.api;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
@@ -32,15 +33,16 @@ import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author uzi
  */
-public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consumer
+public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
 {
-    public ConsumerImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public ClientImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
     }
@@ -48,7 +50,7 @@ public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consum
     @Override
     protected String getResourceUri()
     {
-        return "/consumers/" + getId();
+        return "/clients/" + getId();
     }
 
     @Override
@@ -56,26 +58,14 @@ public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consum
     {
         boolean equals = false;
 
-        if (object instanceof Consumer)
+        if (object instanceof Client)
         {
-            Consumer other = (Consumer) object;
+            Client other = (Client) object;
 
             equals = (this.getId().equals(other.getId()));
         }
 
         return equals;
-    }
-
-    @Override
-    public String getAuthType()
-    {
-        return getString(FIELD_AUTH_TYPE);
-    }
-
-    @Override
-    public void setAuthType(String authType)
-    {
-        set(FIELD_AUTH_TYPE, authType);
     }
 
     @Override
@@ -109,7 +99,7 @@ public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consum
 
         if (has(FIELD_DOMAIN_URLS))
         {
-            domainUrls.addAll((List) JsonUtil.toValue(getArray(FIELD_DOMAIN_URLS)));
+            domainUrls.addAll((List) JsonUtil.toValue(this.getArray(FIELD_DOMAIN_URLS)));
         }
 
         return domainUrls;
@@ -119,49 +109,6 @@ public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consum
     public void setDomainUrls(List<String> domainUrls)
     {
         set(FIELD_DOMAIN_URLS, domainUrls);
-    }
-
-    @Override
-    public List<String> getAuthorities()
-    {
-        List<String> authorities = new ArrayList<String>();
-
-        if (has(FIELD_DOMAIN_URLS))
-        {
-            authorities.addAll((List) JsonUtil.toValue(getArray(FIELD_AUTHORITIES)));
-        }
-
-        return authorities;
-    }
-
-    @Override
-    public void setAuthorities(List<String> authorities)
-    {
-        set(FIELD_AUTHORITIES, authorities);
-    }
-
-    @Override
-    public boolean getAllowTicketAuthentication()
-    {
-        return getBoolean(FIELD_ALLOW_TICKET_AUTHENTICATION);
-    }
-
-    @Override
-    public void setAllowTicketAuthentication(boolean allowTicketAuthentication)
-    {
-        set(FIELD_ALLOW_TICKET_AUTHENTICATION, allowTicketAuthentication);
-    }
-
-    @Override
-    public boolean getAllowOpenDriverAuthentication()
-    {
-        return getBoolean(FIELD_ALLOW_OPENDRIVER_AUTHENTICATION);
-    }
-
-    @Override
-    public void setAllowOpenDriverAuthentication(boolean allowOpenDriverAuthentication)
-    {
-        set(FIELD_ALLOW_OPENDRIVER_AUTHENTICATION, allowOpenDriverAuthentication);
     }
 
     @Override
@@ -186,6 +133,74 @@ public class ConsumerImpl extends AbstractPlatformDocumentImpl implements Consum
     public void setDefaultTenantId(String tenantId)
     {
         set(FIELD_DEFAULT_TENANT_ID, tenantId);
+    }
+
+    @Override
+    public Collection<String> getAuthorizedGrantTypes()
+    {
+        List<String> authorizedGrantTypes = new ArrayList<String>();
+
+        ArrayNode array = getArray(FIELD_AUTHORIZED_GRANT_TYPES);
+        if (array != null)
+        {
+            for (int i = 0; i < array.size(); i++)
+            {
+                String authorizedGrantType = array.get(i).getTextValue();
+
+                authorizedGrantTypes.add(authorizedGrantType);
+            }
+        }
+
+        return authorizedGrantTypes;
+    }
+
+    @Override
+    public void setAuthorizedGrantTypes(Collection<String> authorizedGrantTypes)
+    {
+        List<String> list = new ArrayList<String>();
+        list.addAll(authorizedGrantTypes);
+
+        set(FIELD_AUTHORIZED_GRANT_TYPES, list);
+    }
+
+    @Override
+    public Collection<String> getScope()
+    {
+        List<String> scopeList = new ArrayList<String>();
+
+        ArrayNode array = getArray(FIELD_SCOPE);
+        if (array != null)
+        {
+            for (int i = 0; i < array.size(); i++)
+            {
+                String scope = array.get(i).getTextValue();
+
+                scopeList.add(scope);
+            }
+        }
+
+        return scopeList;
+    }
+
+    @Override
+    public void setScope(Collection<String> scope)
+    {
+        List<String> list = new ArrayList<String>();
+        list.addAll(scope);
+
+        set(FIELD_SCOPE, list);
+    }
+
+    @Override
+    public String getRegisteredRedirectUri()
+    {
+        return getString(FIELD_REGISTERED_REDIRECT_URI);
+    }
+
+    @Override
+    public void setRegisteredRedirectUri(String registeredRedirectUri)
+    {
+        set(FIELD_REGISTERED_REDIRECT_URI, registeredRedirectUri);
     }
 
 

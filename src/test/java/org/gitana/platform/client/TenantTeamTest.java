@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client;
 
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
@@ -36,22 +37,88 @@ public class TenantTeamTest extends AbstractTestCase
     @Test
     public void testTenantTeams()
     {
-        Gitana gitana = new Gitana();
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        // authenticate as ADMIN
+        //
 
-        // authenticate
+        Gitana gitana = new Gitana();
+        
         Platform platform = gitana.authenticate("admin", "admin");
 
-        // create a user
-        DomainUser user = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), "pw");
+        // create user #1
+        DomainUser user1 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), "pw");
+        // create user #2
+        DomainUser user2 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), "pw");
 
         // default registrar
         Registrar registrar = platform.readRegistrar("default");
 
-        // create a tenant for this user
-        Tenant tenant = registrar.createTenant(user, "unlimited");
+        // create a tenant for user #1
+        Tenant tenant1 = registrar.createTenant(user1, "unlimited");
+
+        // create a tenant for user #2
+        Tenant tenant2 = registrar.createTenant(user2, "unlimited");
+        
+
+        // verify that user1's identity has multiple users (user1 in default and user1prime in tenant1 domain)
+        ResultMap<DomainUser> users = user1.readIdentity().findUsers();
+        assertEquals(2, users.size());
 
         // verify we can find tenants with this user
-        ResultMap<Tenant> tenants = registrar.findTenantsWithPrincipalTeamMember(user, null);
+        ResultMap<Tenant> tenants = user1.readIdentity().findTenants(registrar);
         assertEquals(1, tenants.size());
+        
+        // verify we can pick out the account this user has on tenant1
+        Tenant foundTenant = tenants.values().iterator().next();
+        assertEquals(tenant1.getId(), foundTenant.getId());
+        DomainUser user1inTenant1 = user1.readIdentity().findUserForTenant(foundTenant.getId());
+        assertNotNull(user1inTenant1);
+        assertNotNull(users.get(user1inTenant1.getId()));
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        // authenticate as USER 2 (to tenant2)
+        //
+
+        // now sign into the tenant
+        Client client2 = tenant2.readDefaultClient();
+        gitana = new Gitana(client2);
+        //platform = gitana.authenticate(user2.readIdentity().findUserForTenant(tenant2.getId()), "pw");
+        //platform = gitana.authenticateOnTenant(user2.readIdentity(), "pw", tenant2.getId());
+        platform = gitana.authenticateOnTenant(user2, "pw", tenant2.getId());
+        
+        // invite user 1 into our default domain
+        DomainUser user1inTenant2 = platform.readDefaultDomain().inviteUser(user1);
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        // authenticate as ADMIN
+        //
+
+        gitana = new Gitana();
+        platform = gitana.authenticate("admin", "admin");
+
+        // verify that user1's identity has multiple users (user1 in default, user1prime1 in tenant1 domain, user1prime2 in tenant2 domain)
+        users = user1.readIdentity().findUsers();
+        assertEquals(3, users.size());
+
+        // verify we can find tenants with this user
+        tenants = user1.readIdentity().findTenants(registrar);
+        assertEquals(2, tenants.size());
+
+        // verify we can pick out the account this user has on tenant1
+        DomainUser user1inTenant1check = user1.readIdentity().findUserForTenant(tenant1.getId());
+        assertNotNull(user1inTenant1check);
+        assertNotNull(users.get(user1inTenant1check.getId()));
+        DomainUser user1inTenant2check = user1.readIdentity().findUserForTenant(tenant2.getId());
+        assertNotNull(user1inTenant2check);
+        assertNotNull(users.get(user1inTenant2check.getId()));
+        
     }
+
 }
