@@ -109,7 +109,7 @@ public interface Registration extends ApplicationDocument, Selfable
 
     public void sendConfirmationEmail();
     public void sendWelcomeEmail();
-    public void confirm();
+    public void confirm(String newUserPassword);
 
 }
 

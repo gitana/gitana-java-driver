@@ -135,8 +135,8 @@ public class RegistrationTest extends AbstractTestCase
         registration1.setUserLastName("McKenzie");
         registration1.update();
 
-        // confirm
-        registration1.confirm();
+        // confirm (and supply the password for the new user)
+        registration1.confirm("password");
         
         // verify the registration completed
         registration1.reload();
