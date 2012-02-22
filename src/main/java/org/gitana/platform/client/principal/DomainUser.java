@@ -92,13 +92,6 @@ public interface DomainUser extends DomainPrincipal
     public Person readPerson(Branch branch);
     public Person readPerson(Branch branch, boolean createIfNotFound);
 
-    /**
-     * Changes the password for this user.
-     *
-     * @param newPassword
-     */
-    public void changePassword(String newPassword);
-
     public boolean hasIdentity();
     public String getDirectoryId();
     public String getIdentityId();

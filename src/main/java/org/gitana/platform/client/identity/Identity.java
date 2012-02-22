@@ -33,6 +33,13 @@ import org.gitana.platform.support.ResultMap;
  */
 public interface Identity extends DirectoryDocument, Selfable
 {
+    /**
+     * Changes the password for this identity.
+     *
+     * @param newPassword
+     */
+    public void changePassword(String newPassword);
+
     public ResultMap<DomainUser> findUsers();
     public DomainUser findUserForTenant(String tenantId);
 

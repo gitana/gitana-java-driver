@@ -28,7 +28,6 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.types.Person;
 import org.gitana.platform.services.principals.PrincipalType;
-import org.gitana.util.JsonUtil;
 
 /**
  * @author uzi
@@ -48,15 +47,6 @@ public class DomainUserImpl extends AbstractDomainPrincipalImpl implements Domai
     protected void init()
     {
         this.setType(PrincipalType.USER);
-    }
-
-    @Override
-    public void changePassword(String newPassword)
-    {
-        ObjectNode object = JsonUtil.createObject();
-        object.put("password", newPassword);
-
-        getRemote().post(getResourceUri() + "/changepassword", object);
     }
 
 
