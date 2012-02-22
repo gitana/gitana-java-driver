@@ -379,8 +379,8 @@ public class PrincipalTest extends AbstractTestCase
         DomainUser mike = mikeDomain.createUser("mike", "abc");
         
         // change password
-        mike.changePassword("def");
-        
+        mike.readIdentity().changePassword("def");
+
         // authenticate with old password (should fail)
         Throwable ex1 = null;
         try
@@ -405,6 +405,5 @@ public class PrincipalTest extends AbstractTestCase
         }
         assertNull(ex2);
     }
-    
-    
+
 }

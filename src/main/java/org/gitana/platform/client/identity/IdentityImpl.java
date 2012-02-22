@@ -96,6 +96,15 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     }
 
     @Override
+    public void changePassword(String newPassword)
+    {
+        ObjectNode object = JsonUtil.createObject();
+        object.put("password", newPassword);
+
+        getRemote().post(getResourceUri() + "/changepassword", object);
+    }
+
+    @Override
     public ResultMap<DomainUser> findUsers() 
     {
         Map<String, String> params = DriverUtil.params();
