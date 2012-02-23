@@ -73,4 +73,14 @@ public class AuthInfo extends GitanaObjectImpl
     {
         return getString("clientId");
     }
+    
+    public String getDirectoryId()
+    {
+        return getString("directoryId");
+    }
+    
+    public String getIdentityId()
+    {
+        return getString("identityId");
+    }
 }
