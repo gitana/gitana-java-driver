@@ -22,20 +22,13 @@
 package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Client;
-import org.gitana.platform.client.billing.BillingTransaction;
-import org.gitana.platform.client.billing.PaymentMethod;
-import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
-import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
-import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
-import org.gitana.util.JsonUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -169,19 +162,9 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     {
         return getString(FIELD_BILLING_PAYMENT_METHOD_ID);
     }
-
-    @Override
-    public ResultMap<ObjectNode> listAllocatedObjects()
+    
+    private ResultMap<ObjectNode> toObjects(Response response)
     {
-        return listAllocatedObjects(null);
-    }
-
-    @Override
-    public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-        Response response = getRemote().get(getResourceUri() + "/objects", params);
-
         ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();
 
         List<ObjectNode> objects = response.getObjectNodes();
@@ -191,93 +174,147 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
             results.put(id, object);
         }
 
-        return results;
+        return results;        
     }
 
     @Override
-    public ResultMap<Repository> listRepositories()
+    public ResultMap<ObjectNode> listAllocatedObjects()
     {
-        return listRepositories(null);
+        return listAllocatedObjects(null, null);
     }
 
     @Override
-    public ResultMap<Repository> listRepositories(Pagination pagination)
+    public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination) 
     {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/repositories", params);
-        return getFactory().repositories(getRegistrar().getPlatform(), response);
+        return listAllocatedObjects(null, pagination);
     }
 
     @Override
-    public ResultMap<Domain> listDomains()
+    public ResultMap<ObjectNode> listAllocatedObjects(String objectType) 
     {
-        return listDomains(null);
+        return listAllocatedObjects(objectType, null);
     }
 
     @Override
-    public ResultMap<Domain> listDomains(Pagination pagination)
+    public ResultMap<ObjectNode> listAllocatedObjects(String objectType, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
+        if (objectType != null)
+        {
+            params.put("type", objectType);
+        }
+        
+        Response response = getRemote().get(getResourceUri() + "/objects", params);
 
-        Response response = getRemote().get(getResourceUri() + "/domains", params);
-        return getFactory().domains(getRegistrar().getPlatform(), response);
+        return toObjects(response);
+    }
+    
+    @Override
+    public ResultMap<ObjectNode> listAllocatedRepositoryObjects()
+    {
+        return listAllocatedRepositoryObjects(null);
     }
 
     @Override
-    public ResultMap<Vault> listVaults()
+    public ResultMap<ObjectNode> listAllocatedRepositoryObjects(Pagination pagination)
     {
-        return listVaults(null);
+        return listAllocatedObjects("repository", pagination);
     }
 
     @Override
-    public ResultMap<Vault> listVaults(Pagination pagination)
+    public ResultMap<ObjectNode> listAllocatedDomainObjects()
     {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/vaults", params);
-        return getFactory().vaults(getRegistrar().getPlatform(), response);
+        return listAllocatedDomainObjects(null);
     }
 
     @Override
-    public ResultMap<Client> listClients()
+    public ResultMap<ObjectNode> listAllocatedDomainObjects(Pagination pagination)
     {
-        return listClients(null);
+        return listAllocatedObjects("domain", pagination);
     }
 
     @Override
-    public ResultMap<Client> listClients(Pagination pagination)
+    public ResultMap<ObjectNode> listAllocatedVaultObjects()
     {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/clients", params);
-        return getFactory().clients(getRegistrar().getPlatform(), response);
+        return listAllocatedVaultObjects(null);
     }
 
     @Override
-    public ResultMap<Registrar> listRegistrars()
+    public ResultMap<ObjectNode> listAllocatedVaultObjects(Pagination pagination)
     {
-        return listRegistrars(null);
+        return listAllocatedObjects("vault", pagination);
     }
 
     @Override
-    public ResultMap<Registrar> listRegistrars(Pagination pagination)
+    public ResultMap<ObjectNode> listAllocatedClientObjects()
     {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/registrars", params);
-        return getFactory().registrars(getRegistrar().getPlatform(), response);
+        return listAllocatedClientObjects(null);
     }
 
     @Override
-    public Client readDefaultClient()
+    public ResultMap<ObjectNode> listAllocatedClientObjects(Pagination pagination)
     {
-        Client client = null;
+        return listAllocatedObjects("client", pagination);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedRegistrarObjects()
+    {
+        return listAllocatedRegistrarObjects(null);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedRegistrarObjects(Pagination pagination)
+    {
+        return listAllocatedObjects("registrar", pagination);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedStackObjects()
+    {
+        return listAllocatedStackObjects(null);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedStackObjects(Pagination pagination)
+    {
+        return listAllocatedObjects("stack", pagination);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedDirectoryObjects()
+    {
+        return listAllocatedDirectoryObjects(null);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedDirectoryObjects(Pagination pagination)
+    {
+        return listAllocatedObjects("directory", pagination);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedApplicationObjects()
+    {
+        return listAllocatedApplicationObjects(null);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> listAllocatedApplicationObjects(Pagination pagination)
+    {
+        return listAllocatedObjects("application", pagination);
+    }
+
+    @Override
+    public ObjectNode readDefaultAllocatedClientObject() 
+    {
+        ObjectNode object = null;
 
         try
         {
             Response response = getRemote().get(getResourceUri() + "/defaultclient");
-            client = getFactory().client(this.getRegistrar().getPlatform(), response);
+
+            object = response.getObjectNode();
         }
         catch (Exception ex)
         {
@@ -286,150 +323,7 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
             // TODO: information so that we can detect a proper 404
         }
 
-        return client;
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // PAYMENT METHODS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<PaymentMethod> listPaymentMethods()
-    {
-        return listPaymentMethods(null);
-    }
-
-    @Override
-    public ResultMap<PaymentMethod> listPaymentMethods(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/billing/paymentmethods", params);
-        return getFactory().paymentMethods(this, response);
-    }
-
-    @Override
-    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query)
-    {
-        return queryPaymentMethods(query, null);
-    }
-
-    @Override
-    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post(getResourceUri() + "/billing/paymentmethods/query", params, query);
-        return getFactory().paymentMethods(this, response);
-    }
-
-    @Override
-    public PaymentMethod readPaymentMethod(String paymentMethodId)
-    {
-        PaymentMethod paymentMethod = null;
-
-        try
-        {
-            Response response = getRemote().get(getResourceUri() + "/billing/paymentmethods/" + paymentMethodId);
-            paymentMethod = getFactory().paymentMethod(this, response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return paymentMethod;
-    }
-
-    @Override
-    public PaymentMethod createPaymentMethod(String holderName, String number, int expirationMonth, int expirationYear)
-    {
-        ObjectNode object = JsonUtil.createObject();
-
-        object.put(PaymentMethod.FIELD_HOLDER_NAME, holderName);
-        object.put(PaymentMethod.FIELD_CARDNUMBER, number);
-        object.put(PaymentMethod.FIELD_EXPIRATION_MONTH, expirationMonth);
-        object.put(PaymentMethod.FIELD_EXPIRATION_YEAR, expirationYear);
-
-        return createPaymentMethod(object);
-    }
-
-    @Override
-    public PaymentMethod createPaymentMethod(ObjectNode object)
-    {
-        // allow for null object
-        if (object == null)
-        {
-            object = JsonUtil.createObject();
-        }
-
-        Response response = getRemote().post(getResourceUri() + "/billing/paymentmethods", object);
-
-        String paymentMethodId = response.getId();
-        return readPaymentMethod(paymentMethodId);
-    }
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // BILLING TRANSACTIONS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<BillingTransaction> listBillingTransactions()
-    {
-        return listBillingTransactions(null);
-    }
-
-    @Override
-    public ResultMap<BillingTransaction> listBillingTransactions(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/billing/transactions", params);
-        return getFactory().billingTransactions(this, response);
-    }
-
-    @Override
-    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query)
-    {
-        return queryBillingTransactions(query, null);
-    }
-
-    @Override
-    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post(getResourceUri() + "/billing/transactions/query", params, query);
-        return getFactory().billingTransactions(this, response);
-    }
-
-    @Override
-    public BillingTransaction readBillingTransaction(String transactionId)
-    {
-        BillingTransaction transaction = null;
-
-        try
-        {
-            Response response = getRemote().get(getResourceUri() + "/billing/transactions/" + transactionId);
-            transaction = getFactory().billingTransaction(this, response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return transaction;
+        return object;
     }
 
 }

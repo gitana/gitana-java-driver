@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.JSONBuilder;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.domain.Domain;
@@ -30,6 +31,7 @@ import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.api.GrantTypes;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -56,12 +58,13 @@ public class ClientTest extends AbstractTestCase
         // create user #1 and tenant #1
         DomainUser user1 = domain.createUser("abc-" + System.currentTimeMillis(), "pw");
         Tenant tenant1 = registrar.createTenant(user1, "unlimited");
-        Client tenantClient1 = tenant1.readDefaultClient();
-
-        assertNotNull(tenantClient1);
+        ObjectNode defaultClientObject1 = tenant1.readDefaultAllocatedClientObject();
+        assertNotNull(defaultClientObject1);
+        String clientKey1 = JsonUtil.objectGetString(defaultClientObject1, Client.FIELD_KEY);
+        String clientSecret1 = JsonUtil.objectGetString(defaultClientObject1, Client.FIELD_SECRET);
 
         // authenticate as this new tenant + principal
-        platform = new Gitana(tenantClient1.getKey(), tenantClient1.getSecret()).authenticate(user1.getName(), "pw");
+        platform = new Gitana(clientKey1, clientSecret1).authenticate(user1.getName(), "pw");
 
         // count the # of client objects on the platform
         int startingSize = platform.listClients().size();

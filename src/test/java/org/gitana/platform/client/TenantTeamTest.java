@@ -21,12 +21,14 @@
 
 package org.gitana.platform.client;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
@@ -84,8 +86,11 @@ public class TenantTeamTest extends AbstractTestCase
         //
 
         // now sign into the tenant
-        Client client2 = tenant2.readDefaultClient();
-        gitana = new Gitana(client2);
+        ObjectNode defaultClientObject2 = tenant2.readDefaultAllocatedClientObject();
+        assertNotNull(defaultClientObject2);
+        String clientKey2 = JsonUtil.objectGetString(defaultClientObject2, Client.FIELD_KEY);
+        String clientSecret2 = JsonUtil.objectGetString(defaultClientObject2, Client.FIELD_SECRET);
+        gitana = new Gitana(clientKey2, clientSecret2);
         //platform = gitana.authenticate(user2.readIdentity().findUserForTenant(tenant2.getId()), "pw");
         //platform = gitana.authenticateOnTenant(user2.readIdentity(), "pw", tenant2.getId());
         platform = gitana.authenticateOnTenant(user2, "pw", tenant2.getId());

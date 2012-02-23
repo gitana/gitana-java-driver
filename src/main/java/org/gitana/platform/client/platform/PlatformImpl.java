@@ -25,6 +25,8 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.billing.Billing;
+import org.gitana.platform.client.billing.BillingImpl;
 import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.directory.Directory;
@@ -98,6 +100,12 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     public Directory readDefaultDirectory()
     {
         return readDirectory(getDefaultDirectoryId());
+    }
+
+    @Override
+    public Billing getBillingSystem() 
+    {
+        return new BillingImpl(this);
     }
 
 

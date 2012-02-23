@@ -34,10 +34,10 @@ import org.junit.Test;
 /**
  * @author uzi
  */
-public class TenantObjectTest extends AbstractTestCase
+public class TenantAllocationTest extends AbstractTestCase
 {
     @Test
-    public void testObjectAllocationsPerTenant()
+    public void testAllocations()
         throws Exception
     {
         Gitana gitana = new Gitana();
@@ -60,16 +60,6 @@ public class TenantObjectTest extends AbstractTestCase
         String clientKey1 = JsonUtil.objectGetString(defaultClientObject1, Client.FIELD_KEY);
         String clientSecret1 = JsonUtil.objectGetString(defaultClientObject1, Client.FIELD_SECRET);
 
-        // create a principal + tenant (#2)
-        String userName2 = "user2-" + System.currentTimeMillis();
-        DomainUser user2 = domain.createUser(userName2, "pw");
-        Tenant tenant2 = registrar.createTenant(user2, "unlimited");
-        ObjectNode defaultClientObject2 = tenant2.readDefaultAllocatedClientObject();
-        assertNotNull(defaultClientObject2);
-        String clientKey2 = JsonUtil.objectGetString(defaultClientObject2, Client.FIELD_KEY);
-        String clientSecret2 = JsonUtil.objectGetString(defaultClientObject2, Client.FIELD_SECRET);
-
-
         //
         // now authenticate as the tenant principal #1
         //
@@ -77,8 +67,9 @@ public class TenantObjectTest extends AbstractTestCase
         gitana = new Gitana(clientKey1, clientSecret1);
         platform = gitana.authenticateOnTenant(user1, "pw", tenant1);
 
-        // now we create 12 things
+        // now we create 21 things
         //
+        //   6 applications
         //   5 repositories
         //   4 domains
         //   3 vaults
@@ -87,6 +78,12 @@ public class TenantObjectTest extends AbstractTestCase
 
         // as we create these, they should be automatically allocated to our tenant
 
+        platform.createApplication();
+        platform.createApplication();
+        platform.createApplication();
+        platform.createApplication();
+        platform.createApplication();
+        platform.createApplication();
         platform.createRepository();
         platform.createRepository();
         platform.createRepository();
@@ -104,6 +101,7 @@ public class TenantObjectTest extends AbstractTestCase
         platform.createRegistrar();
 
         // validate via general queries
+        assertEquals(6+1, platform.listApplications().size()); // 1 default
         assertEquals(5, platform.listRepositories().size());
         assertEquals(4+1, platform.listDomains().size()); // 1 custom, 1 default
         assertEquals(3, platform.listVaults().size());
@@ -114,44 +112,22 @@ public class TenantObjectTest extends AbstractTestCase
 
 
         //
-        // now authenticate as the tenant principal #2
+        // now authenticate again as the admin
         //
 
-        gitana = new Gitana(clientKey2, clientSecret2);
-        platform = gitana.authenticate(user2.getName(), "pw");
+        platform = new Gitana().authenticate("admin", "admin");
+        
+        tenant1 = platform.readRegistrar(registrar.getId()).readTenant(tenant1.getId());
+        
 
-        // now we create 15 things
-        //
-        //   1 repositories
-        //   2 domains
-        //   3 vaults
-        //   4 consumers
-        //   5 registrars
-
-        // as we create these, they should be automatically allocated to our tenant
-
-        platform.createRepository();
-        platform.createDomain();
-        platform.createDomain();
-        platform.createVault();
-        platform.createVault();
-        platform.createVault();
-        platform.createClient();
-        platform.createClient();
-        platform.createClient();
-        platform.createClient();
-        platform.createRegistrar();
-        platform.createRegistrar();
-        platform.createRegistrar();
-        platform.createRegistrar();
-        platform.createRegistrar();
-
-        // validate via general queries
-        assertEquals(1, platform.listRepositories().size());
-        assertEquals(2+1, platform.listDomains().size()); // 2 custom, 1 default
-        assertEquals(3, platform.listVaults().size());
-        assertEquals(4+1, platform.listClients().size()); // 4 custom, 1 default
-        assertEquals(5, platform.listRegistrars().size());
+        // now check allocations for the tenant object
+        assertEquals(24, tenant1.listAllocatedObjects().size()); // 21 + 3 defaults (domain, client, application) // and then -1 for some reason, cannot find a third client?
+        assertEquals(6+1, tenant1.listAllocatedApplicationObjects().size()); // 7
+        assertEquals(5, tenant1.listAllocatedRepositoryObjects().size()); // 5
+        assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 5
+        assertEquals(3, tenant1.listAllocatedVaultObjects().size()); // 3
+        assertEquals(2+1, tenant1.listAllocatedClientObjects().size()); // 3
+        assertEquals(1, tenant1.listAllocatedRegistrarObjects().size()); // 1
     }
 
 }

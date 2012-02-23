@@ -25,7 +25,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.GitanaObjectImpl;
 
 /**
@@ -33,13 +32,13 @@ import org.gitana.platform.support.GitanaObjectImpl;
  */
 public class BillingTransactionImpl extends GitanaObjectImpl implements BillingTransaction
 {
-    private Tenant tenant = null;
+    private Billing billing = null;
 
-    public BillingTransactionImpl(Tenant tenant, ObjectNode obj)
+    public BillingTransactionImpl(Billing billing, ObjectNode obj)
     {
         super(obj);
 
-        this.tenant = tenant;
+        this.billing = billing;
     }
 
     protected Driver getDriver()
@@ -50,12 +49,6 @@ public class BillingTransactionImpl extends GitanaObjectImpl implements BillingT
     protected Remote getRemote()
     {
         return getDriver().getRemote();
-    }
-
-    @Override
-    public Tenant getTenant()
-    {
-        return this.tenant;
     }
 
     @Override

@@ -22,15 +22,8 @@
 package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.api.Client;
-import org.gitana.platform.client.billing.BillingTransaction;
-import org.gitana.platform.client.billing.PaymentMethod;
-import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.registrar.RegistrarDocument;
-import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Selfable;
-import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -65,30 +58,15 @@ public interface Tenant extends RegistrarDocument, Selfable
 
     public ResultMap<ObjectNode> listAllocatedObjects();
     public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination);
-
-    // list/query
-
-    public ResultMap<Repository> listRepositories();
-    public ResultMap<Repository> listRepositories(Pagination pagination);
-
-    public ResultMap<Domain> listDomains();
-    public ResultMap<Domain> listDomains(Pagination pagination);
-
-    public ResultMap<Vault> listVaults();
-    public ResultMap<Vault> listVaults(Pagination pagination);
-
-    public ResultMap<Client> listClients();
-    public ResultMap<Client> listClients(Pagination pagination);
-
-    public ResultMap<Registrar> listRegistrars();
-    public ResultMap<Registrar> listRegistrars(Pagination pagination);
+    public ResultMap<ObjectNode> listAllocatedObjects(String objectType);
+    public ResultMap<ObjectNode> listAllocatedObjects(String objectType, Pagination pagination);
 
     /**
      * Administrative method that will only work for the "owner" of the tenant.  Otherwise will return null.
      *
-     * @return default client
+     * @return default client configuration
      */
-    public Client readDefaultClient();
+    public ObjectNode readDefaultAllocatedClientObject();
 
     // billing
 
@@ -100,33 +78,44 @@ public interface Tenant extends RegistrarDocument, Selfable
 
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // PAYMENT METHODS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ResultMap<PaymentMethod> listPaymentMethods();
-    public ResultMap<PaymentMethod> listPaymentMethods(Pagination pagination);
-    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query);
-    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query, Pagination pagination);
-    public PaymentMethod readPaymentMethod(String paymentMethodId);
-    public PaymentMethod createPaymentMethod(String holderName, String number, int expirationMonth, int expirationYear);
-    public PaymentMethod createPaymentMethod(ObjectNode object);
+
+
 
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // BILLING TRANSACTIONS
+    // THESE METHODS WILL ONLY WORK IF THE TENANT IS THE CURRENTLY AUTHENTICATED TENANT
+    // OTHERWISE, THEY WILL THROW AN ERROR BACK
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ResultMap<BillingTransaction> listBillingTransactions();
-    public ResultMap<BillingTransaction> listBillingTransactions(Pagination pagination);
-    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query);
-    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query, Pagination pagination);
-    public BillingTransaction readBillingTransaction(String transactionId);
 
+    // list/query
+
+    public ResultMap<ObjectNode> listAllocatedRepositoryObjects();
+    public ResultMap<ObjectNode> listAllocatedRepositoryObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedDomainObjects();
+    public ResultMap<ObjectNode> listAllocatedDomainObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedVaultObjects();
+    public ResultMap<ObjectNode> listAllocatedVaultObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedClientObjects();
+    public ResultMap<ObjectNode> listAllocatedClientObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedRegistrarObjects();
+    public ResultMap<ObjectNode> listAllocatedRegistrarObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedStackObjects();
+    public ResultMap<ObjectNode> listAllocatedStackObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedDirectoryObjects();
+    public ResultMap<ObjectNode> listAllocatedDirectoryObjects(Pagination pagination);
+
+    public ResultMap<ObjectNode> listAllocatedApplicationObjects();
+    public ResultMap<ObjectNode> listAllocatedApplicationObjects(Pagination pagination);
 
 }

@@ -25,7 +25,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.params.HttpConnectionParams;
 import org.gitana.http.OAuth2HttpMethodExecutor;
-import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
 import org.gitana.platform.client.identity.Identity;
@@ -66,14 +65,6 @@ public class Gitana
         this(null, clientId, clientSecret);
     }
 
-    /**
-     * Creates a Gitana instance bound to a Gitana API client.
-     */
-    public Gitana(Client client)
-    {
-        this(null, client.getKey(), client.getSecret());
-    }
-    
     /**
      * Creates a Gitana instance bound to a given client on an environment.
      *

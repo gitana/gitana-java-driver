@@ -24,6 +24,7 @@ package org.gitana.platform.client.platform;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.billing.Billing;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.directory.Directory;
@@ -58,6 +59,9 @@ public interface Platform extends DataStore
 
     public Directory readDefaultDirectory();
 
+    
+    // billing
+    public Billing getBillingSystem();
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

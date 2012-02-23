@@ -57,7 +57,9 @@ public class LogTest extends AbstractTestCase
 
         // create a tenant for this user
         Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
-        Client client = tenant.readDefaultClient();
+        ObjectNode defaultClientObject = tenant.readDefaultAllocatedClientObject();
+        String clientKey = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_KEY);
+        String clientSecret = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_SECRET);
 
 
 
@@ -65,7 +67,7 @@ public class LogTest extends AbstractTestCase
         // AUTHENTICATE AS THE TENANT USER
         //
 
-        gitana = new Gitana(client.getKey(), client.getSecret());
+        gitana = new Gitana(clientKey, clientSecret);
         platform = gitana.authenticate(user.getName(), "pw");
 
         // build a stack with repository, domain, vault...

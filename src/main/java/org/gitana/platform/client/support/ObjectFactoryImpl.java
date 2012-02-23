@@ -30,10 +30,7 @@ import org.gitana.platform.client.archive.ArchiveImpl;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.attachment.AttachmentImpl;
-import org.gitana.platform.client.billing.BillingTransaction;
-import org.gitana.platform.client.billing.BillingTransactionImpl;
-import org.gitana.platform.client.billing.PaymentMethod;
-import org.gitana.platform.client.billing.PaymentMethodImpl;
+import org.gitana.platform.client.billing.*;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.branch.BranchImpl;
 import org.gitana.platform.client.changeset.Changeset;
@@ -1238,18 +1235,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public PaymentMethod paymentMethod(Tenant tenant, Response response)
+    public PaymentMethod paymentMethod(Billing billing, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new PaymentMethodImpl(tenant, response.getObjectNode());
+        return new PaymentMethodImpl(billing, response.getObjectNode());
     }
 
     @Override
-    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response)
+    public ResultMap<PaymentMethod> paymentMethods(Billing billing, Response response)
     {
         if (!response.isListDocument())
         {
@@ -1259,7 +1256,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<PaymentMethod> map = new ResultMapImpl<PaymentMethod>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            PaymentMethod paymentMethod = new PaymentMethodImpl(tenant, object);
+            PaymentMethod paymentMethod = new PaymentMethodImpl(billing, object);
             map.put(paymentMethod.getId(), paymentMethod);
         }
 
@@ -1267,18 +1264,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public BillingTransaction billingTransaction(Tenant tenant, Response response)
+    public BillingTransaction billingTransaction(Billing billing, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new BillingTransactionImpl(tenant, response.getObjectNode());
+        return new BillingTransactionImpl(billing, response.getObjectNode());
     }
 
     @Override
-    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response)
+    public ResultMap<BillingTransaction> billingTransactions(Billing billing, Response response)
     {
         if (!response.isListDocument())
         {
@@ -1288,7 +1285,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<BillingTransaction> map = new ResultMapImpl<BillingTransaction>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            BillingTransaction billingTransaction = new BillingTransactionImpl(tenant, object);
+            BillingTransaction billingTransaction = new BillingTransactionImpl(billing, object);
             map.put(billingTransaction.getId(), billingTransaction);
         }
 
