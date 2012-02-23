@@ -61,7 +61,7 @@ public interface Platform extends DataStore
 
     
     // billing
-    public Billing getBillingSystem();
+    public Billing getBilling();
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

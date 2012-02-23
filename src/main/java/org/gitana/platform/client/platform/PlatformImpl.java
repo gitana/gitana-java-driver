@@ -103,7 +103,7 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     }
 
     @Override
-    public Billing getBillingSystem() 
+    public Billing getBilling()
     {
         return new BillingImpl(this);
     }
