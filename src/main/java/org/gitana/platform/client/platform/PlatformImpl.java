@@ -38,7 +38,6 @@ import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
-import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.Pagination;
@@ -113,33 +112,6 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     public String getOwnerTenantId()
     {
         return getString("ownerTenantId");
-    }
-
-    @Override
-    public Registrar getOwnerRegistrar()
-    {
-        Registrar ownerRegistrar = null;
-
-        if (getOwnerRegistrarId() != null)
-        {
-            ownerRegistrar = readRegistrar(getOwnerRegistrarId());
-        }
-
-        return ownerRegistrar;
-    }
-
-    @Override
-    public Tenant getOwnerTenant()
-    {
-        Tenant ownerTenant = null;
-
-        Registrar ownerRegistrar = getOwnerRegistrar();
-        if (ownerRegistrar != null && getOwnerTenantId() != null)
-        {
-            ownerTenant = getOwnerRegistrar().readTenant(getOwnerTenantId());
-        }
-
-        return ownerTenant;
     }
 
     @Override
