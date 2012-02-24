@@ -21,11 +21,10 @@
 
 package org.gitana.platform.client.identity;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.directory.DirectoryDocument;
-import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.support.Selfable;
-import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.ResultMap;
 
 /**
@@ -40,13 +39,13 @@ public interface Identity extends DirectoryDocument, Selfable
      */
     public void changePassword(String newPassword);
 
-    public ResultMap<DomainUser> findUsers();
-    public DomainUser findUserForTenant(String tenantId);
+    public ResultMap<ObjectNode> findUserObjects();
+    public ObjectNode findUserObjectForTenant(String tenantId);
 
     /**
      * @return the tenants that this identity participates in on this platform
      */
-    public ResultMap<Tenant> findTenants();
+    public ResultMap<ObjectNode> findTenantObjects();
 
     /**
      * Retrieves the tenants that this identity participates in within the specified registry.
@@ -54,5 +53,5 @@ public interface Identity extends DirectoryDocument, Selfable
      * @param registrar
      * @return
      */
-    public ResultMap<Tenant> findTenants(Registrar registrar);
+    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar);
 }

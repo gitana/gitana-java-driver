@@ -348,29 +348,8 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             throw new RuntimeException("Response must be a data document");
         }
-
-        DomainPrincipal principal = null;
-
-        ObjectNode object = response.getObjectNode();
-
-        String domainId = JsonUtil.objectGetString(object, "domainId");
-        Domain domain = platform.readDomain(domainId);
-        if (domain == null)
-        {
-            throw new RuntimeException("Cannot find domain: " + domainId);
-        }
-
-        PrincipalType principalType = PrincipalType.valueOf(JsonUtil.objectGetString(object, DomainPrincipal.FIELD_TYPE));
-        if (principalType.equals(PrincipalType.GROUP))
-        {
-            principal = new DomainGroupImpl(domain, object, true);
-        }
-        else if (principalType.equals(PrincipalType.USER))
-        {
-            principal = new DomainUserImpl(domain, object, true);
-        }
-
-        return principal;
+        
+        return domainPrincipal(platform, response.getObjectNode());
     }
 
     @Override
@@ -384,6 +363,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<DomainPrincipal> map = new ResultMapImpl<DomainPrincipal>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
+            /*
             String domainId = JsonUtil.objectGetString(object, "domainId");
 
             Domain domain = platform.readDomain(domainId);
@@ -391,6 +371,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             {
                 throw new RuntimeException("Cannot find domain: " + domainId);
             }
+            */
 
             DomainPrincipal principal = domainPrincipal(platform, object);
             map.put(principal.getId(), principal);

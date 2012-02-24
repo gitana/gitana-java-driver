@@ -24,18 +24,14 @@ package org.gitana.platform.client.identity;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.directory.AbstractDirectoryDocumentImpl;
 import org.gitana.platform.client.directory.Directory;
-import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.support.Response;
-import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
 import org.gitana.util.JsonUtil;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -103,30 +99,34 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
 
         getRemote().post(getResourceUri() + "/changepassword", object);
     }
+    
+    private ResultMap<ObjectNode> toResultMap(Response response)
+    {
+        ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();
+        for (ObjectNode objectNode: response.getObjectNodes())
+        {
+            String id = JsonUtil.objectGetString(objectNode, DomainUser.FIELD_ID);
+
+            results.put(id, objectNode);
+        }
+
+        return results;        
+    }
 
     @Override
-    public ResultMap<DomainUser> findUsers() 
+    public ResultMap<ObjectNode> findUserObjects() 
     {
         Map<String, String> params = DriverUtil.params();
 
         Response response = getRemote().get(getResourceUri() + "/users", params);
-        ResultMap<DomainPrincipal> principals = getFactory().domainPrincipals(this.getPlatform(), response);
         
-        ResultMap<DomainUser> users = new ResultMapImpl<DomainUser>(principals.offset(), principals.totalRows());
-        for (DomainPrincipal principal: principals.values())
-        {
-            DomainUser user = (DomainUser) principal;
-            
-            users.put(user.getId(), user);
-        }
-
-        return users;
+        return toResultMap(response);
     }
 
     @Override
-    public DomainUser findUserForTenant(String tenantId) 
+    public ObjectNode findUserObjectForTenant(String tenantId) 
     {
-        DomainUser domainUser = null;
+        ObjectNode userObject = null;
 
         try
         {
@@ -134,7 +134,8 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
             params.put("tenantId", tenantId);
             
             Response response = getRemote().get(getResourceUri() + "/user", params);
-            domainUser = (DomainUser) getFactory().domainPrincipal(this.getPlatform(), response);
+
+            userObject = response.getObjectNode();
         }
         catch (Exception ex)
         {
@@ -143,16 +144,16 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
             // TODO: information so that we can detect a proper 404
         }
 
-        return domainUser;
+        return userObject;
     }
 
     @Override
-    public ResultMap<Tenant> findTenants() 
+    public ResultMap<ObjectNode> findTenantObjects()
     {
-        return findTenants(null);
+        return findTenantObjects(null);
     }
 
-    public ResultMap<Tenant> findTenants(Registrar registrar)
+    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar)
     {
         Map<String, String> params = DriverUtil.params();
         if (registrar != null)
@@ -160,32 +161,8 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
             params.put("registrarId", registrar.getId());
         }
 
-        Map<String, Registrar> registrars = new HashMap<String, Registrar>();
-        if (registrar != null)
-        {
-            registrars.put(registrar.getId(), registrar);
-        }
-        
         Response response = getRemote().get(getResourceUri() + "/tenants", params);
 
-        ResultMap<Tenant> tenants = new ResultMapImpl<Tenant>();
-        List<ObjectNode> objectNodes = response.getObjectNodes();
-        for (ObjectNode objectNode: objectNodes)
-        {
-            String registrarId = JsonUtil.objectGetString(objectNode, "registrarId");
-            
-            registrar = registrars.get(registrarId);
-            if (registrar == null)
-            {
-                registrar = getPlatform().readRegistrar(registrarId);
-                
-                registrars.put(registrarId, registrar);
-            }
-            
-            Tenant tenant = getFactory().tenant(registrar, objectNode);
-            tenants.put(tenant.getId(), tenant);
-        }
-
-        return tenants;
+        return toResultMap(response);
     }
 }

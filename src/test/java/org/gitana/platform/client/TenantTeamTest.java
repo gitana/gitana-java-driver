@@ -64,19 +64,19 @@ public class TenantTeamTest extends AbstractTestCase
         
 
         // verify that user1's identity has multiple users (user1 in default and user1prime in tenant1 domain)
-        ResultMap<DomainUser> users = user1.readIdentity().findUsers();
-        assertEquals(2, users.size());
+        ResultMap<ObjectNode> userObjects = user1.readIdentity().findUserObjects();
+        assertEquals(2, userObjects.size());
 
         // verify we can find tenants with this user
-        ResultMap<Tenant> tenants = user1.readIdentity().findTenants(registrar);
-        assertEquals(1, tenants.size());
+        ResultMap<ObjectNode> tenantObjects = user1.readIdentity().findTenantObjects(registrar);
+        assertEquals(1, tenantObjects.size());
         
         // verify we can pick out the account this user has on tenant1
-        Tenant foundTenant = tenants.values().iterator().next();
-        assertEquals(tenant1.getId(), foundTenant.getId());
-        DomainUser user1inTenant1 = user1.readIdentity().findUserForTenant(foundTenant.getId());
-        assertNotNull(user1inTenant1);
-        assertNotNull(users.get(user1inTenant1.getId()));
+        ObjectNode foundTenantObject = tenantObjects.values().iterator().next();
+        assertEquals(tenant1.getId(), foundTenantObject.get(DomainUser.FIELD_ID).getTextValue());
+        ObjectNode user1inTenant1Object = user1.readIdentity().findUserObjectForTenant(foundTenantObject.get(DomainUser.FIELD_ID).getTextValue());
+        assertNotNull(user1inTenant1Object);
+        assertNotNull(userObjects.get(user1inTenant1Object.get(DomainUser.FIELD_ID).getTextValue()));
 
 
 
@@ -109,20 +109,20 @@ public class TenantTeamTest extends AbstractTestCase
         platform = gitana.authenticate("admin", "admin");
 
         // verify that user1's identity has multiple users (user1 in default, user1prime1 in tenant1 domain, user1prime2 in tenant2 domain)
-        users = user1.readIdentity().findUsers();
-        assertEquals(3, users.size());
+        userObjects = user1.readIdentity().findUserObjects();
+        assertEquals(3, userObjects.size());
 
         // verify we can find tenants with this user
-        tenants = user1.readIdentity().findTenants(registrar);
-        assertEquals(2, tenants.size());
+        tenantObjects = user1.readIdentity().findTenantObjects(registrar);
+        assertEquals(2, tenantObjects.size());
 
         // verify we can pick out the account this user has on tenant1
-        DomainUser user1inTenant1check = user1.readIdentity().findUserForTenant(tenant1.getId());
-        assertNotNull(user1inTenant1check);
-        assertNotNull(users.get(user1inTenant1check.getId()));
-        DomainUser user1inTenant2check = user1.readIdentity().findUserForTenant(tenant2.getId());
-        assertNotNull(user1inTenant2check);
-        assertNotNull(users.get(user1inTenant2check.getId()));
+        ObjectNode userObject1inTenant1check = user1.readIdentity().findUserObjectForTenant(tenant1.getId());
+        assertNotNull(userObject1inTenant1check);
+        assertNotNull(userObjects.get(userObject1inTenant1check.get(DomainUser.FIELD_ID).getTextValue()));
+        ObjectNode userObject1inTenant2check = user1.readIdentity().findUserObjectForTenant(tenant2.getId());
+        assertNotNull(userObject1inTenant2check);
+        assertNotNull(userObjects.get(userObject1inTenant2check.get(DomainUser.FIELD_ID).getTextValue()));
         
     }
 
