@@ -24,6 +24,9 @@ package org.gitana.platform.client.application;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.util.JsonUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author uzi
  */
@@ -273,9 +276,12 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     }
 
     @Override
-    public void confirm()
+    public void confirm(String newUserPassword)
     {
-        getRemote().post(getResourceUri() + "/confirm", getObject());
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("password", newUserPassword);
+
+        getRemote().post(getResourceUri() + "/confirm", params, getObject());
     }
 
 }

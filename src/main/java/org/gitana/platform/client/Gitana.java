@@ -24,8 +24,8 @@ package org.gitana.platform.client;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.params.HttpConnectionParams;
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.OAuth2HttpMethodExecutor;
-import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
 import org.gitana.platform.client.identity.Identity;
@@ -36,6 +36,7 @@ import org.gitana.platform.client.support.Environment;
 import org.gitana.platform.client.support.RemoteImpl;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.util.JsonUtil;
 
 import java.util.ResourceBundle;
 
@@ -66,14 +67,6 @@ public class Gitana
         this(null, clientId, clientSecret);
     }
 
-    /**
-     * Creates a Gitana instance bound to a Gitana API client.
-     */
-    public Gitana(Client client)
-    {
-        this(null, client.getKey(), client.getSecret());
-    }
-    
     /**
      * Creates a Gitana instance bound to a given client on an environment.
      *
@@ -239,13 +232,16 @@ public class Gitana
      */
     public Platform authenticateOnTenant(Identity identity, String password, String tenantId)
     {
-        DomainUser user = identity.findUserForTenant(tenantId);
-        if (user == null)
+        ObjectNode userObject = identity.findUserObjectForTenant(tenantId);
+        if (userObject == null)
         {
             throw new RuntimeException("Unable to find user on tenant: " + tenantId + " for identity: " + identity.getId());
         }
         
-        return authenticate(user, password);
+        String domainId = JsonUtil.objectGetString(userObject, "domainId");
+        String principalName = JsonUtil.objectGetString(userObject, DomainUser.FIELD_NAME);
+        
+        return authenticate(domainId + "/" + principalName, password);
     }
 
     /**

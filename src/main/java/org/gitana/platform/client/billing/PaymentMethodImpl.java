@@ -25,7 +25,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.GitanaObjectImpl;
 
 /**
@@ -33,13 +32,13 @@ import org.gitana.platform.support.GitanaObjectImpl;
  */
 public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
 {
-    private Tenant tenant = null;
+    private Billing billing = null;
     
-    public PaymentMethodImpl(Tenant tenant, ObjectNode obj)
+    public PaymentMethodImpl(Billing billing, ObjectNode obj)
     {
         super(obj);
-        
-        this.tenant = tenant;
+
+        this.billing = billing;
     }
 
     protected Driver getDriver()
@@ -52,9 +51,9 @@ public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
         return getDriver().getRemote();
     }
 
-    protected Tenant getTenant()
+    protected Billing getBilling()
     {
-        return this.tenant;
+        return this.billing;
     }
 
     @Override
@@ -104,7 +103,7 @@ public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
     @Override
     public void reload()
     {
-        PaymentMethod paymentMethod = getTenant().readPaymentMethod(getId());
+        PaymentMethod paymentMethod = getBilling().readPaymentMethod(getId());
 
         // clear our own object and push new properties
         this.getObject().removeAll();

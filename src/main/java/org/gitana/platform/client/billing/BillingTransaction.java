@@ -22,7 +22,6 @@
 package org.gitana.platform.client.billing;
 
 import org.gitana.platform.GitanaObject;
-import org.gitana.platform.client.tenant.Tenant;
 
 /**
  * @author uzi
@@ -33,5 +32,4 @@ public interface BillingTransaction extends GitanaObject
     public final static String FIELD_ID = "id";
 
     public String getId();
-    public Tenant getTenant();
 }

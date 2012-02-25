@@ -27,6 +27,7 @@ import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
+import org.gitana.platform.client.billing.Billing;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.branch.Branch;
@@ -236,6 +237,23 @@ public interface ObjectFactory
 
 
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BILLING
+    //
+
+    // payment methods
+    public PaymentMethod paymentMethod(Billing billing, Response response);
+    public ResultMap<PaymentMethod> paymentMethods(Billing billing, Response response);
+
+    // billing transaction
+    public BillingTransaction billingTransaction(Billing billing, Response response);
+    public ResultMap<BillingTransaction> billingTransactions(Billing billing, Response response);
+
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // MISCELLANEOUS
@@ -249,12 +267,5 @@ public interface ObjectFactory
     public Team team(Cluster cluster, Teamable teamable, String teamKey, Response response);
     public ResultMap<Team> teams(Cluster cluster, Teamable teamable, Response response);
     
-    // payment methods
-    public PaymentMethod paymentMethod(Tenant tenant, Response response);
-    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response);
-
-    // billing transaction
-    public BillingTransaction billingTransaction(Tenant tenant, Response response);
-    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response);
 
 }
