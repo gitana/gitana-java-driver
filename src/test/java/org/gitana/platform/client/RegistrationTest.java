@@ -95,7 +95,7 @@ public class RegistrationTest extends AbstractTestCase
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
                         .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
-                        .and(EmailProvider.FIELD_PASSWORD).is("w1ntermute")
+                        .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
                         .and(EmailProvider.FIELD_SMTP_REQUIRES_AUTH).is(true)
