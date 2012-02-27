@@ -35,9 +35,10 @@ public interface Identity extends DirectoryDocument, Selfable
     /**
      * Changes the password for this identity.
      *
-     * @param newPassword
+     * @param password
+     * @param verifyPassword
      */
-    public void changePassword(String newPassword);
+    public void changePassword(String password, String verifyPassword);
 
     public ResultMap<ObjectNode> findUserObjects();
     public ObjectNode findUserObjectForTenant(String tenantId);
