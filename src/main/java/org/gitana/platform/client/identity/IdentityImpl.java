@@ -92,10 +92,11 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     }
 
     @Override
-    public void changePassword(String newPassword)
+    public void changePassword(String password, String verifyPassword)
     {
         ObjectNode object = JsonUtil.createObject();
-        object.put("password", newPassword);
+        object.put("password", password);
+        object.put("verifyPassword", verifyPassword);
 
         getRemote().post(getResourceUri() + "/changepassword", object);
     }
