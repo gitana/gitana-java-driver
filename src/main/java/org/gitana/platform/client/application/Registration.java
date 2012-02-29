@@ -53,6 +53,8 @@ public interface Registration extends ApplicationDocument, Selfable
     public final static String FIELD_SIGNUP_PROPERTIES = "signupProperties";
 
     // tenant support
+    public final static String FIELD_TENANT_TITLE = "tenantTitle";
+    public final static String FIELD_TENANT_DESCRIPTION = "tenantDescription";
     public final static String FIELD_TENANT_PLAN_KEY = "tenantPlanKey";
     public final static String FIELD_TENANT_REGISTRAR_ID = "tenantRegistrarId";
 
@@ -84,6 +86,12 @@ public interface Registration extends ApplicationDocument, Selfable
 
     public ObjectNode getSignupProperties();
     public void setSignupProperties(ObjectNode signupProperties);
+
+    public void setTenantTitle(String title);
+    public String getTenantTitle();
+
+    public void setTenantDescription(String description);
+    public String getTenantDescription();
 
     public void setTenantPlanKey(String planKey);
     public String getTenantPlanKey();

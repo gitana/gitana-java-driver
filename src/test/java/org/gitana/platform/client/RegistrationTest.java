@@ -140,6 +140,10 @@ public class RegistrationTest extends AbstractTestCase
         userProperties.put("school", "Elm Dale");
         registration1.setUserProperties(userProperties);
         registration1.update();
+        
+        // additional tenant information
+        registration1.setTenantTitle("Dixie");
+        registration1.setTenantDescription("Flatline");
 
         // add in some signup properties
         registration1.getSignupProperties().put("company", "Illymani Designs");
@@ -158,6 +162,8 @@ public class RegistrationTest extends AbstractTestCase
         // assert we can read back the tenant
         Tenant newTenant = registrar.readTenant(registration1.getCompletedTenantId());
         assertNotNull(newTenant);
+        assertEquals("Dixie", newTenant.getTitle());
+        assertEquals("Flatline", newTenant.getDescription());
 
         // read the newly created user
         DomainUser user = (DomainUser) domain.readPrincipal(registration1.getCompletedPrincipalId());

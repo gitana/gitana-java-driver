@@ -168,6 +168,30 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     }
 
     @Override
+    public void setTenantTitle(String title)
+    {
+        set(FIELD_TENANT_TITLE, title);
+    }
+
+    @Override
+    public String getTenantTitle()
+    {
+        return getString(FIELD_TENANT_TITLE);
+    }
+
+    @Override
+    public void setTenantDescription(String description)
+    {
+        set(FIELD_TENANT_DESCRIPTION, description);
+    }
+
+    @Override
+    public String getTenantDescription()
+    {
+        return getString(FIELD_TENANT_DESCRIPTION);
+    }
+
+    @Override
     public String getTenantPlanKey()
     {
         return getString(FIELD_TENANT_PLAN_KEY);
