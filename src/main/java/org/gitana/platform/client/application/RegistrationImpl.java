@@ -35,6 +35,21 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     public RegistrationImpl(Application application, ObjectNode obj, boolean isSaved)
     {
         super(application, obj, isSaved);
+
+        initRegistration();
+    }
+
+    protected void initRegistration()
+    {
+        if (!has(FIELD_USER_PROPERTIES))
+        {
+            set(FIELD_USER_PROPERTIES, JsonUtil.createObject());
+        }
+
+        if (!has(FIELD_SIGNUP_PROPERTIES))
+        {
+            set(FIELD_SIGNUP_PROPERTIES, JsonUtil.createObject());
+        }
     }
 
     public String getResourceUri()
@@ -129,27 +144,27 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     }
 
     @Override
-    public void setUserFirstName(String userFirstName) 
+    public void setUserProperties(ObjectNode userProperties)
     {
-        set(FIELD_USER_FIRST_NAME, userFirstName);
+        set(FIELD_USER_PROPERTIES, userProperties);
     }
 
     @Override
-    public String getUserFirstName() 
+    public ObjectNode getUserProperties()
     {
-        return getString(FIELD_USER_FIRST_NAME);
+        return getObject(FIELD_USER_PROPERTIES);
     }
 
     @Override
-    public void setUserLastName(String userLastName) 
+    public void setSignupProperties(ObjectNode signupProperties)
     {
-        set(FIELD_USER_LAST_NAME, userLastName);
+        set(FIELD_SIGNUP_PROPERTIES, signupProperties);
     }
 
     @Override
-    public String getUserLastName() 
+    public ObjectNode getSignupProperties()
     {
-        return getString(FIELD_USER_LAST_NAME);
+        return getObject(FIELD_SIGNUP_PROPERTIES);
     }
 
     @Override
