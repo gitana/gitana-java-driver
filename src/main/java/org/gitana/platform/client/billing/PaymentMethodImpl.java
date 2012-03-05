@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.GitanaObjectImpl;
 
 /**
@@ -32,13 +33,13 @@ import org.gitana.platform.support.GitanaObjectImpl;
  */
 public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
 {
-    private Billing billing = null;
+    private Tenant tenant = null;
     
-    public PaymentMethodImpl(Billing billing, ObjectNode obj)
+    public PaymentMethodImpl(Tenant tenant, ObjectNode obj)
     {
         super(obj);
 
-        this.billing = billing;
+        this.tenant = tenant;
     }
 
     protected Driver getDriver()
@@ -51,9 +52,9 @@ public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
         return getDriver().getRemote();
     }
 
-    protected Billing getBilling()
+    protected Tenant getTenant()
     {
-        return this.billing;
+        return this.tenant;
     }
 
     @Override
@@ -103,7 +104,7 @@ public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
     @Override
     public void reload()
     {
-        PaymentMethod paymentMethod = getBilling().readPaymentMethod(getId());
+        PaymentMethod paymentMethod = getTenant().readPaymentMethod(getId());
 
         // clear our own object and push new properties
         this.getObject().removeAll();
@@ -147,14 +148,32 @@ public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
     }
 
     @Override
-    public String getCardNumber() 
+    public String getNumber()
     {
-        return getString(FIELD_CARDNUMBER);
+        return getString(FIELD_NUMBER);
     }
 
     @Override
-    public void setCardNumber(String cardNumber) 
+    public void setNumber(String number)
     {
-        set(FIELD_CARDNUMBER, cardNumber);
+        set(FIELD_NUMBER, number);
+    }
+
+    @Override
+    public String getNumberLastFour()
+    {
+        return getString(FIELD_NUMBER_LAST4);
+    }
+
+    @Override
+    public String getNumberMasked()
+    {
+        return getString(FIELD_NUMBER_MASKED);
+    }
+
+    @Override
+    public String getType()
+    {
+        return getString(FIELD_TYPE);
     }
 }

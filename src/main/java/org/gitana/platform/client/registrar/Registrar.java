@@ -35,6 +35,12 @@ import org.gitana.platform.support.ResultMap;
  */
 public interface Registrar extends PlatformDataStore
 {
+    public final static String FIELD_BILLING_PROVIDER_CONFIGURATION_ID = "billingProviderConfigurationId";
+
+    public void setBillingProviderConfigurationId(String billingProviderConfigurationId);
+    public String getBillingProviderConfigurationId();
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // TENANTS
@@ -49,11 +55,10 @@ public interface Registrar extends PlatformDataStore
     public Tenant lookupTenant(DomainPrincipal principal);
     public Tenant createTenant(DomainPrincipal principal, String planKey);
     public Tenant createTenant(DomainPrincipal principal, String planKey, ObjectNode object);
+    public Tenant createTenant(DomainPrincipal principal, String planKey, ObjectNode object, ObjectNode paymentMethodObject);
     public void updateTenant(Tenant tenant);
     public void deleteTenant(Tenant tenant);
     public void deleteTenant(String tenantId);
-
-    //public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(String principalId, Pagination pagination);
 
 
 

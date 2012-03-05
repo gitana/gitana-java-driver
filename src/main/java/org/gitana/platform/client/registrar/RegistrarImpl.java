@@ -67,6 +67,17 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
         return "/registrars/" + getId();
     }
 
+    @Override
+    public void setBillingProviderConfigurationId(String billingConfigurationId)
+    {
+        set(FIELD_BILLING_PROVIDER_CONFIGURATION_ID, billingConfigurationId);
+    }
+
+    @Override
+    public String getBillingProviderConfigurationId()
+    {
+        return getString(FIELD_BILLING_PROVIDER_CONFIGURATION_ID);
+    }
 
     @Override
     public ResultMap<Tenant> listTenants()
@@ -148,6 +159,12 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
     @Override
     public Tenant createTenant(DomainPrincipal principal, String planKey, ObjectNode object)
     {
+        return createTenant(principal, planKey, object, null);
+    }
+
+    @Override
+    public Tenant createTenant(DomainPrincipal principal, String planKey, ObjectNode object, ObjectNode paymentMethodObject) 
+    {
         // allow for null object
         if (object == null)
         {
@@ -157,6 +174,11 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
         object.put("domainId", principal.getString("domainId"));
         object.put("principalId", principal.getId());
         object.put("planKey", planKey);
+        
+        if (paymentMethodObject != null)
+        {
+            object.put("paymentMethod", paymentMethodObject);
+        }
 
         Response response = getRemote().post(getResourceUri() + "/tenants", object);
 

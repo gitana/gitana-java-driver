@@ -1216,18 +1216,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public PaymentMethod paymentMethod(Billing billing, Response response)
+    public PaymentMethod paymentMethod(Tenant tenant, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new PaymentMethodImpl(billing, response.getObjectNode());
+        return new PaymentMethodImpl(tenant, response.getObjectNode());
     }
 
     @Override
-    public ResultMap<PaymentMethod> paymentMethods(Billing billing, Response response)
+    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response)
     {
         if (!response.isListDocument())
         {
@@ -1237,7 +1237,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<PaymentMethod> map = new ResultMapImpl<PaymentMethod>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            PaymentMethod paymentMethod = new PaymentMethodImpl(billing, object);
+            PaymentMethod paymentMethod = new PaymentMethodImpl(tenant, object);
             map.put(paymentMethod.getId(), paymentMethod);
         }
 
@@ -1245,18 +1245,18 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public BillingTransaction billingTransaction(Billing billing, Response response)
+    public BillingTransaction billingTransaction(Tenant tenant, Response response)
     {
         if (!response.isDataDocument())
         {
             throw new RuntimeException("Response must be a data document");
         }
 
-        return new BillingTransactionImpl(billing, response.getObjectNode());
+        return new BillingTransactionImpl(tenant, response.getObjectNode());
     }
 
     @Override
-    public ResultMap<BillingTransaction> billingTransactions(Billing billing, Response response)
+    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response)
     {
         if (!response.isListDocument())
         {
@@ -1266,13 +1266,41 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<BillingTransaction> map = new ResultMapImpl<BillingTransaction>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            BillingTransaction billingTransaction = new BillingTransactionImpl(billing, object);
+            BillingTransaction billingTransaction = new BillingTransactionImpl(tenant, object);
             map.put(billingTransaction.getId(), billingTransaction);
         }
 
         return map;
     }
 
+    @Override
+    public BillingProviderConfiguration billingProviderConfiguration(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new BillingProviderConfigurationImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<BillingProviderConfiguration> billingProviderConfigurations(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<BillingProviderConfiguration> map = new ResultMapImpl<BillingProviderConfiguration>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            BillingProviderConfiguration billingProviderConfiguration = new BillingProviderConfigurationImpl(platform, object, true);
+            map.put(billingProviderConfiguration.getId(), billingProviderConfiguration);
+        }
+
+        return map;
+    }
 
 
 }

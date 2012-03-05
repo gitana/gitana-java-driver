@@ -303,6 +303,18 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     }
 
     @Override
+    public String getPaymentMethodId()
+    {
+        return getString(FIELD_PAYMENT_METHOD_ID);
+    }
+
+    @Override
+    public void setPaymentMethodId(String paymentMethodId)
+    {
+        set(FIELD_PAYMENT_METHOD_ID, paymentMethodId);
+    }
+
+    @Override
     public void sendConfirmationEmail()
     {
         getRemote().post(getResourceUri() + "/send/confirmation", getObject());

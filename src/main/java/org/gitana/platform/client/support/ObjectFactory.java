@@ -27,7 +27,7 @@ import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
-import org.gitana.platform.client.billing.Billing;
+import org.gitana.platform.client.billing.BillingProviderConfiguration;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.branch.Branch;
@@ -244,13 +244,16 @@ public interface ObjectFactory
     //
 
     // payment methods
-    public PaymentMethod paymentMethod(Billing billing, Response response);
-    public ResultMap<PaymentMethod> paymentMethods(Billing billing, Response response);
+    public PaymentMethod paymentMethod(Tenant tenant, Response response);
+    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response);
 
     // billing transaction
-    public BillingTransaction billingTransaction(Billing billing, Response response);
-    public ResultMap<BillingTransaction> billingTransactions(Billing billing, Response response);
+    public BillingTransaction billingTransaction(Tenant tenant, Response response);
+    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response);
 
+    // billing provider configuration
+    public BillingProviderConfiguration billingProviderConfiguration(Platform platform, Response response);
+    public ResultMap<BillingProviderConfiguration> billingProviderConfigurations(Platform platform, Response response);
 
 
 

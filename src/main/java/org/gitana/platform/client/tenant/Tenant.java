@@ -22,6 +22,8 @@
 package org.gitana.platform.client.tenant;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.billing.BillingTransaction;
+import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.support.Pagination;
@@ -56,43 +58,17 @@ public interface Tenant extends RegistrarDocument, Selfable
     public void setPlatformId(String platformId);
     public String getPlatformId();
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Allocations
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public ResultMap<ObjectNode> listAllocatedObjects();
     public ResultMap<ObjectNode> listAllocatedObjects(Pagination pagination);
     public ResultMap<ObjectNode> listAllocatedObjects(String objectType);
     public ResultMap<ObjectNode> listAllocatedObjects(String objectType, Pagination pagination);
-
-    /**
-     * Administrative method that will only work for the "owner" of the tenant.  Otherwise will return null.
-     *
-     * @return default client configuration
-     */
-    public ObjectNode readDefaultAllocatedClientObject();
-
-    // billing
-
-    public void setBillingSubscriptionId(String billingSubscriptionId);
-    public String getBillingSubscriptionId();
-
-    public void setBillingMethodPaymentId(String billingPaymentMethodId);
-    public String getBillingMethodPaymentId();
-
-
-
-
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // THESE METHODS WILL ONLY WORK IF THE TENANT IS THE CURRENTLY AUTHENTICATED TENANT
-    // OTHERWISE, THEY WILL THROW AN ERROR BACK
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    // list/query
 
     public ResultMap<ObjectNode> listAllocatedRepositoryObjects();
     public ResultMap<ObjectNode> listAllocatedRepositoryObjects(Pagination pagination);
@@ -117,5 +93,43 @@ public interface Tenant extends RegistrarDocument, Selfable
 
     public ResultMap<ObjectNode> listAllocatedApplicationObjects();
     public ResultMap<ObjectNode> listAllocatedApplicationObjects(Pagination pagination);
+
+    /**
+     * Administrative method that will only work for the "owner" of the tenant.  Otherwise will return null.
+     *
+     * @return default client configuration
+     */
+    public ObjectNode readDefaultAllocatedClientObject();
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BILLING
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void setBillingSubscriptionId(String billingSubscriptionId);
+    public String getBillingSubscriptionId();
+
+    public void setBillingMethodPaymentId(String billingPaymentMethodId);
+    public String getBillingMethodPaymentId();
+
+
+    // PAYMENT METHODS
+    public ResultMap<PaymentMethod> listPaymentMethods();
+    public ResultMap<PaymentMethod> listPaymentMethods(Pagination pagination);
+    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query);
+    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query, Pagination pagination);
+    public PaymentMethod readPaymentMethod(String paymentMethodId);
+    public PaymentMethod createPaymentMethod(String holderName, String number, int expirationMonth, int expirationYear);
+    public PaymentMethod createPaymentMethod(ObjectNode object);
+
+    // BILLING TRANSACTIONS
+    public ResultMap<BillingTransaction> listBillingTransactions();
+    public ResultMap<BillingTransaction> listBillingTransactions(Pagination pagination);
+    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query);
+    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query, Pagination pagination);
+    public BillingTransaction readBillingTransaction(String transactionId);
+
 
 }

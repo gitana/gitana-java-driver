@@ -58,6 +58,9 @@ public interface Registration extends ApplicationDocument, Selfable
     public final static String FIELD_TENANT_PLAN_KEY = "tenantPlanKey";
     public final static String FIELD_TENANT_REGISTRAR_ID = "tenantRegistrarId";
 
+    // payment method
+    public final static String FIELD_PAYMENT_METHOD_ID = "paymentMethodId";
+
     // flow control
     public final static String FIELD_CONFIRMATION_SENT = "confirmationSent";
 
@@ -116,6 +119,9 @@ public interface Registration extends ApplicationDocument, Selfable
 
     public String getEmailProviderId();
     public void setEmailProviderId(String emailProviderId);
+
+    public String getPaymentMethodId();
+    public void setPaymentMethodId(String paymentMethodId);
 
     public void sendConfirmationEmail();
     public void sendWelcomeEmail();
