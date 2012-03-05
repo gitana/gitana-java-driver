@@ -22,11 +22,11 @@
 package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.billing.PaymentMethodValidation;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.services.billing.PaymentMethodValidation;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 

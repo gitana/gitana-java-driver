@@ -22,7 +22,7 @@
 package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.billing.PaymentMethodValidation;
+import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
@@ -30,6 +30,7 @@ import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.billing.PaymentMethodValidation;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.JsonUtil;
@@ -310,17 +311,26 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
     public PaymentMethodValidation validateCreditCard(String holderName, String number, int expirationMonth, int expirationYear)
     {
         ObjectNode object = JsonUtil.createObject();
+        object.put(PaymentMethod.FIELD_HOLDER_NAME, holderName);
+        object.put(PaymentMethod.FIELD_NUMBER, number);
+        object.put(PaymentMethod.FIELD_EXPIRATION_MONTH, expirationMonth);
+        object.put(PaymentMethod.FIELD_EXPIRATION_YEAR, expirationYear);
 
-        // TODO: populate
-
-        return new PaymentMethodValidation(object);
+        return validateCreditCard(object);
     }
 
     @Override
     public PaymentMethodValidation validateCreditCard(ObjectNode object)
     {
-        // TODO: run validation
-        return new PaymentMethodValidation(object);
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/billing/paymentmethods/validate", object);
+
+        return new PaymentMethodValidation(response.getObjectNode());
     }
     
 }
