@@ -329,10 +329,23 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     @Override
     public void confirm(String newUserPassword)
     {
+        confirm(newUserPassword, null);
+    }
+
+    @Override
+    public void confirm(String newUserPassword, ObjectNode paymentMethodObject)
+    {
         Map<String, String> params = new HashMap<String, String>();
         params.put("password", newUserPassword);
 
-        getRemote().post(getResourceUri() + "/confirm", params, getObject());
+        if (paymentMethodObject != null)
+        {
+            getRemote().post(getResourceUri() + "/confirm", params, paymentMethodObject);
+        }
+        else
+        {
+            getRemote().post(getResourceUri() + "/confirm", params);
+        }
     }
-
+    
 }

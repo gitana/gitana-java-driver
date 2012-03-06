@@ -27,6 +27,10 @@ import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.GitanaObjectImpl;
+import org.gitana.util.DateUtil;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
 
 /**
  * @author uzi
@@ -53,8 +57,105 @@ public class BillingTransactionImpl extends GitanaObjectImpl implements BillingT
     }
 
     @Override
+    public Tenant getTenant()
+    {
+        return tenant;
+    }
+
+    @Override
     public String getId()
     {
         return getString(FIELD_ID);
+    }
+
+    @Override
+    public void setAmount(BigDecimal amount)
+    {
+        set(FIELD_AMOUNT, amount);
+    }
+
+    @Override
+    public BigDecimal getAmount()
+    {
+        return getBigDecimal(FIELD_AMOUNT);
+    }
+
+    @Override
+    public void setPaymentMethodType(String paymentMethodType)
+    {
+        set(FIELD_PAYMENT_METHOD_TYPE, paymentMethodType);
+    }
+
+    @Override
+    public String getPaymentMethodType()
+    {
+        return getString(FIELD_PAYMENT_METHOD_TYPE);
+    }
+
+    @Override
+    public void setPaymentMethodNumberMasked(String paymentMethodNumberMasked)
+    {
+        set(FIELD_PAYMENT_METHOD_NUMBER_MASKED, paymentMethodNumberMasked);
+    }
+
+    @Override
+    public String getPaymentMethodNumberMasked()
+    {
+        return getString(FIELD_PAYMENT_METHOD_NUMBER_MASKED);
+    }
+
+    @Override
+    public void setCreatedOn(Calendar createdOn)
+    {
+        set(FIELD_CREATED_ON, DateUtil.getTimestamp(createdOn));
+    }
+
+    @Override
+    public Calendar getCreatedOn()
+    {
+        Calendar createdOn = null;
+
+        if (has(FIELD_CREATED_ON))
+        {
+            createdOn = DateUtil.getTime(getObject(FIELD_CREATED_ON));
+        }
+
+        return createdOn;
+    }
+
+    @Override
+    public void setCurrencyIsoCode(String currencyIsoCode)
+    {
+        set(FIELD_CURRENCY_ISO_CODE, currencyIsoCode);
+    }
+
+    @Override
+    public String getCurrencyIsoCode()
+    {
+        return getString(FIELD_CURRENCY_ISO_CODE);
+    }
+
+    @Override
+    public void setPlanKey(String planKey)
+    {
+        set(FIELD_PLAN_KEY, planKey);
+    }
+
+    @Override
+    public String getPlanKey()
+    {
+        return getString(FIELD_PLAN_KEY);
+    }
+
+    @Override
+    public void setTaxAmount(BigDecimal taxAmount)
+    {
+        set(FIELD_TAX_AMOUNT, taxAmount);
+    }
+
+    @Override
+    public BigDecimal getTaxAmount()
+    {
+        return getBigDecimal(FIELD_TAX_AMOUNT);
     }
 }

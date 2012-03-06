@@ -126,6 +126,7 @@ public interface Registration extends ApplicationDocument, Selfable
     public void sendConfirmationEmail();
     public void sendWelcomeEmail();
     public void confirm(String newUserPassword);
+    public void confirm(String newUserPassword, ObjectNode paymentMethodObject);
 
 }
 
