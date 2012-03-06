@@ -21,7 +21,9 @@
 
 package org.gitana.platform.client.billing;
 
+import org.apache.http.HttpResponse;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;
@@ -29,6 +31,8 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.GitanaObjectImpl;
 import org.gitana.util.DateUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
@@ -44,6 +48,11 @@ public class BillingTransactionImpl extends GitanaObjectImpl implements BillingT
         super(obj);
 
         this.tenant = tenant;
+    }
+
+    protected String getResourceUri()
+    {
+        return "/registrars/" + tenant.getRegistrarId() + "/tenants/" + tenant.getId() + "/billing/transactions/" + getId();
     }
 
     protected Driver getDriver()
@@ -157,5 +166,31 @@ public class BillingTransactionImpl extends GitanaObjectImpl implements BillingT
     public BigDecimal getTaxAmount()
     {
         return getBigDecimal(FIELD_TAX_AMOUNT);
+    }
+
+    @Override
+    public InputStream generateReceipt(String template)
+    {
+        byte[] templateBytes = template.getBytes();
+        ByteArrayInputStream templateIn = new ByteArrayInputStream(templateBytes);
+
+        // build the uri
+        String uri = getResourceUri() + "/receipt";
+
+        InputStream in = null;
+        try
+        {
+            HttpResponse response = getRemote().postData(uri, templateIn, templateBytes.length, MimeTypeMap.APPLICATION_FREEMARKER);
+            if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() <= 204)
+            {
+                in = response.getEntity().getContent();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return in;
     }
 }

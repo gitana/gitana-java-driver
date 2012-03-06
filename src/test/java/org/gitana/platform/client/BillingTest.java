@@ -34,10 +34,14 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.payment.BillingSchedule;
 import org.gitana.platform.services.plan.DataUnit;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
+import org.gitana.util.StreamUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 
 /**
@@ -64,7 +68,17 @@ public class BillingTest extends AbstractTestCase
 
         // check transactions (should be 1)
         ResultMap<BillingTransaction> transactions = tenant1.listBillingTransactions();
-        assertEquals(1, transactions.size());        
+        assertEquals(1, transactions.size());
+        
+        // grab the transaction and generate a receipt
+        BillingTransaction billingTransaction = transactions.values().iterator().next();
+        String template = ClasspathUtil.loadFromClasspath("org/gitana/platform/client/billingTransactionReceipt.ftl");
+        InputStream in = billingTransaction.generateReceipt(template);
+        assertNotNull(in);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StreamUtil.copyStreams(in, baos);
+        byte[] data = baos.toByteArray();
+        assertTrue(data.length > 0);
     }
 
     @Test
