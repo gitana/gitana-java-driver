@@ -24,7 +24,6 @@ package org.gitana.platform.client.billing;
 import org.gitana.platform.GitanaObject;
 import org.gitana.platform.client.tenant.Tenant;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
@@ -75,6 +74,6 @@ public interface BillingTransaction extends GitanaObject
      *
      * @return attachment
      */
-    public InputStream generateReceipt(String template);
+    public byte[] generateReceipt(String template);
 
 }

@@ -311,6 +311,9 @@ public class RemoteImpl implements Remote
         }
         catch (Exception ex)
         {
+            // make sure to consume the response
+            try { EntityUtils.consume(httpResponse.getEntity()); } catch (Exception ex1) { }
+
             throw new RuntimeException(ex);
         }
 

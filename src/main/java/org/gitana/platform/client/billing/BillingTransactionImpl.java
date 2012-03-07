@@ -22,6 +22,7 @@
 package org.gitana.platform.client.billing;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.Driver;
@@ -30,6 +31,7 @@ import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.GitanaObjectImpl;
 import org.gitana.util.DateUtil;
+import org.gitana.util.StreamUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -169,7 +171,7 @@ public class BillingTransactionImpl extends GitanaObjectImpl implements BillingT
     }
 
     @Override
-    public InputStream generateReceipt(String template)
+    public byte[] generateReceipt(String template)
     {
         byte[] templateBytes = template.getBytes();
         ByteArrayInputStream templateIn = new ByteArrayInputStream(templateBytes);
@@ -177,20 +179,26 @@ public class BillingTransactionImpl extends GitanaObjectImpl implements BillingT
         // build the uri
         String uri = getResourceUri() + "/receipt";
 
-        InputStream in = null;
+        HttpResponse response = null;
+        byte[] bytes = null;
         try
         {
-            HttpResponse response = getRemote().postData(uri, templateIn, templateBytes.length, MimeTypeMap.APPLICATION_FREEMARKER);
+            response = getRemote().postData(uri, templateIn, templateBytes.length, MimeTypeMap.APPLICATION_FREEMARKER);
             if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() <= 204)
             {
-                in = response.getEntity().getContent();
+                InputStream in = response.getEntity().getContent();
+                bytes = StreamUtil.getBytes(in);
             }
         }
         catch (Exception ex)
         {
             throw new RuntimeException(ex);
         }
+        finally
+        {
+            try { EntityUtils.consume(response.getEntity()); } catch (Exception ex) { }
+        }
 
-        return in;
+        return bytes;
     }
 }
