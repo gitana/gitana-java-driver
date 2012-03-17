@@ -182,7 +182,7 @@ public class RegistrationTest extends AbstractTestCase
         Platform newPlatform = new Gitana(newClientKey, newClientSecret).authenticate("bud", "password");
 
         // load the user object
-        DomainUser newUser = (DomainUser) newPlatform.readDomain(newPlatform.getDefaultDomainId()).readPrincipal(newPrincipalId);
+        DomainUser newUser = (DomainUser) newPlatform.readPrimaryDomain().readPrincipal(newPrincipalId);
         assertNotNull(newUser);
 
         // assert that we have all the properties of the user

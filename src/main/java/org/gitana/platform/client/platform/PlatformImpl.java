@@ -78,27 +78,15 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     }
 
     @Override
-    public String getDefaultDomainId()
+    public Domain readPrimaryDomain()
     {
-        return getString("defaultDomainId");
+        return readDomain("primary");
     }
 
     @Override
-    public Domain readDefaultDomain()
+    public Directory readPrimaryDirectory()
     {
-        return readDomain(getDefaultDomainId());
-    }
-
-    @Override
-    public String getDefaultDirectoryId()
-    {
-        return getString("defaultDirectoryId");
-    }
-
-    @Override
-    public Directory readDefaultDirectory()
-    {
-        return readDirectory(getDefaultDirectoryId());
+        return readDirectory("primary");
     }
 
     @Override

@@ -77,9 +77,9 @@ public class SettingsTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // create some users
-        DomainUser user1 = platform.readDefaultDomain().createUser("user1-" + System.currentTimeMillis(), "pw");
-        DomainUser user2 = platform.readDefaultDomain().createUser("user2-" + System.currentTimeMillis(), "pw");
-        DomainUser user3 = platform.readDefaultDomain().createUser("user3-" + System.currentTimeMillis(), "pw");
+        DomainUser user1 = platform.readPrimaryDomain().createUser("user1-" + System.currentTimeMillis(), "pw");
+        DomainUser user2 = platform.readPrimaryDomain().createUser("user2-" + System.currentTimeMillis(), "pw");
+        DomainUser user3 = platform.readPrimaryDomain().createUser("user3-" + System.currentTimeMillis(), "pw");
 
         // create an application
         Application application = platform.createApplication();

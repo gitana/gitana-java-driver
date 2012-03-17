@@ -51,13 +51,9 @@ public interface Platform extends DataStore
      */
     public Cluster getCluster();
     
-    public String getDefaultDomainId();
-    
-    public Domain readDefaultDomain();
+    public Domain readPrimaryDomain();
 
-    public String getDefaultDirectoryId();
-
-    public Directory readDefaultDirectory();
+    public Directory readPrimaryDirectory();
 
     public String getOwnerRegistrarId();
     public String getOwnerTenantId();

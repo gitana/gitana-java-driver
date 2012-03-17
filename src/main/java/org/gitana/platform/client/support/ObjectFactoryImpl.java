@@ -1172,7 +1172,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Cannot determine what to do with empty object");
         }
 
-        String type = JsonUtil.objectGetString(object, "datastoreType");
+        String type = JsonUtil.objectGetString(object, "datastoreTypeId");
 
         // find the method on this factory that has the same name as the type
         Method method = null;
