@@ -39,6 +39,7 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.JsonUtil;
@@ -927,6 +928,102 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
     @Override
     public PermissionCheckResults checkRegistrarPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post(getResourceUri() + "/registrars/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WEB HOSTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<WebHost> listWebHosts()
+    {
+        return listWebHosts(null);
+    }
+
+    @Override
+    public ResultMap<WebHost> listWebHosts(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/webhosts", params);
+        return getFactory().webhosts(this, response);
+    }
+
+    @Override
+    public WebHost readWebHost(String webhostId)
+    {
+        WebHost webhost = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/webhosts/" + webhostId);
+            webhost = getFactory().webhost(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return webhost;
+    }
+
+    @Override
+    public WebHost createWebHost()
+    {
+        return createWebHost(null);
+    }
+
+    @Override
+    public WebHost createWebHost(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/webhosts", object);
+
+        String webhostId = response.getId();
+        return readWebHost(webhostId);
+    }
+
+    @Override
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query)
+    {
+        return queryWebHosts(query, null);
+    }
+
+    @Override
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/webhosts/query", params, query);
+        return getFactory().webhosts(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkWebHostPermissions(List<PermissionCheck> list)
     {
         ArrayNode array = JsonUtil.createArray();
         for (PermissionCheck check: list)

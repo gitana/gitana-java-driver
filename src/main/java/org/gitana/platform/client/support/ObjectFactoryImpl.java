@@ -68,6 +68,10 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.tenant.TenantImpl;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.vault.VaultImpl;
+import org.gitana.platform.client.webhost.AutoClientMapping;
+import org.gitana.platform.client.webhost.AutoClientMappingImpl;
+import org.gitana.platform.client.webhost.WebHost;
+import org.gitana.platform.client.webhost.WebHostImpl;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.QName;
@@ -1196,6 +1200,80 @@ public class ObjectFactoryImpl implements ObjectFactory
         }
 
         return datastore;
+    }
+
+    @Override
+    public WebHost webhost(Platform platform)
+    {
+        return webhost(platform, JsonUtil.createObject());
+    }
+
+    @Override
+    public WebHost webhost(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new WebHostImpl(platform, object, false);
+    }
+
+    @Override
+    public WebHost webhost(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new WebHostImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<WebHost> webhosts(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<WebHost> map = new ResultMapImpl<WebHost>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            WebHost webhost = new WebHostImpl(platform, object, true);
+            map.put(webhost.getId(), webhost);
+        }
+
+        return map;
+    }
+    @Override
+    public AutoClientMapping autoClientMapping(WebHost webhost, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new AutoClientMappingImpl(webhost, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<AutoClientMapping> autoClientMappings(WebHost webhost, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<AutoClientMapping> map = new ResultMapImpl<AutoClientMapping>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            AutoClientMapping autoClientMapping = new AutoClientMappingImpl(webhost, object, true);
+            map.put(autoClientMapping.getId(), autoClientMapping);
+        }
+
+        return map;
     }
 
     public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response)

@@ -51,6 +51,8 @@ import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.Teamable;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.webhost.AutoClientMapping;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.QName;
 import org.gitana.platform.support.ResultMap;
@@ -229,7 +231,23 @@ public interface ObjectFactory
     public Plan plan(Registrar registrar, Response response);
     public ResultMap<Plan> plans(Registrar registrar, Response response);
 
+    
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WEB HOST
+    //
+
+    public WebHost webhost(Platform platform);
+    public WebHost webhost(Platform platform, ObjectNode object);
+    public WebHost webhost(Platform platform, Response response);
+    public ResultMap<WebHost> webhosts(Platform platform, Response response);
+
+    // settings
+    public AutoClientMapping autoClientMapping(WebHost webhost, Response response);
+    public ResultMap<AutoClientMapping> autoClientMappings(WebHost webhost, Response response);
+    
+    
 
 
     public PlatformDataStore platformDataStore(Platform platform, ObjectNode object);

@@ -36,6 +36,7 @@ import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -247,6 +248,28 @@ public interface Platform extends DataStore
     public PermissionCheckResults checkDirectoryPermissions(List<PermissionCheck> list);
 
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WEB HOSTS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<WebHost> listWebHosts();
+
+    public ResultMap<WebHost> listWebHosts(Pagination pagination);
+
+    public WebHost readWebHost(String directoryId);
+
+    public WebHost createWebHost();
+
+    public WebHost createWebHost(ObjectNode object);
+
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query);
+
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query, Pagination pagination);
+
+    public PermissionCheckResults checkWebHostPermissions(List<PermissionCheck> list);
 
 
 
