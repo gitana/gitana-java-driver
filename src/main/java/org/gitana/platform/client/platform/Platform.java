@@ -259,7 +259,7 @@ public interface Platform extends DataStore
 
     public ResultMap<WebHost> listWebHosts(Pagination pagination);
 
-    public WebHost readWebHost(String directoryId);
+    public WebHost readWebHost(String webhostId);
 
     public WebHost createWebHost();
 
