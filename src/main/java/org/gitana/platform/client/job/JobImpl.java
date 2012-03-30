@@ -78,7 +78,7 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     @Override
     public String getRunAsPrincipalDomainId()
     {
-        return getString(FIELD_RUN_AS_PRINCIPAL_DOMAIN);
+        return getString(FIELD_RUN_AS_PRINCIPAL_DOMAIN_ID);
     }
 
     @Override
@@ -108,6 +108,12 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     }
 
     @Override
+    public boolean getStopped()
+    {
+        return getBoolean(FIELD_STOPPED);
+    }
+
+    @Override
     public Calendar getStoppedTime()
     {
         Calendar calendar = null;
@@ -119,6 +125,12 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
         }
 
         return calendar;
+    }
+
+    @Override
+    public boolean getPaused()
+    {
+        return getBoolean(FIELD_PAUSED);
     }
 
     @Override
@@ -171,6 +183,12 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
         }
 
         return calendar;
+    }
+
+    @Override
+    public boolean getStarted()
+    {
+        return getBoolean(FIELD_STARTED);
     }
 
     @Override

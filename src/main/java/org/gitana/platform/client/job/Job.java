@@ -35,8 +35,8 @@ public interface Job extends ClusterDocument
 {
     // fields
     public final static String FIELD_TYPE = "type";
-    public final static String FIELD_RUN_AS_PRINCIPAL_ID = "runAsPrincipal";
-    public final static String FIELD_RUN_AS_PRINCIPAL_DOMAIN = "runAsPrincipalDomain";
+    public final static String FIELD_RUN_AS_PRINCIPAL_ID = "runAsPrincipalId";
+    public final static String FIELD_RUN_AS_PRINCIPAL_DOMAIN_ID = "runAsPrincipalDomainId";
 
     public final static String FIELD_STATE = "state";
     public final static String FIELD_PLATFORM_ID = "platformId";
@@ -61,9 +61,11 @@ public interface Job extends ClusterDocument
     public final static String FIELD_STARTED_TIMESTAMP = "started_timestamp";
 
     // stopped
+    public final static String FIELD_STOPPED = "stopped";
     public final static String FIELD_STOPPED_TIMESTAMP = "stopped_timestamp";
 
     // paused
+    public final static String FIELD_PAUSED = "paused";
     public final static String FIELD_PAUSED_BY = "paused_by";
     public final static String FIELD_PAUSED_TIMESTAMP = "paused_timestamp";
 
@@ -80,14 +82,17 @@ public interface Job extends ClusterDocument
     public Calendar getSubmittedTime();
 
     // if a job ever started at any time at all, these get set
+    public boolean getStarted();
     public ObjectNode getStartedTimestamp();
     public Calendar getStartedTime();
 
     // if the job hits any final state (i.e. finished or error), these get set
+    public boolean getStopped();
     public ObjectNode getStoppedTimestamp();
     public Calendar getStoppedTime();
 
-    // if the job is submitted, these get set
+    // if the job is paused, these get set
+    public boolean getPaused();
     public String getPausedBy();
     public ObjectNode getPausedTimestamp();
     public Calendar getPausedTime();
