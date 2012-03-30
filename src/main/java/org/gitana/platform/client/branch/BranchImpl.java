@@ -39,6 +39,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.services.branch.BranchType;
+import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;
 import org.gitana.platform.support.ResultMap;
@@ -576,11 +577,11 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
                 {
                     throw new Exception("No job found: " + jobId);
                 }
-                if (job.isError())
+                if (JobState.ERROR.equals(job.getState()))
                 {
                     throw new Exception("Job: " + job.getId() + " failed with: " + job.getLogEntries());
                 }
-                if (job.isFinished())
+                if (JobState.FINISHED.equals(job.getState()))
                 {
                     complete = true;
                 }
@@ -621,11 +622,11 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
             while (!complete)
             {
                 job = getCluster().readJob(jobId);
-                if (job.isError())
+                if (JobState.ERROR.equals(job.getState()))
                 {
                     complete = true;
                 }
-                if (job.isFinished())
+                if (JobState.FINISHED.equals(job.getState()))
                 {
                     complete = true;
                 }
@@ -640,7 +641,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         {
             throw new RuntimeException(ie);
         }
-        if (job.isError())
+        if (JobState.ERROR.equals(job.getState()))
         {
             throw new RuntimeException("Job: " + job.getId() + " failed with: " + job.getLogEntries());
         }

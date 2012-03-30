@@ -186,32 +186,32 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     }
 
     @Override
-    public ResultMap<Job> listCandidateJobs()
+    public ResultMap<Job> listWaitingJobs()
     {
-        return listCandidateJobs(null);
+        return listWaitingJobs(null);
     }
 
     @Override
-    public ResultMap<Job> listCandidateJobs(Pagination pagination)
+    public ResultMap<Job> listWaitingJobs(Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().get("/jobs/candidate", params);
+        Response response = getRemote().get("/jobs/waiting", params);
         return getFactory().jobs(this, response);
     }
 
     @Override
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query)
+    public ResultMap<Job> queryWaitingJobs(ObjectNode query)
     {
-        return queryCandidateJobs(query, null);
+        return queryWaitingJobs(query, null);
     }
 
     @Override
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination)
+    public ResultMap<Job> queryWaitingJobs(ObjectNode query, Pagination pagination)
     {
         Map<String, String> params = DriverUtil.params(pagination);
 
-        Response response = getRemote().post("/jobs/candidate/query", params);
+        Response response = getRemote().post("/jobs/waiting/query", params);
         return getFactory().jobs(this, response);
     }
 

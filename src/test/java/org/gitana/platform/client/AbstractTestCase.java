@@ -39,19 +39,19 @@ import org.junit.Ignore;
 	public void tearDown() throws Exception
 	{
         // wait for all jobs to finish
-        waitForZeroCandidateJobs();
+        waitForZeroWaitingJobs();
 
         // force the garbage collector (during tests)
         System.gc();
 	}
 
-    protected void waitForZeroCandidateJobs()
+    protected void waitForZeroWaitingJobs()
     {
         // authenticate as admin/admin
         Platform platform = new Gitana().authenticate("admin", "admin");
 
         // wait
-        while (platform.getCluster().listCandidateJobs().totalRows() > 0)
+        while (platform.getCluster().listWaitingJobs().totalRows() > 0)
         {
             try
             {

@@ -180,7 +180,7 @@ public class FindTest extends AbstractTestCase
 
         // wait until indexing finishes
         Thread.sleep(20000);
-        waitForZeroCandidateJobs();
+        waitForZeroWaitingJobs();
 
         // full search for gitana111
         ResultMap<BaseNode> search1 = master.searchNodes("gitana111");

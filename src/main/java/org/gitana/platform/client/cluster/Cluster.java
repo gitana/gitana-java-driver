@@ -56,10 +56,10 @@ public interface Cluster extends DataStore
     public ResultMap<Job> queryFailedJobs(ObjectNode query);
     public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination);
 
-    public ResultMap<Job> listCandidateJobs();
-    public ResultMap<Job> listCandidateJobs(Pagination pagination);
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query);
-    public ResultMap<Job> queryCandidateJobs(ObjectNode query, Pagination pagination);
+    public ResultMap<Job> listWaitingJobs();
+    public ResultMap<Job> listWaitingJobs(Pagination pagination);
+    public ResultMap<Job> queryWaitingJobs(ObjectNode query);
+    public ResultMap<Job> queryWaitingJobs(ObjectNode query, Pagination pagination);
 
     public ResultMap<Job> listFinishedJobs();
     public ResultMap<Job> listFinishedJobs(Pagination pagination);
