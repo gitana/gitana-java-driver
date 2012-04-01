@@ -66,14 +66,14 @@ public class JobTest extends AbstractTestCase
 
         // candidate jobs are jobs that are started but not running
         // running jobs are jobs that are started AND running
-        int inflight1 = cluster.listCandidateJobs().size() + cluster.listRunningJobs().size();
+        int inflight1 = cluster.listWaitingJobs().size() + cluster.listRunningJobs().size();
 
         // upload an attachment
         // the indexing for this attachment will run as a job
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/gone.pdf");
         node.uploadAttachment(bytes, MimeTypeMap.APPLICATION_PDF);
 
-        int inflight2 = cluster.listCandidateJobs().size() + cluster.listRunningJobs().size();
+        int inflight2 = cluster.listWaitingJobs().size() + cluster.listRunningJobs().size();
 
         assertTrue(inflight2 > inflight1);
 

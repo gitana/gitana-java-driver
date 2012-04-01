@@ -34,19 +34,28 @@ public interface PaymentMethod extends GitanaObject, Selfable
     public final static String FIELD_EXPIRATION_MONTH = "expirationMonth";
     public final static String FIELD_EXPIRATION_YEAR = "expirationYear";
     public final static String FIELD_HOLDER_NAME = "holderName";
-    public final static String FIELD_CARDNUMBER = "number";
-    
+    public final static String FIELD_NUMBER_LAST4 = "numberLast4";
+    public final static String FIELD_NUMBER = "number";
+    public final static String FIELD_NUMBER_MASKED = "numberMasked";
+    public final static String FIELD_TYPE = "type";
+
     public String getId();
 
     public int getExpirationMonth();
     public void setExpirationMonth(int expirationMonth);
-    
+
     public int getExpirationYear();
     public void setExpirationYear(int expirationYear);
-    
+
     public String getHolderName();
     public void setHolderName(String holderName);
-    
-    public String getCardNumber();
-    public void setCardNumber(String number);
+
+    public String getNumber();
+    public void setNumber(String number);
+
+    // get only
+    public String getNumberLastFour();
+    public String getNumberMasked();
+    public String getType();
+
 }

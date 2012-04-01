@@ -27,7 +27,7 @@ import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
-import org.gitana.platform.client.billing.Billing;
+import org.gitana.platform.client.billing.BillingProviderConfiguration;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.branch.Branch;
@@ -51,6 +51,8 @@ import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.Teamable;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.webhost.AutoClientMapping;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.QName;
 import org.gitana.platform.support.ResultMap;
@@ -229,7 +231,23 @@ public interface ObjectFactory
     public Plan plan(Registrar registrar, Response response);
     public ResultMap<Plan> plans(Registrar registrar, Response response);
 
+    
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WEB HOST
+    //
+
+    public WebHost webhost(Platform platform);
+    public WebHost webhost(Platform platform, ObjectNode object);
+    public WebHost webhost(Platform platform, Response response);
+    public ResultMap<WebHost> webhosts(Platform platform, Response response);
+
+    // settings
+    public AutoClientMapping autoClientMapping(WebHost webhost, Response response);
+    public ResultMap<AutoClientMapping> autoClientMappings(WebHost webhost, Response response);
+    
+    
 
 
     public PlatformDataStore platformDataStore(Platform platform, ObjectNode object);
@@ -244,13 +262,16 @@ public interface ObjectFactory
     //
 
     // payment methods
-    public PaymentMethod paymentMethod(Billing billing, Response response);
-    public ResultMap<PaymentMethod> paymentMethods(Billing billing, Response response);
+    public PaymentMethod paymentMethod(Tenant tenant, Response response);
+    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response);
 
     // billing transaction
-    public BillingTransaction billingTransaction(Billing billing, Response response);
-    public ResultMap<BillingTransaction> billingTransactions(Billing billing, Response response);
+    public BillingTransaction billingTransaction(Tenant tenant, Response response);
+    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response);
 
+    // billing provider configuration
+    public BillingProviderConfiguration billingProviderConfiguration(Platform platform, Response response);
+    public ResultMap<BillingProviderConfiguration> billingProviderConfigurations(Platform platform, Response response);
 
 
 

@@ -40,19 +40,51 @@ public interface Identity extends DirectoryDocument, Selfable
      */
     public void changePassword(String password, String verifyPassword);
 
+    /**
+     * @return all of the user objects that this identity has on any platform
+     */
     public ResultMap<ObjectNode> findUserObjects();
+
+    /**
+     * Finds the first user object that this identity has on the given tenant's platform.
+     *
+     * @param tenantId
+     *
+     * @return user object
+     */
     public ObjectNode findUserObjectForTenant(String tenantId);
 
     /**
-     * @return the tenants that this identity participates in on this platform
+     * @return all of the tenant objects that this identity's users participate in
      */
     public ResultMap<ObjectNode> findTenantObjects();
 
     /**
-     * Retrieves the tenants that this identity participates in within the specified registry.
+     * Finds all of the tenant objects that this identity's users participate in.
+     * Filters and keeps only those within the specified registry.
      *
      * @param registrar
      * @return
      */
     public ResultMap<ObjectNode> findTenantObjects(Registrar registrar);
+
+    /**
+     * Finds all of the tenant objects that this identity's users participate in.
+     * Filters and keeps only those tenants whose user has the specified authority against the tenant platform.
+     *
+     * @param authorityId
+     * @return
+     */
+    public ResultMap<ObjectNode> findTenantObjects(String authorityId);
+
+    /**
+     * Finds all of the tenant objects that this identity's users participate in.
+     * Filters and keeps only those within the specified registry.
+     * Keeps only those tenants whose user has the specified authority against the tenant platform.
+     *
+     * @param registrar
+     * @return
+     */
+    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar, String authorityId);
+
 }

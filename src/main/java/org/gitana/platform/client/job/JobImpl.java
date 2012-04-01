@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.services.job.JobState;
 import org.gitana.util.DateUtil;
 
 import java.util.ArrayList;
@@ -69,51 +70,93 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     }
 
     @Override
-    public String getRunAs()
+    public String getRunAsPrincipalId()
     {
-        return getString(FIELD_RUN_AS);
+        return getString(FIELD_RUN_AS_PRINCIPAL_ID);
     }
 
     @Override
-    public boolean isStarted()
+    public String getRunAsPrincipalDomainId()
     {
-        return getBoolean(FIELD_IS_STARTED);
+        return getString(FIELD_RUN_AS_PRINCIPAL_DOMAIN_ID);
     }
 
     @Override
-    public boolean isRunning()
+    public ObjectNode getStartedTimestamp()
     {
-        return getBoolean(FIELD_IS_RUNNING);
+        return getObject(FIELD_STARTED_TIMESTAMP);
     }
 
     @Override
-    public boolean isError()
+    public ObjectNode getStoppedTimestamp()
     {
-        return getBoolean(FIELD_IS_ERROR);
+        return getObject(FIELD_STOPPED_TIMESTAMP);
     }
 
     @Override
-    public boolean isFinished()
+    public Calendar getStartedTime()
     {
-        return getBoolean(FIELD_IS_FINISHED);
+        Calendar calendar = null;
+
+        ObjectNode timestamp = getStartedTimestamp();
+        if (timestamp != null)
+        {
+            calendar = DateUtil.getTime(timestamp);
+        }
+
+        return calendar;
     }
 
     @Override
-    public boolean isSubmitted()
+    public boolean getStopped()
     {
-        return getBoolean(FIELD_IS_SUBMITTED);
+        return getBoolean(FIELD_STOPPED);
     }
 
     @Override
-    public String getStartedBy()
+    public Calendar getStoppedTime()
     {
-        return getString(FIELD_STARTED_BY);
+        Calendar calendar = null;
+
+        ObjectNode timestamp = getStoppedTimestamp();
+        if (timestamp != null)
+        {
+            calendar = DateUtil.getTime(timestamp);
+        }
+
+        return calendar;
     }
 
     @Override
-    public String getStoppedBy()
+    public boolean getPaused()
     {
-        return getString(FIELD_STOPPED_BY);
+        return getBoolean(FIELD_PAUSED);
+    }
+
+    @Override
+    public String getPausedBy()
+    {
+        return getString(FIELD_PAUSED_BY);
+    }
+
+    @Override
+    public ObjectNode getPausedTimestamp()
+    {
+        return getObject(FIELD_PAUSED_TIMESTAMP);
+    }
+
+    @Override
+    public Calendar getPausedTime()
+    {
+        Calendar calendar = null;
+
+        ObjectNode timestamp = getPausedTimestamp();
+        if (timestamp != null)
+        {
+            calendar = DateUtil.getTime(timestamp);
+        }
+
+        return calendar;
     }
 
     @Override
@@ -123,27 +166,29 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     }
 
     @Override
-    public ObjectNode getStartTimestamp()
+    public ObjectNode getSubmittedTimestamp()
     {
-        return getObject(FIELD_START_TIMESTAMP);
+        return getObject(FIELD_SUBMITTED_TIMESTAMP);
     }
 
     @Override
-    public ObjectNode getStopTimestamp()
+    public Calendar getSubmittedTime()
     {
-        return getObject(FIELD_STOP_TIMESTAMP);
+        Calendar calendar = null;
+
+        ObjectNode timestamp = getSubmittedTimestamp();
+        if (timestamp != null)
+        {
+            calendar = DateUtil.getTime(timestamp);
+        }
+
+        return calendar;
     }
 
     @Override
-    public Calendar getStartTime()
+    public boolean getStarted()
     {
-        return DateUtil.getTime(getStartTimestamp());
-    }
-
-    @Override
-    public Calendar getStopTime()
-    {
-        return DateUtil.getTime(getStopTimestamp());
+        return getBoolean(FIELD_STARTED);
     }
 
     @Override
@@ -169,9 +214,28 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
         return getInt(FIELD_PRIORITY);
     }
 
+    @Override
+    public void setPriority(int priority)
+    {
+        set(FIELD_PRIORITY, priority);
+    }
+
+    @Override
+    public void setCurrentThreadId(String currentThreadId)
+    {
+        set(FIELD_CURRENT_THREAD, currentThreadId);
+    }
+
+    @Override
     public String getCurrentThreadId()
     {
         return getString(FIELD_CURRENT_THREAD);
+    }
+
+    @Override
+    public void setCurrentServerId(String currentMemberId)
+    {
+        set(FIELD_CURRENT_SERVER, currentMemberId);
     }
 
     @Override
@@ -181,9 +245,22 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     }
 
     @Override
+    public void setCurrentServerTimestamp(long currentServerTimestamp)
+    {
+        set(FIELD_CURRENT_SERVER_TIMESTAMP, currentServerTimestamp);
+    }
+
+    @Override
     public long getCurrentServerTimestamp()
     {
         return getLong(FIELD_CURRENT_SERVER_TIMESTAMP);
+    }
+
+
+    @Override
+    public void setScheduleStart(long ms)
+    {
+        set(FIELD_SCHEDULE_START_MS, ms);
     }
 
     @Override
@@ -195,6 +272,50 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     @Override
     public int getAttempts()
     {
-        return getInt(FIELD_ATTEMPTS);
+        int attempts = getInt(FIELD_ATTEMPTS);
+        if (attempts == -1)
+        {
+            attempts = 0;
+        }
+
+        return attempts;
+    }
+
+    @Override
+    public void setAttempts(int attempts)
+    {
+        set(FIELD_ATTEMPTS, attempts);
+    }
+
+    @Override
+    public String getPlatformId()
+    {
+        return getString(FIELD_PLATFORM_ID);
+    }
+
+    @Override
+    public void setPlatformId(String platformId)
+    {
+        set(FIELD_PLATFORM_ID, platformId);
+    }
+
+    @Override
+    public JobState getState()
+    {
+        JobState state = null;
+
+        String str = getString(FIELD_STATE);
+        if (str != null)
+        {
+            state = JobState.valueOf(str);
+        }
+
+        return state;
+    }
+
+    @Override
+    public void setState(JobState state)
+    {
+        set(FIELD_STATE, state.toString());
     }
 }

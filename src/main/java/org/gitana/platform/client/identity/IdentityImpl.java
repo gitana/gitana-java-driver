@@ -151,15 +151,31 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     @Override
     public ResultMap<ObjectNode> findTenantObjects()
     {
-        return findTenantObjects(null);
+        return findTenantObjects(null, null);
     }
 
     public ResultMap<ObjectNode> findTenantObjects(Registrar registrar)
+    {
+        return findTenantObjects(registrar, null);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> findTenantObjects(String authorityId)
+    {
+        return findTenantObjects(null, authorityId);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar, String authorityId) 
     {
         Map<String, String> params = DriverUtil.params();
         if (registrar != null)
         {
             params.put("registrarId", registrar.getId());
+        }
+        if (authorityId != null)
+        {
+            params.put("authorityId", authorityId);
         }
 
         Response response = getRemote().get(getResourceUri() + "/tenants", params);

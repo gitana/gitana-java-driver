@@ -47,19 +47,26 @@ public interface Registration extends ApplicationDocument, Selfable
     public final static String FIELD_USER_EMAIL = "userEmail";
     public final static String FIELD_USER_NAME = "userName";
     public final static String FIELD_USER_DOMAIN_ID = "userDomainId";
-    public final static String FIELD_USER_FIRST_NAME = "userFirstName";
-    public final static String FIELD_USER_LAST_NAME = "userLastName";
+    public final static String FIELD_USER_PROPERTIES = "userProperties";
+
+    // signup properties
+    public final static String FIELD_SIGNUP_PROPERTIES = "signupProperties";
 
     // tenant support
+    public final static String FIELD_TENANT_TITLE = "tenantTitle";
+    public final static String FIELD_TENANT_DESCRIPTION = "tenantDescription";
     public final static String FIELD_TENANT_PLAN_KEY = "tenantPlanKey";
     public final static String FIELD_TENANT_REGISTRAR_ID = "tenantRegistrarId";
+
+    // payment method
+    public final static String FIELD_PAYMENT_METHOD_ID = "paymentMethodId";
 
     // flow control
     public final static String FIELD_CONFIRMATION_SENT = "confirmationSent";
 
     // final state
     public final static String FIELD_COMPLETED = "completed";
-    public final static String FIELD_COMPLETED_PRINCIPAL_ID = "completePrincipalId";
+    public final static String FIELD_COMPLETED_PRINCIPAL_ID = "completedPrincipalId";
     public final static String FIELD_COMPLETED_TENANT_ID = "completedTenantId";
 
     // email provider id
@@ -77,11 +84,17 @@ public interface Registration extends ApplicationDocument, Selfable
     public void setUserDomainId(String userDomainId);
     public String getUserDomainId();
 
-    public void setUserFirstName(String userFirstName);
-    public String getUserFirstName();
+    public ObjectNode getUserProperties();
+    public void setUserProperties(ObjectNode userProperties);
 
-    public void setUserLastName(String userLastName);
-    public String getUserLastName();
+    public ObjectNode getSignupProperties();
+    public void setSignupProperties(ObjectNode signupProperties);
+
+    public void setTenantTitle(String title);
+    public String getTenantTitle();
+
+    public void setTenantDescription(String description);
+    public String getTenantDescription();
 
     public void setTenantPlanKey(String planKey);
     public String getTenantPlanKey();
@@ -107,9 +120,13 @@ public interface Registration extends ApplicationDocument, Selfable
     public String getEmailProviderId();
     public void setEmailProviderId(String emailProviderId);
 
+    public String getPaymentMethodId();
+    public void setPaymentMethodId(String paymentMethodId);
+
     public void sendConfirmationEmail();
     public void sendWelcomeEmail();
     public void confirm(String newUserPassword);
+    public void confirm(String newUserPassword, ObjectNode paymentMethodObject);
 
 }
 

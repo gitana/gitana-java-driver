@@ -73,7 +73,7 @@ public class NodeSearchTest extends AbstractTestCase
 
         // here we wait a little bit for the asynchronous indexing on the server side to complete
         Thread.sleep(10000);
-        waitForZeroCandidateJobs();
+        waitForZeroWaitingJobs();
 
 
         // search #1

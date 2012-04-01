@@ -96,7 +96,7 @@ public class TenantTeamTest extends AbstractTestCase
         platform = gitana.authenticateOnTenant(user2, "pw", tenant2.getId());
         
         // invite user 1 into our default domain
-        DomainUser user1inTenant2 = platform.readDefaultDomain().inviteUser(user1);
+        DomainUser user1inTenant2 = platform.readPrimaryDomain().inviteUser(user1);
 
 
 

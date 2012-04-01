@@ -35,6 +35,21 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     public RegistrationImpl(Application application, ObjectNode obj, boolean isSaved)
     {
         super(application, obj, isSaved);
+
+        initRegistration();
+    }
+
+    protected void initRegistration()
+    {
+        if (!has(FIELD_USER_PROPERTIES))
+        {
+            set(FIELD_USER_PROPERTIES, JsonUtil.createObject());
+        }
+
+        if (!has(FIELD_SIGNUP_PROPERTIES))
+        {
+            set(FIELD_SIGNUP_PROPERTIES, JsonUtil.createObject());
+        }
     }
 
     public String getResourceUri()
@@ -129,27 +144,51 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     }
 
     @Override
-    public void setUserFirstName(String userFirstName) 
+    public void setUserProperties(ObjectNode userProperties)
     {
-        set(FIELD_USER_FIRST_NAME, userFirstName);
+        set(FIELD_USER_PROPERTIES, userProperties);
     }
 
     @Override
-    public String getUserFirstName() 
+    public ObjectNode getUserProperties()
     {
-        return getString(FIELD_USER_FIRST_NAME);
+        return getObject(FIELD_USER_PROPERTIES);
     }
 
     @Override
-    public void setUserLastName(String userLastName) 
+    public void setSignupProperties(ObjectNode signupProperties)
     {
-        set(FIELD_USER_LAST_NAME, userLastName);
+        set(FIELD_SIGNUP_PROPERTIES, signupProperties);
     }
 
     @Override
-    public String getUserLastName() 
+    public ObjectNode getSignupProperties()
     {
-        return getString(FIELD_USER_LAST_NAME);
+        return getObject(FIELD_SIGNUP_PROPERTIES);
+    }
+
+    @Override
+    public void setTenantTitle(String title)
+    {
+        set(FIELD_TENANT_TITLE, title);
+    }
+
+    @Override
+    public String getTenantTitle()
+    {
+        return getString(FIELD_TENANT_TITLE);
+    }
+
+    @Override
+    public void setTenantDescription(String description)
+    {
+        set(FIELD_TENANT_DESCRIPTION, description);
+    }
+
+    @Override
+    public String getTenantDescription()
+    {
+        return getString(FIELD_TENANT_DESCRIPTION);
     }
 
     @Override
@@ -264,6 +303,18 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     }
 
     @Override
+    public String getPaymentMethodId()
+    {
+        return getString(FIELD_PAYMENT_METHOD_ID);
+    }
+
+    @Override
+    public void setPaymentMethodId(String paymentMethodId)
+    {
+        set(FIELD_PAYMENT_METHOD_ID, paymentMethodId);
+    }
+
+    @Override
     public void sendConfirmationEmail()
     {
         getRemote().post(getResourceUri() + "/send/confirmation", getObject());
@@ -278,10 +329,23 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     @Override
     public void confirm(String newUserPassword)
     {
+        confirm(newUserPassword, null);
+    }
+
+    @Override
+    public void confirm(String newUserPassword, ObjectNode paymentMethodObject)
+    {
         Map<String, String> params = new HashMap<String, String>();
         params.put("password", newUserPassword);
 
-        getRemote().post(getResourceUri() + "/confirm", params, getObject());
+        if (paymentMethodObject != null)
+        {
+            getRemote().post(getResourceUri() + "/confirm", params, paymentMethodObject);
+        }
+        else
+        {
+            getRemote().post(getResourceUri() + "/confirm", params);
+        }
     }
-
+    
 }

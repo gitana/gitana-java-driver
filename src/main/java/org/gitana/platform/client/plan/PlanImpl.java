@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.services.payment.BillingSchedule;
+import org.gitana.platform.services.plan.DataUnit;
 
 import java.math.BigDecimal;
 
@@ -86,6 +87,9 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     }
     
 
+    ///////////////////////////////////////////
+
+
     @Override
     public void setPlanKey(String planKey)
     {
@@ -96,54 +100,6 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     public String getPlanKey()
     {
         return getString(FIELD_PLAN_KEY);
-    }
-
-    @Override
-    public void setMaxTotalStorageMB(long maxTotalStorageMB)
-    {
-        set(FIELD_MAX_TOTAL_STORAGE_MB, maxTotalStorageMB);
-    }
-
-    @Override
-    public long getMaxTotalStorageMB()
-    {
-        return getLong(FIELD_MAX_TOTAL_STORAGE_MB);
-    }
-
-    @Override
-    public void setMaxTotalStorageObjectCount(long maxTotalStorageObjectCount)
-    {
-        set(FIELD_MAX_TOTAL_STORAGE_OBJECT_COUNT, maxTotalStorageObjectCount);
-    }
-
-    @Override
-    public long getMaxTotalStorageObjectCount()
-    {
-        return getLong(FIELD_MAX_TOTAL_STORAGE_OBJECT_COUNT);
-    }
-
-    @Override
-    public void setMaxDataStoreCount(long maxDataStoreCount)
-    {
-        set(FIELD_MAX_DATASTORE_COUNT, maxDataStoreCount);
-    }
-
-    @Override
-    public long getMaxDataStoreCount()
-    {
-        return getLong(FIELD_MAX_DATASTORE_COUNT);
-    }
-
-    @Override
-    public void setMaxCollaboratorCount(long maxCollaboratorCount)
-    {
-        set(FIELD_MAX_COLLABORATOR_COUNT, maxCollaboratorCount);
-    }
-
-    @Override
-    public long getMaxCollaboratorCount()
-    {
-        return getLong(FIELD_MAX_COLLABORATOR_COUNT);
     }
 
     @Override
@@ -187,6 +143,166 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     public void setBillingPrice(BigDecimal paymentPrice)
     {
         set(FIELD_BILLING_PRICE, paymentPrice);
+    }
+
+    @Override
+    public long getStorageAmount()
+    {
+        return getLong(FIELD_STORAGE_AMOUNT);
+    }
+
+    @Override
+    public void setStorageAmount(long storageAmount)
+    {
+        set(FIELD_STORAGE_AMOUNT, storageAmount);
+    }
+
+    @Override
+    public DataUnit getStorageUnit()
+    {
+        DataUnit dataUnit = null;
+
+        if (has(FIELD_STORAGE_UNIT))
+        {
+            dataUnit = DataUnit.valueOf(getString(FIELD_STORAGE_UNIT));
+        }
+
+        return dataUnit;
+    }
+
+    @Override
+    public void setStorageUnit(DataUnit storageUnit)
+    {
+        set(FIELD_STORAGE_UNIT, storageUnit.toString());
+    }
+
+    @Override
+    public BigDecimal getStorageOveragePrice()
+    {
+        return getBigDecimal(FIELD_STORAGE_OVERAGE_PRICE);
+    }
+
+    @Override
+    public void setStorageOveragePrice(BigDecimal storageOveragePrice)
+    {
+        set(FIELD_STORAGE_OVERAGE_PRICE, storageOveragePrice);
+    }
+
+    @Override
+    public DataUnit getStorageOverageUnit()
+    {
+        DataUnit dataUnit = null;
+
+        if (has(FIELD_STORAGE_OVERAGE_UNIT))
+        {
+            dataUnit = DataUnit.valueOf(getString(FIELD_STORAGE_OVERAGE_UNIT));
+        }
+
+        return dataUnit;
+    }
+
+    @Override
+    public void setStorageOverageUnit(DataUnit storageOverageUnit)
+    {
+        set(FIELD_STORAGE_OVERAGE_UNIT, storageOverageUnit.toString());
+    }
+
+    @Override
+    public long getTransferAmount()
+    {
+        return getLong(FIELD_TRANSFER_AMOUNT);
+    }
+
+    @Override
+    public void setTransferAmount(long transferAmount)
+    {
+        set(FIELD_TRANSFER_AMOUNT, transferAmount);
+    }
+
+    @Override
+    public DataUnit getTransferUnit()
+    {
+        DataUnit dataUnit = null;
+
+        if (has(FIELD_TRANSFER_UNIT))
+        {
+            dataUnit = DataUnit.valueOf(getString(FIELD_TRANSFER_UNIT));
+        }
+
+        return dataUnit;
+    }
+
+    @Override
+    public void setTransferUnit(DataUnit transferUnit)
+    {
+        set(FIELD_TRANSFER_UNIT, transferUnit.toString());
+    }
+
+    @Override
+    public BigDecimal getTransferOveragePrice()
+    {
+        return getBigDecimal(FIELD_TRANSFER_OVERAGE_PRICE);
+    }
+
+    @Override
+    public void setTransferOveragePrice(BigDecimal transferOveragePrice)
+    {
+        set(FIELD_TRANSFER_OVERAGE_PRICE, transferOveragePrice);
+    }
+
+    @Override
+    public DataUnit getTransferOverageUnit()
+    {
+        DataUnit dataUnit = null;
+
+        if (has(FIELD_TRANSFER_OVERAGE_UNIT))
+        {
+            dataUnit = DataUnit.valueOf(getString(FIELD_TRANSFER_OVERAGE_UNIT));
+        }
+
+        return dataUnit;
+    }
+
+    @Override
+    public void setTransferOverageUnit(DataUnit transferOverageUnit)
+    {
+        set(FIELD_TRANSFER_OVERAGE_UNIT, transferOverageUnit.toString());
+    }
+
+    @Override
+    public long getDatastoreAmount()
+    {
+        return getLong(FIELD_DATASTORE_AMOUNT);
+    }
+
+    @Override
+    public void setDatastoreAmount(long datastoreAmount)
+    {
+        set(FIELD_DATASTORE_AMOUNT, datastoreAmount);
+    }
+
+    @Override
+    public long getObjectAmount()
+    {
+        return getLong(FIELD_OBJECT_AMOUNT);
+    }
+
+    @Override
+    public void setObjectAmount(long objectAmount)
+    {
+        set(FIELD_OBJECT_AMOUNT, objectAmount);
+    }
+
+    @Override
+    public long getCollaboratorAmount()
+    {
+        return getLong(FIELD_COLLABORATOR_AMOUNT);
+    }
+
+    @Override
+    public void setCollaboratorAmount(long collaboratorAmount)
+    {
+        set(FIELD_COLLABORATOR_AMOUNT, collaboratorAmount);
     }
 
 

@@ -19,31 +19,30 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.billing;
+package org.gitana.platform.client.webhost;
 
-import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.support.GitanaObjectImpl;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.gitana.platform.client.support.Selfable;
 
 /**
  * @author uzi
  */
-public class PaymentMethodValidation extends GitanaObjectImpl
+public interface AutoClientMapping extends WebHostDocument, Selfable
 {
-    public PaymentMethodValidation(ObjectNode object)
-    {
-        super(object);
-    }
-    
-    public boolean isValid()
-    {
-        return true;
-    }
-    
-    public List<PaymentMethodValidationError> listErrors()
-    {
-        return new ArrayList<PaymentMethodValidationError>();
-    }
+    // the incoming uri
+    public final static String FIELD_URI = "uri";
+
+    // the target application id
+    public final static String FIELD_APPLICATION_ID = "applicationId";
+
+    // the target client key
+    public final static String FIELD_CLIENT_KEY = "clientKey";
+
+    public String getUri();
+    public void setUri(String uri);
+
+    public String getApplicationId();
+    public void setApplicationId(String applicationId);
+
+    public String getClientKey();
+    public void setClientKey(String clientKey);
 }

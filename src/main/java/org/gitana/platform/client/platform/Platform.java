@@ -24,7 +24,7 @@ package org.gitana.platform.client.platform;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
-import org.gitana.platform.client.billing.Billing;
+import org.gitana.platform.client.billing.BillingProviderConfiguration;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.directory.Directory;
@@ -36,6 +36,7 @@ import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -51,20 +52,14 @@ public interface Platform extends DataStore
      */
     public Cluster getCluster();
     
-    public String getDefaultDomainId();
-    
-    public Domain readDefaultDomain();
+    public Domain readPrimaryDomain();
 
-    public String getDefaultDirectoryId();
-
-    public Directory readDefaultDirectory();
+    public Directory readPrimaryDirectory();
 
     public String getOwnerRegistrarId();
     public String getOwnerTenantId();
 
     
-    // billing
-    public Billing getBilling();
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +249,28 @@ public interface Platform extends DataStore
 
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WEB HOSTS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<WebHost> listWebHosts();
+
+    public ResultMap<WebHost> listWebHosts(Pagination pagination);
+
+    public WebHost readWebHost(String webhostId);
+
+    public WebHost createWebHost();
+
+    public WebHost createWebHost(ObjectNode object);
+
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query);
+
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query, Pagination pagination);
+
+    public PermissionCheckResults checkWebHostPermissions(List<PermissionCheck> list);
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,5 +323,21 @@ public interface Platform extends DataStore
     public void updateClient(Client client);
     public void deleteClient(Client client);
     public void deleteClient(String clientId);
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BILLING
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations();
+    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations(Pagination pagination);
+    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query);
+    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query, Pagination pagination);
+    public BillingProviderConfiguration readBillingProviderConfiguration(String billingProviderConfigurationId);
+    public BillingProviderConfiguration createBillingProviderConfiguration(String providerId, ObjectNode object);
 
 }

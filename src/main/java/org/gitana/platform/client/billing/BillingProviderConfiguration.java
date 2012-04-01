@@ -21,11 +21,21 @@
 
 package org.gitana.platform.client.billing;
 
-import org.gitana.platform.support.GitanaObjectImpl;
+import org.gitana.platform.client.platform.PlatformDocument;
+import org.gitana.platform.client.support.AccessControllable;
+import org.gitana.platform.client.support.Selfable;
 
 /**
  * @author uzi
  */
-public class PaymentMethodValidationError extends GitanaObjectImpl
+public interface BillingProviderConfiguration extends PlatformDocument, AccessControllable, Selfable
 {
+    public final static String FIELD_KEY = "key";
+    public final static String FIELD_PROVIDER_ID = "providerId";
+
+    public String getKey();
+    public void setKey(String key);
+
+    public String getProviderId();
+    public void setProviderId(String providerId);
 }

@@ -25,8 +25,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
-import org.gitana.platform.client.billing.Billing;
-import org.gitana.platform.client.billing.BillingImpl;
+import org.gitana.platform.client.billing.BillingProviderConfiguration;
 import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.directory.Directory;
@@ -40,6 +39,7 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.JsonUtil;
@@ -79,27 +79,15 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     }
 
     @Override
-    public String getDefaultDomainId()
+    public Domain readPrimaryDomain()
     {
-        return getString("defaultDomainId");
+        return readDomain("primary");
     }
 
     @Override
-    public Domain readDefaultDomain()
+    public Directory readPrimaryDirectory()
     {
-        return readDomain(getDefaultDomainId());
-    }
-
-    @Override
-    public String getDefaultDirectoryId()
-    {
-        return getString("defaultDirectoryId");
-    }
-
-    @Override
-    public Directory readDefaultDirectory()
-    {
-        return readDirectory(getDefaultDirectoryId());
+        return readDirectory("primary");
     }
 
     @Override
@@ -114,11 +102,6 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
         return getString("ownerTenantId");
     }
 
-    @Override
-    public Billing getBilling()
-    {
-        return new BillingImpl(this);
-    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -957,6 +940,177 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
         Response response = getRemote().post(getResourceUri() + "/registrars/permissions/check", object);
         return new PermissionCheckResults(response.getObjectNode());
+    }
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WEB HOSTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<WebHost> listWebHosts()
+    {
+        return listWebHosts(null);
+    }
+
+    @Override
+    public ResultMap<WebHost> listWebHosts(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/webhosts", params);
+        return getFactory().webhosts(this, response);
+    }
+
+    @Override
+    public WebHost readWebHost(String webhostId)
+    {
+        WebHost webhost = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/webhosts/" + webhostId);
+            webhost = getFactory().webhost(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return webhost;
+    }
+
+    @Override
+    public WebHost createWebHost()
+    {
+        return createWebHost(null);
+    }
+
+    @Override
+    public WebHost createWebHost(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/webhosts", object);
+
+        String webhostId = response.getId();
+        return readWebHost(webhostId);
+    }
+
+    @Override
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query)
+    {
+        return queryWebHosts(query, null);
+    }
+
+    @Override
+    public ResultMap<WebHost> queryWebHosts(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/webhosts/query", params, query);
+        return getFactory().webhosts(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkWebHostPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post(getResourceUri() + "/registrars/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BILLIN PROVIDER CONFIGURATIONS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations()
+    {
+        return listBillingProviderConfigurations(null);
+    }
+
+    @Override
+    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/billing/configurations", params);
+        return getFactory().billingProviderConfigurations(this, response);
+    }
+
+    @Override
+    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query)
+    {
+        return queryBillingProviderConfigurations(query, null);
+    }
+
+    @Override
+    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/billing/configurations/query", params, query);
+        return getFactory().billingProviderConfigurations(this, response);
+    }
+
+    @Override
+    public BillingProviderConfiguration readBillingProviderConfiguration(String billingProviderConfigurationId)
+    {
+        BillingProviderConfiguration billingProviderConfiguration = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/billing/configurations/" + billingProviderConfigurationId);
+            billingProviderConfiguration = getFactory().billingProviderConfiguration(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return billingProviderConfiguration;
+    }
+
+    @Override
+    public BillingProviderConfiguration createBillingProviderConfiguration(String providerId, ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+        
+        object.put(BillingProviderConfiguration.FIELD_PROVIDER_ID, providerId);
+
+        Response response = getRemote().post(getResourceUri() + "/billing/configurations", object);
+
+        String billingProviderConfigurationId = response.getId();
+        return readBillingProviderConfiguration(billingProviderConfigurationId);
     }
 
 }

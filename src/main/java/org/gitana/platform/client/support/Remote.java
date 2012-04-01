@@ -63,6 +63,9 @@ public interface Remote
 
     public Response post(String uri, Map<String, String> params, InputStream in, long length, String mimetype);
 
+    public HttpResponse postData(String uri, InputStream in, long length, String mimetype);
+
+
     /**
      * Performs a multipart post.
      *

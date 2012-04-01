@@ -23,13 +23,16 @@ package org.gitana.platform.client;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.JSONBuilder;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.application.Email;
 import org.gitana.platform.client.application.EmailProvider;
 import org.gitana.platform.client.application.Registration;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
+import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
@@ -131,8 +134,19 @@ public class RegistrationTest extends AbstractTestCase
         // and now, at this point, they'd presumably supply some more information
         // so we supply it here
         registration1.setUserName("bud");
-        registration1.setUserFirstName("Spud");
-        registration1.setUserLastName("McKenzie");
+        ObjectNode userProperties = JsonUtil.createObject();
+        userProperties.put(DomainUser.FIELD_FIRST_NAME, "Houston");
+        userProperties.put(DomainUser.FIELD_LAST_NAME, "Wilson");
+        userProperties.put("school", "Elm Dale");
+        registration1.setUserProperties(userProperties);
+        registration1.update();
+        
+        // additional tenant information
+        registration1.setTenantTitle("Dixie");
+        registration1.setTenantDescription("Flatline");
+
+        // add in some signup properties
+        registration1.getSignupProperties().put("company", "Illymani Designs");
         registration1.update();
 
         // confirm (and supply the password for the new user)
@@ -141,9 +155,40 @@ public class RegistrationTest extends AbstractTestCase
         // verify the registration completed
         registration1.reload();
         assertTrue(registration1.getCompleted());
-        assertNotNull(registration1.getCompletedPrincipalId());
+        assertNotNull(registration1.getCompletedPrincipalId()); // NOTE: this is the user object in parent tenant
         assertNotNull(registration1.getCompletedTenantId());
+        assertEquals("Illymani Designs", JsonUtil.objectGetString(registration1.getSignupProperties(), "company"));
 
+        // assert we can read back the tenant
+        Tenant newTenant = registrar.readTenant(registration1.getCompletedTenantId());
+        assertNotNull(newTenant);
+        assertEquals("Dixie", newTenant.getTitle());
+        assertEquals("Flatline", newTenant.getDescription());
+
+        // read the newly created user
+        DomainUser user = (DomainUser) domain.readPrincipal(registration1.getCompletedPrincipalId());
+        ObjectNode newUserObject = user.readIdentity().findUserObjectForTenant(registration1.getCompletedTenantId());
+        String newPrincipalId = JsonUtil.objectGetString(newUserObject, DomainUser.FIELD_ID);
+
+        // now we will authenticate against the new tenant using our new user
+        // we can do this because we happen to know their password
+
+        // find the default client for the new tenant
+        ObjectNode newClientObject = newTenant.readDefaultAllocatedClientObject();
+        String newClientKey = JsonUtil.objectGetString(newClientObject, Client.FIELD_KEY);
+        String newClientSecret = JsonUtil.objectGetString(newClientObject, Client.FIELD_SECRET);
+
+        // connect to the platform as the new user
+        Platform newPlatform = new Gitana(newClientKey, newClientSecret).authenticate("bud", "password");
+
+        // load the user object
+        DomainUser newUser = (DomainUser) newPlatform.readPrimaryDomain().readPrincipal(newPrincipalId);
+        assertNotNull(newUser);
+
+        // assert that we have all the properties of the user
+        assertEquals("Houston", newUser.getFirstName());
+        assertEquals("Wilson", newUser.getLastName());
+        assertEquals("Elm Dale", newUser.getString("school"));
     }
 
 }
