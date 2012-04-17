@@ -129,6 +129,34 @@ public class TeamImpl extends GitanaObjectImpl implements Team
     }
 
     @Override
+    public boolean hasMember(String principalId)
+    {
+        boolean found = false;
+
+        ResultMap<DomainPrincipal> members = listMembers();
+        for (DomainPrincipal member: members.values())
+        {
+            if (member.getId().equals(principalId))
+            {
+                found = true;
+                break;
+            }
+            else if (member.getDomainQualifiedId().equals(principalId))
+            {
+                found = true;
+                break;
+            }
+            else if (member.getDomainQualifiedName().equals(principalId))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        return found;
+    }
+
+    @Override
     public ResultMap<DomainPrincipal> listMembers()
     {
         return listMembers(null);

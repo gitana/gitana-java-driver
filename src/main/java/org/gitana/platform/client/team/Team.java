@@ -35,7 +35,15 @@ import java.util.List;
 public interface Team extends GitanaObject
 {
     public final static String FIELD_GROUP_ID = "groupId";
+    public final static String FIELD_GROUP_DOMAIN_ID = "groupDomainId";
+
     public final static String FIELD_ROLE_KEYS = "roleKeys";
+
+    public final static String FIELD_KEY = "key";
+
+    public final static String FIELD_TEAMABLE_TYPE_ID = "teamableObjectTypeId";
+    public final static String FIELD_TEAMABLE_ID = "teamableObjectId";
+
 
     /**
      * @return the teamable that this team is a part of
@@ -64,6 +72,8 @@ public interface Team extends GitanaObject
     public void addMember(String principalId);
 
     public void removeMember(String principalId);
+
+    public boolean hasMember(String principalId);
 
     public ResultMap<DomainPrincipal> listMembers();
 

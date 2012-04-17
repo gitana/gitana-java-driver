@@ -65,6 +65,19 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
         this.reload(application.getObject());
     }
 
+    @Override
+    public String getKey()
+    {
+        return getString(FIELD_KEY);
+    }
+
+    @Override
+    public void setKey(String key)
+    {
+        set(FIELD_KEY, key);
+    }
+
+
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
