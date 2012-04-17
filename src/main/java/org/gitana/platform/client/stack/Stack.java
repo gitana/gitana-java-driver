@@ -38,6 +38,12 @@ import org.gitana.platform.support.ResultMap;
  */
 public interface Stack extends PlatformDocument, AccessControllable, Selfable, Teamable, Attachable
 {
+    public final static String FIELD_KEY = "key";
+
+    public String getKey();
+    public void setKey(String key);
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // LOGS

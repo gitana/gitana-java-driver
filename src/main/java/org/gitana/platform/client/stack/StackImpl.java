@@ -58,6 +58,19 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         return "/stacks/" + getId();
     }
 
+    @Override
+    public String getKey()
+    {
+        return getString(FIELD_KEY);
+    }
+
+    @Override
+    public void setKey(String key)
+    {
+        set(FIELD_KEY, key);
+    }
+
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
