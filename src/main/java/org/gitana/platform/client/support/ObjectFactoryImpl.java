@@ -1169,6 +1169,7 @@ public class ObjectFactoryImpl implements ObjectFactory
 
     // MIXED CASE
 
+    @Override
     public PlatformDataStore platformDataStore(Platform platform, ObjectNode object)
     {
         if (object == null)
@@ -1176,7 +1177,16 @@ public class ObjectFactoryImpl implements ObjectFactory
             throw new RuntimeException("Cannot determine what to do with empty object");
         }
 
+        String id = JsonUtil.objectGetString(object, "datastoreId");
         String type = JsonUtil.objectGetString(object, "datastoreTypeId");
+
+        // if we have a datastoreId specified, then this came from stack datastores query/list
+        // which has "key" as _doc
+        if (id != null)
+        {
+            object = JsonUtil.copyObject(object);
+            object.put(PlatformDataStore.FIELD_ID, id);
+        }
 
         // find the method on this factory that has the same name as the type
         Method method = null;
@@ -1200,6 +1210,28 @@ public class ObjectFactoryImpl implements ObjectFactory
         }
 
         return datastore;
+    }
+
+    @Override
+    public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<PlatformDataStore> map = new ResultMapImpl<PlatformDataStore>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            String originalId = JsonUtil.objectGetString(object, PlatformDataStore.FIELD_ID);
+
+            PlatformDataStore ds = platformDataStore(platform, object);
+
+            // store back into map by original id (which might be a stack key)
+            map.put(originalId, ds);
+        }
+
+        return map;
     }
 
     @Override
@@ -1271,23 +1303,6 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             AutoClientMapping autoClientMapping = new AutoClientMappingImpl(webhost, object, true);
             map.put(autoClientMapping.getId(), autoClientMapping);
-        }
-
-        return map;
-    }
-
-    public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response)
-    {
-        if (!response.isListDocument())
-        {
-            throw new RuntimeException("Response must be a list document");
-        }
-
-        ResultMap<PlatformDataStore> map = new ResultMapImpl<PlatformDataStore>(response.getListOffset(), response.getListTotalRows());
-        for (ObjectNode object : response.getObjectNodes())
-        {
-            PlatformDataStore ds = platformDataStore(platform, object);
-            map.put(ds.getId(), ds);
         }
 
         return map;

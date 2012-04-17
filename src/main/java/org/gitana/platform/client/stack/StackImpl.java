@@ -465,6 +465,8 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/datastores", params);
+        // THIS FAILS BECAUSE _DOC on the response for each item is KEY!
+        // so a follow up .delete() on any of the items fails
         return getFactory().platformDataStores(this.getPlatform(), response);
     }
 
@@ -506,6 +508,8 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         {
             Response response = getRemote().get(getResourceUri() + "/datastores/" + key);
             datastore = getFactory().platformDataStore(getPlatform(), response.getObjectNode());
+
+            // some correction
         }
         catch (Exception ex)
         {
