@@ -38,6 +38,9 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.util.JsonUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -84,13 +87,13 @@ public class Gitana
         this.environmentId = environmentId;
 
         // load environment properties
-        ResourceBundle bundle = ResourceBundle.getBundle("gitana-environments");
+        ResourceBundle bundle = readBundle("gitana-environments");
         this.baseUrl = bundle.getString("gitana.environment." + environmentId + ".uri");
 
         // load client properties if not provided
         if (clientId == null && clientSecret == null)
         {
-            bundle = ResourceBundle.getBundle("gitana");
+            bundle = readBundle("gitana");
 
             this.clientId = bundle.getString("gitana.clientId");
             this.clientSecret = bundle.getString("gitana.clientSecret");
@@ -299,7 +302,7 @@ public class Gitana
         // if username and password are null, authenticate using credentials supplied in properties file
         if (username == null && password == null)
         {
-            ResourceBundle bundle = ResourceBundle.getBundle("gitana");
+            ResourceBundle bundle = readBundle("gitana");
 
             username = bundle.getString("gitana.credentials.username");
             password = bundle.getString("gitana.credentials.password");
@@ -385,4 +388,35 @@ public class Gitana
 
         return ping;
     }
+
+    public static ResourceBundle readBundle(String bundleId)
+    {
+        ResourceBundle bundle = null;
+
+        // check current file path
+        File file = new File(bundleId + ".properties");
+        if (file != null && file.exists())
+        {
+            try
+            {
+                FileInputStream fis = new FileInputStream(file);
+                bundle = new PropertyResourceBundle(fis);
+
+                System.out.println("Found local " + bundleId + ".properties, loading...");
+
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        if (bundle == null)
+        {
+            bundle = ResourceBundle.getBundle(bundleId);
+        }
+
+        return bundle;
+    }
+
 }

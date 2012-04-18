@@ -35,6 +35,11 @@ import org.gitana.platform.support.ResultMap;
  */
 public interface Application extends PlatformDataStore
 {
+    public final static String FIELD_KEY = "key";
+
+    public String getKey();
+    public void setKey(String key);
+
     /**
      * @return platform
      */
