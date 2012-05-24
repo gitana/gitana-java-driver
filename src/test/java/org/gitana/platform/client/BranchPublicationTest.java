@@ -30,6 +30,7 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.QName;
 import org.gitana.util.StreamUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -38,6 +39,7 @@ import java.io.InputStream;
 /**
  * @author uzi
  */
+@Ignore
 public class BranchPublicationTest extends AbstractTestCase
 {
     @Test
