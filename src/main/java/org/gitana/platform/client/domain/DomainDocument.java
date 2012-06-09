@@ -21,16 +21,13 @@
 
 package org.gitana.platform.client.domain;
 
-import org.gitana.platform.client.document.Document;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface DomainDocument extends Document
+public interface DomainDocument extends PlatformDocument
 {	
     public Domain getDomain();
     public String getDomainId();
-
-    public Platform getPlatform();
 }

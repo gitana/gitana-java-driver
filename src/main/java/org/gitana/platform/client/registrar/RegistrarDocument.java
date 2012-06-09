@@ -22,11 +22,12 @@
 package org.gitana.platform.client.registrar;
 
 import org.gitana.platform.client.document.Document;
+import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface RegistrarDocument extends Document
+public interface RegistrarDocument extends PlatformDocument
 {
     public Registrar getRegistrar();
     public String getRegistrarId();

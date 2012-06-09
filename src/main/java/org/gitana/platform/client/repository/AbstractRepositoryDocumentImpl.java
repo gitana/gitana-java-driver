@@ -22,12 +22,7 @@
 package org.gitana.platform.client.repository;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
 
 /**
  * @author uzi
@@ -41,29 +36,6 @@ public abstract class AbstractRepositoryDocumentImpl extends AbstractPlatformDoc
     	super(repository.getPlatform(), obj, isSaved);
 
         this.repository = repository;
-    }
-
-    protected abstract String getResourceUri();
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return getRepository().getPlatform();
     }
 
     @Override

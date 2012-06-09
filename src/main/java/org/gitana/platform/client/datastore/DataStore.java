@@ -21,16 +21,16 @@
 
 package org.gitana.platform.client.datastore;
 
-import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
+import org.gitana.platform.client.support.Transferable;
 import org.gitana.platform.client.team.Teamable;
 
 /**
  * @author uzi
  */
-public interface DataStore extends Document, AccessControllable, Selfable, Teamable
+public interface DataStore extends Document, AccessControllable, Selfable, Teamable, Transferable
 {
     /**
      * @return the data store id

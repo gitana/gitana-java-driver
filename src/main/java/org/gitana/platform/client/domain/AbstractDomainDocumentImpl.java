@@ -22,43 +22,21 @@
 package org.gitana.platform.client.domain;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.*;
-import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 
 /**
  * @author uzi
  */
-public abstract class AbstractDomainDocumentImpl extends DocumentImpl implements DomainDocument
+public abstract class AbstractDomainDocumentImpl extends AbstractPlatformDocumentImpl implements DomainDocument
 {
     private Domain domain;
 
     protected AbstractDomainDocumentImpl(Domain domain, ObjectNode obj, boolean isSaved)
     {
-    	super(obj, isSaved);
+        super(domain.getPlatform(), obj, isSaved);
 
         this.domain = domain;
     }
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
-    }
-
-    public abstract String getResourceUri();
 
     @Override
     public Domain getDomain()
@@ -71,11 +49,4 @@ public abstract class AbstractDomainDocumentImpl extends DocumentImpl implements
     {
         return getDomain().getId();
     }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return getDomain().getPlatform();
-    }
-
 }

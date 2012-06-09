@@ -24,9 +24,7 @@ package org.gitana.platform.client.branch;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
-import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.beans.ACL;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.nodes.BaseNode;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -36,10 +34,8 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.types.*;
 import org.gitana.platform.client.util.DriverUtil;
-import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.services.branch.BranchType;
-import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;
 import org.gitana.platform.support.ResultMap;
@@ -546,110 +542,6 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         return (AssociationDefinition) createNode(object);
     }
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // IMPORT/EXPORT
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public Archive exportPublicationArchive(Vault vault, String groupId, String artifactId, String versionId)
-    {
-        //
-        // start the export
-        //
-        Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId);
-        String jobId = response1.getId();
-
-
-        //
-        // query job service until job completes or fails
-        //
-        Job job = null;
-        try
-        {
-            boolean complete = false;
-            while (!complete)
-            {
-                job = getCluster().readJob(jobId);
-                if (job == null)
-                {
-                    throw new Exception("No job found: " + jobId);
-                }
-                if (JobState.ERROR.equals(job.getState()))
-                {
-                    throw new Exception("Job: " + job.getId() + " failed with: " + job.getLogEntries());
-                }
-                if (JobState.FINISHED.equals(job.getState()))
-                {
-                    complete = true;
-                }
-
-                if (!complete)
-                {
-                    Thread.sleep(200);
-                }
-            }
-        }
-        catch (Exception ie)
-        {
-            throw new RuntimeException(ie);
-        }
-
-
-        //
-        // read archive
-        //
-        return vault.lookupArchive(groupId, artifactId, versionId);
-    }
-
-    @Override
-    public void importPublicationArchive(Vault vault, String groupId, String artifactId, String versionId)
-    {
-        // post binary to server and get back job id
-        Response response = getRemote().post(getResourceUri() + "/import?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId);
-        String jobId = response.getId();
-
-
-        //
-        // query job service until job completes or fails
-        //
-        Job job = null;
-        try
-        {
-            boolean complete = false;
-            while (!complete)
-            {
-                job = getCluster().readJob(jobId);
-                if (JobState.ERROR.equals(job.getState()))
-                {
-                    complete = true;
-                }
-                if (JobState.FINISHED.equals(job.getState()))
-                {
-                    complete = true;
-                }
-
-                if (!complete)
-                {
-                    Thread.sleep(200);
-                }
-            }
-        }
-        catch (InterruptedException ie)
-        {
-            throw new RuntimeException(ie);
-        }
-        if (JobState.ERROR.equals(job.getState()))
-        {
-            throw new RuntimeException("Job: " + job.getId() + " failed with: " + job.getLogEntries());
-        }
-
-
-        // if we made it this far, the job completed successfully
-    }
-
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm)
     {
@@ -711,6 +603,5 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
 
         return nodeList;
     }
-
 
 }

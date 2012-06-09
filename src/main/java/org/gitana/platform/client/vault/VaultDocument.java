@@ -23,11 +23,12 @@ package org.gitana.platform.client.vault;
 
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface VaultDocument extends Document
+public interface VaultDocument extends PlatformDocument
 {	
     public Vault getVault();
     public String getVaultId();

@@ -21,16 +21,13 @@
 
 package org.gitana.platform.client.application;
 
-import org.gitana.platform.client.document.Document;
-import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface ApplicationDocument extends Document
+public interface ApplicationDocument extends PlatformDocument
 {	
     public Application getApplication();
     public String getApplicationId();
-
-    public Platform getPlatform();
 }

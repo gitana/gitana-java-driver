@@ -120,13 +120,13 @@ public class LogTest extends AbstractTestCase
         node.update();
 
 
-        // verify that platform logs are larger by 1
+        // verify that platform logs are larger by (at least) 1
         int platformSize2 = platform.queryLogEntries(JsonUtil.createObject()).size();
-        assertTrue(platformSize2 - platformSize1 == 1);
+        assertTrue(platformSize2 - platformSize1 >= 1);
 
-        // verify that stack #1 logs are larger by 1
+        // verify that stack #1 logs are larger by (at least) 1
         int stack1Size2 = stack1.queryLogEntries(JsonUtil.createObject()).size();
-        assertTrue(stack1Size2 - stack1Size1 == 1);
+        assertTrue(stack1Size2 - stack1Size1 >= 1);
 
         // verify that stack #2 logs are unchanged
         int stack2Size2 = stack2.queryLogEntries(JsonUtil.createObject()).size();

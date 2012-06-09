@@ -23,8 +23,6 @@ package org.gitana.platform.client.branch;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
-import org.gitana.platform.client.archive.Archive;
-import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.nodes.BaseNode;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -33,7 +31,6 @@ import org.gitana.platform.client.repository.RepositoryDocument;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.types.*;
-import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.branch.BranchType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;
@@ -254,41 +251,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return
      */
     public AssociationDefinition defineAssociationType(QName definitionQName, ObjectNode object);
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // IMPORT/EXPORT
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Export the HEAD of this branch as a publication archive.
-     *
-     * @param vault
-     * @param groupId
-     * @param artifactId
-     * @param versionId
-     *
-     * @return publication archive
-     *
-     * @throws Exception
-     */
-    public Archive exportPublicationArchive(Vault vault, String groupId, String artifactId, String versionId);
-
-    /**
-     * Imports a publication archive into the branch.
-     *
-     * @param vault
-     * @param groupId
-     * @param artifactId
-     * @param versionId
-     *
-     * @return
-     * @throws Exception
-     */
-    public void importPublicationArchive(Vault vault, String groupId, String artifactId, String versionId);
 
 
 

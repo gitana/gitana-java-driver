@@ -22,43 +22,22 @@
 package org.gitana.platform.client.directory;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.document.DocumentImpl;
+import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
 
 /**
  * @author uzi
  */
-public abstract class AbstractDirectoryDocumentImpl extends DocumentImpl implements DirectoryDocument
+public abstract class AbstractDirectoryDocumentImpl extends AbstractPlatformDocumentImpl implements DirectoryDocument
 {
     private Directory directory;
 
     protected AbstractDirectoryDocumentImpl(Directory directory, ObjectNode obj, boolean isSaved)
     {
-    	super(obj, isSaved);
+    	super(directory.getPlatform(), obj, isSaved);
 
         this.directory = directory;
     }
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
-    }
-
-    protected abstract String getResourceUri();
 
     @Override
     public Directory getDirectory()

@@ -23,11 +23,12 @@ package org.gitana.platform.client.directory;
 
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface DirectoryDocument extends Document
+public interface DirectoryDocument extends PlatformDocument
 {	
     public Directory getDirectory();
     public String getDirectoryId();
