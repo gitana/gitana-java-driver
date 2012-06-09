@@ -22,42 +22,20 @@
 package org.gitana.platform.client.application;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 
 /**
  * @author uzi
  */
-public abstract class AbstractApplicationDocumentImpl extends DocumentImpl implements ApplicationDocument
+public abstract class AbstractApplicationDocumentImpl extends AbstractPlatformDocumentImpl implements ApplicationDocument
 {
     private Application application;
 
     public AbstractApplicationDocumentImpl(Application application, ObjectNode obj, boolean isSaved)
     {
-    	super(obj, isSaved);
+    	super(application.getPlatform(), obj, isSaved);
 
         this.application = application;
-    }
-
-    public abstract String getResourceUri();
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
     }
 
     @Override
@@ -70,12 +48,6 @@ public abstract class AbstractApplicationDocumentImpl extends DocumentImpl imple
     public String getApplicationId()
     {
         return getApplication().getId();
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return getApplication().getPlatform();
     }
 
 }

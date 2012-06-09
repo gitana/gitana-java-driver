@@ -23,16 +23,23 @@ package org.gitana.platform.client.datastore;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
+import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.services.transfer.TransferExportConfiguration;
+import org.gitana.platform.services.transfer.TransferImportConfiguration;
+import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
@@ -268,6 +275,137 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     public Team getOwnersTeam()
     {
         return this.readTeam("owners");
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TRANSFER
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Archive exportArchive(Vault vault, String groupId, String artifactId, String versionId)
+    {
+        return exportArchive(vault, groupId, artifactId, versionId, null);
+    }
+
+    @Override
+    public Archive exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration)
+    {
+        // run the job synchronously
+        exportArchive(vault, groupId, artifactId, versionId, configuration, TransferSchedule.SYNCHRONOUS);
+
+        // read the archive
+        Archive archive = vault.lookupArchive(groupId, artifactId, versionId);
+        if (archive == null)
+        {
+            throw new RuntimeException("Unable to find archive");
+        }
+
+        return archive;
+    }
+
+    @Override
+    public Job exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
+    {
+        if (schedule == null)
+        {
+            schedule = TransferSchedule.SYNCHRONOUS;
+        }
+
+        if (configuration == null)
+        {
+            configuration = new TransferExportConfiguration();
+        }
+
+        // start the export
+        ObjectNode configObject = configuration.toJSON();
+        Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + schedule.toString(), configObject);
+        String jobId = response1.getId();
+
+        // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
+        boolean completed = false;
+        Job job = null;
+        do
+        {
+            job = getCluster().readJob(jobId);
+            if (job != null)
+            {
+                if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
+                {
+                    completed = true;
+                }
+            }
+
+            if (!completed)
+            {
+                try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
+            }
+        }
+        while (!completed);
+
+        return job;
+    }
+
+    @Override
+    public Job importArchive(Archive archive)
+    {
+        return importArchive(archive, null);
+    }
+
+    @Override
+    public Job importArchive(Archive archive, TransferImportConfiguration configuration)
+    {
+        return importArchive(archive, configuration, TransferSchedule.SYNCHRONOUS);
+    }
+
+    @Override
+    public Job importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
+    {
+        String vaultId = archive.getVaultId();
+        String groupId = archive.getGroupId();
+        String artifactId = archive.getArtifactId();
+        String versionId = archive.getVersionId();
+
+        if (schedule == null)
+        {
+            schedule = TransferSchedule.SYNCHRONOUS;
+        }
+
+        if (configuration == null)
+        {
+            configuration = new TransferImportConfiguration();
+        }
+
+        // post binary to server and get back job id
+        ObjectNode configObject = configuration.toJSON();
+        Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + schedule.toString(), configObject);
+        String jobId = response.getId();
+
+        // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
+        boolean completed = false;
+        Job job = null;
+        do
+        {
+            job = getCluster().readJob(jobId);
+            if (job != null)
+            {
+                if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
+                {
+                    completed = true;
+                }
+            }
+
+            if (!completed)
+            {
+                try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
+            }
+        }
+        while (!completed);
+
+        return job;
     }
 
 }

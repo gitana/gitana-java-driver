@@ -22,41 +22,20 @@
 package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 
 /**
  * @author uzi
  */
-public abstract class AbstractRegistrarDocumentImpl extends DocumentImpl implements RegistrarDocument
+public abstract class AbstractRegistrarDocumentImpl extends AbstractPlatformDocumentImpl implements RegistrarDocument
 {
     private Registrar registrar;
 
     public AbstractRegistrarDocumentImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
-    	super(obj, isSaved);
+        super(registrar.getPlatform(), obj, isSaved);
 
         this.registrar = registrar;
-    }
-
-    protected abstract String getResourceUri();
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
     }
 
     @Override

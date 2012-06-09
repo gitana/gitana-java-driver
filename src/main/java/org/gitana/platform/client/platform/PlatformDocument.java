@@ -22,11 +22,12 @@
 package org.gitana.platform.client.platform;
 
 import org.gitana.platform.client.document.Document;
+import org.gitana.platform.client.support.Transferable;
 
 /**
  * @author uzi
  */
-public interface PlatformDocument extends Document
+public interface PlatformDocument extends Document, Transferable
 {	
     public Platform getPlatform();
     public String getPlatformId();

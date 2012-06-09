@@ -22,42 +22,20 @@
 package org.gitana.platform.client.vault;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 
 /**
  * @author uzi
  */
-public abstract class AbstractVaultDocumentImpl extends DocumentImpl implements VaultDocument
+public abstract class AbstractVaultDocumentImpl extends AbstractPlatformDocumentImpl implements VaultDocument
 {
     private Vault vault;
 
     public AbstractVaultDocumentImpl(Vault vault, ObjectNode obj, boolean isSaved)
     {
-    	super(obj, isSaved);
+        super(vault.getPlatform(), obj, isSaved);
 
         this.vault = vault;
-    }
-
-    public abstract String getResourceUri();
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
     }
 
     @Override
@@ -70,12 +48,6 @@ public abstract class AbstractVaultDocumentImpl extends DocumentImpl implements 
     public String getVaultId()
     {
         return getVault().getId();
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return getVault().getPlatform();
     }
 
 }

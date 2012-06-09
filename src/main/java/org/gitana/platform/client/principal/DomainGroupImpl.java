@@ -80,7 +80,7 @@ public class DomainGroupImpl extends AbstractDomainPrincipalImpl implements Doma
     @Override
     public void addPrincipal(DomainPrincipal principal)
     {
-        addPrincipal(principal.getId());
+        addPrincipal(principal.getDomainQualifiedId());
     }
 
     @Override
@@ -92,7 +92,7 @@ public class DomainGroupImpl extends AbstractDomainPrincipalImpl implements Doma
     @Override
     public void removePrincipal(DomainPrincipal principal)
     {
-        removePrincipal(principal.getId());
+        removePrincipal(principal.getDomainQualifiedId());
     }
 
     @Override

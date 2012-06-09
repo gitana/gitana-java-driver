@@ -121,7 +121,7 @@ public class TenantAllocationTest extends AbstractTestCase
         
 
         // now check allocations for the tenant object
-        assertEquals(26, tenant1.listAllocatedObjects().size()); // 21 + 5 defaults (domain, client, application, webhost, warehouse) // and then -1 for some reason, cannot find a third client?
+        assertEquals(27, tenant1.listAllocatedObjects().size()); // 21 + 6 defaults (domain, client, application, webhost, warehouse, directory) // and then -1 for some reason, cannot find a third client?
         assertEquals(6+1, tenant1.listAllocatedApplicationObjects().size()); // 7
         assertEquals(5, tenant1.listAllocatedRepositoryObjects().size()); // 5
         assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 5

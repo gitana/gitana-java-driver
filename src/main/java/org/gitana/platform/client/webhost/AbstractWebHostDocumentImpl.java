@@ -22,42 +22,20 @@
 package org.gitana.platform.client.webhost;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 
 /**
  * @author uzi
  */
-public abstract class AbstractWebHostDocumentImpl extends DocumentImpl implements WebHostDocument
+public abstract class AbstractWebHostDocumentImpl extends AbstractPlatformDocumentImpl implements WebHostDocument
 {
     private WebHost webhost;
 
     public AbstractWebHostDocumentImpl(WebHost webhost, ObjectNode obj, boolean isSaved)
     {
-    	super(obj, isSaved);
+    	super(webhost.getPlatform(), obj, isSaved);
 
         this.webhost = webhost;
-    }
-
-    public abstract String getResourceUri();
-
-    protected ObjectFactory getFactory()
-    {
-        return getDriver().getFactory();
-    }
-
-    protected Driver getDriver()
-    {
-        return DriverContext.getDriver();
-    }
-
-    protected Remote getRemote()
-    {
-        return getDriver().getRemote();
     }
 
     @Override
@@ -70,12 +48,6 @@ public abstract class AbstractWebHostDocumentImpl extends DocumentImpl implement
     public String getWebHostId()
     {
         return getWebHost().getId();
-    }
-
-    @Override
-    public Platform getPlatform()
-    {
-        return getWebHost().getPlatform();
     }
 
 }

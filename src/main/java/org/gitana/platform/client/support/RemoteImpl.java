@@ -321,6 +321,28 @@ public class RemoteImpl implements Remote
     }
 
     @Override
+    public HttpResponse postEx(String uri)
+    {
+        HttpResponse httpResponse = null;
+        try
+        {
+            String URL = buildURL(uri, true);
+
+            httpResponse = invoker.post(URL);
+        }
+        catch (Exception ex)
+        {
+            // make sure to consume the response
+            try { EntityUtils.consume(httpResponse.getEntity()); } catch (Exception ex1) { }
+
+            throw new RuntimeException(ex);
+        }
+
+        return httpResponse;
+    }
+
+
+    @Override
     public Response post(String uri, Map<String, String> params, ObjectNode object, HttpPayload payload)
     {
         Response response = null;

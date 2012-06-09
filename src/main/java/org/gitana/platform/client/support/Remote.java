@@ -63,6 +63,8 @@ public interface Remote
 
     public Response post(String uri, Map<String, String> params, InputStream in, long length, String mimetype);
 
+    public HttpResponse postEx(String uri);
+
     public HttpResponse postData(String uri, InputStream in, long length, String mimetype);
 
 

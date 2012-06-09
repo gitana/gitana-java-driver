@@ -21,13 +21,13 @@
 
 package org.gitana.platform.client.webhost;
 
-import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDocument;
 
 /**
  * @author uzi
  */
-public interface WebHostDocument extends Document
+public interface WebHostDocument extends PlatformDocument
 {	
     public WebHost getWebHost();
     public String getWebHostId();
