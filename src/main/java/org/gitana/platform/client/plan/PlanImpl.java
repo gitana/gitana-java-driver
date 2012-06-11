@@ -21,11 +21,13 @@
 
 package org.gitana.platform.client.plan;
 
+import org.codehaus.jackson.node.NumericNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.services.payment.BillingSchedule;
 import org.gitana.platform.services.plan.DataUnit;
+import org.gitana.util.JsonUtil;
 
 import java.math.BigDecimal;
 
@@ -90,6 +92,103 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     ///////////////////////////////////////////
 
 
+    private boolean _has(String objectFieldId, String fieldId)
+    {
+        boolean has = false;
+
+        ObjectNode object = getObject(objectFieldId);
+        if (object != null && object.has(fieldId))
+        {
+            has = true;
+        }
+
+        return has;
+    }
+
+    private String _getString(String objectFieldId, String fieldId)
+    {
+        String value = null;
+
+        ObjectNode object = getObject(objectFieldId);
+        if (object != null && object.has(fieldId))
+        {
+            value = object.get(fieldId).getTextValue();
+        }
+
+        return value;
+    }
+
+    private BigDecimal _getBigDecimal(String objectFieldId, String fieldId)
+    {
+        BigDecimal big = null;
+
+        ObjectNode object = getObject(objectFieldId);
+        if (object != null && object.has(fieldId))
+        {
+            Object value = object.get(fieldId);
+            if (value != null)
+            {
+                if (value instanceof NumericNode)
+                {
+                    big = ((NumericNode)value).getDecimalValue();
+                }
+            }
+        }
+
+        return big;
+    }
+
+    private int _getInt(String objectFieldId, String fieldId)
+    {
+        int value = -1;
+
+        ObjectNode object = getObject(objectFieldId);
+        if (object != null && object.has(fieldId))
+        {
+            value = object.get(fieldId).getIntValue();
+        }
+
+        return value;
+    }
+
+    private boolean _getBoolean(String objectFieldId, String fieldId)
+    {
+        boolean value = false;
+
+        ObjectNode object = getObject(objectFieldId);
+        if (object != null && object.has(fieldId))
+        {
+            value = object.get(fieldId).getBooleanValue();
+        }
+
+        return value;
+    }
+
+    private long _getLong(String objectFieldId, String fieldId)
+    {
+        long value = -1;
+
+        ObjectNode object = getObject(objectFieldId);
+        if (object != null && object.has(fieldId))
+        {
+            value = object.get(fieldId).getLongValue();
+        }
+
+        return value;
+    }
+
+    private void _set(String objectFieldId, String fieldId, Object value)
+    {
+        ObjectNode object = getObject(objectFieldId);
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+            set(objectFieldId, object);
+        }
+
+        JsonUtil.objectPut(object, fieldId, value);
+    }
+
     @Override
     public void setPlanKey(String planKey)
     {
@@ -117,44 +216,44 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     @Override
     public BillingSchedule getBillingSchedule()
     {
-        BillingSchedule paymentSchedule = null;
+        BillingSchedule schedule = null;
 
-        if (has(FIELD_BILLING_SCHEDULE))
+        if (_has(FIELD_BASE, FIELD_BASE_SCHEDULE))
         {
-            paymentSchedule = BillingSchedule.valueOf(getString(FIELD_BILLING_SCHEDULE));
+            schedule = BillingSchedule.valueOf(_getString(FIELD_BASE, FIELD_BASE_SCHEDULE));
         }
 
-        return paymentSchedule;
+        return schedule;
     }
 
     @Override
-    public void setBillingSchedule(BillingSchedule paymentSchedule)
+    public void setBillingSchedule(BillingSchedule schedule)
     {
-        set(FIELD_BILLING_SCHEDULE, paymentSchedule.toString());
+        _set(FIELD_BASE, FIELD_BASE_SCHEDULE, schedule.toString());
     }
 
     @Override
     public BigDecimal getBillingPrice()
     {
-        return getBigDecimal(FIELD_BILLING_PRICE);
+        return _getBigDecimal(FIELD_BASE, FIELD_BASE_PRICE);
     }
 
     @Override
     public void setBillingPrice(BigDecimal paymentPrice)
     {
-        set(FIELD_BILLING_PRICE, paymentPrice);
+        _set(FIELD_BASE, FIELD_BASE_PRICE, paymentPrice);
     }
 
     @Override
-    public long getStorageAmount()
+    public long getStorageAllowance()
     {
-        return getLong(FIELD_STORAGE_AMOUNT);
+        return _getLong(FIELD_STORAGE, FIELD_STORAGE_ALLOWANCE);
     }
 
     @Override
-    public void setStorageAmount(long storageAmount)
+    public void setStorageAllowance(long storageAllowance)
     {
-        set(FIELD_STORAGE_AMOUNT, storageAmount);
+        _set(FIELD_STORAGE, FIELD_STORAGE_ALLOWANCE, storageAllowance);
     }
 
     @Override
@@ -162,9 +261,9 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     {
         DataUnit dataUnit = null;
 
-        if (has(FIELD_STORAGE_UNIT))
+        if (_has(FIELD_STORAGE, FIELD_STORAGE_UNIT))
         {
-            dataUnit = DataUnit.valueOf(getString(FIELD_STORAGE_UNIT));
+            dataUnit = DataUnit.valueOf(_getString(FIELD_STORAGE, FIELD_STORAGE_UNIT));
         }
 
         return dataUnit;
@@ -173,137 +272,158 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     @Override
     public void setStorageUnit(DataUnit storageUnit)
     {
-        set(FIELD_STORAGE_UNIT, storageUnit.toString());
+        _set(FIELD_STORAGE, FIELD_STORAGE_UNIT, storageUnit.toString());
     }
 
     @Override
-    public BigDecimal getStorageOveragePrice()
+    public BigDecimal getStoragePrice()
     {
-        return getBigDecimal(FIELD_STORAGE_OVERAGE_PRICE);
+        return _getBigDecimal(FIELD_STORAGE, FIELD_STORAGE_PRICE);
     }
 
     @Override
-    public void setStorageOveragePrice(BigDecimal storageOveragePrice)
+    public void setStoragePrice(BigDecimal storagePrice)
     {
-        set(FIELD_STORAGE_OVERAGE_PRICE, storageOveragePrice);
+        _set(FIELD_STORAGE, FIELD_STORAGE_PRICE, storagePrice);
     }
 
     @Override
-    public DataUnit getStorageOverageUnit()
+    public String getStorageBillingKey()
+    {
+        return _getString(FIELD_STORAGE, FIELD_STORAGE_BILLING_KEY);
+    }
+
+    @Override
+    public void setStorageBillingKey(String storageBillingKey)
+    {
+        _set(FIELD_STORAGE, FIELD_STORAGE_BILLING_KEY, storageBillingKey);
+    }
+
+    @Override
+    public boolean getStorageBillingRequired()
+    {
+        return _getBoolean(FIELD_STORAGE, FIELD_STORAGE_REQUIRES_BILLING);
+    }
+
+    @Override
+    public void setStorageBillingRequired(boolean storageBillingRequired)
+    {
+        _set(FIELD_STORAGE, FIELD_STORAGE_REQUIRES_BILLING, storageBillingRequired);
+    }
+
+    @Override
+    public long getStorageMax()
+    {
+        return _getLong(FIELD_STORAGE, FIELD_STORAGE_MAX);
+    }
+
+    @Override
+    public void setStorageMax(long storageMax)
+    {
+        _set(FIELD_STORAGE, FIELD_STORAGE_MAX, storageMax);
+    }
+
+    @Override
+    public long getTransferOutAllowance()
+    {
+        return _getLong(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_ALLOWANCE);
+    }
+
+    @Override
+    public void setTransferOutAllowance(long transferOutAllowance)
+    {
+        _set(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_ALLOWANCE, transferOutAllowance);
+    }
+
+    @Override
+    public DataUnit getTransferOutUnit()
     {
         DataUnit dataUnit = null;
 
-        if (has(FIELD_STORAGE_OVERAGE_UNIT))
+        if (_has(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_UNIT))
         {
-            dataUnit = DataUnit.valueOf(getString(FIELD_STORAGE_OVERAGE_UNIT));
+            dataUnit = DataUnit.valueOf(_getString(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_UNIT));
         }
 
         return dataUnit;
     }
 
     @Override
-    public void setStorageOverageUnit(DataUnit storageOverageUnit)
+    public void setTransferOutUnit(DataUnit transferOutUnit)
     {
-        set(FIELD_STORAGE_OVERAGE_UNIT, storageOverageUnit.toString());
+        _set(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_UNIT, transferOutUnit.toString());
     }
 
     @Override
-    public long getTransferAmount()
+    public BigDecimal getTransferOutPrice()
     {
-        return getLong(FIELD_TRANSFER_AMOUNT);
+        return _getBigDecimal(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_PRICE);
     }
 
     @Override
-    public void setTransferAmount(long transferAmount)
+    public void setTransferOutPrice(BigDecimal transferOutPrice)
     {
-        set(FIELD_TRANSFER_AMOUNT, transferAmount);
+        _set(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_PRICE, transferOutPrice);
     }
 
     @Override
-    public DataUnit getTransferUnit()
+    public String getTransferOutBillingKey()
     {
-        DataUnit dataUnit = null;
-
-        if (has(FIELD_TRANSFER_UNIT))
-        {
-            dataUnit = DataUnit.valueOf(getString(FIELD_TRANSFER_UNIT));
-        }
-
-        return dataUnit;
+        return _getString(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_BILLING_KEY);
     }
 
     @Override
-    public void setTransferUnit(DataUnit transferUnit)
+    public void setTransferOutBillingKey(String transferOutBillingKey)
     {
-        set(FIELD_TRANSFER_UNIT, transferUnit.toString());
+        _set(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_BILLING_KEY, transferOutBillingKey);
     }
 
     @Override
-    public BigDecimal getTransferOveragePrice()
+    public boolean getTransferOutBillingRequired()
     {
-        return getBigDecimal(FIELD_TRANSFER_OVERAGE_PRICE);
+        return _getBoolean(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_REQUIRES_BILLING);
     }
 
     @Override
-    public void setTransferOveragePrice(BigDecimal transferOveragePrice)
+    public void setTransferOutBillingRequired(boolean transferOutBillingRequired)
     {
-        set(FIELD_TRANSFER_OVERAGE_PRICE, transferOveragePrice);
+        _set(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_REQUIRES_BILLING, transferOutBillingRequired);
     }
 
     @Override
-    public DataUnit getTransferOverageUnit()
+    public long getTransferOutMax()
     {
-        DataUnit dataUnit = null;
-
-        if (has(FIELD_TRANSFER_OVERAGE_UNIT))
-        {
-            dataUnit = DataUnit.valueOf(getString(FIELD_TRANSFER_OVERAGE_UNIT));
-        }
-
-        return dataUnit;
+        return _getLong(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_MAX);
     }
 
     @Override
-    public void setTransferOverageUnit(DataUnit transferOverageUnit)
+    public void setTransferOutMax(long transferOutMax)
     {
-        set(FIELD_TRANSFER_OVERAGE_UNIT, transferOverageUnit.toString());
+        _set(FIELD_TRANSFER_OUT, FIELD_TRANSFER_OUT_MAX, transferOutMax);
     }
 
     @Override
-    public long getDatastoreAmount()
+    public ObjectNode getCapabilities()
     {
-        return getLong(FIELD_DATASTORE_AMOUNT);
+        return getObject(FIELD_CAPABILITIES);
     }
 
     @Override
-    public void setDatastoreAmount(long datastoreAmount)
+    public void setCapabilities(ObjectNode capabilities)
     {
-        set(FIELD_DATASTORE_AMOUNT, datastoreAmount);
+        set(FIELD_CAPABILITIES, capabilities);
     }
 
     @Override
-    public long getObjectAmount()
+    public int getSubTenantAllowance()
     {
-        return getLong(FIELD_OBJECT_AMOUNT);
+        return getInt(FIELD_SUBTENANT_ALLOWANCE);
     }
 
     @Override
-    public void setObjectAmount(long objectAmount)
+    public void setSubTenantAllowance(int subtenantAllowance)
     {
-        set(FIELD_OBJECT_AMOUNT, objectAmount);
+        set(FIELD_SUBTENANT_ALLOWANCE, subtenantAllowance);
     }
-
-    @Override
-    public long getCollaboratorAmount()
-    {
-        return getLong(FIELD_COLLABORATOR_AMOUNT);
-    }
-
-    @Override
-    public void setCollaboratorAmount(long collaboratorAmount)
-    {
-        set(FIELD_COLLABORATOR_AMOUNT, collaboratorAmount);
-    }
-
 
 }

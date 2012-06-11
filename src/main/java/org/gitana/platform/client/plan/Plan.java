@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.plan;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.services.payment.BillingSchedule;
@@ -35,27 +36,36 @@ public interface Plan extends RegistrarDocument, Selfable
 {
     // fields
     public final static String FIELD_PLAN_KEY = "planKey";
-
-    // billing
     public final static String FIELD_REQUIRES_BILLING = "requiresBilling";
-    public final static String FIELD_BILLING_SCHEDULE = "billingSchedule";
-    public final static String FIELD_BILLING_PRICE = "billingPrice";
+
+    // base
+    public final static String FIELD_BASE = "base";
+    public final static String FIELD_BASE_PRICE = "price";
+    public final static String FIELD_BASE_SCHEDULE = "schedule";
 
     // storage
-    public final static String FIELD_STORAGE_AMOUNT = "storageAmount";
-    public final static String FIELD_STORAGE_UNIT = "storageUnit";
-    public final static String FIELD_STORAGE_OVERAGE_PRICE = "storageOveragePrice";
-    public final static String FIELD_STORAGE_OVERAGE_UNIT = "storageOverageUnit";
+    public final static String FIELD_STORAGE = "storage";
+    public final static String FIELD_STORAGE_UNIT = "unit";
+    public final static String FIELD_STORAGE_ALLOWANCE = "allowance";
+    public final static String FIELD_STORAGE_PRICE = "price";
+    public final static String FIELD_STORAGE_MAX = "max";
+    public final static String FIELD_STORAGE_BILLING_KEY = "billingKey";
+    public final static String FIELD_STORAGE_REQUIRES_BILLING = "requiresBilling";
 
-    // transfer
-    public final static String FIELD_TRANSFER_AMOUNT = "transferAmount";
-    public final static String FIELD_TRANSFER_UNIT = "transferUnit";
-    public final static String FIELD_TRANSFER_OVERAGE_PRICE = "transferOveragePrice";
-    public final static String FIELD_TRANSFER_OVERAGE_UNIT = "transferOverageUnit";
+    // transfer out
+    public final static String FIELD_TRANSFER_OUT = "transferOut";
+    public final static String FIELD_TRANSFER_OUT_UNIT = "unit";
+    public final static String FIELD_TRANSFER_OUT_ALLOWANCE = "allowance";
+    public final static String FIELD_TRANSFER_OUT_PRICE = "price";
+    public final static String FIELD_TRANSFER_OUT_MAX = "max";
+    public final static String FIELD_TRANSFER_OUT_BILLING_KEY = "billingKey";
+    public final static String FIELD_TRANSFER_OUT_REQUIRES_BILLING = "requiresBilling";
 
-    public final static String FIELD_DATASTORE_AMOUNT = "datastoreAmount";
-    public final static String FIELD_OBJECT_AMOUNT = "objectAmount";
-    public final static String FIELD_COLLABORATOR_AMOUNT = "collaboratorAmount";
+    // subtenant allowance
+    public final static String FIELD_SUBTENANT_ALLOWANCE = "subtenantAllowance";
+
+    // capabilities
+    public final static String FIELD_CAPABILITIES = "capabilities";
 
     public void setPlanKey(String planKey);
     public String getPlanKey();
@@ -63,44 +73,61 @@ public interface Plan extends RegistrarDocument, Selfable
     public boolean getRequiresBilling();
     public void setRequiresBilling(boolean requiresBilling);
 
-    public BillingSchedule getBillingSchedule();
-    public void setBillingSchedule(BillingSchedule billingSchedule);
+    // base
 
     public BigDecimal getBillingPrice();
     public void setBillingPrice(BigDecimal billingPrice);
 
-    public long getStorageAmount();
-    public void setStorageAmount(long storageAmount);
+    public BillingSchedule getBillingSchedule();
+    public void setBillingSchedule(BillingSchedule billingSchedule);
+
+    // storage
 
     public DataUnit getStorageUnit();
     public void setStorageUnit(DataUnit storageUnit);
 
-    public BigDecimal getStorageOveragePrice();
-    public void setStorageOveragePrice(BigDecimal storageOveragePrice);
+    public long getStorageAllowance();
+    public void setStorageAllowance(long storageAllowance);
 
-    public DataUnit getStorageOverageUnit();
-    public void setStorageOverageUnit(DataUnit storageOverageUnit);
+    public BigDecimal getStoragePrice();
+    public void setStoragePrice(BigDecimal storagePrice);
 
-    public long getTransferAmount();
-    public void setTransferAmount(long transferAmount);
+    public long getStorageMax();
+    public void setStorageMax(long storageMax);
 
-    public DataUnit getTransferUnit();
-    public void setTransferUnit(DataUnit transferUnit);
+    public String getStorageBillingKey();
+    public void setStorageBillingKey(String storageBillingKey);
 
-    public BigDecimal getTransferOveragePrice();
-    public void setTransferOveragePrice(BigDecimal transferOveragePrice);
-
-    public DataUnit getTransferOverageUnit();
-    public void setTransferOverageUnit(DataUnit transferOverageUnit);
-
-    public long getDatastoreAmount();
-    public void setDatastoreAmount(long datastoreAmount);
-
-    public long getObjectAmount();
-    public void setObjectAmount(long objectAmount);
-
-    public long getCollaboratorAmount();
-    public void setCollaboratorAmount(long collaboratorAmount);
+    public boolean getStorageBillingRequired();
+    public void setStorageBillingRequired(boolean storageBillingRequired);
 
 
+    // transfer out
+
+    public DataUnit getTransferOutUnit();
+    public void setTransferOutUnit(DataUnit transferOutUnit);
+
+    public long getTransferOutAllowance();
+    public void setTransferOutAllowance(long transferOutAllowance);
+
+    public BigDecimal getTransferOutPrice();
+    public void setTransferOutPrice(BigDecimal transferOutPrice);
+
+    public long getTransferOutMax();
+    public void setTransferOutMax(long transferOutMax);
+
+    public String getTransferOutBillingKey();
+    public void setTransferOutBillingKey(String transferOutBillingKey);
+
+    public boolean getTransferOutBillingRequired();
+    public void setTransferOutBillingRequired(boolean transferOutBillingRequired);
+
+
+    // capabilities
+
+    public ObjectNode getCapabilities();
+    public void setCapabilities(ObjectNode capabilities);
+
+    public int getSubTenantAllowance();
+    public void setSubTenantAllowance(int subtenantAllowance);
 }
