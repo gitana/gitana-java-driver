@@ -46,6 +46,8 @@ import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.job.JobImpl;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.log.LogEntryImpl;
+import org.gitana.platform.client.meter.Meter;
+import org.gitana.platform.client.meter.MeterImpl;
 import org.gitana.platform.client.nodes.*;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.plan.PlanImpl;
@@ -1163,8 +1165,45 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public Meter meter(Registrar registrar, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
 
+        return new MeterImpl(registrar, object, false);
+    }
 
+    @Override
+    public Meter meter(Registrar registrar, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new MeterImpl(registrar, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Meter> meters(Registrar registrar, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Meter> map = new ResultMapImpl<Meter>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Meter meter = new MeterImpl(registrar, object, true);
+            map.put(meter.getId(), meter);
+        }
+
+        return map;
+    }
 
 
     // MIXED CASE

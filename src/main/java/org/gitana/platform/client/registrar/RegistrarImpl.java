@@ -23,6 +23,7 @@ package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.billing.PaymentMethod;
+import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
@@ -293,6 +294,88 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
     public void deletePlan(String planKey)
     {
         getRemote().delete(getResourceUri() + "/plans/" + planKey);
+    }
+
+    @Override
+    public ResultMap<Meter> listMeters()
+    {
+        return listMeters(null);
+    }
+
+    @Override
+    public ResultMap<Meter> listMeters(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/meters", params);
+        return getFactory().meters(this, response);
+    }
+
+    @Override
+    public ResultMap<Meter> queryMeters(ObjectNode query)
+    {
+        return queryMeters(query, null);
+    }
+
+    @Override
+    public ResultMap<Meter> queryMeters(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/meters/query", params, query);
+        return getFactory().meters(this, response);
+    }
+
+    @Override
+    public Meter readMeter(String meterId)
+    {
+        Meter meter = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/meters/" + meterId);
+            meter = getFactory().meter(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return meter;
+    }
+
+    @Override
+    public Meter createMeter(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/meters", object);
+
+        return readMeter(response.getId());
+    }
+
+    @Override
+    public void updateMeter(Meter meter)
+    {
+        getRemote().put(getResourceUri() + "/meters/" + meter.getId(), meter.getObject());
+    }
+
+    @Override
+    public void deleteMeter(Meter meter)
+    {
+        deleteMeter(meter.getId());
+    }
+
+    @Override
+    public void deleteMeter(String meterId)
+    {
+        getRemote().delete(getResourceUri() + "/meters/" + meterId);
     }
 
     /*

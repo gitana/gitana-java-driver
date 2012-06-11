@@ -38,6 +38,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
+import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.nodes.Association;
 import org.gitana.platform.client.nodes.BaseNode;
 import org.gitana.platform.client.plan.Plan;
@@ -231,7 +232,11 @@ public interface ObjectFactory
     public Plan plan(Registrar registrar, Response response);
     public ResultMap<Plan> plans(Registrar registrar, Response response);
 
-    
+    // meters
+    public Meter meter(Registrar registrar, ObjectNode object);
+    public Meter meter(Registrar registrar, Response response);
+    public ResultMap<Meter> meters(Registrar registrar, Response response);
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
