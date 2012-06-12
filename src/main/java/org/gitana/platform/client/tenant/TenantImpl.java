@@ -167,7 +167,19 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     {
         return getString(FIELD_BILLING_PAYMENT_METHOD_ID);
     }
-    
+
+    @Override
+    public void setDnsSlug(String tenantDnsKey)
+    {
+        set(FIELD_DNS_SLUG, tenantDnsKey);
+    }
+
+    @Override
+    public String getDnsSlug()
+    {
+        return getString(FIELD_DNS_SLUG);
+    }
+
     private ResultMap<ObjectNode> toObjects(Response response)
     {
         ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();

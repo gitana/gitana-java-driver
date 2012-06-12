@@ -47,6 +47,9 @@ public interface Tenant extends RegistrarDocument, Selfable
     public final static String FIELD_BILLING_SUBSCRIPTION_ID = "billingSubscriptionId";
     public final static String FIELD_BILLING_PAYMENT_METHOD_ID = "billingPaymentMethodId";
 
+    // tenant dns key
+    public final static String FIELD_DNS_SLUG = "dnsSlug";
+
 
     public void setPlanKey(String planKey);
     public String getPlanKey();
@@ -59,6 +62,11 @@ public interface Tenant extends RegistrarDocument, Selfable
 
     public void setPlatformId(String platformId);
     public String getPlatformId();
+
+    // tenant dns key
+    public void setDnsSlug(String dnsSlug);
+    public String getDnsSlug();
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
