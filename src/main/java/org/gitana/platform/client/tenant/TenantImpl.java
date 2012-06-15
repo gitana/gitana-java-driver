@@ -24,10 +24,12 @@ package org.gitana.platform.client.tenant;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
+import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.meter.MeterType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
@@ -165,7 +167,19 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     {
         return getString(FIELD_BILLING_PAYMENT_METHOD_ID);
     }
-    
+
+    @Override
+    public void setDnsSlug(String tenantDnsKey)
+    {
+        set(FIELD_DNS_SLUG, tenantDnsKey);
+    }
+
+    @Override
+    public String getDnsSlug()
+    {
+        return getString(FIELD_DNS_SLUG);
+    }
+
     private ResultMap<ObjectNode> toObjects(Response response)
     {
         ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();
@@ -472,5 +486,55 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
         }
 
         return transaction;
+    }
+
+    @Override
+    public ResultMap<Meter> listMeters()
+    {
+        return listMeters(null);
+    }
+
+    @Override
+    public ResultMap<Meter> listMeters(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/meters", params);
+        return getFactory().meters(this.getRegistrar(), response);
+    }
+
+    @Override
+    public ResultMap<Meter> queryMeters(ObjectNode query)
+    {
+        return queryMeters(query, null);
+    }
+
+    @Override
+    public ResultMap<Meter> queryMeters(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/meters/query", params, query);
+        return getFactory().meters(this.getRegistrar(), response);
+    }
+
+    @Override
+    public Meter readCurrentMeter(MeterType meterType)
+    {
+        Meter meter = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/meters/current/" + meterType.toString());
+            meter = getFactory().meter(this.getRegistrar(), response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return meter;
     }
 }

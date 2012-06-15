@@ -115,18 +115,17 @@ public class BillingTest extends AbstractTestCase
         Plan plan = registrar.createPlan("booya");
         plan.setBillingPrice(new BigDecimal("999"));
         plan.setBillingSchedule(BillingSchedule.MONTHLY);
-        plan.setCollaboratorAmount(10);
-        plan.setDatastoreAmount(10);
-        plan.setObjectAmount(10000);
         plan.setRequiresBilling(true);
-        plan.setStorageAmount(1);
+        plan.setStoragePrice(new BigDecimal(0.15));
         plan.setStorageUnit(DataUnit.GB);
-        plan.setStorageOveragePrice(new BigDecimal(0.15));
-        plan.setStorageOverageUnit(DataUnit.GB);
-        plan.setTransferAmount(1);
-        plan.setTransferUnit(DataUnit.GB);
-        plan.setTransferOveragePrice(new BigDecimal(0.15));
-        plan.setTransferOverageUnit(DataUnit.GB);
+        plan.setStorageMax(-1);
+        plan.setStorageBillingRequired(true);
+        plan.setStorageBillingKey("storage");
+        plan.setTransferOutPrice(new BigDecimal(0.15));
+        plan.setTransferOutUnit(DataUnit.GB);
+        plan.setTransferOutMax(-1);
+        plan.setTransferOutBillingRequired(true);
+        plan.setTransferOutBillingKey("transferout");
         plan.update();
 
         // create a new principal

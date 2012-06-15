@@ -24,8 +24,10 @@ package org.gitana.platform.client.tenant;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
+import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.support.Selfable;
+import org.gitana.platform.services.meter.MeterType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -45,6 +47,9 @@ public interface Tenant extends RegistrarDocument, Selfable
     public final static String FIELD_BILLING_SUBSCRIPTION_ID = "billingSubscriptionId";
     public final static String FIELD_BILLING_PAYMENT_METHOD_ID = "billingPaymentMethodId";
 
+    // tenant dns key
+    public final static String FIELD_DNS_SLUG = "dnsSlug";
+
 
     public void setPlanKey(String planKey);
     public String getPlanKey();
@@ -57,6 +62,11 @@ public interface Tenant extends RegistrarDocument, Selfable
 
     public void setPlatformId(String platformId);
     public String getPlatformId();
+
+    // tenant dns key
+    public void setDnsSlug(String dnsSlug);
+    public String getDnsSlug();
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +140,19 @@ public interface Tenant extends RegistrarDocument, Selfable
     public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query);
     public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query, Pagination pagination);
     public BillingTransaction readBillingTransaction(String transactionId);
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // METERS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<Meter> listMeters();
+    public ResultMap<Meter> listMeters(Pagination pagination);
+    public ResultMap<Meter> queryMeters(ObjectNode query);
+    public ResultMap<Meter> queryMeters(ObjectNode query, Pagination pagination);
+    public Meter readCurrentMeter(MeterType meterType);
 
 
 }

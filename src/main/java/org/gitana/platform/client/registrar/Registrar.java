@@ -22,6 +22,7 @@
 package org.gitana.platform.client.registrar;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
@@ -78,6 +79,23 @@ public interface Registrar extends PlatformDataStore
     public void updatePlan(Plan plan);
     public void deletePlan(Plan plan);
     public void deletePlan(String planKey);
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // METERS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<Meter> listMeters();
+    public ResultMap<Meter> listMeters(Pagination pagination);
+    public ResultMap<Meter> queryMeters(ObjectNode query);
+    public ResultMap<Meter> queryMeters(ObjectNode query, Pagination pagination);
+    public Meter readMeter(String meterId);
+    public Meter createMeter(ObjectNode object);
+    public void updateMeter(Meter meter);
+    public void deleteMeter(Meter meter);
+    public void deleteMeter(String meterId);
 
 
 
