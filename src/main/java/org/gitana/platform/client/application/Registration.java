@@ -24,6 +24,8 @@ package org.gitana.platform.client.application;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.support.Selfable;
 
+import java.util.List;
+
 /**
  * A registration object is intended for us in registering a new user to a web site.
  *
@@ -74,6 +76,12 @@ public interface Registration extends ApplicationDocument, Selfable
 
     // configuration for email configurations
     public final static String FIELD_EMAILS = "emails";
+
+    // the ids of any discounts to apply
+    public final static String FIELD_DISCOUNTS = "discounts";
+
+    // the ids of any addons to apply
+    public final static String FIELD_ADDONS = "addons";
 
     public void setUserEmail(String userEmail);
     public String getUserEmail();
@@ -128,5 +136,10 @@ public interface Registration extends ApplicationDocument, Selfable
     public void confirm(String newUserPassword);
     public void confirm(String newUserPassword, ObjectNode paymentMethodObject);
 
+    public List<String> getDiscounts();
+    public void setDiscounts(List<String> discounts);
+
+    public List<String> getAddons();
+    public void setAddons(List<String> addons);
 }
 

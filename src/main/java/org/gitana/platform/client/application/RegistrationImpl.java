@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.util.JsonUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,6 +50,16 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
         if (!has(FIELD_SIGNUP_PROPERTIES))
         {
             set(FIELD_SIGNUP_PROPERTIES, JsonUtil.createObject());
+        }
+
+        if (!has(FIELD_DISCOUNTS))
+        {
+            set(FIELD_DISCOUNTS, JsonUtil.createArray());
+        }
+
+        if (!has(FIELD_ADDONS))
+        {
+            set(FIELD_ADDONS, JsonUtil.createArray());
         }
     }
 
@@ -347,5 +358,29 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
             getRemote().post(getResourceUri() + "/confirm", params);
         }
     }
-    
+
+    @Override
+    public List<String> getDiscounts()
+    {
+        return (List) get(FIELD_DISCOUNTS);
+    }
+
+    @Override
+    public void setDiscounts(List<String> discounts)
+    {
+        set(FIELD_DISCOUNTS, discounts);
+    }
+
+    @Override
+    public List<String> getAddons()
+    {
+        return (List) get(FIELD_ADDONS);
+    }
+
+    @Override
+    public void setAddons(List<String> addons)
+    {
+        set(FIELD_ADDONS, addons);
+    }
+
 }
