@@ -21,11 +21,13 @@
 
 package org.gitana.platform.client;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.application.Settings;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.support.QueryBuilder;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -51,20 +53,30 @@ public class SettingsTest extends AbstractTestCase
         
         // get the settings for the app
         Settings settings = application.readApplicationSettings();
-        settings.set("theme", "blue");
-        settings.set("dashlets", Arrays.asList("dashlet1", "dashlet2", "dashlet3", "dashlet4"));
+        settings.setSetting("theme", "blue");
+        settings.setSetting("max_items", 6);
+        settings.setSetting("dashlets", Arrays.asList("dashlet1", "dashlet2", "dashlet3", "dashlet4"));
+
+        ObjectNode obj = JsonUtil.createObject("{ \"key1\": \"val1\", \"key2\": \"val2\" }");
+
+        settings.setSetting("composite", obj);
+
         settings.update();
         
         // read back settings and verify values
         settings = application.readApplicationSettings();
-        assertEquals("blue", settings.getString("theme"));
-        assertEquals(4, settings.getArray("dashlets").size());
+        assertEquals("blue", settings.getSettingAsString("theme"));
+        assertEquals(6, settings.getSettingAsInt("max_items"));
+        assertEquals(4, settings.getSettingAsArray("dashlets").size());
+
+        assertEquals("val1",settings.getSettingAsObject("composite").get("key1").getTextValue());
+        assertEquals("val2",settings.getSettingAsObject("composite").get("key2").getTextValue());
 
         // verify that this app settings can be picked off via a query
         assertEquals(1, application.querySettings(QueryBuilder.start("scope").is("application").get()).size());
         
         // query for app settings with dashlets = "dashlet2"
-        assertEquals(1, application.querySettings(QueryBuilder.start("scope").is("application").and("dashlets").is("dashlet2").get()).size());
+        assertEquals(1, application.querySettings(QueryBuilder.start("scope").is("application").and("settings.dashlets").is("dashlet2").get()).size());
     }
 
     @Test
@@ -86,30 +98,30 @@ public class SettingsTest extends AbstractTestCase
         
         // user settings #1
         Settings userSettings1 = application.readApplicationPrincipalSettings(user1);
-        userSettings1.set("theme", "red");
-        userSettings1.set("dashlets", Arrays.asList("dashlet1", "dashlet2"));
+        userSettings1.setSetting("theme", "red");
+        userSettings1.setSetting("dashlets", Arrays.asList("dashlet1", "dashlet2"));
         userSettings1.update();
 
         // user settings #2
         Settings userSettings2 = application.readApplicationPrincipalSettings(user2);
-        userSettings2.set("theme", "blue");
-        userSettings2.set("dashlets", Arrays.asList("dashlet2", "dashlet3"));
+        userSettings2.setSetting("theme", "blue");
+        userSettings2.setSetting("dashlets", Arrays.asList("dashlet2", "dashlet3"));
         userSettings2.update();
 
         // user settings #3
         Settings userSettings3 = application.readApplicationPrincipalSettings(user3);
-        userSettings3.set("theme", "blue");
-        userSettings3.set("dashlets", Arrays.asList("dashlet4"));
+        userSettings3.setSetting("theme", "blue");
+        userSettings3.setSetting("dashlets", Arrays.asList("dashlet4"));
         userSettings3.update();
 
         // read back and verify
         assertEquals(3, application.querySettings(QueryBuilder.start("scope").is("principal").get()).size());
-        assertEquals(1, application.querySettings(QueryBuilder.start("theme").is("red").get()).size());
-        assertEquals(2, application.querySettings(QueryBuilder.start("theme").is("blue").get()).size());
-        assertEquals(1, application.querySettings(QueryBuilder.start("dashlets").is("dashlet1").get()).size());
-        assertEquals(2, application.querySettings(QueryBuilder.start("dashlets").is("dashlet2").get()).size());
-        assertEquals(1, application.querySettings(QueryBuilder.start("dashlets").is("dashlet3").get()).size());
-        assertEquals(1, application.querySettings(QueryBuilder.start("dashlets").is("dashlet4").get()).size());
+        assertEquals(1, application.querySettings(QueryBuilder.start("settings.theme").is("red").get()).size());
+        assertEquals(2, application.querySettings(QueryBuilder.start("settings.theme").is("blue").get()).size());
+        assertEquals(1, application.querySettings(QueryBuilder.start("settings.dashlets").is("dashlet1").get()).size());
+        assertEquals(2, application.querySettings(QueryBuilder.start("settings.dashlets").is("dashlet2").get()).size());
+        assertEquals(1, application.querySettings(QueryBuilder.start("settings.dashlets").is("dashlet3").get()).size());
+        assertEquals(1, application.querySettings(QueryBuilder.start("settings.dashlets").is("dashlet4").get()).size());
     }
 
 }
