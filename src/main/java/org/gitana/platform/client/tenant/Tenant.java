@@ -67,6 +67,7 @@ public interface Tenant extends RegistrarDocument, Selfable
     public void setDnsSlug(String dnsSlug);
     public String getDnsSlug();
 
+    public void closeOut();
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -94,7 +94,12 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
 
         this.reload(tenant.getObject());
     }
-    
+
+    @Override
+    public void closeOut()
+    {
+        getRemote().post(getResourceUri() + "/closeout");
+    }
 
     @Override
     public void setPlanKey(String planKey)
