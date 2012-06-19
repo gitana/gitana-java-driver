@@ -61,6 +61,11 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
         {
             set(FIELD_ADDONS, JsonUtil.createArray());
         }
+
+        if (!has(FIELD_ACTIVE))
+        {
+            set(FIELD_ACTIVE, true);
+        }
     }
 
     public String getResourceUri()
@@ -381,6 +386,18 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
     public void setAddons(List<String> addons)
     {
         set(FIELD_ADDONS, addons);
+    }
+
+    @Override
+    public boolean getActive()
+    {
+        return getBoolean(FIELD_ACTIVE);
+    }
+
+    @Override
+    public void setActive(boolean active)
+    {
+        set(FIELD_ACTIVE, active);
     }
 
 }

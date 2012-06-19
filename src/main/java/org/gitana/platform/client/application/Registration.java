@@ -83,6 +83,9 @@ public interface Registration extends ApplicationDocument, Selfable
     // the ids of any addons to apply
     public final static String FIELD_ADDONS = "addons";
 
+    // whether the registration is active
+    public final static String FIELD_ACTIVE = "active";
+
     public void setUserEmail(String userEmail);
     public String getUserEmail();
 
@@ -141,5 +144,9 @@ public interface Registration extends ApplicationDocument, Selfable
 
     public List<String> getAddons();
     public void setAddons(List<String> addons);
+
+    public boolean getActive();
+    public void setActive(boolean active);
+
 }
 
