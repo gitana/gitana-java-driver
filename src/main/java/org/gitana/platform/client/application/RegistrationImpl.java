@@ -64,7 +64,7 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
 
         if (!has(FIELD_ACTIVE))
         {
-            set(FIELD_ACTIVE, true);
+            set(FIELD_ACTIVE, false);
         }
     }
 

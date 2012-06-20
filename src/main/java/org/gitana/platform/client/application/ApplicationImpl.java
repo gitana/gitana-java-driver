@@ -498,7 +498,9 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
 
         try
         {
-            Response response = getRemote().get(getResourceUri() + "/registrations/" + registrationId);
+            // we use the "/lookup" URI since the registrationId might have non URI-compatible characters in it
+            // like . or @ (for email addresses)
+            Response response = getRemote().get(getResourceUri() + "/registrations/lookup?registrationId=" + registrationId);
             registration = getFactory().registration(this, response);
         }
         catch (Exception ex)
