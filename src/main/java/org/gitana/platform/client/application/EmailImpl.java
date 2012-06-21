@@ -29,6 +29,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.util.DateUtil;
+import org.gitana.util.JsonUtil;
 
 import java.util.Calendar;
 
@@ -275,7 +276,11 @@ public class EmailImpl extends AbstractApplicationDocumentImpl implements Email
         {
             ObjectNode timestamp = getObject(FIELD_SENT_ON);
 
-            calendar = DateUtil.convertTimestamp(timestamp.get("timestamp").getTextValue());
+            long ms = JsonUtil.objectGetLong(timestamp, "ms");
+            if (ms != -1)
+            {
+                calendar = DateUtil.convertTimestamp(ms);
+            }
         }
 
         return calendar;

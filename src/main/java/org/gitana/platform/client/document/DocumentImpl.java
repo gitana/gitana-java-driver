@@ -180,15 +180,39 @@ public class DocumentImpl extends GitanaObjectImpl implements Document
     @Override
     public Calendar dateModified()
     {
-        String timestamp = getSystemObject().get(SYSTEM_MODIFIED_ON).getTextValue();
-        return DateUtil.convertTimestamp(timestamp);
+        Calendar calendar = null;
+
+        if (getSystemObject() != null && getSystemObject().has(SYSTEM_MODIFIED_ON))
+        {
+            ObjectNode timestamp = JsonUtil.objectGetObject(getSystemObject(), SYSTEM_MODIFIED_ON);
+
+            long ms = JsonUtil.objectGetLong(timestamp, "ms");
+            if (ms != -1)
+            {
+                calendar = DateUtil.convertTimestamp(ms);
+            }
+        }
+
+        return calendar;
     }
 
     @Override
     public Calendar dateCreated()
     {
-        String timestamp = getSystemObject().get(SYSTEM_CREATED_ON).getTextValue();
-        return DateUtil.convertTimestamp(timestamp);
+        Calendar calendar = null;
+
+        if (getSystemObject() != null && getSystemObject().has(SYSTEM_CREATED_ON))
+        {
+            ObjectNode timestamp = JsonUtil.objectGetObject(getSystemObject(), SYSTEM_CREATED_ON);
+
+            long ms = JsonUtil.objectGetLong(timestamp, "ms");
+            if (ms != -1)
+            {
+                calendar = DateUtil.convertTimestamp(ms);
+            }
+        }
+
+        return calendar;
     }
 
     @Override

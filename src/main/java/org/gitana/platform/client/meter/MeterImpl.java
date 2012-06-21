@@ -128,10 +128,15 @@ public class MeterImpl extends AbstractRegistrarDocumentImpl implements Meter
     {
         Calendar calendar = null;
 
-        if (getObject().has(FIELD_METER_START))
+        if (has(FIELD_METER_START))
         {
-            String timestamp = JsonUtil.objectGetString(getObject(FIELD_METER_START), "timestamp");
-            calendar = DateUtil.convertTimestamp(timestamp);
+            ObjectNode timestamp = getObject(FIELD_METER_START);
+
+            long ms = JsonUtil.objectGetLong(timestamp, "ms");
+            if (ms != -1)
+            {
+                calendar = DateUtil.convertTimestamp(ms);
+            }
         }
 
         return calendar;
@@ -148,10 +153,15 @@ public class MeterImpl extends AbstractRegistrarDocumentImpl implements Meter
     {
         Calendar calendar = null;
 
-        if (getObject().has(FIELD_METER_END))
+        if (has(FIELD_METER_END))
         {
-            String timestamp = JsonUtil.objectGetString(getObject(FIELD_METER_END), "timestamp");
-            calendar = DateUtil.convertTimestamp(timestamp);
+            ObjectNode timestamp = getObject(FIELD_METER_END);
+
+            long ms = JsonUtil.objectGetLong(timestamp, "ms");
+            if (ms != -1)
+            {
+                calendar = DateUtil.convertTimestamp(ms);
+            }
         }
 
         return calendar;
