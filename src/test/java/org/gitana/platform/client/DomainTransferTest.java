@@ -21,13 +21,18 @@
 
 package org.gitana.platform.client;
 
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
@@ -41,14 +46,31 @@ public class DomainTransferTest extends AbstractTestCase
     {
         Gitana gitana = new Gitana();
 
-        // authenticate
+        // authenticate as "admin"
         Platform platform = gitana.authenticate("admin", "admin");
+
+        // create a user on default domain
+        DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), "pw");
+
+        // create a tenant for this user
+        Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
+        ObjectNode defaultClientObject = tenant.readDefaultAllocatedClientObject();
+        String clientKey = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_KEY);
+        String clientSecret = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_SECRET);
+
+        // AUTHENTICATE AS THE TENANT USER
+        gitana = new Gitana(clientKey, clientSecret);
+        platform = gitana.authenticate(user.getName(), "pw");
+
+
+        /////////////////////////////////////////////////////////////////////////////
+
 
         // create a domain with some stuff
         Domain domain = platform.createDomain();
-        DomainGroup group = domain.createGroup("group1");
-        DomainUser user = domain.createUser("user1", "pw1");
-        group.addPrincipal(user);
+        DomainGroup group1 = domain.createGroup("group1");
+        DomainUser user1 = domain.createUser("user1", "pw1");
+        group1.addPrincipal(user1);
 
         // create a vault
         Vault vault = platform.createVault();
@@ -64,7 +86,9 @@ public class DomainTransferTest extends AbstractTestCase
 
         // SECOND - import into platform (new domain)
         Job job = platform.importArchive(archive);
-        Domain domain3 = platform.readDomain(job.getString("importedDataStoreId"));
+        ArrayNode imports = job.getArray("imports");
+        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
+        Domain domain3 = platform.readDomain(JsonUtil.objectGetString(lastImport, "id"));
         assertNotNull(domain3.readPrincipal("group1"));
         assertNotNull(domain3.readPrincipal("user1"));
     }
