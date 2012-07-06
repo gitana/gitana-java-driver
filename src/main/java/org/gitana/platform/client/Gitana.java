@@ -121,6 +121,7 @@ public class Gitana
         // build a new http client
         DefaultHttpClient client = new DefaultHttpClient();
         HttpConnectionParams.setSoTimeout(client.getParams(), 0);
+        HttpConnectionParams.setConnectionTimeout(client.getParams(), 0);
         client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
 
         // wrap into a remote object
