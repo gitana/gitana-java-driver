@@ -190,8 +190,9 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
         }
 
         // post binary to server and get back job id
+        // we always do this asynchronously
         ObjectNode configObject = configuration.toJSON();
-        Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + schedule.toString(), configObject);
+        Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response.getId();
 
         // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
