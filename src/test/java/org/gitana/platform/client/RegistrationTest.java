@@ -38,7 +38,7 @@ import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
- * Application settings tests
+ * Registration Test
  * 
  * @author uzi
  */

@@ -104,7 +104,7 @@ public class TenantAllocationTest extends AbstractTestCase
         assertEquals(6+1, platform.listApplications().size()); // 1 default
         assertEquals(5, platform.listRepositories().size());
         assertEquals(4+1, platform.listDomains().size()); // 1 custom, 1 default
-        assertEquals(3, platform.listVaults().size());
+        assertEquals(3+1, platform.listVaults().size()); // 3 custom, 1 default
         assertEquals(2+1, platform.listClients().size()); // 2 custom, 1 default
         assertEquals(1, platform.listRegistrars().size());
 
@@ -121,11 +121,11 @@ public class TenantAllocationTest extends AbstractTestCase
         
 
         // now check allocations for the tenant object
-        assertEquals(27, tenant1.listAllocatedObjects().size()); // 21 + 6 defaults (domain, client, application, webhost, warehouse, directory) // and then -1 for some reason, cannot find a third client?
+        assertEquals(28, tenant1.listAllocatedObjects().size()); // 21 + 7 defaults (domain, client, application, webhost, warehouse, directory, vault)
         assertEquals(6+1, tenant1.listAllocatedApplicationObjects().size()); // 7
         assertEquals(5, tenant1.listAllocatedRepositoryObjects().size()); // 5
         assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 5
-        assertEquals(3, tenant1.listAllocatedVaultObjects().size()); // 3
+        assertEquals(3+1, tenant1.listAllocatedVaultObjects().size()); // 3
         assertEquals(2+1, tenant1.listAllocatedClientObjects().size()); // 3
         assertEquals(1, tenant1.listAllocatedRegistrarObjects().size()); // 1
     }
