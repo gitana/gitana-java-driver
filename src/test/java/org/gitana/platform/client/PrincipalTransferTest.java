@@ -75,17 +75,11 @@ public class PrincipalTransferTest extends AbstractTestCase
         // export the user
         Archive archive = user1.exportArchive(vault, "a", "b", "1");
 
-        // FIRST - new domain, new user, import into it
+        // TEST - new domain, import into domain
         Domain domain2 = platform.createDomain();
-        DomainUser user2 = domain2.createUser("user2", "pw2");
-        user2.importArchive(archive);
+        Job job2 = domain2.importArchive(archive);
+        assertTrue(JobState.FINISHED.equals(job2.getState()));
         assertNotNull(domain2.readPrincipal("user1"));
-
-        // SECOND - new domain, import into domain
-        Domain domain3 = platform.createDomain();
-        Job job = domain3.importArchive(archive);
-        assertTrue(JobState.FINISHED.equals(job.getState()));
-        assertNotNull(domain3.readPrincipal("user1"));
     }
 
 }

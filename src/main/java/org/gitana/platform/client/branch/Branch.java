@@ -169,6 +169,8 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public ResultMap<BaseNode> searchNodes(String text);
 
+    public Node rootNode();
+
     /**
      * Check node permissions.
      *

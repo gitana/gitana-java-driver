@@ -21,15 +21,18 @@
 
 package org.gitana.platform.client;
 
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.JSONBuilder;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.vault.Vault;
-import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.support.QName;
+import org.gitana.util.JsonUtil;
 import org.gitana.util.StreamUtil;
 import org.junit.Test;
 
@@ -39,7 +42,7 @@ import java.io.InputStream;
 /**
  * @author uzi
  */
-public class BranchPublicationTest extends AbstractTestCase
+public class NodeTransferTest extends AbstractTestCase
 {
     @Test
     public void test()
@@ -78,11 +81,8 @@ public class BranchPublicationTest extends AbstractTestCase
         String artifactId = "mike";
         String versionId = "version" + System.currentTimeMillis();
 
-        // tell Gitana to export an archive of "master1" branch
-        // this is a publication after 0:root
-        TransferExportConfiguration config = new TransferExportConfiguration();
-        config.setStartChangeset("0:root");
-        Archive archive = master1.exportArchive(vault, groupId, artifactId, versionId, config);
+        // export node1
+        Archive archive = node1.exportArchive(vault, groupId, artifactId, versionId, null);
         assertNotNull(archive);
 
         // ensure we can read it back manually
@@ -113,15 +113,11 @@ public class BranchPublicationTest extends AbstractTestCase
         // create a new repo
         Repository repo2 = platform.createRepository();
         Branch master2 = repo2.readBranch("master");
-
-        // import the archive into the new repo's master branch
-        master2.importArchive(archive);
-
-        // verify the branch has all the content
-        Node x1 = (Node) master2.readNode(node1.getId());
-        assertNotNull(x1);
-        //assertEquals(node1.associations().size(), x1.associations().size());
-
+        Job job2 = master2.rootNode().importArchive(archive);
+        ArrayNode imports = job2.getArray("imports");
+        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
+        Node n1 = (Node) master2.readNode(JsonUtil.objectGetString(lastImport, "id"));
+        assertTrue(n1.associations().size() > 0);
     }
 
 }

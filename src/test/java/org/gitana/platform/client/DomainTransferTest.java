@@ -78,19 +78,13 @@ public class DomainTransferTest extends AbstractTestCase
         // export domain
         Archive archive = domain.exportArchive(vault, "a", "b", "1");
 
-        // FIRST - create a new domain and import into it
-        Domain domain2 = platform.createDomain();
-        domain2.importArchive(archive);
+        // TEST - import into platform (new domain)
+        Job job2 = platform.importArchive(archive);
+        ArrayNode imports = job2.getArray("imports");
+        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
+        Domain domain2 = platform.readDomain(JsonUtil.objectGetString(lastImport, "id"));
         assertNotNull(domain2.readPrincipal("group1"));
         assertNotNull(domain2.readPrincipal("user1"));
-
-        // SECOND - import into platform (new domain)
-        Job job = platform.importArchive(archive);
-        ArrayNode imports = job.getArray("imports");
-        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
-        Domain domain3 = platform.readDomain(JsonUtil.objectGetString(lastImport, "id"));
-        assertNotNull(domain3.readPrincipal("group1"));
-        assertNotNull(domain3.readPrincipal("user1"));
     }
 
 }

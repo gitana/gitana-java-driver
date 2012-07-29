@@ -22,21 +22,21 @@
 package org.gitana.platform.client.nodes;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.support.QName;
-import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.support.ObjectFactory;
+import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.repository.AbstractRepositoryDocumentImpl;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.support.DriverContext;
+import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.support.QName;
 
 /**
  * Base class for nodes
  *
  * @author uzi
  */
-public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
+public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implements BaseNode
 {
 	private QName qname;
 	private QName typeQName;
@@ -52,7 +52,7 @@ public abstract class BaseNodeImpl extends DocumentImpl implements BaseNode
      */
     public BaseNodeImpl(Branch branch, ObjectNode obj, boolean isSaved)
     {
-        super(obj, isSaved);
+        super(branch.getRepository(), obj, isSaved);
 
         this.branch = branch;
 

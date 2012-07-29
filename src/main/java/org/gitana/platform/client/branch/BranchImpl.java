@@ -423,6 +423,12 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
+    public Node rootNode()
+    {
+        return (Node) this.readNode("root");
+    }
+
+    @Override
     public PermissionCheckResults checkNodePermissions(List<PermissionCheck> list)
     {
         ArrayNode array = JsonUtil.createArray();
