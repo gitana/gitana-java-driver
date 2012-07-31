@@ -21,10 +21,12 @@
 
 package org.gitana.platform.client.archive;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.vault.VaultDocument;
+import org.gitana.platform.services.archive.Manifest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,19 +34,22 @@ import java.io.InputStream;
 /**
  * @author uzi
  */
-public interface Archive extends VaultDocument, Attachable, AccessControllable, Selfable
+public interface Archive extends VaultDocument, Attachable, AccessControllable, Selfable, Manifest
 {	
     public final static String FIELD_GROUP_ID = "group";
     public final static String FIELD_ARTIFACT_ID = "artifact";
     public final static String FIELD_VERSION_ID = "version";
 
-    public void setGroupId(String groupId);
     public String getGroupId();
-    public void setArtifactId(String artifactId);
     public String getArtifactId();
-    public void setVersionId(String versionId);
     public String getVersionId();
 
     public InputStream download()
         throws IOException;
+
+    public ObjectNode getContents();
+    public ObjectNode getDependencies();
+    public ObjectNode getIncludes();
+    public String getType();
+
 }

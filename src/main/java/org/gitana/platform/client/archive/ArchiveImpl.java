@@ -72,42 +72,6 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     }
 
     @Override
-    public void setGroupId(String groupId)
-    {
-        set(FIELD_GROUP_ID, groupId);
-    }
-
-    @Override
-    public String getGroupId()
-    {
-        return getString(FIELD_GROUP_ID);
-    }
-
-    @Override
-    public void setArtifactId(String artifactId)
-    {
-        set(FIELD_ARTIFACT_ID, artifactId);
-    }
-
-    @Override
-    public String getArtifactId()
-    {
-        return getString(FIELD_ARTIFACT_ID);
-    }
-
-    @Override
-    public void setVersionId(String versionId)
-    {
-        set(FIELD_VERSION_ID, versionId);
-    }
-
-    @Override
-    public String getVersionId()
-    {
-        return getString(FIELD_VERSION_ID);
-    }
-
-    @Override
     public InputStream download()
         throws IOException
     {
@@ -341,4 +305,55 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     {
         return getResourceUri() + "/attachments/" + attachmentId;
     }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ATTACHMENTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public String getGroupId()
+    {
+        return getString(FIELD_GROUP_ID);
+    }
+
+    @Override
+    public String getArtifactId()
+    {
+        return getString(FIELD_ARTIFACT_ID);
+    }
+
+    @Override
+    public String getVersionId()
+    {
+        return getString(FIELD_VERSION_ID);
+    }
+
+    @Override
+    public ObjectNode getContents()
+    {
+        return getObject(FIELD_CONTENTS);
+    }
+
+    @Override
+    public ObjectNode getDependencies()
+    {
+        return getObject(FIELD_ARTIFACT_DEPENDENCIES);
+    }
+
+    @Override
+    public ObjectNode getIncludes()
+    {
+        return getObject(FIELD_ARTIFACT_INCLUDES);
+    }
+
+    @Override
+    public String getType()
+    {
+        return getString(FIELD_TYPE);
+    }
+
 }
