@@ -32,6 +32,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +50,9 @@ public class VaultImpl extends AbstractPlatformDataStoreImpl implements Vault
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "vault";
+        return TypedIDConstants.TYPE_VAULT;
     }
 
     @Override

@@ -21,16 +21,17 @@
 
 package org.gitana.platform.client.nodes;
 
-import org.gitana.platform.support.QName;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Selfable;
+import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.support.QName;
 
 /**
  * @author uzi
  */
-public interface BaseNode extends Document, Selfable
+public interface BaseNode extends Document, Selfable, TypedID
 {
 	// additional metadata fields
     public final static String FIELD_FEATURES = "_features";

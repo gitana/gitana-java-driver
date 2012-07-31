@@ -42,6 +42,7 @@ import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.List;
@@ -58,9 +59,9 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "platform";
+        return TypedIDConstants.TYPE_PLATFORM;
     }
 
     @Override

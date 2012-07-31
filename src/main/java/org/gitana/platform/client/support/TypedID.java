@@ -19,18 +19,13 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.platform;
-
-import org.gitana.platform.client.document.Document;
-import org.gitana.platform.client.support.Copyable;
-import org.gitana.platform.client.support.Transferable;
-import org.gitana.platform.client.support.TypedID;
+package org.gitana.platform.client.support;
 
 /**
  * @author uzi
  */
-public interface PlatformDocument extends Document, Transferable, Copyable, TypedID
-{	
-    public Platform getPlatform();
-    public String getPlatformId();
+public interface TypedID
+{
+    public String getId();
+    public String getTypeId();
 }

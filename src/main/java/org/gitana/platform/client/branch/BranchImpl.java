@@ -39,6 +39,7 @@ import org.gitana.platform.services.branch.BranchType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -58,6 +59,12 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     public BranchImpl(Repository repository, ObjectNode obj, boolean isSaved)
     {
         super(repository, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_BRANCH;
     }
 
     @Override

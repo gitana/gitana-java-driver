@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -38,6 +39,12 @@ public class LogEntryImpl extends AbstractClusterDocumentImpl implements LogEntr
     public LogEntryImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
         super(cluster, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_LOG_ENTRY;
     }
 
     @Override

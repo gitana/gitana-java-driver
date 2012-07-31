@@ -26,6 +26,7 @@ import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.Response;
+import org.gitana.platform.support.TypedIDConstants;
 
 /**
  * @author uzi
@@ -38,9 +39,9 @@ public class DirectoryImpl extends AbstractPlatformDataStoreImpl implements Dire
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "directory";
+        return TypedIDConstants.TYPE_DIRECTORY;
     }
 
     @Override

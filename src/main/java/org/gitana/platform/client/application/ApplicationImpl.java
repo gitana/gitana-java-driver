@@ -32,6 +32,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.Map;
@@ -47,9 +48,9 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "application";
+        return TypedIDConstants.TYPE_APPLICATION;
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.Map;
@@ -42,6 +43,12 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     public IdentityImpl(Directory directory, ObjectNode obj, boolean isSaved)
     {
         super(directory, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_IDENTITY;
     }
 
     @Override

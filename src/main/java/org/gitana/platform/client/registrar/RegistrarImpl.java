@@ -34,6 +34,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.billing.PaymentMethodValidation;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.Map;
@@ -49,9 +50,9 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "registrar";
+        return TypedIDConstants.TYPE_REGISTRAR;
     }
 
     @Override

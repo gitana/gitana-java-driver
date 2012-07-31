@@ -22,6 +22,7 @@
 package org.gitana.platform.client.application;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.support.TypedIDConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,13 @@ public class EmailProviderImpl extends AbstractApplicationDocumentImpl implement
         super(application, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_EMAIL_PROVIDER;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/applications/" + getApplicationId() + "/emailproviders/" + getId();

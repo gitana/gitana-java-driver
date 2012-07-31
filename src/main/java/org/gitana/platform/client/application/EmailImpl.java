@@ -28,6 +28,7 @@ import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.DateUtil;
 import org.gitana.util.JsonUtil;
 
@@ -43,6 +44,13 @@ public class EmailImpl extends AbstractApplicationDocumentImpl implements Email
         super(application, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_EMAIL;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/applications/" + getApplicationId() + "/emails/" + getId();
@@ -291,5 +299,4 @@ public class EmailImpl extends AbstractApplicationDocumentImpl implements Email
     {
         return getString(FIELD_SENT_BY);
     }
-
 }

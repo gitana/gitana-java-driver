@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.support.AccessControllable;
+import org.gitana.platform.client.support.Copyable;
 import org.gitana.platform.client.support.Transferable;
 import org.gitana.platform.services.association.Direction;
 import org.gitana.platform.services.association.Directionality;
@@ -38,7 +39,7 @@ import java.util.Locale;
 /**
  * @author uzi
  */
-public interface Node extends BaseNode, AccessControllable, Attachable, Transferable
+public interface Node extends BaseNode, AccessControllable, Attachable, Transferable, Copyable
 {
     /**
      * Lists all associations in ANY direction involving this node.

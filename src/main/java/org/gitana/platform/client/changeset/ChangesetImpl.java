@@ -30,6 +30,7 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -45,6 +46,13 @@ public class ChangesetImpl extends AbstractRepositoryDocumentImpl implements Cha
         super(repository, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_CHANGESET;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/repositories/" + getRepositoryId() + "/changesets/" + getId();

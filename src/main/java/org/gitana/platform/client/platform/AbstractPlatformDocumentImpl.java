@@ -21,21 +21,21 @@
 
 package org.gitana.platform.client.platform;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
 import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.support.*;
+import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferSchedule;
+import org.gitana.util.JsonUtil;
 
 /**
  * Abstract implementation of a platform document.
@@ -217,6 +217,30 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
         while (!completed);
 
         return job;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // COPYABLE
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public String copy(TypedID targetContainer)
+    {
+        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
+
+        ArrayNode imports = job.getArray("imports");
+        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
+
+        return JsonUtil.objectGetString(lastImport, "id");
+    }
+
+    @Override
+    public Job copyAsync(TypedID targetContainer)
+    {
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
     }
 
 }

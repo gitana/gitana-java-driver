@@ -28,6 +28,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.types.Person;
 import org.gitana.platform.services.principals.PrincipalType;
+import org.gitana.platform.support.TypedIDConstants;
 
 /**
  * @author uzi
@@ -48,6 +49,13 @@ public class DomainUserImpl extends AbstractDomainPrincipalImpl implements Domai
     {
         this.setType(PrincipalType.USER);
     }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_DOMAIN_USER;
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////

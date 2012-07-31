@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.services.meter.MeterType;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.DateUtil;
 import org.gitana.util.JsonUtil;
 
@@ -39,6 +40,12 @@ public class MeterImpl extends AbstractRegistrarDocumentImpl implements Meter
     public MeterImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
         super(registrar, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_METER;
     }
 
     @Override

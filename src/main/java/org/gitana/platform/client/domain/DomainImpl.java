@@ -23,7 +23,6 @@ package org.gitana.platform.client.domain;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
@@ -33,12 +32,11 @@ import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
-import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.principals.PrincipalType;
-import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.List;
@@ -55,9 +53,9 @@ public class DomainImpl extends AbstractPlatformDataStoreImpl implements Domain
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "domain";
+        return TypedIDConstants.TYPE_DOMAIN;
     }
 
     @Override

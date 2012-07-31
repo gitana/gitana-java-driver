@@ -22,11 +22,12 @@
 package org.gitana.platform.client.platform;
 
 import org.gitana.platform.client.cluster.ClusterDataStore;
+import org.gitana.platform.client.support.Copyable;
 
 /**
  * @author uzi
  */
-public interface PlatformDataStore extends ClusterDataStore
+public interface PlatformDataStore extends ClusterDataStore, Copyable
 {
     public Platform getPlatform();
 }

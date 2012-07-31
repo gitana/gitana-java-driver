@@ -28,6 +28,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.Map;
@@ -56,9 +57,9 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "cluster";
+        return TypedIDConstants.TYPE_CLUSTER;
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.Map;
@@ -43,9 +44,9 @@ public class WebHostImpl extends AbstractPlatformDataStoreImpl implements WebHos
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "webhost";
+        return TypedIDConstants.TYPE_WEB_HOST;
     }
 
     @Override

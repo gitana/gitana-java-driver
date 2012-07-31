@@ -27,6 +27,7 @@ import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.services.payment.BillingSchedule;
 import org.gitana.platform.services.plan.DataUnit;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.math.BigDecimal;
@@ -39,6 +40,12 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
     public PlanImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
         super(registrar, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_PLAN;
     }
 
     @Override

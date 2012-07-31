@@ -33,6 +33,7 @@ import org.gitana.platform.services.meter.MeterType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.List;
@@ -46,6 +47,12 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     public TenantImpl(Registrar registrar, ObjectNode obj, boolean isSaved)
     {
         super(registrar, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_TENANT;
     }
 
     @Override

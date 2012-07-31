@@ -36,6 +36,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.HashMap;
@@ -50,6 +51,12 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
     public StackImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_STACK;
     }
 
     @Override
@@ -435,7 +442,7 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         Map<String, String> params = new HashMap<String, String>();
         params.put("id", datastore.getId());
         params.put("key", datastore.getId());
-        params.put("type", datastore.getType());
+        params.put("type", datastore.getTypeId());
         if (key != null)
         {
             params.put("key", key);

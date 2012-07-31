@@ -28,6 +28,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.types.Group;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 
 /**
  * @author uzi
@@ -47,6 +48,12 @@ public class DomainGroupImpl extends AbstractDomainPrincipalImpl implements Doma
     protected void init()
     {
         this.setType(PrincipalType.GROUP);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_DOMAIN_GROUP;
     }
 
 

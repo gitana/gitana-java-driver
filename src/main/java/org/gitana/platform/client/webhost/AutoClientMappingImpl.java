@@ -22,6 +22,7 @@
 package org.gitana.platform.client.webhost;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.support.TypedIDConstants;
 
 /**
  * @author uzi
@@ -33,6 +34,13 @@ public class AutoClientMappingImpl extends AbstractWebHostDocumentImpl implement
         super(webhost, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_AUTO_CLIENT_MAPPING;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/webhosts/" + getWebHostId() + "/autoclientmappings/" + getId();

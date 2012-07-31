@@ -24,6 +24,7 @@ package org.gitana.platform.client.api;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.support.TypedIDConstants;
 
 /**
  * @author uzi
@@ -33,6 +34,12 @@ public class AuthenticationGrantImpl extends AbstractPlatformDocumentImpl implem
     public AuthenticationGrantImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_AUTHENTICATION_GRANT;
     }
 
     @Override

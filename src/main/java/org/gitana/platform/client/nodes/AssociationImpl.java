@@ -26,6 +26,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.services.association.Directionality;
 import org.gitana.platform.support.QName;
+import org.gitana.platform.support.TypedIDConstants;
 
 /**
  * @author uzi
@@ -51,6 +52,12 @@ public class AssociationImpl extends BaseNodeImpl implements Association
     public AssociationImpl(Branch branch, ObjectNode obj, boolean isSaved)
     {
         super(branch, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_ASSOCIATION;
     }
 
     @Override

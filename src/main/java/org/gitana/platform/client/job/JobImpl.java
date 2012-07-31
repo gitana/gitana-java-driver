@@ -26,6 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.DateUtil;
 
 import java.util.ArrayList;
@@ -40,6 +41,12 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     public JobImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
         super(cluster, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_JOB;
     }
 
     @Override

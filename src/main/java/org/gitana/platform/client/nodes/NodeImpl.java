@@ -36,6 +36,7 @@ import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.*;
@@ -61,6 +62,11 @@ public class NodeImpl extends BaseNodeImpl implements Node
         super(branch, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_NODE;
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////

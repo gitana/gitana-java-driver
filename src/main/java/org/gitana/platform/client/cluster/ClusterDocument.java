@@ -22,11 +22,12 @@
 package org.gitana.platform.client.cluster;
 
 import org.gitana.platform.client.document.Document;
+import org.gitana.platform.client.support.TypedID;
 
 /**
  * @author uzi
  */
-public interface ClusterDocument extends Document
+public interface ClusterDocument extends Document, TypedID
 {	
     public Cluster getCluster();
     public String getClusterId();

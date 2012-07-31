@@ -22,6 +22,7 @@
 package org.gitana.platform.client.application;
 
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.HashMap;
@@ -68,6 +69,13 @@ public class RegistrationImpl extends AbstractApplicationDocumentImpl implements
         }
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_REGISTRATION;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/applications/" + getApplicationId() + "/registrations/" + getId();

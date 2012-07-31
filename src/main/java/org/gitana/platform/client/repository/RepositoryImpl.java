@@ -33,6 +33,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.List;
@@ -49,9 +50,9 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
     }
 
     @Override
-    public String getType()
+    public String getTypeId()
     {
-        return "repository";
+        return TypedIDConstants.TYPE_REPOSITORY;
     }
 
     @Override

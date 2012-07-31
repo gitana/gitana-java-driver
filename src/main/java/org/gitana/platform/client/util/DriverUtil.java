@@ -23,15 +23,24 @@ package org.gitana.platform.client.util;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.beans.ACLEntry;
+import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.job.Job;
+import org.gitana.platform.client.nodes.BaseNode;
+import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.platform.PlatformDataStore;
+import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.principal.DomainPrincipal;
+import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
-import org.gitana.platform.client.support.Response;
-import org.gitana.platform.client.beans.ACL;
-import org.gitana.platform.client.beans.ACLEntry;
-import org.gitana.platform.client.nodes.BaseNode;
-import org.gitana.platform.client.nodes.Node;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -133,6 +142,88 @@ public class DriverUtil
         }
 
         return nodes;
+    }
+
+    /**
+     * Generic helper method to copy the source object into the target container.
+     *
+     * @param source
+     * @param target
+     */
+    public static Job copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferSchedule schedule)
+    {
+        if (schedule == null)
+        {
+            schedule = TransferSchedule.SYNCHRONOUS;
+        }
+
+        ArrayNode sourceDependencies = toCopyDependencyChain(source);
+        ArrayNode targetDependencies = toCopyDependencyChain(target);
+
+        // execute
+        ObjectNode payload = JsonUtil.createObject();
+        payload.put("sources", sourceDependencies);
+        payload.put("targets", targetDependencies);
+        Response response1 = remote.post("/tools/copy?schedule=" + schedule.toString(), payload);
+        String jobId = response1.getId();
+
+        // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
+        boolean completed = false;
+        Job job = null;
+        do
+        {
+            job = cluster.readJob(jobId);
+            if (job != null)
+            {
+                if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
+                {
+                    completed = true;
+                }
+            }
+
+            if (!completed)
+            {
+                try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
+            }
+        }
+        while (!completed);
+
+        return job;
+    }
+
+    public static ArrayNode toCopyDependencyChain(TypedID typedID)
+    {
+        ArrayNode array = JsonUtil.createArray();
+
+        if (typedID instanceof Node)
+        {
+            array.addAll(toCopyDependencyChain(((Node) typedID).getBranch()));
+        }
+        else if (typedID instanceof Branch)
+        {
+            array.addAll(toCopyDependencyChain(((Branch) typedID).getRepository()));
+        }
+        else if (typedID instanceof PlatformDocument)
+        {
+            array.addAll(toCopyDependencyChain(((PlatformDocument) typedID).getPlatform()));
+        }
+        else if (typedID instanceof PlatformDataStore)
+        {
+            array.addAll(toCopyDependencyChain(((PlatformDataStore) typedID).getPlatform()));
+        }
+
+        array.add(toDependencyObject(typedID));
+
+        return array;
+    }
+
+    public static ObjectNode toDependencyObject(TypedID typedID)
+    {
+        ObjectNode obj = JsonUtil.createObject();
+        obj.put("typeId", typedID.getTypeId());
+        obj.put("id", typedID.getId());
+
+        return obj;
     }
 
 }

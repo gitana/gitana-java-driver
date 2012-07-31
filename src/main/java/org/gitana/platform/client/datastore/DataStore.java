@@ -22,23 +22,12 @@
 package org.gitana.platform.client.datastore;
 
 import org.gitana.platform.client.document.Document;
-import org.gitana.platform.client.support.AccessControllable;
-import org.gitana.platform.client.support.Selfable;
-import org.gitana.platform.client.support.Transferable;
+import org.gitana.platform.client.support.*;
 import org.gitana.platform.client.team.Teamable;
 
 /**
  * @author uzi
  */
-public interface DataStore extends Document, AccessControllable, Selfable, Teamable, Transferable
+public interface DataStore extends Document, AccessControllable, Selfable, Teamable, Transferable, TypedID
 {
-    /**
-     * @return the data store id
-     */
-    public String getId();
-
-    /**
-     * @return the data store type
-     */
-    public String getType();
 }

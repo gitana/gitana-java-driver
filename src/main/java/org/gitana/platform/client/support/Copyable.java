@@ -19,18 +19,28 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.platform;
+package org.gitana.platform.client.support;
 
-import org.gitana.platform.client.document.Document;
-import org.gitana.platform.client.support.Copyable;
-import org.gitana.platform.client.support.Transferable;
-import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.client.job.Job;
 
 /**
  * @author uzi
  */
-public interface PlatformDocument extends Document, Transferable, Copyable, TypedID
-{	
-    public Platform getPlatform();
-    public String getPlatformId();
+public interface Copyable
+{
+    /**
+     * Copies this object into the target container.
+     *
+     * @param targetContainer
+     * @return id of the resulting object
+     */
+    public String copy(TypedID targetContainer);
+
+    /**
+     * Copies this object into the target container.
+     *
+     * @param targetContainer
+     * @return
+     */
+    public Job copyAsync(TypedID targetContainer);
 }

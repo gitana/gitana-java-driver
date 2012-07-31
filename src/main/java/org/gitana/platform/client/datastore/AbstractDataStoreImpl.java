@@ -88,7 +88,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         {
             DataStore other = (DataStore) object;
 
-            equals = (this.getId().equals(other.getId())) && (this.getType().equals(other.getType()));
+            equals = (this.getId().equals(other.getId())) && (this.getTypeId().equals(other.getTypeId()));
         }
 
         return equals;

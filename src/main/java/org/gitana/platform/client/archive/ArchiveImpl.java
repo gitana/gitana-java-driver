@@ -33,6 +33,7 @@ import org.gitana.platform.client.vault.AbstractVaultDocumentImpl;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.io.IOException;
@@ -51,6 +52,13 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
         super(vault, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_ARCHIVE;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/vaults/" + getVaultId() + "/archives/" + getId();

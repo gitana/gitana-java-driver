@@ -30,6 +30,7 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -45,6 +46,12 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
     public ClientImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
+    }
+
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_CLIENT;
     }
 
     @Override

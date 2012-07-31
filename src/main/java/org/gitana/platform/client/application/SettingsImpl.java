@@ -21,8 +21,8 @@
 
 package org.gitana.platform.client.application;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.*;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 /**
@@ -35,6 +35,13 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
         super(application, obj, isSaved);
     }
 
+    @Override
+    public String getTypeId()
+    {
+        return TypedIDConstants.TYPE_SETTINGS;
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "/applications/" + getApplicationId() + "/settings/" + getId();
