@@ -36,7 +36,6 @@ import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
-import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferSchedule;
@@ -310,10 +309,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     @Override
     public Job exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
     {
-        if (schedule == null)
-        {
-            schedule = TransferSchedule.SYNCHRONOUS;
-        }
+        boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
         if (configuration == null)
         {
@@ -322,31 +318,10 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
 
         // start the export
         ObjectNode configObject = configuration.toJSON();
-        Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + schedule.toString(), configObject);
+        Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response1.getId();
 
-        // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
-        boolean completed = false;
-        Job job = null;
-        do
-        {
-            job = getCluster().readJob(jobId);
-            if (job != null)
-            {
-                if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
-                {
-                    completed = true;
-                }
-            }
-
-            if (!completed)
-            {
-                try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
-            }
-        }
-        while (!completed);
-
-        return job;
+        return DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
     }
 
     @Override
@@ -364,15 +339,12 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     @Override
     public Job importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
     {
+        boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
+
         String vaultId = archive.getVaultId();
         String groupId = archive.getGroupId();
         String artifactId = archive.getArtifactId();
         String versionId = archive.getVersionId();
-
-        if (schedule == null)
-        {
-            schedule = TransferSchedule.SYNCHRONOUS;
-        }
 
         if (configuration == null)
         {
@@ -385,28 +357,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response.getId();
 
-        // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
-        boolean completed = false;
-        Job job = null;
-        do
-        {
-            job = getCluster().readJob(jobId);
-            if (job != null)
-            {
-                if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
-                {
-                    completed = true;
-                }
-            }
-
-            if (!completed)
-            {
-                try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
-            }
-        }
-        while (!completed);
-
-        return job;
+        return DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
     }
 
 }

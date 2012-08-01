@@ -25,6 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.JSONBuilder;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.nodes.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
@@ -39,7 +40,6 @@ import org.junit.Test;
  */
 public class CopyTest extends AbstractTestCase
 {
-    /*
     @Test
     public void testCopyDomain()
     {
@@ -119,7 +119,6 @@ public class CopyTest extends AbstractTestCase
         assertNotNull(repository2);
         assertEquals(3, repository2.readBranch("master").queryNodes(JSONBuilder.start("prop1").is("val1").get()).size());
     }
-    */
 
     @Test
     public void testCopyNode()

@@ -152,10 +152,7 @@ public class DriverUtil
      */
     public static Job copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferSchedule schedule)
     {
-        if (schedule == null)
-        {
-            schedule = TransferSchedule.SYNCHRONOUS;
-        }
+        boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
         ArrayNode sourceDependencies = toCopyDependencyChain(source);
         ArrayNode targetDependencies = toCopyDependencyChain(target);
@@ -164,31 +161,10 @@ public class DriverUtil
         ObjectNode payload = JsonUtil.createObject();
         payload.put("sources", sourceDependencies);
         payload.put("targets", targetDependencies);
-        Response response1 = remote.post("/tools/copy?schedule=" + schedule.toString(), payload);
+        Response response1 = remote.post("/tools/copy?schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), payload);
         String jobId = response1.getId();
 
-        // if we were set to "synchronous", then wait a bit to make sure it is marked as complete
-        boolean completed = false;
-        Job job = null;
-        do
-        {
-            job = cluster.readJob(jobId);
-            if (job != null)
-            {
-                if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
-                {
-                    completed = true;
-                }
-            }
-
-            if (!completed)
-            {
-                try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
-            }
-        }
-        while (!completed);
-
-        return job;
+        return DriverUtil.retrieveOrPollJob(cluster, jobId, synchronous);
     }
 
     public static ArrayNode toCopyDependencyChain(TypedID typedID)
@@ -224,6 +200,48 @@ public class DriverUtil
         obj.put("id", typedID.getId());
 
         return obj;
+    }
+
+    /**
+     * Retrieves a job that was just posted for execution.  If synchronous, then this will poll until the job
+     * either finishes or errors out before handing back.
+     *
+     * @param cluster
+     * @param jobId
+     * @param synchronous
+     * @return
+     */
+    public static Job retrieveOrPollJob(Cluster cluster, String jobId, boolean synchronous)
+    {
+        Job job = null;
+        if (!synchronous)
+        {
+            job = cluster.readJob(jobId);
+        }
+        else
+        {
+            boolean completed = false;
+
+            do
+            {
+                job = cluster.readJob(jobId);
+                if (job != null)
+                {
+                    if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
+                    {
+                        completed = true;
+                    }
+                }
+
+                if (!completed)
+                {
+                    try { Thread.sleep(250); } catch (Exception ex) { completed = true; }
+                }
+            }
+            while (!completed);
+        }
+
+        return job;
     }
 
 }
