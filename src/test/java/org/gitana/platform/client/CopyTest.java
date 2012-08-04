@@ -25,12 +25,13 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.JSONBuilder;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.node.Association;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.services.association.Direction;
 import org.gitana.platform.support.QName;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import org.junit.Test;
  */
 public class CopyTest extends AbstractTestCase
 {
+    /*
     @Test
     public void testCopyDomain()
     {
@@ -119,6 +121,7 @@ public class CopyTest extends AbstractTestCase
         assertNotNull(repository2);
         assertEquals(3, repository2.readBranch("master").queryNodes(JSONBuilder.start("prop1").is("val1").get()).size());
     }
+    */
 
     @Test
     public void testCopyNode()
@@ -150,19 +153,39 @@ public class CopyTest extends AbstractTestCase
         Repository repository = platform.createRepository();
         Branch branch = repository.readBranch("master");
         Node rootNode1 = branch.rootNode();
+        rootNode1.setTitle("ROOT NODE");
+        rootNode1.update();
 
         Node container1 = (Node) branch.createNode();
-        rootNode1.associate(container1, QName.create("a:child"));
+        container1.setTitle("CONTAINER");
+        container1.update();
+
+        Association association1 = rootNode1.associate(container1, QName.create("a:child"));
+        association1.setTitle("ROOT NODE to CONTAINER");
+        association1.update();
+
         Node node1 = (Node) branch.createNode(JSONBuilder.start("prop1").is("val1").get());
-        container1.associate(node1, QName.create("a:child"));
+        node1.setTitle("NODE 1");
+        node1.update();
+
+        Association association2 = container1.associate(node1, QName.create("a:child"));
+        association2.setTitle("CONTAINER to NODE 1");
+        association2.update();
+
         Node node2 = (Node) branch.createNode(JSONBuilder.start("prop1").is("val1").get());
-        container1.associate(node2, QName.create("a:child"));
+        node2.setTitle("NODE 2");
+        node2.update();
+
+        Association association3 = container1.associate(node2, QName.create("a:child"));
+        association3.setTitle("CONTAINER to NODE 2");
+        association3.update();
 
         // make a copy of the container
         String nodeId2 = container1.copy(rootNode1);
         Node container2 = (Node) branch.readNode(nodeId2);
         assertNotNull(container2);
-        assertEquals(2, container2.associations(QName.create("a:child")).size());
+        assertEquals(1, container2.associations(QName.create("a:child"), Direction.INCOMING).size());
+        assertEquals(2, container2.associations(QName.create("a:child"), Direction.OUTGOING).size());
     }
 
 }
