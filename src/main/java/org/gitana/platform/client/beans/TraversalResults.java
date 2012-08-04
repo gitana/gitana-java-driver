@@ -27,8 +27,8 @@ import org.gitana.platform.support.ResultMapImpl;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Response;
-import org.gitana.platform.client.nodes.Association;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Association;
+import org.gitana.platform.client.node.Node;
 
 import java.util.Iterator;
 import java.util.Map;

@@ -22,7 +22,7 @@
 package org.gitana.platform.client.application;
 
 import org.gitana.platform.client.attachment.Attachment;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.support.Selfable;
 

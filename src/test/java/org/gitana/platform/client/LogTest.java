@@ -26,7 +26,7 @@ import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;

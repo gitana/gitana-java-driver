@@ -22,7 +22,7 @@
 package org.gitana.platform.client.application;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;

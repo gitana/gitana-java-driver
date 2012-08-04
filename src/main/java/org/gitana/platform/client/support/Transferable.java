@@ -22,7 +22,8 @@
 package org.gitana.platform.client.support;
 
 import org.gitana.platform.client.archive.Archive;
-import org.gitana.platform.client.job.Job;
+import org.gitana.platform.client.transfer.TransferExportJob;
+import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
@@ -67,7 +68,7 @@ public interface Transferable
      * @param schedule
      * @return
      */
-    public Job exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule);
+    public TransferExportJob exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule);
 
     /**
      * Imports an archive synchronously, returning the job.
@@ -75,7 +76,7 @@ public interface Transferable
      * @param archive
      * @return
      */
-    public Job importArchive(Archive archive);
+    public TransferImportJob importArchive(Archive archive);
 
     /**
      * Imports an archive synchronously, returning the job.
@@ -84,7 +85,7 @@ public interface Transferable
      * @param configuration
      * @return
      */
-    public Job importArchive(Archive archive, TransferImportConfiguration configuration);
+    public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration);
 
     /**
      * Imports either synchronously or asynchronously, returning the job.
@@ -94,5 +95,5 @@ public interface Transferable
      * @param schedule
      * @return
      */
-    public Job importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule);
+    public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule);
 }

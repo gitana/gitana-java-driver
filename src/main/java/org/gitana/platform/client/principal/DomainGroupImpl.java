@@ -25,7 +25,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.support.Response;
-import org.gitana.platform.client.types.Group;
+import org.gitana.platform.client.node.type.Group;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;

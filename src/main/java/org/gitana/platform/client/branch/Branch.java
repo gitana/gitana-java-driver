@@ -23,14 +23,14 @@ package org.gitana.platform.client.branch;
 
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.HttpPayload;
-import org.gitana.platform.client.nodes.BaseNode;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.BaseNode;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.repository.RepositoryDocument;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
-import org.gitana.platform.client.types.*;
+import org.gitana.platform.client.node.type.*;
 import org.gitana.platform.services.branch.BranchType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;

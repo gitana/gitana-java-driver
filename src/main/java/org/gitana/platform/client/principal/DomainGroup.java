@@ -22,7 +22,7 @@
 package org.gitana.platform.client.principal;
 
 import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.types.Group;
+import org.gitana.platform.client.node.type.Group;
 import org.gitana.platform.support.ResultMap;
 
 /**

@@ -48,7 +48,7 @@ import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.log.LogEntryImpl;
 import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.meter.MeterImpl;
-import org.gitana.platform.client.nodes.*;
+import org.gitana.platform.client.node.*;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.plan.PlanImpl;
 import org.gitana.platform.client.platform.Platform;

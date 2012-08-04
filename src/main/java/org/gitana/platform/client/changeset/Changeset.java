@@ -21,7 +21,7 @@
 
 package org.gitana.platform.client.changeset;
 
-import org.gitana.platform.client.nodes.BaseNode;
+import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.repository.RepositoryDocument;
 import org.gitana.platform.support.ResultMap;
 

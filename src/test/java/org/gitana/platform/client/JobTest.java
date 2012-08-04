@@ -25,7 +25,7 @@ import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.support.Pagination;

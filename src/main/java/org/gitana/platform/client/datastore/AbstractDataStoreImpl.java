@@ -33,6 +33,8 @@ import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.team.Team;
+import org.gitana.platform.client.transfer.TransferExportJob;
+import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
@@ -307,7 +309,7 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     }
 
     @Override
-    public Job exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
+    public TransferExportJob exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -321,23 +323,25 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response1.getId();
 
-        return DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+
+        return new TransferExportJob(job.getCluster(), job.getObject(), job.isSaved());
     }
 
     @Override
-    public Job importArchive(Archive archive)
+    public TransferImportJob importArchive(Archive archive)
     {
         return importArchive(archive, null);
     }
 
     @Override
-    public Job importArchive(Archive archive, TransferImportConfiguration configuration)
+    public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration)
     {
         return importArchive(archive, configuration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
-    public Job importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
+    public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -357,7 +361,9 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response.getId();
 
-        return DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+
+        return new TransferImportJob(job.getCluster(), job.getObject(), job.isSaved());
     }
 
 }

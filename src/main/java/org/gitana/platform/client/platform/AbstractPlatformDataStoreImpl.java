@@ -21,14 +21,13 @@
 
 package org.gitana.platform.client.platform;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.transfer.TransferSchedule;
-import org.gitana.util.JsonUtil;
 
 /**
  * @author uzi
@@ -62,16 +61,17 @@ public abstract class AbstractPlatformDataStoreImpl extends AbstractClusterDataS
     {
         Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
 
-        ArrayNode imports = job.getArray("imports");
-        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
+        CopyJob copyJob = new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
 
-        return JsonUtil.objectGetString(lastImport, "id");
+        return copyJob.getSingleImportTargetId();
     }
 
     @Override
-    public Job copyAsync(TypedID targetContainer)
+    public CopyJob copyAsync(TypedID targetContainer)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
+        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
+
+        return new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
     }
 
 }

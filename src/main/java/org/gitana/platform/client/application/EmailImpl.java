@@ -24,7 +24,7 @@ package org.gitana.platform.client.application;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;

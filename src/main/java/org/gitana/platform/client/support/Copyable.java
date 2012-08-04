@@ -21,7 +21,7 @@
 
 package org.gitana.platform.client.support;
 
-import org.gitana.platform.client.job.Job;
+import org.gitana.platform.client.transfer.CopyJob;
 
 /**
  * @author uzi
@@ -42,5 +42,5 @@ public interface Copyable
      * @param targetContainer
      * @return
      */
-    public Job copyAsync(TypedID targetContainer);
+    public CopyJob copyAsync(TypedID targetContainer);
 }

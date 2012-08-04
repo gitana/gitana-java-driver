@@ -21,7 +21,6 @@
 
 package org.gitana.platform.client.platform;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.archive.Archive;
@@ -29,12 +28,14 @@ import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.*;
+import org.gitana.platform.client.transfer.CopyJob;
+import org.gitana.platform.client.transfer.TransferExportJob;
+import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferSchedule;
-import org.gitana.util.JsonUtil;
 
 /**
  * Abstract implementation of a platform document.
@@ -117,7 +118,7 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     }
 
     @Override
-    public Job exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
+    public TransferExportJob exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -131,23 +132,25 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
         Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response1.getId();
 
-        return DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+
+        return new TransferExportJob(job.getCluster(), job.getObject(), job.isSaved());
     }
 
     @Override
-    public Job importArchive(Archive archive)
+    public TransferImportJob importArchive(Archive archive)
     {
         return importArchive(archive, null);
     }
 
     @Override
-    public Job importArchive(Archive archive, TransferImportConfiguration configuration)
+    public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration)
     {
         return importArchive(archive, configuration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
-    public Job importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
+    public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -167,7 +170,9 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
         Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response.getId();
 
-        return DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+
+        return new TransferImportJob(job.getCluster(), job.getObject(), job.isSaved());
     }
 
 
@@ -182,16 +187,17 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     {
         Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
 
-        ArrayNode imports = job.getArray("imports");
-        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
+        CopyJob copyJob = new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
 
-        return JsonUtil.objectGetString(lastImport, "id");
+        return copyJob.getSingleImportTargetId();
     }
 
     @Override
-    public Job copyAsync(TypedID targetContainer)
+    public CopyJob copyAsync(TypedID targetContainer)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
+        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
+
+        return new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
     }
 
 }

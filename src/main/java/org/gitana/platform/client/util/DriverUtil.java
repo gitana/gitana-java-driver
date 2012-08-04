@@ -28,14 +28,15 @@ import org.gitana.platform.client.beans.ACLEntry;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.nodes.BaseNode;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.BaseNode;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.Pagination;
@@ -150,7 +151,7 @@ public class DriverUtil
      * @param source
      * @param target
      */
-    public static Job copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferSchedule schedule)
+    public static CopyJob copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -164,7 +165,8 @@ public class DriverUtil
         Response response1 = remote.post("/tools/copy?schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), payload);
         String jobId = response1.getId();
 
-        return DriverUtil.retrieveOrPollJob(cluster, jobId, synchronous);
+        Job job = DriverUtil.retrieveOrPollJob(cluster, jobId, synchronous);
+        return new CopyJob(cluster, job.getObject(), job.isSaved());
     }
 
     public static ArrayNode toCopyDependencyChain(TypedID typedID)

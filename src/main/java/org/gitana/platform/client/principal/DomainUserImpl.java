@@ -26,7 +26,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
-import org.gitana.platform.client.types.Person;
+import org.gitana.platform.client.node.type.Person;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.TypedIDConstants;
 

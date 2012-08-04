@@ -25,7 +25,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.ObjectFactoryImpl;
 import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.types.*;
+import org.gitana.platform.client.node.type.*;
 
 /**
  * @author uzi

@@ -21,18 +21,15 @@
 
 package org.gitana.platform.client;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.JSONBuilder;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.QName;
-import org.gitana.util.JsonUtil;
 import org.gitana.util.StreamUtil;
 import org.junit.Test;
 
@@ -113,10 +110,8 @@ public class NodeTransferTest extends AbstractTestCase
         // create a new repo
         Repository repo2 = platform.createRepository();
         Branch master2 = repo2.readBranch("master");
-        Job job2 = master2.rootNode().importArchive(archive);
-        ArrayNode imports = job2.getArray("imports");
-        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
-        Node n1 = (Node) master2.readNode(JsonUtil.objectGetString(lastImport, "id"));
+        TransferImportJob job2 = master2.rootNode().importArchive(archive);
+        Node n1 = (Node) master2.readNode(job2.getSingleImportTargetId());
         assertTrue(n1.associations().size() > 0);
     }
 

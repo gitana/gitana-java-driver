@@ -23,7 +23,7 @@ package org.gitana.platform.client;
 
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.nodes.Node;
+import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;

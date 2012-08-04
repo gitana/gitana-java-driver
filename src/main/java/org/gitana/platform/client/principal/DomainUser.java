@@ -24,7 +24,7 @@ package org.gitana.platform.client.principal;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.identity.Identity;
-import org.gitana.platform.client.types.Person;
+import org.gitana.platform.client.node.type.Person;
 
 /**
  * @author uzi

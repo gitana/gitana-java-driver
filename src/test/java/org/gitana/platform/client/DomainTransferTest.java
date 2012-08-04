@@ -21,16 +21,15 @@
 
 package org.gitana.platform.client;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
@@ -79,10 +78,8 @@ public class DomainTransferTest extends AbstractTestCase
         Archive archive = domain.exportArchive(vault, "a", "b", "1");
 
         // TEST - import into platform (new domain)
-        Job job2 = platform.importArchive(archive);
-        ArrayNode imports = job2.getArray("imports");
-        ObjectNode lastImport = (ObjectNode) imports.get(imports.size() - 1);
-        Domain domain2 = platform.readDomain(JsonUtil.objectGetString(lastImport, "id"));
+        TransferImportJob job2 = platform.importArchive(archive);
+        Domain domain2 = platform.readDomain(job2.getSingleImportTargetId());
         assertNotNull(domain2.readPrincipal("group1"));
         assertNotNull(domain2.readPrincipal("user1"));
     }
