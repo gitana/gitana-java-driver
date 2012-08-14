@@ -195,6 +195,17 @@
               <groupId>org.gitana</groupId>
               <artifactId>gitana-objects</artifactId>
               <version>1.0.0-SNAPSHOT</version>
+			  <exclusions>
+				  <!-- We exclude xom so that we exclude Xerces which isn't needed and interferes with Android runtime -->
+				  <exclusion>
+		              <groupId>xom</groupId>
+		              <artifactId>xom</artifactId>
+	              </exclusion>
+				  <exclusion>
+		              <groupId>dom4j</groupId>
+		              <artifactId>dom4j</artifactId>
+	              </exclusion>
+		      </exclusions>
           </dependency>
 
           <!-- test framework -->
