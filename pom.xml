@@ -156,6 +156,17 @@
 	              <goal>shade</goal>
 	            </goals>
 				<configuration>
+              <artifactSet>
+                <excludes>
+                    <!--
+                    <exclude>org.apache.httpcomponents:httpclient</exclude>
+                    <exclude>org.apache.httpcomponents:httpcore</exclude>
+
+                    <exclude>commons-logging:commons-logging</exclude>
+                    <exclude>commons-codec:commons-codec</exclude>
+                    -->
+                </excludes>
+              </artifactSet>
 				  <transformers>
 				    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 				       <resource>META-INF/spring.handlers</resource>

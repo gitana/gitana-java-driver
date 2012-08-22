@@ -23,12 +23,9 @@ package org.gitana.platform.client;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.http.OAuth2HttpMethodExecutor;
-import org.gitana.platform.client.android.EasyHttpClient;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
 import org.gitana.platform.client.identity.Identity;
@@ -122,17 +119,11 @@ public class Gitana
     protected RemoteImpl createAnonymousRemote()
     {
         // build a new http client
-        //DefaultHttpClient client = new DefaultHttpClient();
-        //HttpConnectionParams.setSoTimeout(client.getParams(), 0);
-        //HttpConnectionParams.setConnectionTimeout(client.getParams(), 0);
-        //client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpConnectionParams.setSoTimeout(client.getParams(), 0);
+        HttpConnectionParams.setConnectionTimeout(client.getParams(), 0);
+        client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
 
-        HttpParams httpParameters = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
-        HttpConnectionParams.setSoTimeout(httpParameters, 10000);
-
-        System.out.println("x------Easy Http Client is set------x");
-        DefaultHttpClient client = new EasyHttpClient(httpParameters);
         // wrap into a remote object
         return new RemoteImpl(client, baseUrl);
     }
