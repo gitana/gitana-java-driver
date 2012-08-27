@@ -121,7 +121,7 @@ public class TenantAllocationTest extends AbstractTestCase
         
 
         // now check allocations for the tenant object
-        assertEquals(28, tenant1.listAllocatedObjects().size()); // 21 + 7 defaults (domain, client, application, webhost, warehouse, directory, vault)
+        assertEquals(29, tenant1.listAllocatedObjects().size()); // 21 + 8 defaults (platform, domain, client, application, webhost, warehouse, directory, vault)
         assertEquals(6+1, tenant1.listAllocatedApplicationObjects().size()); // 7
         assertEquals(5, tenant1.listAllocatedRepositoryObjects().size()); // 5
         assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 5
