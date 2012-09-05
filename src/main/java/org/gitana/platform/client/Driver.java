@@ -21,11 +21,14 @@
 
 package org.gitana.platform.client;
 
+import org.gitana.platform.client.node.type.*;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.ObjectFactoryImpl;
 import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.node.type.*;
+import org.gitana.platform.client.support.RemoteImpl;
+
+import java.util.Locale;
 
 /**
  * @author uzi
@@ -97,6 +100,11 @@ public class Driver
         factory.register(Rule.QNAME, RuleImpl.class);
         factory.register(TypeDefinition.QNAME, TypeDefinitionImpl.class);
         factory.register(UpdatedAssociation.QNAME, UpdatedAssociationImpl.class);
+    }
+
+    public void setLocale(Locale locale)
+    {
+        ((RemoteImpl) remote).setLocale(locale);
     }
 
     public Remote getRemote()

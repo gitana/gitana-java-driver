@@ -26,6 +26,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.services.node.NodeBuilder;
 import org.gitana.util.I18NUtil;
 import org.junit.Test;
@@ -127,6 +128,25 @@ public class NodeI18NTest extends AbstractTestCase
         // just polish
         List<Locale> locales2 = node1.getTranslationLocales("2.0");
         assertEquals(1, locales2.size());
+
+
+
+        // DEFAULT LOCALE FETCH
+
+        // switch the master node to use the "2.0" edition
+        node1.reload();
+        ObjectNode features = node1.getObject("_features");
+        ObjectNode multilingualFeature = (ObjectNode) features.get("f:multilingual");
+        multilingualFeature.put("edition", "2.0");
+        node1.update();
+
+        // switch driver locale to POLISH
+        DriverContext.getDriver().setLocale(POLISH);
+
+        // now read and verify we get the node back in polish
+        Node polishTranslation3 = (Node) master.readNode(node1.getId());
+        assertEquals("Joel", polishTranslation3.getString("author"));
+
 
     }
 

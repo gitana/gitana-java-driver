@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -86,6 +87,11 @@ public class RemoteImpl implements Remote
     public void setMetadata(boolean metadata)
     {
         this.metadata = metadata;
+    }
+
+    public void setLocale(Locale locale)
+    {
+        this.invoker.setLocale(locale);
     }
 
     private String buildURL(String uri, boolean expand)

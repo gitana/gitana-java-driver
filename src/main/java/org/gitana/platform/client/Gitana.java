@@ -138,34 +138,6 @@ public class Gitana
         return createAnonymousRemote();
     }
 
-    /*
-    private String getDomain()
-    {
-        String domain = null;
-
-        try
-        {
-            URL url = new URL(baseUrl);
-            domain = url.getHost();
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-        return domain;
-    }
-
-    private Cookie buildCookie(String name, String value)
-    {
-        BasicClientCookie cookie = new BasicClientCookie(name, value);
-        cookie.setDomain(getDomain());
-        cookie.setPath("/");
-
-        return cookie;
-    }
-    */
-
     protected void populateAuthenticationInformation(Driver driver)
     {
         // load authentication info
