@@ -74,6 +74,11 @@ public class RemoteImpl implements Remote
         this.invoker.setHttpMethodExecutor(httpMethodExecutor);
     }
 
+    public HttpMethodExecutor getHttpMethodExecutor()
+    {
+        return this.invoker.getHttpMethodExecutor();
+    }
+
     public void addCookie(Cookie cookie)
     {
         ((DefaultHttpClient)this.invoker.getClient()).getCookieStore().addCookie(cookie);
