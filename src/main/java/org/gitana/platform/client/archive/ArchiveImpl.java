@@ -318,7 +318,7 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // ATTACHMENTS
+    // ACCESSORS
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -363,5 +363,30 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     {
         return getString(FIELD_TYPE);
     }
+
+    @Override
+    public boolean getTemplate()
+    {
+        return getBoolean(FIELD_TEMPLATE);
+    }
+
+    @Override
+    public void setTemplate(boolean template)
+    {
+        set(FIELD_TEMPLATE, template);
+    }
+
+    @Override
+    public String getTemplateType()
+    {
+        return getString(FIELD_TEMPLATE_TYPE);
+    }
+
+    @Override
+    public void setTemplateType(String templateType)
+    {
+        set(FIELD_TEMPLATE_TYPE, templateType);
+    }
+
 
 }

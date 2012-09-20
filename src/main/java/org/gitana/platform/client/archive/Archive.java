@@ -40,6 +40,10 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
     public final static String FIELD_ARTIFACT_ID = "artifact";
     public final static String FIELD_VERSION_ID = "version";
 
+    // template
+    public final static String FIELD_TEMPLATE = "template";
+    public final static String FIELD_TEMPLATE_TYPE = "templateType";
+
     public String getGroupId();
     public String getArtifactId();
     public String getVersionId();
@@ -51,5 +55,10 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
     public ObjectNode getDependencies();
     public ObjectNode getIncludes();
     public String getType();
+
+    public boolean getTemplate();
+    public void setTemplate(boolean template);
+    public String getTemplateType();
+    public void setTemplateType(String templateType);
 
 }
