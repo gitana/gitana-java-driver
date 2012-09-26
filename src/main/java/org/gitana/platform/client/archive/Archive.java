@@ -39,7 +39,7 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
     // fields
     public final static String FIELD_TEMPLATE = "template";
     public final static String FIELD_TEMPLATE_TYPE = "templateType";
-    public final static String FIELD_TEMPLATE_ID = "templateId";
+    public final static String FIELD_TEMPLATE_KEY = "templateKey";
 
     public String getGroupId();
     public String getArtifactId();
@@ -59,7 +59,7 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
     public void setTemplateType(String templateType);
     public String getTemplateType();
 
-    public void setTemplateId(String templateId);
-    public String getTemplateId();
+    public void setTemplateKey(String templateKey);
+    public String getTemplateKey();
 
 }

@@ -396,15 +396,15 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     }
 
     @Override
-    public void setTemplateId(String templateId)
+    public void setTemplateKey(String templateKey)
     {
-        set(FIELD_TEMPLATE_ID, templateId);
+        set(FIELD_TEMPLATE_KEY, templateKey);
     }
 
     @Override
-    public String getTemplateId()
+    public String getTemplateKey()
     {
-        return getString(FIELD_TEMPLATE_ID);
+        return getString(FIELD_TEMPLATE_KEY);
     }
 
 }
