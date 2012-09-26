@@ -364,4 +364,47 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
         return getString(FIELD_TYPE);
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TEMPLATE PROPERTIES
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void setTemplate(boolean template)
+    {
+        set(FIELD_TEMPLATE, template);
+    }
+
+    @Override
+    public String getTemplate()
+    {
+        return getString(FIELD_TEMPLATE);
+    }
+
+    @Override
+    public void setTemplateType(String templateType)
+    {
+        set(FIELD_TEMPLATE_TYPE, templateType);
+    }
+
+    @Override
+    public String getTemplateType()
+    {
+        return getString(FIELD_TEMPLATE_TYPE);
+    }
+
+    @Override
+    public void setTemplateId(String templateId)
+    {
+        set(FIELD_TEMPLATE_ID, templateId);
+    }
+
+    @Override
+    public String getTemplateId()
+    {
+        return getString(FIELD_TEMPLATE_ID);
+    }
+
 }

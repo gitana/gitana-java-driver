@@ -36,9 +36,10 @@ import java.io.InputStream;
  */
 public interface Archive extends VaultDocument, Attachable, AccessControllable, Selfable, Manifest
 {	
-    public final static String FIELD_GROUP_ID = "group";
-    public final static String FIELD_ARTIFACT_ID = "artifact";
-    public final static String FIELD_VERSION_ID = "version";
+    // fields
+    public final static String FIELD_TEMPLATE = "template";
+    public final static String FIELD_TEMPLATE_TYPE = "templateType";
+    public final static String FIELD_TEMPLATE_ID = "templateId";
 
     public String getGroupId();
     public String getArtifactId();
@@ -51,4 +52,14 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
     public ObjectNode getDependencies();
     public ObjectNode getIncludes();
     public String getType();
+
+    public void setTemplate(boolean template);
+    public String getTemplate();
+
+    public void setTemplateType(String templateType);
+    public String getTemplateType();
+
+    public void setTemplateId(String templateId);
+    public String getTemplateId();
+
 }
