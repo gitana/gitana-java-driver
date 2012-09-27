@@ -39,6 +39,7 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.client.warehouse.Warehouse;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -1035,9 +1036,105 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
         ObjectNode object = JsonUtil.createObject();
         object.put("checks", array);
 
-        Response response = getRemote().post(getResourceUri() + "/registrars/permissions/check", object);
+        Response response = getRemote().post(getResourceUri() + "/webhosts/permissions/check", object);
         return new PermissionCheckResults(response.getObjectNode());
     }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // WARE HOUSES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Warehouse> listWarehouses()
+    {
+        return listWarehouses(null);
+    }
+
+    @Override
+    public ResultMap<Warehouse> listWarehouses(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/warehouses", params);
+        return getFactory().warehouses(this, response);
+    }
+
+    @Override
+    public Warehouse readWarehouse(String warehouseId)
+    {
+        Warehouse warehouse = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/warehouses/" + warehouseId);
+            warehouse = getFactory().warehouse(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return warehouse;
+    }
+
+    @Override
+    public Warehouse createWarehouse()
+    {
+        return createWarehouse(null);
+    }
+
+    @Override
+    public Warehouse createWarehouse(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/warehouses", object);
+
+        String warehouseId = response.getId();
+        return readWarehouse(warehouseId);
+    }
+
+    @Override
+    public ResultMap<Warehouse> queryWarehouses(ObjectNode query)
+    {
+        return queryWarehouses(query, null);
+    }
+
+    @Override
+    public ResultMap<Warehouse> queryWarehouses(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/warehouses/query", params, query);
+        return getFactory().warehouses(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkWarehousePermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post(getResourceUri() + "/warehouses/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
 
 
 

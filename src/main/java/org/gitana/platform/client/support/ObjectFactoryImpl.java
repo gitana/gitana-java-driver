@@ -70,6 +70,7 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.tenant.TenantImpl;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.vault.VaultImpl;
+import org.gitana.platform.client.warehouse.*;
 import org.gitana.platform.client.webhost.AutoClientMapping;
 import org.gitana.platform.client.webhost.AutoClientMappingImpl;
 import org.gitana.platform.client.webhost.WebHost;
@@ -1345,6 +1346,132 @@ public class ObjectFactoryImpl implements ObjectFactory
         }
 
         return map;
+    }
+
+    @Override
+    public Warehouse warehouse(Platform platform)
+    {
+        return warehouse(platform, JsonUtil.createObject());
+    }
+
+    @Override
+    public Warehouse warehouse(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new WarehouseImpl(platform, object, false);
+    }
+
+    @Override
+    public Warehouse warehouse(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new WarehouseImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Warehouse> warehouses(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Warehouse> map = new ResultMapImpl<Warehouse>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Warehouse warehouse = new WarehouseImpl(platform, object, true);
+            map.put(warehouse.getId(), warehouse);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Interaction interaction(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<Interaction> interactions(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionApplication interactionApplication(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionApplication> interactionApplications(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionNode interactionNode(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionNode> interactionNodes(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionPage interactionPage(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionPage> interactionPages(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionReport interactionReport(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionReport> interactionReports(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionReportEntry interactionReportEntry(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionReportEntry> interactionReportEntries(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionSession interactionSession(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionSession> interactionSessions(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InteractionUser interactionUser(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public ResultMap<InteractionUser> interactionUsers(Warehouse warehouse, Response response) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
