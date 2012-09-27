@@ -45,7 +45,7 @@ public class WarehouseImpl extends AbstractPlatformDataStoreImpl implements Ware
     @Override
     public String getTypeId()
     {
-        return TypedIDConstants.TYPE_WEB_HOST;
+        return TypedIDConstants.TYPE_WAREHOUSE;
     }
 
     @Override
