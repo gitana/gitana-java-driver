@@ -27,8 +27,11 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.client.webhost.DeployedApplication;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+
+import java.util.List;
 
 /**
  * @author uzi
@@ -39,6 +42,18 @@ public interface Application extends PlatformDataStore
 
     public String getKey();
     public void setKey(String key);
+
+    public final static String FIELD_DEPLOYMENTS = "deployments";
+    public final static String FIELD_DEPLOYMENT_WEBHOST = "webhost";
+    public final static String FIELD_DEPLOYMENT_SUBDOMAIN = "subdomain";
+    public final static String FIELD_DEPLOYMENT_DOMAIN = "domain";
+    public final static String FIELD_DEPLOYMENT_CLIENT_ID = "clientId";
+    public final static String FIELD_DEPLOYMENT_AUTH_GRANT_ID = "authGrantId";
+
+    public final static String FIELD_SOURCE = "source";
+    public final static String FIELD_SOURCE_TYPE = "type";
+    public final static String FIELD_SOURCE_PUBLIC = "public";
+    public final static String FIELD_SOURCE_URI = "uri";
 
     /**
      * @return platform
@@ -163,6 +178,28 @@ public interface Application extends PlatformDataStore
 
     public void deleteRegistration(Registration registration);
     public void deleteRegistration(String registrationId);
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DEPLOYMENT
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void addDeployment(String key, String webhost, String subdomain, String domain, ObjectNode config);
+    public List<String> getDeploymentKeys();
+    public ObjectNode getDeployment(String key);
+    public void removeDeployment(String key);
+
+    public void setSource(String type, boolean isPublic, String uri);
+    public String getSourceType();
+    public boolean getSourcePublic();
+    public String getSourceUri();
+
+    public DeployedApplication deploy(String deploymentKey);
+
+    public DeployedApplication findDeployed(String deploymentKey);
 
 
 }

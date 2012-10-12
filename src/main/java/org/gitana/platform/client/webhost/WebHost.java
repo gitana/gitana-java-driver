@@ -32,6 +32,11 @@ import org.gitana.platform.support.ResultMap;
  */
 public interface WebHost extends PlatformDataStore
 {
+    public final static String FIELD_DEPLOYER_TYPE = "deployerType";
+
+    public String getDeployerType();
+    public void setDeployerType(String deployerType);
+
     /**
      * @return platform
      */
@@ -59,5 +64,21 @@ public interface WebHost extends PlatformDataStore
 
     public void deleteAutoClientMapping(AutoClientMapping autoClientMapping);
     public void deleteAutoClientMapping(String autoClientMappingId);
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DEPLOYED APPLICATIONS
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<DeployedApplication> listDeployedApplications();
+    public ResultMap<DeployedApplication> listDeployedApplications(Pagination pagination);
+
+    public DeployedApplication readDeployedApplication(String deployedApplicationId);
+
+    public ResultMap<DeployedApplication> queryDeployedApplications(ObjectNode query);
+    public ResultMap<DeployedApplication> queryDeployedApplications(ObjectNode query, Pagination pagination);
 
 }

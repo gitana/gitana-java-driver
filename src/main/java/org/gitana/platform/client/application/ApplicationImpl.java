@@ -29,12 +29,17 @@ import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.client.webhost.DeployedApplication;
+import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -568,5 +573,133 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
     public void deleteRegistration(String registrationId)
     {
         getRemote().delete(getResourceUri() + "/registrations/" + registrationId);
+    }
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DEPLOYMENT
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void addDeployment(String key, String webhost, String subdomain, String domain, ObjectNode config)
+    {
+        if (!has(FIELD_DEPLOYMENTS))
+        {
+            set(FIELD_DEPLOYMENTS, JsonUtil.createObject());
+        }
+
+        if (config == null)
+        {
+            config = JsonUtil.createObject();
+        }
+
+        config.put(FIELD_DEPLOYMENT_WEBHOST, webhost);
+        config.put(FIELD_DEPLOYMENT_SUBDOMAIN, subdomain);
+        config.put(FIELD_DEPLOYMENT_DOMAIN, domain);
+
+        ObjectNode deployments = getObject(FIELD_DEPLOYMENTS);
+        deployments.put(key, config);
+    }
+
+    @Override
+    public List<String> getDeploymentKeys()
+    {
+        if (!has(FIELD_DEPLOYMENTS))
+        {
+            set(FIELD_DEPLOYMENTS, JsonUtil.createObject());
+        }
+
+        ObjectNode deployments = getObject(FIELD_DEPLOYMENTS);
+
+        List<String> keys = new ArrayList<String>();
+
+        Iterator<String> it = deployments.getFieldNames();
+        while (it.hasNext())
+        {
+            keys.add(it.next());
+        }
+
+        return keys;
+    }
+
+    @Override
+    public ObjectNode getDeployment(String key)
+    {
+        if (!has(FIELD_DEPLOYMENTS))
+        {
+            set(FIELD_DEPLOYMENTS, JsonUtil.createObject());
+        }
+
+        return (ObjectNode) getObject(FIELD_DEPLOYMENTS).get(key);
+    }
+
+    @Override
+    public void removeDeployment(String key)
+    {
+        if (!has(FIELD_DEPLOYMENTS))
+        {
+            set(FIELD_DEPLOYMENTS, JsonUtil.createObject());
+        }
+
+        getObject(FIELD_DEPLOYMENTS).remove(key);
+    }
+
+    @Override
+    public void setSource(String type, boolean isPublic, String uri)
+    {
+        ObjectNode source = JsonUtil.createObject();
+        source.put("type", type);
+        source.put("public", isPublic);
+        source.put("uri", uri);
+
+        set(FIELD_SOURCE, source);
+    }
+
+    @Override
+    public String getSourceType()
+    {
+        return getString(FIELD_SOURCE_TYPE);
+    }
+
+    @Override
+    public boolean getSourcePublic()
+    {
+        return getBoolean(FIELD_SOURCE_PUBLIC);
+    }
+
+    @Override
+    public String getSourceUri()
+    {
+        return getString(FIELD_SOURCE_URI);
+    }
+
+    @Override
+    public DeployedApplication deploy(String deploymentKey)
+    {
+        ObjectNode deploymentConfig = getDeployment(deploymentKey);
+        String webhostId = JsonUtil.objectGetString(deploymentConfig, FIELD_DEPLOYMENT_WEBHOST);
+
+        // read web host
+        WebHost webhost = getPlatform().readWebHost(webhostId);
+
+        Response response = getRemote().post(getResourceUri() + "/deploy/" + deploymentKey);
+        return getFactory().deployedApplication(webhost, response);
+    }
+
+    @Override
+    public DeployedApplication findDeployed(String deploymentKey)
+    {
+        ObjectNode deploymentConfig = getDeployment(deploymentKey);
+        String webhostId = JsonUtil.objectGetString(deploymentConfig, FIELD_DEPLOYMENT_WEBHOST);
+
+        // read web host
+        WebHost webhost = getPlatform().readWebHost(webhostId);
+
+        Response response = getRemote().post(getResourceUri() + "/deployed/" + deploymentKey);
+        return getFactory().deployedApplication(webhost, response);
     }
 }

@@ -54,6 +54,7 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.warehouse.*;
 import org.gitana.platform.client.webhost.AutoClientMapping;
+import org.gitana.platform.client.webhost.DeployedApplication;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.support.QName;
@@ -253,6 +254,9 @@ public interface ObjectFactory
     public AutoClientMapping autoClientMapping(WebHost webhost, Response response);
     public ResultMap<AutoClientMapping> autoClientMappings(WebHost webhost, Response response);
 
+    // deployed applications
+    public DeployedApplication deployedApplication(WebHost webhost, Response response);
+    public ResultMap<DeployedApplication> deployedApplications(WebHost webhost, Response response);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

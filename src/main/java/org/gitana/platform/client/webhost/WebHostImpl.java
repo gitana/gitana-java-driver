@@ -44,6 +44,18 @@ public class WebHostImpl extends AbstractPlatformDataStoreImpl implements WebHos
     }
 
     @Override
+    public String getDeployerType()
+    {
+        return getString(FIELD_DEPLOYER_TYPE);
+    }
+
+    @Override
+    public void setDeployerType(String deployerType)
+    {
+        set(FIELD_DEPLOYER_TYPE, deployerType);
+    }
+
+    @Override
     public String getTypeId()
     {
         return TypedIDConstants.TYPE_WEB_HOST;
@@ -150,6 +162,64 @@ public class WebHostImpl extends AbstractPlatformDataStoreImpl implements WebHos
     public void deleteAutoClientMapping(String autoClientMappingId)
     {
         getRemote().delete(getResourceUri() + "/autoclientmappings/" + autoClientMappingId);
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DEPLOYED APPLICATIONS
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<DeployedApplication> listDeployedApplications()
+    {
+        return listDeployedApplications(null);
+    }
+
+    @Override
+    public ResultMap<DeployedApplication> listDeployedApplications(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/applications", params);
+        return getFactory().deployedApplications(this, response);
+    }
+
+    @Override
+    public DeployedApplication readDeployedApplication(String deployedApplicationId)
+    {
+        DeployedApplication deployedApplication = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/applications/" + deployedApplicationId);
+            deployedApplication = getFactory().deployedApplication(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return deployedApplication;
+    }
+
+    @Override
+    public ResultMap<DeployedApplication> queryDeployedApplications(ObjectNode query)
+    {
+        return queryDeployedApplications(query, null);
+    }
+
+    @Override
+    public ResultMap<DeployedApplication> queryDeployedApplications(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/applications/query", params, query);
+        return getFactory().deployedApplications(this, response);
     }
 
 }

@@ -71,10 +71,7 @@ import org.gitana.platform.client.tenant.TenantImpl;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.vault.VaultImpl;
 import org.gitana.platform.client.warehouse.*;
-import org.gitana.platform.client.webhost.AutoClientMapping;
-import org.gitana.platform.client.webhost.AutoClientMappingImpl;
-import org.gitana.platform.client.webhost.WebHost;
-import org.gitana.platform.client.webhost.WebHostImpl;
+import org.gitana.platform.client.webhost.*;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.QName;
@@ -1343,6 +1340,35 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             AutoClientMapping autoClientMapping = new AutoClientMappingImpl(webhost, object, true);
             map.put(autoClientMapping.getId(), autoClientMapping);
+        }
+
+        return map;
+    }
+
+    @Override
+    public DeployedApplication deployedApplication(WebHost webhost, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new DeployedApplicationImpl(webhost, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<DeployedApplication> deployedApplications(WebHost webhost, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<DeployedApplication> map = new ResultMapImpl<DeployedApplication>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            DeployedApplication deployedApplication = new DeployedApplicationImpl(webhost, object, true);
+            map.put(deployedApplication.getId(), deployedApplication);
         }
 
         return map;
