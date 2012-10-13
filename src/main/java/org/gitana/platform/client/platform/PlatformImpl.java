@@ -104,6 +104,12 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
         return getString("ownerTenantId");
     }
 
+    @Override
+    public Response loadInfo()
+    {
+        return getRemote().get(getResourceUri() + "/info");
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////

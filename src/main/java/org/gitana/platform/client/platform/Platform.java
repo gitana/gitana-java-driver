@@ -35,6 +35,7 @@ import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.warehouse.Warehouse;
 import org.gitana.platform.client.webhost.WebHost;
@@ -59,6 +60,8 @@ public interface Platform extends DataStore
 
     public String getOwnerRegistrarId();
     public String getOwnerTenantId();
+
+    public Response loadInfo();
 
     
 
