@@ -50,6 +50,16 @@ public interface Tenant extends RegistrarDocument, Selfable
     // tenant dns key
     public final static String FIELD_DNS_SLUG = "dnsSlug";
 
+    // sub-tenant count
+    public final static String FIELD_SUBTENANT_COUNT = "subtenantCount";
+
+    // deployed application count
+    public final static String FIELD_DEPLOYED_APPLICATION_COUNT = "deployedApplicationCount";
+
+    // whether this tenant is enabled
+    public final static String FIELD_ENABLED = "enabled";
+
+
 
     public void setPlanKey(String planKey);
     public String getPlanKey();
@@ -68,6 +78,15 @@ public interface Tenant extends RegistrarDocument, Selfable
     public String getDnsSlug();
 
     public void closeOut();
+
+    public void setSubTenantCount(int subtenantCount);
+    public int getSubTenantCount();
+
+    public void setDeployedApplicationCount(int deployedApplicationCount);
+    public int getDeployedApplicationCount();
+
+    public boolean getEnabled();
+    public void setEnabled(boolean enabled);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

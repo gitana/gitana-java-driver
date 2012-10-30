@@ -192,6 +192,52 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
         return getString(FIELD_DNS_SLUG);
     }
 
+    @Override
+    public void setSubTenantCount(int subtenantCount)
+    {
+        set(FIELD_SUBTENANT_COUNT, subtenantCount);
+    }
+
+    @Override
+    public int getSubTenantCount()
+    {
+        return getInt(FIELD_SUBTENANT_COUNT);
+    }
+
+    @Override
+    public void setDeployedApplicationCount(int deployedApplicationCount)
+    {
+        set(FIELD_DEPLOYED_APPLICATION_COUNT, deployedApplicationCount);
+    }
+
+    @Override
+    public int getDeployedApplicationCount()
+    {
+        return getInt(FIELD_DEPLOYED_APPLICATION_COUNT);
+    }
+
+    @Override
+    public boolean getEnabled()
+    {
+        // in order to support legacy tenants (where the "enabled" field did not exist), we assume
+        // enabled to be true.  If the field does not exist, then we return true.  If it does exist,
+        // then we hand back the value of the field
+
+        boolean enabled = true;
+        if (has(FIELD_ENABLED))
+        {
+            enabled = getBoolean(FIELD_ENABLED);
+        }
+
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        set(FIELD_ENABLED, enabled);
+    }
+
     private ResultMap<ObjectNode> toObjects(Response response)
     {
         ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();
