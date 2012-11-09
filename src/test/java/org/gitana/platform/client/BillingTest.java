@@ -36,7 +36,6 @@ import org.gitana.platform.services.plan.DataUnit;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -44,14 +43,12 @@ import java.math.BigDecimal;
 /**
  * @author uzi
  */
-@Ignore
 public class BillingTest extends AbstractTestCase
 {
     public final static String NUMBER_VISA_GOOD = "4012000033330026";
     public final static String NUMBER_VISA_BAD = "4111111111111115";
 
     @Test
-    @Ignore
     public void testSuccessCase1()
         throws Exception
     {
@@ -76,7 +73,6 @@ public class BillingTest extends AbstractTestCase
     }
 
     @Test
-    @Ignore
     public void testFailureCase1()
         throws Exception
     {
@@ -104,6 +100,17 @@ public class BillingTest extends AbstractTestCase
     {
         // get the "bt" billing provider configuration
         BillingProviderConfiguration bt = platform.readBillingProviderConfiguration("bt");
+        if (bt == null)
+        {
+            ObjectNode object = JsonUtil.createObject();
+            object.put(BillingProviderConfiguration.FIELD_KEY, "bt");
+            object.put("environment", "SANDBOX");
+            object.put("merchantId", "37ptjdc5y796vh8s");
+            object.put("publicKey", "hch8x42twgtcxnjz");
+            object.put("privateKey", "z8bwfqknqh2cs848");
+
+            bt = platform.createBillingProviderConfiguration("braintree", object);
+        }
         
         // create registrar + domain
         ObjectNode registrarObject = JsonUtil.createObject();
@@ -112,7 +119,7 @@ public class BillingTest extends AbstractTestCase
         Domain domain = platform.createDomain();
         
         // create a plan
-        Plan plan = registrar.createPlan("booya");
+        Plan plan = registrar.createPlan("test");
         plan.setBillingPrice(new BigDecimal("999"));
         plan.setBillingSchedule(BillingSchedule.MONTHLY);
         plan.setRequiresBilling(true);
@@ -144,7 +151,7 @@ public class BillingTest extends AbstractTestCase
         // if there was a validation error with the credit card or the credit card could not process
         // for any reason, we should get an error back
         ObjectNode tenantObject = JsonUtil.createObject();
-        Tenant tenant = registrar.createTenant(user, "booya", tenantObject, paymentMethodObject);
+        Tenant tenant = registrar.createTenant(user, "test", tenantObject, paymentMethodObject);
 
         /*
         // authenticate on the new tenant as the new principal
