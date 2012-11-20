@@ -32,6 +32,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
@@ -367,5 +368,25 @@ public interface Platform extends DataStore
     public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query, Pagination pagination);
     public BillingProviderConfiguration readBillingProviderConfiguration(String billingProviderConfigurationId);
     public BillingProviderConfiguration createBillingProviderConfiguration(String providerId, ObjectNode object);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PROJECTS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<Project> listProjects();
+    public ResultMap<Project> listProjects(Pagination pagination);
+    public ResultMap<Project> queryProjects(ObjectNode query);
+    public ResultMap<Project> queryProjects(ObjectNode query, Pagination pagination);
+    public Project readProject(String projectId);
+    public Project createProject();
+    public Project createProject(ObjectNode object);
+    public void updateProject(Project project);
+    public void deleteProject(Project project);
+    public void deleteProject(String projectId);
+    public PermissionCheckResults checkProjectPermissions(List<PermissionCheck> list);
 
 }

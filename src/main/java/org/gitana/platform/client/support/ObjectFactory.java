@@ -45,6 +45,7 @@ import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
+import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
@@ -151,6 +152,9 @@ public interface ObjectFactory
     public Client client(Platform platform, Response response);
     public ResultMap<Client> clients(Platform platform, Response response);
 
+    // projects
+    public Project project(Platform platform, Response response);
+    public ResultMap<Project> projects(Platform platform, Response response);
 
 
 

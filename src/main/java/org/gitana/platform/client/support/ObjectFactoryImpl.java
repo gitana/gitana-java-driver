@@ -57,6 +57,8 @@ import org.gitana.platform.client.platform.PlatformImpl;
 import org.gitana.platform.client.principal.DomainGroupImpl;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUserImpl;
+import org.gitana.platform.client.project.Project;
+import org.gitana.platform.client.project.ProjectImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.registrar.RegistrarImpl;
 import org.gitana.platform.client.repository.Repository;
@@ -816,6 +818,36 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         return map;
     }
+
+    @Override
+    public Project project(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new ProjectImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Project> projects(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Project> map = new ResultMapImpl<Project>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Project project = new ProjectImpl(platform, object, true);
+            map.put(project.getId(), project);
+        }
+
+        return map;
+    }
+
 
     @Override
     public Vault vault(Platform platform)

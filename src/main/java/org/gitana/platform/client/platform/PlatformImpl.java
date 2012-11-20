@@ -33,6 +33,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
@@ -1215,6 +1216,121 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
         String billingProviderConfigurationId = response.getId();
         return readBillingProviderConfiguration(billingProviderConfigurationId);
+    }
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PROJECTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public ResultMap<Project> listProjects()
+    {
+        return listProjects(null);
+    }
+
+    @Override
+    public ResultMap<Project> listProjects(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/projects", params);
+        return getFactory().projects(this, response);
+    }
+
+    @Override
+    public ResultMap<Project> queryProjects(ObjectNode query)
+    {
+        return queryProjects(query, null);
+    }
+
+    @Override
+    public ResultMap<Project> queryProjects(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/projects/query", params, query);
+        return getFactory().projects(this, response);
+    }
+
+    @Override
+    public Project readProject(String projectId)
+    {
+        Project project = null;
+
+        try
+        {
+            Response response = getRemote().get("/projects/" + projectId);
+            project = getFactory().project(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return project;
+    }
+
+    @Override
+    public Project createProject()
+    {
+        return createProject(null);
+    }
+
+    @Override
+    public Project createProject(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post("/projects", object);
+
+        String projectId = response.getId();
+        return readProject(projectId);
+    }
+
+    @Override
+    public void updateProject(Project project)
+    {
+        getRemote().put("/projects/" + project.getId(), project.getObject());
+    }
+
+    @Override
+    public void deleteProject(Project project)
+    {
+        deleteProject(project.getId());
+    }
+
+    @Override
+    public void deleteProject(String projectId)
+    {
+        getRemote().delete("/projects/" + projectId);
+    }
+
+    @Override
+    public PermissionCheckResults checkProjectPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/projects/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
     }
 
 }
