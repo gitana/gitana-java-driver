@@ -79,12 +79,12 @@ public class NodeMultiCreateTest extends AbstractTestCase
 
         // pass in some properties for each via request parameters
         Map<String, String> params = new HashMap<String, String>();
-        params.put("property0_title", "title1");
-        params.put("property0_description", "description1");
-        params.put("property1_title", "title2");
-        params.put("property1_description", "description2");
-        params.put("property2_title", "title3");
-        params.put("property2_description", "description3");
+        params.put("property0__title", "title1");
+        params.put("property0__description", "description1");
+        params.put("property1__title", "title2");
+        params.put("property1__description", "description2");
+        params.put("property2__title", "title3");
+        params.put("property2__description", "description3");
 
         // bulk create three nodes
         Map<String, BaseNode> nodes = master.createNodes(params, payload1, payload2, payload3);

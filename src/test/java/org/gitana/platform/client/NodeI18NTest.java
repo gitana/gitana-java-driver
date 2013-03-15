@@ -135,9 +135,9 @@ public class NodeI18NTest extends AbstractTestCase
 
         // switch the master node to use the "2.0" edition
         node1.reload();
-        ObjectNode features = node1.getObject("_features");
-        ObjectNode multilingualFeature = (ObjectNode) features.get("f:multilingual");
+        ObjectNode multilingualFeature = node1.getFeature("f:multilingual");
         multilingualFeature.put("edition", "2.0");
+        node1.addFeature("f:multilingual", multilingualFeature);
         node1.update();
 
         // switch driver locale to POLISH
