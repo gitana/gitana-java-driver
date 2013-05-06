@@ -21,12 +21,15 @@
 
 package org.gitana.platform.client.node;
 
+import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.support.TypedID;
 import org.gitana.platform.support.QName;
+
+import java.util.List;
 
 /**
  * @author uzi
@@ -65,4 +68,21 @@ public interface BaseNode extends Document, Selfable, TypedID
      * Touches the node.
      */
     public void touch();
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FEATURES
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public List<String> getFeatureIds();
+
+    public ObjectNode getFeature(String featureId);
+
+    public void removeFeature(String featureId);
+
+    public void addFeature(String featureId, ObjectNode featureConfigObject);
+
+    public boolean hasFeature(String featureId);
 }

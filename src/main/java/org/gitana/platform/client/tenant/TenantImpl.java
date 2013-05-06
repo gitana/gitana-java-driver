@@ -89,6 +89,18 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
     }
 
     @Override
+    public void update(ObjectNode paymentMethodObject)
+    {
+        ObjectNode o = JsonUtil.copyObject(getObject());
+        if (paymentMethodObject != null)
+        {
+            o.put("paymentMethod", paymentMethodObject);
+        }
+
+        getRemote().put(getResourceUri(), o);
+    }
+
+    @Override
     public void delete()
     {
         getRemote().delete(getResourceUri());

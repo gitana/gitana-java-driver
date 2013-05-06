@@ -175,4 +175,11 @@ public interface Tenant extends RegistrarDocument, Selfable
     public Meter readCurrentMeter(MeterType meterType);
 
 
+    /**
+     * Updates the tenant with a payment method object.
+     *
+     * @param paymentMethodObject
+     */
+    public void update(ObjectNode paymentMethodObject);
+
 }

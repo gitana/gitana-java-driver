@@ -30,6 +30,11 @@ import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.support.QName;
+import org.gitana.util.JsonUtil;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Base class for nodes
@@ -179,5 +184,78 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
     public void touch()
     {
         getRemote().post(getResourceUri() + "/touch");
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FEATURES
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public List<String> getFeatureIds()
+    {
+        List<String> featureIds = new ArrayList<String>();
+
+        ObjectNode featuresObject = this.getObject("_features");
+        if (featuresObject != null)
+        {
+            Iterator<String> fieldNames = featuresObject.getFieldNames();
+            while (fieldNames.hasNext())
+            {
+                featureIds.add(fieldNames.next());
+            }
+        }
+
+        return featureIds;
+    }
+
+    @Override
+    public ObjectNode getFeature(String featureId)
+    {
+        ObjectNode featureObject = JsonUtil.createObject();
+
+        ObjectNode featuresObject = this.getObject("_features");
+        if (featuresObject != null)
+        {
+            if (featuresObject.has(featureId))
+            {
+                featureObject = (ObjectNode) featuresObject.get(featureId);
+            }
+        }
+
+        return featureObject;
+    }
+
+    @Override
+    public void removeFeature(String featureId)
+    {
+        getRemote().delete(this.getResourceUri() + "/features/" + featureId);
+
+        // reload object
+        this.reload();
+    }
+
+    @Override
+    public void addFeature(String featureId, ObjectNode featureConfigObject)
+    {
+        getRemote().post(this.getResourceUri() + "/features/" + featureId, featureConfigObject);
+
+        // reload object
+        this.reload();
+    }
+
+    @Override
+    public boolean hasFeature(String featureId)
+    {
+        boolean hasFeature = false;
+
+        ObjectNode featuresObject = this.getObject("_features");
+        if (featuresObject != null)
+        {
+            hasFeature = featuresObject.has(featureId);
+        }
+
+        return hasFeature;
     }
 }
