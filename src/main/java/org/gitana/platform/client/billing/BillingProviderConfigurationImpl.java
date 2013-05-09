@@ -26,6 +26,7 @@ import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
@@ -154,15 +155,33 @@ public class BillingProviderConfigurationImpl extends AbstractPlatformDocumentIm
     }
 
     @Override
+    public void grant(DomainPrincipal principal, String authorityId)
+    {
+        grant(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revoke(String principalId, String authorityId)
     {
         getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
     }
 
     @Override
+    public void revoke(DomainPrincipal principal, String authorityId)
+    {
+        revoke(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revokeAll(String principalId)
     {
         revoke(principalId, "all");
+    }
+
+    @Override
+    public void revokeAll(DomainPrincipal principal)
+    {
+        revokeAll(principal.getDomainQualifiedId());
     }
 
     @Override
@@ -177,6 +196,12 @@ public class BillingProviderConfigurationImpl extends AbstractPlatformDocumentIm
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasAuthority(DomainPrincipal principal, String authorityId)
+    {
+        return hasAuthority(principal.getDomainQualifiedId(), authorityId);
     }
 
     @Override
@@ -202,4 +227,11 @@ public class BillingProviderConfigurationImpl extends AbstractPlatformDocumentIm
 
         return has;
     }
+
+    @Override
+    public boolean hasPermission(DomainPrincipal principal, String authorityId)
+    {
+        return hasPermission(principal.getDomainQualifiedId(), authorityId);
+    }
+
 }

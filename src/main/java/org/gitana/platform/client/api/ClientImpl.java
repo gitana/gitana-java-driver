@@ -26,6 +26,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
@@ -210,6 +211,78 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
         set(FIELD_REGISTERED_REDIRECT_URI, registeredRedirectUri);
     }
 
+    @Override
+    public boolean getAllowOpenDriverAuthentication()
+    {
+        return getBoolean(FIELD_ALLOW_OPENDRIVER_AUTHENTICATION);
+    }
+
+    @Override
+    public void setAllowOpenDriverAuthentication(boolean allowOpenDriverAuthentication)
+    {
+        set(FIELD_ALLOW_OPENDRIVER_AUTHENTICATION, allowOpenDriverAuthentication);
+    }
+
+    @Override
+    public boolean getEnabled()
+    {
+        return getBoolean(FIELD_ENABLED);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        set(FIELD_ENABLED, enabled);
+    }
+
+    @Override
+    public boolean getAllowAutoApprovalForImplicitFlow()
+    {
+        return getBoolean(FIELD_ALLOW_AUTO_APPROVAL_FOR_IMPLICIT_FLOW);
+    }
+
+    @Override
+    public void setAllowAutoApprovalForImplicitFlow(boolean allowAutoApprovalForImplicitFlow)
+    {
+        set(FIELD_ALLOW_AUTO_APPROVAL_FOR_IMPLICIT_FLOW, allowAutoApprovalForImplicitFlow);
+    }
+
+    @Override
+    public int getAccessTokenValiditySeconds()
+    {
+        return getInt(FIELD_ACCESS_TOKEN_VALIDITY_SECONDS);
+    }
+
+    @Override
+    public void setAccessTokenValiditySeconds(int accessTokenValiditySeconds)
+    {
+        set(FIELD_ACCESS_TOKEN_VALIDITY_SECONDS, accessTokenValiditySeconds);
+    }
+
+    @Override
+    public int getRefreshTokenValiditySeconds()
+    {
+        return getInt(FIELD_REFRESH_TOKEN_VALIDITY_SECONDS);
+    }
+
+    @Override
+    public void setRefreshTokenValiditySeconds(int refreshTokenValiditySeconds)
+    {
+        set(FIELD_REFRESH_TOKEN_VALIDITY_SECONDS, refreshTokenValiditySeconds);
+    }
+
+    @Override
+    public boolean getAllowGuestLogin()
+    {
+        return getBoolean(FIELD_ALLOW_GUEST_LOGIN);
+    }
+
+    @Override
+    public void setAllowGuestLogin(boolean allowGuestLogin)
+    {
+        set(FIELD_ALLOW_GUEST_LOGIN, allowGuestLogin);
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -267,15 +340,33 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
     }
 
     @Override
+    public void grant(DomainPrincipal principal, String authorityId)
+    {
+        grant(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revoke(String principalId, String authorityId)
     {
         getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
     }
 
     @Override
+    public void revoke(DomainPrincipal principal, String authorityId)
+    {
+        revoke(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revokeAll(String principalId)
     {
         revoke(principalId, "all");
+    }
+
+    @Override
+    public void revokeAll(DomainPrincipal principal)
+    {
+        revokeAll(principal.getDomainQualifiedId());
     }
 
     @Override
@@ -290,6 +381,12 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasAuthority(DomainPrincipal principal, String authorityId)
+    {
+        return hasAuthority(principal.getDomainQualifiedId(), authorityId);
     }
 
     @Override
@@ -315,4 +412,11 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
 
         return has;
     }
+
+    @Override
+    public boolean hasPermission(DomainPrincipal principal, String authorityId)
+    {
+        return hasPermission(principal.getDomainQualifiedId(), authorityId);
+    }
+
 }

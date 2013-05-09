@@ -28,6 +28,7 @@ import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
 import org.gitana.platform.client.job.Job;
+import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
@@ -153,15 +154,33 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     }
 
     @Override
+    public void grant(DomainPrincipal principal, String authorityId)
+    {
+        grant(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revoke(String principalId, String authorityId)
     {
         getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
     }
 
     @Override
+    public void revoke(DomainPrincipal principal, String authorityId)
+    {
+        revoke(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revokeAll(String principalId)
     {
         revoke(principalId, "all");
+    }
+
+    @Override
+    public void revokeAll(DomainPrincipal principal)
+    {
+        revokeAll(principal.getDomainQualifiedId());
     }
 
     @Override
@@ -176,6 +195,12 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasAuthority(DomainPrincipal principal, String authorityId)
+    {
+        return hasAuthority(principal.getDomainQualifiedId(), authorityId);
     }
 
     @Override
@@ -200,6 +225,12 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasPermission(DomainPrincipal principal, String permissionId)
+    {
+        return hasPermission(principal.getDomainQualifiedId(), permissionId);
     }
 
 

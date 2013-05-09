@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.support;
 
+import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.services.authority.AuthorityGrant;
 import org.gitana.platform.client.beans.ACL;
 
@@ -53,6 +54,8 @@ public interface AccessControllable
      */
     public void grant(String principalId, String authorityId);
 
+    public void grant(DomainPrincipal principal, String authorityId);
+
     /**
      * Revokes an authority for a principal.
      *
@@ -61,12 +64,16 @@ public interface AccessControllable
      */
     public void revoke(String principalId, String authorityId);
 
+    public void revoke(DomainPrincipal principal, String authorityId);
+
     /**
      * Revoke all authorities for a principal.
      *
      * @param principalId
      */
     public void revokeAll(String principalId);
+
+    public void revokeAll(DomainPrincipal principal);
 
     /**
      * Checks whether the principal has the given authority over this object.
@@ -76,6 +83,8 @@ public interface AccessControllable
      * @return
      */
     public boolean hasAuthority(String principalId, String authorityId);
+
+    public boolean hasAuthority(DomainPrincipal principal, String authorityId);
 
     /**
      * Acquires a map of authority grants for a set of principals.
@@ -93,4 +102,6 @@ public interface AccessControllable
      * @return
      */
     public boolean hasPermission(String principalId, String permissionId);
+
+    public boolean hasPermission(DomainPrincipal principal, String permissionId);
 }

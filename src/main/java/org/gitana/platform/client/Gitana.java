@@ -51,7 +51,7 @@ public class Gitana
     private String baseUrl;
 
     private String environmentId;
-    private String clientId;
+    private String clientKey;
     private String clientSecret;
 
     /**
@@ -65,19 +65,19 @@ public class Gitana
     /**
      * Creates a Gitana instance bound to a Gitana API client.
      */
-    public Gitana(String clientId, String clientSecret)
+    public Gitana(String clientKey, String clientSecret)
     {
-        this(null, clientId, clientSecret);
+        this(null, clientKey, clientSecret);
     }
 
     /**
      * Creates a Gitana instance bound to a given client on an environment.
      *
      * @param environmentId
-     * @param clientId
+     * @param clientKey
      * @param clientSecret
      */
-    public Gitana(String environmentId, String clientId, String clientSecret)
+    public Gitana(String environmentId, String clientKey, String clientSecret)
     {
         if (environmentId == null)
         {
@@ -91,16 +91,26 @@ public class Gitana
         this.baseUrl = bundle.getString("gitana.environment." + environmentId + ".uri");
 
         // load client properties if not provided
-        if (clientId == null && clientSecret == null)
+        if (clientKey == null && clientSecret == null)
         {
             bundle = readBundle("gitana");
 
-            this.clientId = bundle.getString("gitana.clientId");
+            if (bundle.containsKey("gitana.clientKey"))
+            {
+                this.clientKey = bundle.getString("gitana.clientKey");
+            }
+
+            // legacy support
+            if (this.clientKey == null && bundle.containsKey("gitana.clientId"))
+            {
+                this.clientKey = bundle.getString("gitana.clientId");
+            }
+
             this.clientSecret = bundle.getString("gitana.clientSecret");
         }
         else
         {
-            this.clientId = clientId;
+            this.clientKey = clientKey;
             this.clientSecret = clientSecret;
         }
     }
@@ -186,6 +196,16 @@ public class Gitana
     }
 
     /**
+     * Authenticates as the guest user.
+     *
+     * @return platformw
+     */
+    public Platform authenticateAsGuest()
+    {
+        return authenticate("guest", "guest");
+    }
+
+    /**
      * Authenticates as the given domain user.
      *
      * @param user
@@ -194,7 +214,7 @@ public class Gitana
      */
     public Platform authenticate(DomainUser user, String password)
     {
-        return authenticate(user.getName(), password);
+        return authenticate(user.getDomainQualifiedId(), password);
     }
 
     /**
@@ -286,7 +306,7 @@ public class Gitana
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
         httpMethodExecutor.setUri(this.baseUrl + "/oauth/token");
-        httpMethodExecutor.setClientId(this.clientId);
+        httpMethodExecutor.setClientId(this.clientKey);
         httpMethodExecutor.setClientSecret(this.clientSecret);
         httpMethodExecutor.setResourceOwnerPasswordCredentialsFlow(username, password);
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
@@ -319,7 +339,7 @@ public class Gitana
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
         httpMethodExecutor.setUri(this.baseUrl + "/oauth/token");
-        httpMethodExecutor.setClientId(this.clientId);
+        httpMethodExecutor.setClientId(this.clientKey);
         httpMethodExecutor.setClientSecret(this.clientSecret);
         httpMethodExecutor.setAuthorizationCodeFlow(code, redirectUri);
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);

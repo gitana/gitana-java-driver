@@ -311,15 +311,33 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
     }
 
     @Override
+    public void grant(DomainPrincipal principal, String authorityId)
+    {
+        grant(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revoke(String principalId, String authorityId)
     {
         getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
     }
 
     @Override
+    public void revoke(DomainPrincipal principal, String authorityId)
+    {
+        revoke(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revokeAll(String principalId)
     {
         revoke(principalId, "all");
+    }
+
+    @Override
+    public void revokeAll(DomainPrincipal principal)
+    {
+        revoke(principal.getDomainQualifiedId(), "all");
     }
 
     @Override
@@ -334,6 +352,12 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasAuthority(DomainPrincipal principal, String authorityId)
+    {
+        return hasAuthority(principal.getDomainQualifiedId(), authorityId);
     }
 
     @Override
@@ -358,6 +382,12 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasPermission(DomainPrincipal principal, String permissionId)
+    {
+        return hasPermission(principal.getDomainQualifiedId(), permissionId);
     }
 
 }

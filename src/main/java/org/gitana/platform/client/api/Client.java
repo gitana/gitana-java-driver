@@ -53,6 +53,20 @@ public interface Client extends PlatformDocument, AccessControllable, Selfable
     public final static String FIELD_IS_TENANT_DEFAULT = "isTenantDefault";
     public final static String FIELD_DEFAULT_TENANT_ID = "defaultTenantId";
 
+    public final static String FIELD_ALLOW_OPENDRIVER_AUTHENTICATION = "allowOpenDriverAuthentication";
+
+    public final static String FIELD_ENABLED = "enabled";
+
+    public final static String FIELD_ALLOW_AUTO_APPROVAL_FOR_IMPLICIT_FLOW = "allowAutoApprovalForImplicitFlow";
+
+    // access and refresh token expiration
+    public final static String FIELD_ACCESS_TOKEN_VALIDITY_SECONDS = "accessTokenValiditySeconds";
+    public final static String FIELD_REFRESH_TOKEN_VALIDITY_SECONDS = "refreshTokenValiditySeconds";
+
+    // whether to allow guest login for this client?
+    public final static String FIELD_ALLOW_GUEST_LOGIN = "allowGuestLogin";
+
+
     public String getKey();
     public void setKey(String key);
 
@@ -76,4 +90,22 @@ public interface Client extends PlatformDocument, AccessControllable, Selfable
 
     public String getRegisteredRedirectUri();
     public void setRegisteredRedirectUri(String registeredRedirectUri);
+
+    public boolean getAllowOpenDriverAuthentication();
+    public void setAllowOpenDriverAuthentication(boolean allowOpenDriverAuthentication);
+
+    public boolean getEnabled();
+    public void setEnabled(boolean enabled);
+
+    public boolean getAllowAutoApprovalForImplicitFlow();
+    public void setAllowAutoApprovalForImplicitFlow(boolean allowAutoApprovalForImplicitFlow);
+
+    public int getAccessTokenValiditySeconds();
+    public void setAccessTokenValiditySeconds(int accessTokenValiditySeconds);
+
+    public int getRefreshTokenValiditySeconds();
+    public void setRefreshTokenValiditySeconds(int refreshTokenValiditySeconds);
+
+    public boolean getAllowGuestLogin();
+    public void setAllowGuestLogin(boolean allowGuestLogin);
 }

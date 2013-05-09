@@ -79,7 +79,7 @@ public class TenantAuthenticationTest extends AbstractTestCase
         try
         {
             gitana = new Gitana(clientKey, clientSecret);
-            gitana.authenticate("admin", "admin");
+            gitana.authenticateOnTenant(user, "pw", tenant);
         }
         catch (Exception ex)
         {

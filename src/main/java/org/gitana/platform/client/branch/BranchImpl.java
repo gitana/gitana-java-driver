@@ -29,6 +29,7 @@ import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.repository.AbstractRepositoryDocumentImpl;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
@@ -244,15 +245,33 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
+    public void grant(DomainPrincipal principal, String authorityId)
+    {
+        grant(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revoke(String principalId, String authorityId)
     {
         getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/revoke?id=" + principalId);
     }
 
     @Override
+    public void revoke(DomainPrincipal principal, String authorityId)
+    {
+        revoke(principal.getDomainQualifiedId(), authorityId);
+    }
+
+    @Override
     public void revokeAll(String principalId)
     {
         revoke(principalId, "all");
+    }
+
+    @Override
+    public void revokeAll(DomainPrincipal principal)
+    {
+        revokeAll(principal.getDomainQualifiedId());
     }
 
     @Override
@@ -267,6 +286,12 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         }
 
         return has;
+    }
+
+    @Override
+    public boolean hasAuthority(DomainPrincipal principal, String authorityId)
+    {
+        return hasAuthority(principal.getDomainQualifiedId(), authorityId);
     }
 
     @Override
@@ -292,6 +317,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
 
         return has;
     }
+
+    @Override
+    public boolean hasPermission(DomainPrincipal principal, String authorityId)
+    {
+        return hasPermission(principal.getDomainQualifiedId(), authorityId);
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
