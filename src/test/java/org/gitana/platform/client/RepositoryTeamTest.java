@@ -82,6 +82,10 @@ public class RepositoryTeamTest extends AbstractTestCase
         // revoke any rights that "everyone" may have by default
         branch.revokeAll("everyone");
 
+        // give the "grifters" team the CONSUMER right
+        grifters.grant("consumer");
+        assertEquals(1, grifters.listAuthorities().size());
+
         // user 1 should be able to UPDATE the branch since they have manager rights
         gitana.authenticate(user1.getName(), "pw");
         platform.readRepository(repository.getId()).readBranch(branch.getId()).update();
