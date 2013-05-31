@@ -112,7 +112,7 @@ public class DriverUtil
             // sorting
             if (pagination.getSorting().size() > 0)
             {
-                String sort = JsonUtil.stringify((ObjectNode)pagination.getSorting().toJSON(), false);
+                String sort = JsonUtil.stringify((ObjectNode) pagination.getSorting().toJSON(), false);
                 //sort = sort.replace("\"", "");
                 params.put("sort", sort);
             }

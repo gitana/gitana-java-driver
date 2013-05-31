@@ -25,6 +25,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
@@ -53,7 +54,8 @@ public class PrincipalTest extends AbstractTestCase
         DomainUser user = domain.createUser(name, "password");
 
         // user map (verify)
-        Map<String, DomainUser> map = domain.listUsers();
+        Pagination pagination = new Pagination(0, 10000);
+        Map<String, DomainUser> map = domain.listUsers(pagination);
         assertNotNull(map.get(user.getId()));
 
         // read the user back to verify
@@ -100,7 +102,8 @@ public class PrincipalTest extends AbstractTestCase
         DomainGroup group = domain.createGroup(name);
 
         // user map (DomainGroup)
-        Map<String, DomainGroup> map = domain.listGroups();
+        Pagination pagination = new Pagination(0, 10000);
+        Map<String, DomainGroup> map = domain.listGroups(pagination);
         assertNotNull(map.get(group.getId()));
 
         // read the user back to verify

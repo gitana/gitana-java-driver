@@ -90,18 +90,31 @@ public class RepositoryTeamTest extends AbstractTestCase
         gitana.authenticate(user1.getName(), "pw");
         platform.readRepository(repository.getId()).readBranch(branch.getId()).update();
 
-        // user 2 should be able to READ the branch but not update it
+        // user 2 should be able to READ the branch
         gitana.authenticate(user2.getName(), "pw");
         Exception ex2 = null;
+        try
+        {
+            platform.readRepository(repository.getId()).readBranch(branch.getId());
+        }
+        catch (Exception ex)
+        {
+            ex2 = ex;
+        }
+        assertNull(ex2);
+
+        // user 2 should be able to READ the branch but not UPDATE it
+        gitana.authenticate(user2.getName(), "pw");
+        Exception ex3 = null;
         try
         {
             platform.readRepository(repository.getId()).readBranch(branch.getId()).update();
         }
         catch (Exception ex)
         {
-            ex2 = ex;
+            ex3 = ex;
         }
-        assertNotNull(ex2);
+        assertNotNull(ex3);
 
         // user 3 cannot even read branch
         // not a member of any teams
