@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.principal;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
@@ -103,7 +104,7 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
         {
             for (int i = 0; i < array.size(); i++)
             {
-                String authorityId = array.get(i).getTextValue();
+                String authorityId = array.get(i).textValue();
                 authorities.add(authorityId);
             }
         }
@@ -348,7 +349,7 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
         Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -378,7 +379,7 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
         Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;

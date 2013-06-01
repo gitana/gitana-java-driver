@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
@@ -73,10 +74,10 @@ public class TenantTeamTest extends AbstractTestCase
         
         // verify we can pick out the account this user has on tenant1
         ObjectNode foundTenantObject = tenantObjects.values().iterator().next();
-        assertEquals(tenant1.getId(), foundTenantObject.get(DomainUser.FIELD_ID).getTextValue());
-        ObjectNode user1inTenant1Object = user1.readIdentity().findUserObjectForTenant(foundTenantObject.get(DomainUser.FIELD_ID).getTextValue());
+        assertEquals(tenant1.getId(), foundTenantObject.get(DomainUser.FIELD_ID).textValue());
+        ObjectNode user1inTenant1Object = user1.readIdentity().findUserObjectForTenant(foundTenantObject.get(DomainUser.FIELD_ID).textValue());
         assertNotNull(user1inTenant1Object);
-        assertNotNull(userObjects.get(user1inTenant1Object.get(DomainUser.FIELD_ID).getTextValue()));
+        assertNotNull(userObjects.get(user1inTenant1Object.get(DomainUser.FIELD_ID).textValue()));
 
 
 
@@ -119,10 +120,10 @@ public class TenantTeamTest extends AbstractTestCase
         // verify we can pick out the account this user has on tenant1
         ObjectNode userObject1inTenant1check = user1.readIdentity().findUserObjectForTenant(tenant1.getId());
         assertNotNull(userObject1inTenant1check);
-        assertNotNull(userObjects.get(userObject1inTenant1check.get(DomainUser.FIELD_ID).getTextValue()));
+        assertNotNull(userObjects.get(userObject1inTenant1check.get(DomainUser.FIELD_ID).textValue()));
         ObjectNode userObject1inTenant2check = user1.readIdentity().findUserObjectForTenant(tenant2.getId());
         assertNotNull(userObject1inTenant2check);
-        assertNotNull(userObjects.get(userObject1inTenant2check.get(DomainUser.FIELD_ID).getTextValue()));
+        assertNotNull(userObjects.get(userObject1inTenant2check.get(DomainUser.FIELD_ID).textValue()));
         
     }
 

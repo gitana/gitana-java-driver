@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.identity;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.directory.DirectoryDocument;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.support.Selfable;

@@ -22,7 +22,8 @@
 package org.gitana.platform.client.attachment;
 
 import org.apache.http.HttpResponse;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
@@ -63,31 +64,31 @@ public class AttachmentImpl implements Attachment
     @Override
     public String getId()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_ID).getTextValue();
+        return objectNode.get(Attachment.FIELD_ATTACHMENT_ID).textValue();
     }
 
     @Override
     public String getObjectId()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_OBJECT_ID).getTextValue();
+        return objectNode.get(Attachment.FIELD_ATTACHMENT_OBJECT_ID).textValue();
     }
 
     @Override
     public long getLength()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_LENGTH).getLongValue();
+        return objectNode.get(Attachment.FIELD_ATTACHMENT_LENGTH).longValue();
     }
 
     @Override
     public String getContentType()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_CONTENT_TYPE).getTextValue();
+        return objectNode.get(Attachment.FIELD_ATTACHMENT_CONTENT_TYPE).textValue();
     }
     
     @Override
     public String getFilename()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_FILENAME).getTextValue();
+        return objectNode.get(Attachment.FIELD_ATTACHMENT_FILENAME).textValue();
     }
 
     @Override

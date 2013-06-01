@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.team;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.platform.Platform;
@@ -108,7 +109,7 @@ public class TeamImpl extends GitanaObjectImpl implements Team
         ArrayNode array = getArray(FIELD_ROLE_KEYS);
         for (int i = 0; i < array.size(); i++)
         {
-            String roleKey = (String) array.get(i).getTextValue();
+            String roleKey = (String) array.get(i).textValue();
 
             roleKeys.add(roleKey);
         }

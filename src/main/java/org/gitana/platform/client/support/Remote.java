@@ -23,7 +23,8 @@ package org.gitana.platform.client.support;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.http.HttpPayload;
 
 import java.io.InputStream;

@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.support;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class Response
 
     public String getId()
     {
-        return this.object.get("_doc").getTextValue();
+        return this.object.get("_doc").textValue();
     }
 
 
@@ -104,7 +105,7 @@ public class Response
 
         if (getObjectNode().has(FIELD_TOTAL_ROWS))
         {
-            totalRows = getObjectNode().get(FIELD_TOTAL_ROWS).getIntValue();
+            totalRows = getObjectNode().get(FIELD_TOTAL_ROWS).intValue();
         }
 
         return totalRows;
@@ -116,7 +117,7 @@ public class Response
 
         if (getObjectNode().has(FIELD_OFFSET))
         {
-            offset = getObjectNode().get(FIELD_OFFSET).getIntValue();
+            offset = getObjectNode().get(FIELD_OFFSET).intValue();
         }
 
         return offset;
@@ -165,7 +166,7 @@ public class Response
         {
             if (getObjectNode().has(FIELD_OK))
             {
-                ok = getObjectNode().get(FIELD_OK).getBooleanValue();
+                ok = getObjectNode().get(FIELD_OK).booleanValue();
             }
         }
 
@@ -189,7 +190,7 @@ public class Response
 
         if (getObjectNode().has(FIELD_MESSAGE))
         {
-            message = getObjectNode().get(FIELD_MESSAGE).getTextValue();
+            message = getObjectNode().get(FIELD_MESSAGE).textValue();
         }
 
         return message;
@@ -201,7 +202,7 @@ public class Response
 
         if (getObjectNode().has(FIELD_STACKTRACE))
         {
-            stacktrace = getObjectNode().get(FIELD_STACKTRACE).getTextValue();
+            stacktrace = getObjectNode().get(FIELD_STACKTRACE).textValue();
         }
 
         return stacktrace;        

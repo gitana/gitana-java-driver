@@ -21,7 +21,7 @@
 
 package org.gitana.platform.client.document;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.platform.support.GitanaObjectImpl;
 import org.gitana.util.DateUtil;
 import org.gitana.util.JsonUtil;
@@ -96,7 +96,7 @@ public class DocumentImpl extends GitanaObjectImpl implements Document
         boolean merge = true;
         if (source.has(Document.FIELD_ID))
         {
-            if (source.get(Document.FIELD_ID).getTextValue().equals(getId()))
+            if (source.get(Document.FIELD_ID).textValue().equals(getId()))
             {
                 merge = false;
             }
@@ -218,13 +218,13 @@ public class DocumentImpl extends GitanaObjectImpl implements Document
     @Override
     public String getCreatedBy()
     {
-        return getSystemObject().get(SYSTEM_CREATED_BY).getTextValue();
+        return getSystemObject().get(SYSTEM_CREATED_BY).textValue();
     }
 
     @Override
     public String getModifiedBy()
     {
-        return getSystemObject().get(SYSTEM_MODIFIED_BY).getTextValue();
+        return getSystemObject().get(SYSTEM_MODIFIED_BY).textValue();
     }
 
 }

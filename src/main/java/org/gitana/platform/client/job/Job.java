@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.job;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.cluster.ClusterDocument;
 import org.gitana.platform.services.job.JobState;
 

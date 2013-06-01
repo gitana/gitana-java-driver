@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.support;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.api.ClientImpl;
 import org.gitana.platform.client.application.*;
@@ -437,7 +438,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             boolean isAssociation = false;
             if (object.has("_is_association"))
             {
-                isAssociation = object.get("_is_association").getBooleanValue();
+                isAssociation = object.get("_is_association").booleanValue();
             }
 
             if (isAssociation)
@@ -665,7 +666,7 @@ public class ObjectFactoryImpl implements ObjectFactory
         Map<String, Map<String, AuthorityGrant>> principalAuthorityGrants = new LinkedHashMap<String, Map<String, AuthorityGrant>>();
 
         ObjectNode json = response.getObjectNode();
-        Iterator<String> principalIds = json.getFieldNames();
+        Iterator<String> principalIds = json.fieldNames();
         while (principalIds.hasNext())
         {
             String principalId = principalIds.next();
@@ -673,7 +674,7 @@ public class ObjectFactoryImpl implements ObjectFactory
             Map<String, AuthorityGrant> authorityGrants = new LinkedHashMap<String, AuthorityGrant>();
 
             ObjectNode object = JsonUtil.objectGetObject(json, principalId);
-            Iterator<String> grantIds = object.getFieldNames();
+            Iterator<String> grantIds = object.fieldNames();
             while (grantIds.hasNext())
             {
                 String grantId = grantIds.next();

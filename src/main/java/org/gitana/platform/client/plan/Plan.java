@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.plan;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.services.payment.BillingSchedule;

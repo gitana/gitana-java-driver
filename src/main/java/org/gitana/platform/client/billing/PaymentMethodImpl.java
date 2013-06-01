@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.billing;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;

@@ -23,7 +23,8 @@ package org.gitana.platform.client.archive;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
@@ -199,7 +200,7 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
         Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -229,7 +230,7 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
         Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;

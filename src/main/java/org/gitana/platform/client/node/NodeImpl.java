@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.node;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
@@ -138,7 +139,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -168,7 +169,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -510,7 +511,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         List<String> editions = new ArrayList<String>();
         for (int i = 0; i < array.size(); i++)
         {
-            editions.add(array.get(i).getTextValue());
+            editions.add(array.get(i).textValue());
         }
 
         return editions;
@@ -526,7 +527,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
         List<Locale> locales = new ArrayList<Locale>();
         for (int i = 0; i < array.size(); i++)
         {
-            String localeString = array.get(i).getTextValue();
+            String localeString = array.get(i).textValue();
             Locale locale = org.gitana.util.I18NUtil.parseLocale(localeString);
 
             locales.add(locale);

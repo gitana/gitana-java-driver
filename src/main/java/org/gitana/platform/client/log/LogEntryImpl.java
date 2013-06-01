@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.log;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.support.TypedIDConstants;

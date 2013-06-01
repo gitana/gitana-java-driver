@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.node;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.repository.AbstractRepositoryDocumentImpl;
@@ -131,7 +132,7 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
     @Override
     public String getChangesetId()
     {
-        return getSystemObject().get(SYSTEM_CHANGESET).getTextValue();
+        return getSystemObject().get(SYSTEM_CHANGESET).textValue();
     }
     
     @Override
@@ -200,7 +201,7 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
         ObjectNode featuresObject = this.getObject("_features");
         if (featuresObject != null)
         {
-            Iterator<String> fieldNames = featuresObject.getFieldNames();
+            Iterator<String> fieldNames = featuresObject.fieldNames();
             while (fieldNames.hasNext())
             {
                 featureIds.add(fieldNames.next());

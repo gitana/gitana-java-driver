@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.util;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.ACLEntry;
 import org.gitana.platform.client.branch.Branch;
@@ -64,14 +65,14 @@ public class DriverUtil
         {
             ObjectNode binding = (ObjectNode) rows.get(x);
 
-            String principalId = binding.get(DomainPrincipal.FIELD_ID).getTextValue();
-            String principalType = binding.get(DomainPrincipal.FIELD_TYPE).getTextValue();
+            String principalId = binding.get(DomainPrincipal.FIELD_ID).textValue();
+            String principalType = binding.get(DomainPrincipal.FIELD_TYPE).textValue();
 
             List<String> roles = new ArrayList<String>();
             ArrayNode array = (ArrayNode) binding.get("authorities");
             for (int i = 0; i < array.size(); i++)
             {
-                roles.add(array.get(i).getTextValue());
+                roles.add(array.get(i).textValue());
             }
 
             ACLEntry entry = new ACLEntry();
@@ -92,7 +93,7 @@ public class DriverUtil
         ArrayNode rows = (ArrayNode) objectNode.get("rows");
         for (int i = 0; i < rows.size(); i++)
         {
-            list.add(rows.get(i).getTextValue());
+            list.add(rows.get(i).textValue());
         }
 
         return list;

@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.meter;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.services.meter.MeterType;

@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.cluster;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.document.DocumentImpl;
 import org.gitana.platform.client.support.DriverContext;

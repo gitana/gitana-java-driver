@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.stack;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
@@ -175,7 +176,7 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -205,7 +206,7 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -532,7 +533,7 @@ public class StackImpl extends AbstractPlatformDocumentImpl implements Stack
         Response response = getRemote().post(getResourceUri() + "/datastores/exists?key=" + key);
         if (response.getObjectNode().has("exists"))
         {
-            exists = response.getObjectNode().get("exists").getBooleanValue();
+            exists = response.getObjectNode().get("exists").booleanValue();
         }
 
         return exists;

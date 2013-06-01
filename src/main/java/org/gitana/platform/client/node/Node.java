@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.node;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.support.AccessControllable;

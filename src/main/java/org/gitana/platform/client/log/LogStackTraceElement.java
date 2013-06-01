@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.log;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.support.GitanaObjectImpl;
 import org.gitana.util.JsonUtil;
 

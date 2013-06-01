@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.warehouse;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.webhost.AbstractWarehouseDocumentImpl;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
@@ -158,7 +159,7 @@ public class InteractionPageImpl extends AbstractWarehouseDocumentImpl implement
         ObjectNode elements = getObject(FIELD_ELEMENTS);
         if (elements != null)
         {
-            Iterator<String> fieldNames = elements.getFieldNames();
+            Iterator<String> fieldNames = elements.fieldNames();
             while (fieldNames.hasNext())
             {
                 iids.add(fieldNames.next());

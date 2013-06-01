@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.permission;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 
 /**
  * @author uzi

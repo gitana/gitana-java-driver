@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.transfer;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.JobImpl;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;

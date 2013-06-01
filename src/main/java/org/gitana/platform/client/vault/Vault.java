@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.vault;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.support.Pagination;

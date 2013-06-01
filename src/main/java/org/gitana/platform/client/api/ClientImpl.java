@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.api;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
@@ -153,7 +154,7 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
         {
             for (int i = 0; i < array.size(); i++)
             {
-                String authorizedGrantType = array.get(i).getTextValue();
+                String authorizedGrantType = array.get(i).textValue();
 
                 authorizedGrantTypes.add(authorizedGrantType);
             }
@@ -181,7 +182,7 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
         {
             for (int i = 0; i < array.size(); i++)
             {
-                String scope = array.get(i).getTextValue();
+                String scope = array.get(i).textValue();
 
                 scopeList.add(scope);
             }
@@ -377,7 +378,7 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
         Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -407,7 +408,7 @@ public class ClientImpl extends AbstractPlatformDocumentImpl implements Client
         Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;

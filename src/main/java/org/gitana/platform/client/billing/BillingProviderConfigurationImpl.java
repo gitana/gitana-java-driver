@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.billing;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
@@ -192,7 +193,7 @@ public class BillingProviderConfigurationImpl extends AbstractPlatformDocumentIm
         Response response = getRemote().post(getResourceUri() + "/authorities/" + authorityId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;
@@ -222,7 +223,7 @@ public class BillingProviderConfigurationImpl extends AbstractPlatformDocumentIm
         Response response = getRemote().post(getResourceUri() + "/permissions/" + permissionId + "/check?id=" + principalId);
         if (response.getObjectNode().has("check"))
         {
-            has = response.getObjectNode().get("check").getBooleanValue();
+            has = response.getObjectNode().get("check").booleanValue();
         }
 
         return has;

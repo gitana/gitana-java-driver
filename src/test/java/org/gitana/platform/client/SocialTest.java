@@ -57,9 +57,9 @@ public class SocialTest extends AbstractTestCase
         /*
         // verify product rating
         product.reload();
-        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").getIntValue();
+        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").intValue();
         assertEquals(1, ratingTotalCount);
-        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").getIntValue();
+        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").intValue();
         assertEquals(0, ratingTotalValue);
         ratingAverageValue = product.getObject("stats").get("ratingAverageValue").getDoubleValue();
         assertEquals(0, ratingAverageValue);
@@ -71,9 +71,9 @@ public class SocialTest extends AbstractTestCase
 
         // verify product rating
         product.reload();
-        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").getIntValue();
+        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").intValue();
         assertEquals(2, ratingTotalCount);
-        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").getIntValue();
+        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").intValue();
         assertEquals(0, ratingTotalValue);
         ratingAverageValue = product.getObject("stats").get("ratingAverageValue").getDoubleValue();
         assertEquals(0, ratingAverageValue);
@@ -85,9 +85,9 @@ public class SocialTest extends AbstractTestCase
 
         // verify product rating
         product.reload();
-        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").getIntValue();
+        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").intValue();
         assertEquals(3, ratingTotalCount);
-        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").getIntValue();
+        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").intValue();
         assertEquals(0, ratingTotalValue);
         ratingAverageValue = product.getObject("stats").get("ratingAverageValue").getDoubleValue();
         assertEquals(0, ratingAverageValue);
@@ -102,9 +102,9 @@ public class SocialTest extends AbstractTestCase
 
         // verify product rating
         product.reload();
-        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").getIntValue();
+        ratingTotalCount = product.getObject("stats").get("ratingTotalCount").intValue();
         assertEquals(3, ratingTotalCount);
-        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").getIntValue();
+        ratingTotalValue = product.getObject("stats").get("ratingTotalValue").intValue();
         assertEquals(18, ratingTotalValue);
         ratingAverageValue = product.getObject("stats").get("ratingAverageValue").getDoubleValue();
         assertEquals(6.0, ratingAverageValue);

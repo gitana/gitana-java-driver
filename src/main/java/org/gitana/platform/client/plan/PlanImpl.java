@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.plan;
 
-import org.codehaus.jackson.node.NumericNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.registrar.AbstractRegistrarDocumentImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.services.payment.BillingSchedule;
@@ -119,7 +120,7 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
         ObjectNode object = getObject(objectFieldId);
         if (object != null && object.has(fieldId))
         {
-            value = object.get(fieldId).getTextValue();
+            value = object.get(fieldId).textValue();
         }
 
         return value;
@@ -137,7 +138,7 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
             {
                 if (value instanceof NumericNode)
                 {
-                    big = ((NumericNode)value).getDecimalValue();
+                    big = ((NumericNode)value).decimalValue();
                 }
             }
         }
@@ -152,7 +153,7 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
         ObjectNode object = getObject(objectFieldId);
         if (object != null && object.has(fieldId))
         {
-            value = object.get(fieldId).getIntValue();
+            value = object.get(fieldId).intValue();
         }
 
         return value;
@@ -165,7 +166,7 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
         ObjectNode object = getObject(objectFieldId);
         if (object != null && object.has(fieldId))
         {
-            value = object.get(fieldId).getBooleanValue();
+            value = object.get(fieldId).booleanValue();
         }
 
         return value;
@@ -178,7 +179,7 @@ public class PlanImpl extends AbstractRegistrarDocumentImpl implements Plan
         ObjectNode object = getObject(objectFieldId);
         if (object != null && object.has(fieldId))
         {
-            value = object.get(fieldId).getLongValue();
+            value = object.get(fieldId).longValue();
         }
 
         return value;

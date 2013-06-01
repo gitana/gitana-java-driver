@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.application.Settings;
 import org.gitana.platform.client.platform.Platform;
@@ -69,8 +70,8 @@ public class SettingsTest extends AbstractTestCase
         assertEquals(6, settings.getSettingAsInt("max_items"));
         assertEquals(4, settings.getSettingAsArray("dashlets").size());
 
-        assertEquals("val1",settings.getSettingAsObject("composite").get("key1").getTextValue());
-        assertEquals("val2",settings.getSettingAsObject("composite").get("key2").getTextValue());
+        assertEquals("val1",settings.getSettingAsObject("composite").get("key1").textValue());
+        assertEquals("val2",settings.getSettingAsObject("composite").get("key2").textValue());
 
         // verify that this app settings can be picked off via a query
         assertEquals(1, application.querySettings(QueryBuilder.start("scope").is("application").get()).size());

@@ -21,7 +21,7 @@
 
 package org.gitana.platform.client.application;
 
-import org.codehaus.jackson.node.*;
+import com.fasterxml.jackson.databind.node.*;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
@@ -96,7 +96,7 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
 		Object value = this.getSetting(settingKey);
 		if (value != null && value instanceof BooleanNode)
 		{
-			b = ((BooleanNode)value).getBooleanValue();
+			b = ((BooleanNode)value).booleanValue();
 		}
 
 		return b;
@@ -109,10 +109,10 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
 		Object value = this.getSetting(settingKey);
 		if (value != null && value instanceof TextNode)
 		{
-			s = ((TextNode)value).getTextValue();
+			s = ((TextNode)value).textValue();
 		}
 
-		return this.getSettings().get(settingKey).getTextValue();
+		return this.getSettings().get(settingKey).textValue();
 	}
 
 	public ArrayNode getSettingAsArray(String settingKey)
@@ -135,11 +135,11 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
 		Object value = this.getSetting(settingKey);
 		if (value != null && value instanceof IntNode)
 		{
-			integer = ((IntNode)value).getIntValue();
+			integer = ((IntNode)value).intValue();
 		}
         else if (value != null && value instanceof DoubleNode)
         {
-            integer = ((DoubleNode) value).getIntValue();
+            integer = ((DoubleNode) value).intValue();
         }
         else
         {
@@ -158,11 +158,11 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
         {
             if (value instanceof LongNode)
             {
-                l = ((LongNode)value).getLongValue();
+                l = ((LongNode)value).longValue();
             }
             else if (value instanceof IntNode)
             {
-                l = ((IntNode)value).getLongValue();
+                l = ((IntNode)value).longValue();
             }
         }
 
@@ -178,7 +178,7 @@ public class SettingsImpl extends AbstractApplicationDocumentImpl implements Set
         {
             if (value instanceof DoubleNode)
             {
-                d = ((DoubleNode) value).getDoubleValue();
+                d = ((DoubleNode) value).doubleValue();
             }
         }
 

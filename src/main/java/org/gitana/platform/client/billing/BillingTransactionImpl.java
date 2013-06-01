@@ -23,7 +23,8 @@ package org.gitana.platform.client.billing;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;

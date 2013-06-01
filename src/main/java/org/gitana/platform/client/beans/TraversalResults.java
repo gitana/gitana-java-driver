@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.beans;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
 import org.gitana.platform.client.branch.Branch;
@@ -51,7 +52,7 @@ public class TraversalResults
     {
         // NODES
         ObjectNode nodes = (ObjectNode) response.getObjectNode().get("nodes");
-        Iterator<String> it1 = nodes.getFieldNames();
+        Iterator<String> it1 = nodes.fieldNames();
         while (it1.hasNext())
         {
             String fieldName = it1.next();
@@ -64,7 +65,7 @@ public class TraversalResults
 
         // ASSOCIATIONS
         ObjectNode associations = (ObjectNode) response.getObjectNode().get("associations");
-        Iterator<String> it2 = associations.getFieldNames();
+        Iterator<String> it2 = associations.fieldNames();
         while (it2.hasNext())
         {
             String fieldName = it2.next();

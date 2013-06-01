@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.node.type;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.node.Association;

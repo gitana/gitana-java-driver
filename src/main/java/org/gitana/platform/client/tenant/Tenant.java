@@ -21,7 +21,8 @@
 
 package org.gitana.platform.client.tenant;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.client.billing.BillingTransaction;
 import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.meter.Meter;

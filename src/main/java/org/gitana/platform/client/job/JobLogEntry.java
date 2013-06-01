@@ -21,8 +21,9 @@
 
 package org.gitana.platform.client.job;
 
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.gitana.platform.support.GitanaObjectImpl;
 import org.gitana.util.DateUtil;
 import org.gitana.util.JsonUtil;
@@ -106,7 +107,7 @@ public class JobLogEntry extends GitanaObjectImpl
             ArrayNode array = getArray(FIELD_STACKTRACE);
             for (int i = 0; i < array.size(); i++)
             {
-                String element = (String) array.get(i).getTextValue();
+                String element = (String) array.get(i).textValue();
 
                 list.add(element);
             }
