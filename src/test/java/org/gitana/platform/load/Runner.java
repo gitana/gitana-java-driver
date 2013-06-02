@@ -30,4 +30,5 @@ import java.util.concurrent.Callable;
  */
 public interface Runner<V> extends Callable<V>
 {
+    public void init() throws Exception;
 }

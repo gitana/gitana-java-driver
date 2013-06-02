@@ -59,13 +59,17 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
     protected ExecutorService createExecutorService()
     {
         int corePoolSize = getNumberOfRunners();
-        int maximumPoolSize = getNumberOfRunners();
-        int keepAliveTime = 1;
-        TimeUnit timeUnit = TimeUnit.MINUTES;
-        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<Runnable>(maximumPoolSize, true);
-        RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
+        //int maximumPoolSize = getNumberOfRunners();
+        //int keepAliveTime = 1;
+        //TimeUnit timeUnit = TimeUnit.MINUTES;
+        //BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<Runnable>(maximumPoolSize, true);
+        //RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
 
-        return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, timeUnit, workQueue, rejectedExecutionHandler);
+        //int nrOfProcessors = Runtime.getRuntime().availableProcessors();
+        return Executors.newFixedThreadPool(corePoolSize);
+
+
+        //return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, timeUnit, workQueue, rejectedExecutionHandler);
     }
 
     protected List<RunnerResult<V>> execute() throws Exception
@@ -78,6 +82,7 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
         {
             // create the runner
             Runner<V> runner = createRunner("runner-" + i);
+            runner.init();
 
             cs.submit(runner);
         }

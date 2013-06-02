@@ -75,17 +75,9 @@ public class NodeCreationRunner extends AbstractRunner<Void>
     @Override
     protected Void doExecute() throws Exception
     {
-        long t1 = System.currentTimeMillis();
-
-        // create a node
         Node node = (Node) branch.createNode();
 
-        long value = System.currentTimeMillis() - t1;
-
-        mark("create", value);
-
-        Histogram histogram = histogram("create");
-        System.out.println("Thread: " + Thread.currentThread().getId() + ", runner: " + getId() + ", completed in: " + value + ", mean: " + histogram.getSnapshot().getMean());
+        System.out.println("Thread: " + Thread.currentThread().getId() + ", runner: " + getId() + ", completed");
 
         return null;
     }

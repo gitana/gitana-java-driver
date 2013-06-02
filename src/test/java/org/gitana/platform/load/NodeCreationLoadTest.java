@@ -51,13 +51,13 @@ public class NodeCreationLoadTest extends AbstractLoadTest<Void>
     @Override
     protected int getNumberOfRunners()
     {
-        return 50;
+        return 100;
     }
 
     @Override
     protected int getIterationCount()
     {
-        return 10000;
+        return 1000;
     }
 
     @Test
@@ -77,12 +77,14 @@ public class NodeCreationLoadTest extends AbstractLoadTest<Void>
         Branch branch = repository.readBranch("master");
         this.branchId = branch.getId();
 
+        long t1 = System.currentTimeMillis();
         execute();
+        long totalTime = System.currentTimeMillis() - t1;
+
+        float timePerRunner = ((float) ((float) totalTime) / ((float) getIterationCount()));
 
         // read back the histogram
-        Histogram histogram = histogram("create");
-        System.out.println("Average create time, count: " + histogram.getCount() + ", mean: " + histogram.getSnapshot().getMean());
-
+        System.out.println("Total time: " + totalTime + ", time per runner: " + timePerRunner);
     }
 
 }

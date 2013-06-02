@@ -41,6 +41,16 @@ public abstract class AbstractRunner<V> implements Runner<V>
         return this.id;
     }
 
+    public void init() throws Exception
+    {
+        doInit();
+    }
+
+    protected void doInit() throws Exception
+    {
+
+    }
+
     @Override
     public V call() throws Exception
     {

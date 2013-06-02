@@ -21,11 +21,20 @@
 
 package org.gitana.platform.client;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.apache.http.params.HttpParams;
 import org.gitana.http.OAuth2HttpMethodExecutor;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
@@ -129,8 +138,14 @@ public class Gitana
      */
     protected RemoteImpl createAnonymousRemote()
     {
+        // allow 100 threads to any given route
+        // which is high, but we're assuming we only go back to the Gitana Server
+        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
+        cm.setDefaultMaxPerRoute(100);
+        cm.setMaxTotal(100);
+
         // build a new http client
-        DefaultHttpClient client = new DefaultHttpClient();
+        DefaultHttpClient client = new DefaultHttpClient(cm);
         HttpConnectionParams.setSoTimeout(client.getParams(), 0);
         HttpConnectionParams.setConnectionTimeout(client.getParams(), 0);
         client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
