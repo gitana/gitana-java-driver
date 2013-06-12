@@ -168,7 +168,7 @@ public class RegistrationTest extends AbstractTestCase
 
         // read the newly created user
         DomainUser user = (DomainUser) domain.readPrincipal(registration1.getCompletedPrincipalId());
-        ObjectNode newUserObject = user.readIdentity().findUserObjectForTenant(registration1.getCompletedTenantId());
+        ObjectNode newUserObject = user.readIdentity().findPolicyUserObjectForTenant(registration1.getCompletedTenantId());
         String newPrincipalId = JsonUtil.objectGetString(newUserObject, DomainUser.FIELD_ID);
 
         // now we will authenticate against the new tenant using our new user

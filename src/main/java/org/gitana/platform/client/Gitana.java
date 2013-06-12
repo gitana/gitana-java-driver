@@ -21,20 +21,12 @@
 
 package org.gitana.platform.client;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import org.apache.http.params.HttpParams;
 import org.gitana.http.OAuth2HttpMethodExecutor;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
@@ -244,7 +236,7 @@ public class Gitana
      */
     public Platform authenticateOnTenant(Identity identity, String password, String tenantId)
     {
-        ObjectNode userObject = identity.findUserObjectForTenant(tenantId);
+        ObjectNode userObject = identity.findPolicyUserObjectForTenant(tenantId);
         if (userObject == null)
         {
             throw new RuntimeException("Unable to find user on tenant: " + tenantId + " for identity: " + identity.getId());

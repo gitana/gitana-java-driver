@@ -78,6 +78,25 @@ public class TenantObjectTest extends AbstractTestCase
         gitana = new Gitana(clientKey1, clientSecret1);
         platform = gitana.authenticateOnTenant(user1, "pw", tenant1);
 
+        // there are 11 things created by default
+        //
+        // count the original allocations (should be 11)
+        //
+        //   1 platform
+        //
+        //   1 default domain
+        //   1 console application
+        //   1 default directory
+        //   1 default web host
+        //   1 default warehouse
+        //   1 default vault
+        //   1 default repository
+        //   1 oneteam application
+        //
+        //   1 default stack
+        //   1 default client
+        //
+
         // now we create 12 things
         //
         //   5 repositories
@@ -105,10 +124,10 @@ public class TenantObjectTest extends AbstractTestCase
         platform.createRegistrar();
 
         // validate via general queries
-        assertEquals(5, platform.listRepositories().size());
-        assertEquals(4+1, platform.listDomains().size()); // 1 custom, 1 default
-        assertEquals(3+1, platform.listVaults().size()); // 3 custom, 1 default
-        assertEquals(2+1, platform.listClients().size()); // 2 custom, 1 default
+        assertEquals(5+1, platform.listRepositories().size()); // 1 default
+        assertEquals(4+1, platform.listDomains().size()); // 1 default
+        assertEquals(3+1, platform.listVaults().size()); // 1 default
+        assertEquals(2+1, platform.listClients().size()); // 1 default
         assertEquals(1, platform.listRegistrars().size());
 
 
@@ -148,10 +167,10 @@ public class TenantObjectTest extends AbstractTestCase
         platform.createRegistrar();
 
         // validate via general queries
-        assertEquals(1, platform.listRepositories().size());
-        assertEquals(2+1, platform.listDomains().size()); // 2 custom, 1 default
-        assertEquals(3+1, platform.listVaults().size()); // 3 custom, 1 default
-        assertEquals(4+1, platform.listClients().size()); // 4 custom, 1 default
+        assertEquals(1+1, platform.listRepositories().size()); // 1 default
+        assertEquals(2+1, platform.listDomains().size()); // 1 default
+        assertEquals(3+1, platform.listVaults().size()); // 1 default
+        assertEquals(4+1, platform.listClients().size()); // 1 default
         assertEquals(5, platform.listRegistrars().size());
     }
 

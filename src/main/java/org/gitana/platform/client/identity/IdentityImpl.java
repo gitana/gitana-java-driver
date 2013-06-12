@@ -123,17 +123,27 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     }
 
     @Override
-    public ResultMap<ObjectNode> findUserObjects() 
+    public ResultMap<ObjectNode> findPolicyUserObjects()
+    {
+        return findPolicyUserObjects(null);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> findPolicyUserObjects(String tenantId)
     {
         Map<String, String> params = DriverUtil.params();
+        if (tenantId != null)
+        {
+            params.put("tenantId", tenantId);
+        }
 
-        Response response = getRemote().get(getResourceUri() + "/users", params);
+        Response response = getRemote().get(getResourceUri() + "/policy/users", params);
         
         return toResultMap(response);
     }
 
     @Override
-    public ObjectNode findUserObjectForTenant(String tenantId) 
+    public ObjectNode findPolicyUserObjectForTenant(String tenantId)
     {
         ObjectNode userObject = null;
 
@@ -142,7 +152,7 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
             Map<String, String> params = DriverUtil.params();
             params.put("tenantId", tenantId);
             
-            Response response = getRemote().get(getResourceUri() + "/user", params);
+            Response response = getRemote().get(getResourceUri() + "/policy/user", params);
 
             userObject = response.getObjectNode();
         }
@@ -157,24 +167,24 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     }
 
     @Override
-    public ResultMap<ObjectNode> findTenantObjects()
+    public ResultMap<ObjectNode> findPolicyTenantObjects()
     {
-        return findTenantObjects(null, null);
+        return findPolicyTenantObjects(null, null);
     }
 
-    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar)
+    public ResultMap<ObjectNode> findPolicyTenantObjects(Registrar registrar)
     {
-        return findTenantObjects(registrar, null);
-    }
-
-    @Override
-    public ResultMap<ObjectNode> findTenantObjects(String authorityId)
-    {
-        return findTenantObjects(null, authorityId);
+        return findPolicyTenantObjects(registrar, null);
     }
 
     @Override
-    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar, String authorityId) 
+    public ResultMap<ObjectNode> findPolicyTenantObjects(String authorityId)
+    {
+        return findPolicyTenantObjects(null, authorityId);
+    }
+
+    @Override
+    public ResultMap<ObjectNode> findPolicyTenantObjects(Registrar registrar, String authorityId)
     {
         Map<String, String> params = DriverUtil.params();
         if (registrar != null)
@@ -186,7 +196,7 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
             params.put("authorityId", authorityId);
         }
 
-        Response response = getRemote().get(getResourceUri() + "/tenants", params);
+        Response response = getRemote().get(getResourceUri() + "/policy/tenants", params);
 
         return toResultMap(response);
     }

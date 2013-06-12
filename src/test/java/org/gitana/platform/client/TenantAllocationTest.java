@@ -68,13 +68,32 @@ public class TenantAllocationTest extends AbstractTestCase
         gitana = new Gitana(clientKey1, clientSecret1);
         platform = gitana.authenticateOnTenant(user1, "pw", tenant1);
 
+        // there are 11 things created by default
+        //
+        // count the original allocations (should be 11)
+        //
+        //   1 platform
+        //
+        //   1 default domain
+        //   1 console application
+        //   1 default directory
+        //   1 default web host
+        //   1 default warehouse
+        //   1 default vault
+        //   1 default repository
+        //   1 oneteam application
+        //
+        //   1 default stack
+        //   1 default client
+        //
+
         // now we create 21 things
         //
         //   6 applications
         //   5 repositories
         //   4 domains
         //   3 vaults
-        //   2 consumers
+        //   2 clients
         //   1 registrar
 
         // as we create these, they should be automatically allocated to our tenant
@@ -102,11 +121,11 @@ public class TenantAllocationTest extends AbstractTestCase
         platform.createRegistrar();
 
         // validate via general queries
-        assertEquals(6+1, platform.listApplications().size()); // 1 default
-        assertEquals(5, platform.listRepositories().size());
-        assertEquals(4+1, platform.listDomains().size()); // 1 custom, 1 default
-        assertEquals(3+1, platform.listVaults().size()); // 3 custom, 1 default
-        assertEquals(2+1, platform.listClients().size()); // 2 custom, 1 default
+        assertEquals(6+2, platform.listApplications().size()); // 2 default
+        assertEquals(5+1, platform.listRepositories().size()); // 1 default
+        assertEquals(4+1, platform.listDomains().size()); // 1 default
+        assertEquals(3+1, platform.listVaults().size()); // 1 default
+        assertEquals(2+1, platform.listClients().size()); // 1 default
         assertEquals(1, platform.listRegistrars().size());
 
 
@@ -122,13 +141,13 @@ public class TenantAllocationTest extends AbstractTestCase
         
 
         // now check allocations for the tenant object
-        assertEquals(29, tenant1.listAllocatedObjects().size()); // 21 + 8 defaults (platform, domain, client, application, webhost, warehouse, directory, vault)
-        assertEquals(6+1, tenant1.listAllocatedApplicationObjects().size()); // 7
-        assertEquals(5, tenant1.listAllocatedRepositoryObjects().size()); // 5
-        assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 5
-        assertEquals(3+1, tenant1.listAllocatedVaultObjects().size()); // 3
-        assertEquals(2+1, tenant1.listAllocatedClientObjects().size()); // 3
-        assertEquals(1, tenant1.listAllocatedRegistrarObjects().size()); // 1
+        assertEquals(21+11, tenant1.listAllocatedObjects().size()); // 21 + 11 defaults
+        assertEquals(6+2, tenant1.listAllocatedApplicationObjects().size()); // 2
+        assertEquals(5+1, tenant1.listAllocatedRepositoryObjects().size()); // 1
+        assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 1
+        assertEquals(3+1, tenant1.listAllocatedVaultObjects().size()); // 1
+        assertEquals(2+1, tenant1.listAllocatedClientObjects().size()); // 1
+        assertEquals(1, tenant1.listAllocatedRegistrarObjects().size()); // 0
     }
 
 }

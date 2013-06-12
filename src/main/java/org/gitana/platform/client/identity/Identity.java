@@ -42,50 +42,61 @@ public interface Identity extends DirectoryDocument, Selfable
     public void changePassword(String password, String verifyPassword);
 
     /**
-     * @return all of the user objects that this identity has on any platform
+     * Retrieves a map of all of the user objects that this identity's policy has on any platform.
+     *
+     * @return result map
      */
-    public ResultMap<ObjectNode> findUserObjects();
+    public ResultMap<ObjectNode> findPolicyUserObjects();
 
     /**
-     * Finds the first user object that this identity has on the given tenant's platform.
+     * Retrieves a map of all of the user objects that this identity's policy has on any platform.
+     * If a tenant ID is supplied, then only those user objects on the provided tenant will be handed back.
+     *
+     * @param tenantId tenant ID
+     * @return result map
+     */
+    public ResultMap<ObjectNode> findPolicyUserObjects(String tenantId);
+
+    /**
+     * Finds the first user object that this identity's policy has on the given tenant's platform.
      *
      * @param tenantId
      *
      * @return user object
      */
-    public ObjectNode findUserObjectForTenant(String tenantId);
+    public ObjectNode findPolicyUserObjectForTenant(String tenantId);
 
     /**
-     * @return all of the tenant objects that this identity's users participate in
+     * @return all of the tenant objects that this identity's policy's users participate in
      */
-    public ResultMap<ObjectNode> findTenantObjects();
+    public ResultMap<ObjectNode> findPolicyTenantObjects();
 
     /**
-     * Finds all of the tenant objects that this identity's users participate in.
+     * Finds all of the tenant objects that this identity's policy's users participate in.
      * Filters and keeps only those within the specified registry.
      *
      * @param registrar
      * @return
      */
-    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar);
+    public ResultMap<ObjectNode> findPolicyTenantObjects(Registrar registrar);
 
     /**
-     * Finds all of the tenant objects that this identity's users participate in.
+     * Finds all of the tenant objects that this identity's policy's  users participate in.
      * Filters and keeps only those tenants whose user has the specified authority against the tenant platform.
      *
      * @param authorityId
      * @return
      */
-    public ResultMap<ObjectNode> findTenantObjects(String authorityId);
+    public ResultMap<ObjectNode> findPolicyTenantObjects(String authorityId);
 
     /**
-     * Finds all of the tenant objects that this identity's users participate in.
+     * Finds all of the tenant objects that this identity's policy's users participate in.
      * Filters and keeps only those within the specified registry.
      * Keeps only those tenants whose user has the specified authority against the tenant platform.
      *
      * @param registrar
      * @return
      */
-    public ResultMap<ObjectNode> findTenantObjects(Registrar registrar, String authorityId);
+    public ResultMap<ObjectNode> findPolicyTenantObjects(Registrar registrar, String authorityId);
 
 }
