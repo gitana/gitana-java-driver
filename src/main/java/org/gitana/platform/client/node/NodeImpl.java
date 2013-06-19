@@ -588,4 +588,20 @@ public class NodeImpl extends BaseNodeImpl implements Node
         return getFactory().nodes(getBranch(), response);
     }
 
+    @Override
+    public ObjectNode fileFolderTree(String leafPath)
+    {
+        String uri = getResourceUri() + "/tree";
+
+        Map<String, String> params = DriverUtil.params();
+        if (leafPath != null)
+        {
+            params.put("leaf", leafPath);
+        }
+
+        Response response = getRemote().get(uri, params);
+
+        return response.getObjectNode();
+    }
+
 }

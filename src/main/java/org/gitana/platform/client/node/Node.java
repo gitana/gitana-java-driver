@@ -273,4 +273,13 @@ public interface Node extends BaseNode, AccessControllable, Attachable, Transfer
      */
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, Pagination pagination);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TREE
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ObjectNode fileFolderTree(String leafPath);
+
+
 }

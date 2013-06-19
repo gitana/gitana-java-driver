@@ -308,6 +308,4 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return
      */
     public NodeList readList(String listKey);
-
-
 }
