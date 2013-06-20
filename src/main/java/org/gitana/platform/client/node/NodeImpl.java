@@ -589,11 +589,27 @@ public class NodeImpl extends BaseNodeImpl implements Node
     }
 
     @Override
-    public ObjectNode fileFolderTree(String leafPath)
+    public ObjectNode fileFolderTree()
+    {
+        return fileFolderTree(null);
+    }
+
+    @Override
+    public ObjectNode fileFolderTree(String basePath)
+    {
+        return fileFolderTree(basePath, null);
+    }
+
+    @Override
+    public ObjectNode fileFolderTree(String basePath, String leafPath)
     {
         String uri = getResourceUri() + "/tree";
 
         Map<String, String> params = DriverUtil.params();
+        if (basePath != null)
+        {
+            params.put("base", basePath);
+        }
         if (leafPath != null)
         {
             params.put("leaf", leafPath);

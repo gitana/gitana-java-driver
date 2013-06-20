@@ -279,7 +279,8 @@ public interface Node extends BaseNode, AccessControllable, Attachable, Transfer
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public ObjectNode fileFolderTree(String leafPath);
-
+    public ObjectNode fileFolderTree();
+    public ObjectNode fileFolderTree(String basePath);
+    public ObjectNode fileFolderTree(String basePath, String leafPath);
 
 }

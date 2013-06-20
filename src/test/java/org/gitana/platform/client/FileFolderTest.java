@@ -110,8 +110,8 @@ public class FileFolderTest extends AbstractTestCase
         Node d4 = createFile(master, c2, "d4");
         Node d5 = createFile(master, c2, "d5");
 
-        // now get the whole tree from root
-        ObjectNode tree1 = root.fileFolderTree(null);
+        // read the WHOLE tree
+        ObjectNode tree1 = root.fileFolderTree();
         System.out.println(JsonUtil.stringify(tree1, true));
 
         // a few tests to ensure this is good
@@ -125,9 +125,12 @@ public class FileFolderTest extends AbstractTestCase
         assertNotNull(children.get(0).get("typeQName").textValue());
         assertNotNull(children.get(0).get("qname").textValue());
 
-
-        // get a sub-portion of the tree (from b1)
-        ObjectNode tree2 = root.fileFolderTree("/a1/b1");
+        // read the tree from root with the "/a1/b1/c1" path already expanded
+        ObjectNode tree2 = root.fileFolderTree("/", "/a1/b1/c1");
         System.out.println(JsonUtil.stringify(tree2, true));
+
+        // read the tree segment starting at "/a1/b1"
+        ObjectNode tree3 = root.fileFolderTree("/a1/b1");
+        System.out.println(JsonUtil.stringify(tree3, true));
     }
 }
