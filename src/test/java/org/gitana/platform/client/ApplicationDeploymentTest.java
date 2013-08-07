@@ -23,6 +23,7 @@ package org.gitana.platform.client;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.gitana.JSONBuilder;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.webhost.DeployedApplication;
@@ -30,6 +31,8 @@ import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.util.HttpUtil;
 import org.gitana.util.HttpUtilEx;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 /**
  * @author uzi
@@ -47,13 +50,15 @@ public class ApplicationDeploymentTest extends AbstractTestCase
 
         // create a web host
         WebHost webhost = platform.createWebHost();
-        webhost.setDeployerType("cloudcms.net");
+        webhost.setDeployerTypes(Arrays.asList("dev-cloudcms.net", "cloudcms.net"));
         webhost.update();
 
         // create an application
         Application application = platform.createApplication();
-        application.addDeployment("test", webhost.getId(), "gitana-build-test-" + System.currentTimeMillis(), "cloudcms.net", null);
-        application.setSource("github", true, "git@github.com:gitana/cloudcms-application-test.git");
+        //application.addDeployment("test", webhost.getId(), "gitana-build-test-" + System.currentTimeMillis(), "dev-cloudcms.net", JSONBuilder.start("test").is(true).get());
+        //application.setSource("github", true, "https://github.com/gitana/app-html5-test.git");
+        application.addDeployment("test", webhost.getId(), "gitana-build-test-" + System.currentTimeMillis(), "cloudcms.net", JSONBuilder.start("test").is(true).get());
+        application.setSource("github", true, "https://github.com/solocal/hplace.git");
         application.update();
 
         // deploy the application

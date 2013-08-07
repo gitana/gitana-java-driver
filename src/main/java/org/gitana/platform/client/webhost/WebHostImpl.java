@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.webhost;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
@@ -32,6 +33,9 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,18 +46,6 @@ public class WebHostImpl extends AbstractPlatformDataStoreImpl implements WebHos
     public WebHostImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
-    }
-
-    @Override
-    public String getDeployerType()
-    {
-        return getString(FIELD_DEPLOYER_TYPE);
-    }
-
-    @Override
-    public void setDeployerType(String deployerType)
-    {
-        set(FIELD_DEPLOYER_TYPE, deployerType);
     }
 
     @Override
@@ -73,6 +65,72 @@ public class WebHostImpl extends AbstractPlatformDataStoreImpl implements WebHos
     {
         WebHost webhost = getPlatform().readWebHost(getId());
         this.reload(webhost.getObject());
+    }
+
+    @Override
+    public String getKey()
+    {
+        return getString(FIELD_KEY);
+    }
+
+    @Override
+    public void setKey(String key)
+    {
+        set(FIELD_KEY, key);
+    }
+
+    @Override
+    public List<String> getAutoManagedUrlPatterns()
+    {
+        List<String> urlPatterns = new ArrayList<String>();
+
+        ArrayNode array = getArray(FIELD_AUTOMANAGED_URL_PATTERNS);
+        if (array != null)
+        {
+            urlPatterns.addAll(Arrays.asList(JsonUtil.toStringArray(array)));
+        }
+
+        return urlPatterns;
+    }
+
+    @Override
+    public void setAutoManagedUrlPatterns(List<String> urlPatterns)
+    {
+        set(FIELD_AUTOMANAGED_URL_PATTERNS, urlPatterns);
+    }
+
+    @Override
+    public List<String> getDeployerTypes()
+    {
+        List<String> deployerTypes = new ArrayList<String>();
+
+        if (has(FIELD_DEPLOYER_TYPES))
+        {
+            List<String> _deployerTypes = (List<String>) JsonUtil.toValue(getObject(FIELD_DEPLOYER_TYPES));
+            if (_deployerTypes != null)
+            {
+                for (String _deployerType: _deployerTypes)
+                {
+                    deployerTypes.add(_deployerType);
+                }
+            }
+        }
+
+        return deployerTypes;
+    }
+
+    @Override
+    public void setDeployerTypes(List<String> deployerTypes)
+    {
+        JsonUtil.objectPut(getObject(), FIELD_DEPLOYER_TYPES, deployerTypes);
+    }
+
+    @Override
+    public boolean hasDeployerType(String deployerType)
+    {
+        List<String> deployerTypes = getDeployerTypes();
+
+        return deployerTypes.contains(deployerType);
     }
 
 

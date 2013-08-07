@@ -28,15 +28,28 @@ import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
+import java.util.List;
+
 /**
  * @author uzi
  */
 public interface WebHost extends PlatformDataStore
 {
-    public final static String FIELD_DEPLOYER_TYPE = "deployerType";
+    // fields
+    public final static String FIELD_AUTOMANAGED_URL_PATTERNS = "urlPatterns";
+    public final static String FIELD_DEPLOYER_TYPES = "deployerTypes";
 
-    public String getDeployerType();
-    public void setDeployerType(String deployerType);
+    public final static String FIELD_KEY = "key";
+
+    public String getKey();
+    public void setKey(String key);
+
+    public List<String> getAutoManagedUrlPatterns();
+    public void setAutoManagedUrlPatterns(List<String> urlPatterns);
+
+    public List<String> getDeployerTypes();
+    public void setDeployerTypes(List<String> deployerTypes);
+    public boolean hasDeployerType(String deployerType);
 
     /**
      * @return platform
