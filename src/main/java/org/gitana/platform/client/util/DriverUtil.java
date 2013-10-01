@@ -129,6 +129,10 @@ public class DriverUtil
             {
                 params.put("limit", String.valueOf(pagination.getLimit()));
             }
+            else if (pagination.getLimit() == -1)
+            {
+                params.put("limit", String.valueOf(-1));
+            }
         }
 
         return params;

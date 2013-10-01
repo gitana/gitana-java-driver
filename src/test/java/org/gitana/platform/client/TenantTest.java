@@ -26,6 +26,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.support.Pagination;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class TenantTest extends AbstractTestCase
         Registrar registrar = platform.readRegistrar("default");
 
         // count the current number of tenants
-        int currentSize = registrar.listTenants().size();
+        int currentSize = registrar.listTenants(Pagination.limit(-1)).size();
 
         String tenantId = null;
 
@@ -77,7 +78,7 @@ public class TenantTest extends AbstractTestCase
             assertNotNull(ex);
 
             // count tenants
-            assertEquals(currentSize + 1, registrar.listTenants().size());
+            assertEquals(currentSize + 1, registrar.listTenants(Pagination.limit(-1)).size());
 
             // update the tenant
             tenant.set("abc", "def");
@@ -92,7 +93,7 @@ public class TenantTest extends AbstractTestCase
             registrar.deleteTenant(tenantId);
 
             // query and check sizes
-            int newSize = registrar.queryTenants(JsonUtil.createObject()).size();
+            int newSize = registrar.queryTenants(JsonUtil.createObject(), Pagination.limit(-1)).size();
             assertEquals(currentSize, newSize);
         }
         finally

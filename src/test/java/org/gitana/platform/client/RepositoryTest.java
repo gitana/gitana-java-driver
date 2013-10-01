@@ -23,6 +23,7 @@ package org.gitana.platform.client;
 
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.support.Pagination;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class RepositoryTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // list repositories
-        int baseCount = platform.listRepositories().size();
+        int baseCount = platform.listRepositories(Pagination.limit(-1)).size();
 
         // create three repositories
         Repository repository1 = platform.createRepository();
@@ -48,7 +49,7 @@ public class RepositoryTest extends AbstractTestCase
         Repository repository3 = platform.createRepository();
 
         // list repositories
-        assertEquals(baseCount + 3, platform.listRepositories().size());
+        assertEquals(baseCount + 3, platform.listRepositories(Pagination.limit(-1)).size());
 
         // read one back for assurance
         Repository check2 = platform.readRepository(repository2.getId());
@@ -65,7 +66,7 @@ public class RepositoryTest extends AbstractTestCase
         assertNull(check3);
 
         // list repositories
-        assertEquals(baseCount + 2, platform.listRepositories().size());
+        assertEquals(baseCount + 2, platform.listRepositories(Pagination.limit(-1)).size());
     }
 
     @Test

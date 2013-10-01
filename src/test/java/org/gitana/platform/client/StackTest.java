@@ -27,6 +27,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
 import org.junit.Test;
@@ -51,18 +52,18 @@ public class StackTest extends AbstractTestCase
         stack1.update();
 
         // validate
-        ResultMap<Stack> stacks = platform.listStacks();
+        ResultMap<Stack> stacks = platform.listStacks(Pagination.limit(-1));
         assertTrue(stacks.size() > 0);
         assertNotNull(stacks.get(stack1.getId()));
 
         // query
         ObjectNode query = QueryBuilder.start("title").is(title).get();
-        stacks = platform.queryStacks(query);
+        stacks = platform.queryStacks(query, Pagination.limit(-1));
         assertEquals(1, stacks.size());
 
         // delete
         stack1.delete();
-        stacks = platform.queryStacks(query);
+        stacks = platform.queryStacks(query, Pagination.limit(-1));
         assertEquals(0, stacks.size());
     }
 
