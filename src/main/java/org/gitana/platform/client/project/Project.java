@@ -34,6 +34,9 @@ public interface Project extends PlatformDocument, AccessControllable, Selfable,
 {
     public final static String FIELD_STACK_ID = "stackId";
     public final static String FIELD_PROJECT_TYPE = "projectType";
+    public final static String FIELD_FAMILY = "family";
+
+    public final static String FIELD_SHARED_STACK = "sharedStack";
 
     public String getStackId();
     public void setStackId(String stackId);
@@ -41,5 +44,11 @@ public interface Project extends PlatformDocument, AccessControllable, Selfable,
     public String getProjectType();
     public void setProjectType(String projectType);
 
+    public String getFamily();
+    public void setFamily(String projectFamily);
+
     public Stack getStack();
+
+    public boolean getSharedStack();
+    public void setSharedStack(boolean sharedStack);
 }

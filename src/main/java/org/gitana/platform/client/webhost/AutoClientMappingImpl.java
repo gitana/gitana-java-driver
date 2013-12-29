@@ -124,4 +124,16 @@ public class AutoClientMappingImpl extends AbstractWebHostDocumentImpl implement
     {
         set(FIELD_CLIENT_KEY, clientKey);
     }
+
+    @Override
+    public String getAuthGrantKey()
+    {
+        return getString(FIELD_AUTH_GRANT_KEY);
+    }
+
+    @Override
+    public void setAuthGrantKey(String authGrantKey)
+    {
+        set(FIELD_AUTH_GRANT_KEY, authGrantKey);
+    }
 }

@@ -24,6 +24,7 @@ package org.gitana.platform.client.platform;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.billing.BillingProviderConfiguration;
@@ -34,6 +35,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
@@ -854,6 +856,109 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     public void deleteClient(String clientId)
     {
         getRemote().delete("/clients/" + clientId);
+    }
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AUTHENTICATION GRANTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<AuthenticationGrant> listAuthenticationGrants()
+    {
+        return listAuthenticationGrants(null);
+    }
+
+    @Override
+    public ResultMap<AuthenticationGrant> listAuthenticationGrants(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(getResourceUri() + "/auth/grants", params);
+        return getFactory().authenticationGrants(this, response);
+    }
+
+    @Override
+    public ResultMap<AuthenticationGrant> queryAuthenticationGrants(ObjectNode query)
+    {
+        return queryAuthenticationGrants(query, null);
+    }
+
+    @Override
+    public ResultMap<AuthenticationGrant> queryAuthenticationGrants(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/auth/grants/query", params, query);
+        return getFactory().authenticationGrants(this, response);
+    }
+
+    @Override
+    public AuthenticationGrant readAuthenticationGrant(String authenticationGrantId)
+    {
+        AuthenticationGrant authenticationGrant = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/auth/grants/" + authenticationGrantId);
+            authenticationGrant = getFactory().authenticationGrant(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return authenticationGrant;
+    }
+
+    @Override
+    public AuthenticationGrant createAuthenticationGrant(Client client, DomainUser user)
+    {
+        ObjectNode obj = JsonUtil.createObject();
+        obj.put(AuthenticationGrant.FIELD_CLIENT_ID, client.getKey());
+        obj.put(AuthenticationGrant.FIELD_PRINCIPAL_DOMAIN_ID, user.getDomainId());
+        obj.put(AuthenticationGrant.FIELD_PRINCIPAL_ID, user.getId());
+
+        return createAuthenticationGrant(obj);
+    }
+
+    @Override
+    public AuthenticationGrant createAuthenticationGrant(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/auth/grants", object);
+
+        String authGrantKey = response.getId();
+        return readAuthenticationGrant(authGrantKey);
+    }
+
+    @Override
+    public void updateAuthenticationGrant(AuthenticationGrant authenticationGrant)
+    {
+        getRemote().put("/auth/grants/" + authenticationGrant.getId(), authenticationGrant.getObject());
+    }
+
+    @Override
+    public void deleteAuthenticationGrant(AuthenticationGrant authenticationGrant)
+    {
+        deleteAuthenticationGrant(authenticationGrant.getId());
+    }
+
+    @Override
+    public void deleteAuthenticationGrant(String authenticationGrantId)
+    {
+        getRemote().delete("/auth/grants/" + authenticationGrantId);
     }
 
 

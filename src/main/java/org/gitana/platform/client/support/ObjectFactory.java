@@ -23,6 +23,7 @@ package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
@@ -152,6 +153,11 @@ public interface ObjectFactory
     public Client client(Platform platform, ObjectNode object);
     public Client client(Platform platform, Response response);
     public ResultMap<Client> clients(Platform platform, Response response);
+
+    // authentication grants
+    public AuthenticationGrant authenticationGrant(Platform platform, ObjectNode object);
+    public AuthenticationGrant authenticationGrant(Platform platform, Response response);
+    public ResultMap<AuthenticationGrant> authenticationGrants(Platform platform, Response response);
 
     // projects
     public Project project(Platform platform, Response response);

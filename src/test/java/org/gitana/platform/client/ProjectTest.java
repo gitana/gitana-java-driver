@@ -60,10 +60,12 @@ public class ProjectTest extends AbstractTestCase
         // create project #2 (using stack)
         Project project2 = platform.createProject(QueryBuilder.start("prop").is(val).get());
         project2.setStackId(stack.getId());
+        project2.setSharedStack(true);
         project2.update();
         // create project #3 (using stack)
         Project project3 = platform.createProject(QueryBuilder.start("prop").is(val).get());
         project3.setStackId(stack.getId());
+        project3.setSharedStack(true);
         project3.update();
 
 

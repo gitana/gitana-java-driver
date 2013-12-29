@@ -37,6 +37,9 @@ public interface AutoClientMapping extends WebHostDocument, Selfable
     // the target client key
     public final static String FIELD_CLIENT_KEY = "clientKey";
 
+    // the target auth grant key
+    public final static String FIELD_AUTH_GRANT_KEY = "authGrantKey";
+
     public String getUri();
     public void setUri(String uri);
 
@@ -45,4 +48,7 @@ public interface AutoClientMapping extends WebHostDocument, Selfable
 
     public String getClientKey();
     public void setClientKey(String clientKey);
+
+    public String getAuthGrantKey();
+    public void setAuthGrantKey(String authGrantKey);
 }

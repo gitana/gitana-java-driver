@@ -88,6 +88,31 @@ public class ProjectImpl extends AbstractPlatformDocumentImpl implements Project
     }
 
     @Override
+    public String getFamily()
+    {
+        return getString(FIELD_FAMILY);
+    }
+
+    @Override
+    public void setFamily(String family)
+    {
+        set(FIELD_FAMILY, family);
+    }
+
+    @Override
+    public boolean getSharedStack()
+    {
+        return getBoolean(FIELD_SHARED_STACK);
+    }
+
+    @Override
+    public void setSharedStack(boolean sharedStack)
+    {
+        set(FIELD_SHARED_STACK, sharedStack);
+    }
+
+
+    @Override
     public Stack getStack()
     {
         Stack stack = null;

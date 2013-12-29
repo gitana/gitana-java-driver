@@ -23,6 +23,7 @@ package org.gitana.platform.client.platform;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.billing.BillingProviderConfiguration;
@@ -33,6 +34,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
+import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
@@ -354,6 +356,26 @@ public interface Platform extends DataStore
     public void deleteClient(Client client);
     public void deleteClient(String clientId);
 
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AUTHENTICATION GRANTS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<AuthenticationGrant> listAuthenticationGrants();
+    public ResultMap<AuthenticationGrant> listAuthenticationGrants(Pagination pagination);
+    public ResultMap<AuthenticationGrant> queryAuthenticationGrants(ObjectNode query);
+    public ResultMap<AuthenticationGrant> queryAuthenticationGrants(ObjectNode query, Pagination pagination);
+    public AuthenticationGrant readAuthenticationGrant(String clientId);
+    public AuthenticationGrant createAuthenticationGrant(Client client, DomainUser user);
+    public AuthenticationGrant createAuthenticationGrant(ObjectNode object);
+    public void updateAuthenticationGrant(AuthenticationGrant authenticationGrant);
+    public void deleteAuthenticationGrant(AuthenticationGrant authenticationGrant);
+    public void deleteAuthenticationGrant(String authenticationGrantId);
 
 
 

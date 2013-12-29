@@ -177,12 +177,13 @@ public class WebHostImpl extends AbstractPlatformDataStoreImpl implements WebHos
     }
 
     @Override
-    public AutoClientMapping createAutoClientMapping(String uri, String applicationId, String clientKey)
+    public AutoClientMapping createAutoClientMapping(String uri, String applicationId, String clientKey, String authGrantKey)
     {
         ObjectNode object = JsonUtil.createObject();
         object.put(AutoClientMapping.FIELD_URI, uri);
         object.put(AutoClientMapping.FIELD_APPLICATION_ID, applicationId);
         object.put(AutoClientMapping.FIELD_CLIENT_KEY, clientKey);
+        object.put(AutoClientMapping.FIELD_AUTH_GRANT_KEY, authGrantKey);
 
         Response response = getRemote().post(getResourceUri() + "/autoclientmappings", object);
 

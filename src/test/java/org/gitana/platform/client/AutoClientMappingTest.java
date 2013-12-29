@@ -21,9 +21,12 @@
 
 package org.gitana.platform.client;
 
+import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
+import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.webhost.AutoClientMapping;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.QueryBuilder;
@@ -46,17 +49,27 @@ public class AutoClientMappingTest extends AbstractTestCase
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
 
+        // default domain
+        Domain domain = platform.readDomain("default");
+
+        // create a user
+        String userName1 = "testuser1_" + System.currentTimeMillis();
+        DomainUser user1 = domain.createUser(userName1, "test");
+
         // create client + app #1
         Application application1 = platform.createApplication();
         Client client1 = platform.createClient();
+        AuthenticationGrant authGrant1 = platform.createAuthenticationGrant(client1, user1);
 
         // create client + app #2
         Application application2 = platform.createApplication();
         Client client2 = platform.createClient();
+        AuthenticationGrant authGrant2 = platform.createAuthenticationGrant(client1, user1);
 
         // create client + app #3
         Application application3 = platform.createApplication();
         Client client3 = platform.createClient();
+        AuthenticationGrant authGrant3 = platform.createAuthenticationGrant(client1, user1);
 
         // create a web host
         WebHost webhost = platform.createWebHost();
@@ -72,9 +85,9 @@ public class AutoClientMappingTest extends AbstractTestCase
         String uri2 = "http://private.company.com/y1";
         String uri3 = "/lalala";
 
-        webhost.createAutoClientMapping(uri1, application1.getId(), client1.getId());
-        webhost.createAutoClientMapping(uri2, application2.getId(), client2.getId());
-        webhost.createAutoClientMapping(uri3, application3.getId(), client3.getId());
+        webhost.createAutoClientMapping(uri1, application1.getId(), client1.getId(), authGrant1.getKey());
+        webhost.createAutoClientMapping(uri2, application2.getId(), client2.getId(), authGrant2.getKey());
+        webhost.createAutoClientMapping(uri3, application3.getId(), client3.getId(), authGrant3.getKey());
         
         // now test out querying by URI
         ResultMap<AutoClientMapping> mappings0 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_URI).is(uri1).get());

@@ -23,6 +23,8 @@ package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.gitana.platform.client.api.AuthenticationGrant;
+import org.gitana.platform.client.api.AuthenticationGrantImpl;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.api.ClientImpl;
 import org.gitana.platform.client.application.*;
@@ -815,6 +817,46 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             Client client = new ClientImpl(platform, object, true);
             map.put(client.getId(), client);
+        }
+
+        return map;
+    }
+
+    @Override
+    public AuthenticationGrant authenticationGrant(Platform platform, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new AuthenticationGrantImpl(platform, object, false);
+    }
+
+    @Override
+    public AuthenticationGrant authenticationGrant(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new AuthenticationGrantImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<AuthenticationGrant> authenticationGrants(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<AuthenticationGrant> map = new ResultMapImpl<AuthenticationGrant>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            AuthenticationGrant authenticationGrant = new AuthenticationGrantImpl(platform, object, true);
+            map.put(authenticationGrant.getId(), authenticationGrant);
         }
 
         return map;
