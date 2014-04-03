@@ -122,6 +122,9 @@ public interface ObjectFactory
     public DomainPrincipal domainPrincipal(Platform platform, ObjectNode object);
     public DomainPrincipal domainPrincipal(Platform platform, Response response);
     public ResultMap<DomainPrincipal> domainPrincipals(Platform platform, Response response);
+    public DomainPrincipal domainPrincipal(Domain domain, ObjectNode object);
+    public DomainPrincipal domainPrincipal(Domain domain, Response response);
+    public ResultMap<DomainPrincipal> domainPrincipals(Domain domain, Response response);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

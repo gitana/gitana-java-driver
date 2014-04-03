@@ -91,7 +91,7 @@ public class DomainImpl extends AbstractPlatformDataStoreImpl implements Domain
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/principals", params);
-        return getFactory().domainPrincipals(getPlatform(), response);
+        return getFactory().domainPrincipals(this, response);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class DomainImpl extends AbstractPlatformDataStoreImpl implements Domain
         try
         {
             Response response = getRemote().get(getResourceUri() + "/principals/" + principalId);
-            principal = getFactory().domainPrincipal(getPlatform(), response);
+            principal = getFactory().domainPrincipal(this, response);
         }
         catch (Exception ex)
         {
@@ -167,7 +167,7 @@ public class DomainImpl extends AbstractPlatformDataStoreImpl implements Domain
         Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post(getResourceUri() + "/principals/query", params, query);
-        return getFactory().domainPrincipals(getPlatform(), response);
+        return getFactory().domainPrincipals(this, response);
     }
 
     @Override

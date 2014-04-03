@@ -326,15 +326,54 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
+    public DomainPrincipal domainPrincipal(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return domainPrincipal(platform, response.getObjectNode());
+    }
+
+    @Override
     public DomainPrincipal domainPrincipal(Platform platform, ObjectNode object)
     {
-        DomainPrincipal principal = null;
-
         String domainId = JsonUtil.objectGetString(object, "domainId");
         Domain domain = platform.readDomain(domainId);
         if (domain == null)
         {
             throw new RuntimeException("Cannot find domain: " + domainId);
+        }
+
+        return domainPrincipal(domain, object);
+    }
+
+    @Override
+    public DomainPrincipal domainPrincipal(Domain domain, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return domainPrincipal(domain, response.getObjectNode());
+    }
+
+    @Override
+    public DomainPrincipal domainPrincipal(Domain domain, ObjectNode object)
+    {
+        DomainPrincipal principal = null;
+
+        String domainId = JsonUtil.objectGetString(object, "domainId");
+        if (domainId == null)
+        {
+            throw new RuntimeException("Object missing field: domainId");
+        }
+
+        if (!domainId.equals(domain.getId()))
+        {
+            throw new RuntimeException("Object describes a principal on domain: " + domainId + " whereas provided domain id is: " + domain.getId());
         }
 
         PrincipalType principalType = PrincipalType.valueOf(JsonUtil.objectGetString(object, DomainPrincipal.FIELD_TYPE));
@@ -351,17 +390,6 @@ public class ObjectFactoryImpl implements ObjectFactory
     }
 
     @Override
-    public DomainPrincipal domainPrincipal(Platform platform, Response response)
-    {
-        if (!response.isDataDocument())
-        {
-            throw new RuntimeException("Response must be a data document");
-        }
-        
-        return domainPrincipal(platform, response.getObjectNode());
-    }
-
-    @Override
     public ResultMap<DomainPrincipal> domainPrincipals(Platform platform, Response response)
     {
         if (!response.isListDocument())
@@ -372,17 +400,25 @@ public class ObjectFactoryImpl implements ObjectFactory
         ResultMap<DomainPrincipal> map = new ResultMapImpl<DomainPrincipal>(response.getListOffset(), response.getListTotalRows());
         for (ObjectNode object : response.getObjectNodes())
         {
-            /*
-            String domainId = JsonUtil.objectGetString(object, "domainId");
-
-            Domain domain = platform.readDomain(domainId);
-            if (domain == null)
-            {
-                throw new RuntimeException("Cannot find domain: " + domainId);
-            }
-            */
-
             DomainPrincipal principal = domainPrincipal(platform, object);
+            map.put(principal.getId(), principal);
+        }
+
+        return map;
+    }
+
+    @Override
+    public ResultMap<DomainPrincipal> domainPrincipals(Domain domain, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<DomainPrincipal> map = new ResultMapImpl<DomainPrincipal>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            DomainPrincipal principal = domainPrincipal(domain, object);
             map.put(principal.getId(), principal);
         }
 
