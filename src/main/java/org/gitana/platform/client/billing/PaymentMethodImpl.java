@@ -66,7 +66,7 @@ public class PaymentMethodImpl extends GitanaObjectImpl implements PaymentMethod
 
     protected String getResourceUri()
     {
-        return "/billing/paymentmethods/" + getId();
+        return "/registrars/" + tenant.getRegistrarId() + "/tenants/" + tenant.getId() + "/billing/paymentmethods/" + getId();
     }
 
     @Override
