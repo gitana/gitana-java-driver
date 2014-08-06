@@ -63,13 +63,23 @@
             <url>http://maven.cloudcms.com/public</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>cloudcms-public</id>
+            <url>scpexe://maven.cloudcms.com/web/maven/public</url>
+        </repository>
+        <snapshotRepository>
+            <id>cloudcms-public</id>
+            <url>scpexe://maven.cloudcms.com/web/maven/public</url>
+        </snapshotRepository>
+    </distributionManagement>
     <build>
 
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>1.0-beta-7</version>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>2.6</version>
             </extension>
         </extensions>
 
