@@ -30,6 +30,7 @@ import org.gitana.platform.client.webhost.DeployedApplication;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.util.HttpUtil;
 import org.gitana.util.HttpUtilEx;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 /**
  * @author uzi
  */
+@Ignore
 public class ApplicationDeploymentTest extends AbstractTestCase
 {
     @Test

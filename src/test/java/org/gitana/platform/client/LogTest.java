@@ -37,11 +37,13 @@ import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.QName;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author uzi
  */
+@Ignore
 public class LogTest extends AbstractTestCase
 {
     @Test

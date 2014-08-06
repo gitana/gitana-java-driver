@@ -143,6 +143,9 @@ public class AssociationTest extends AbstractTestCase
         pagination.setSkip(0);
         pagination.setLimit(10);
 
+        // sort by creation time
+        pagination.getSorting().addSort("_system.created_on.ms", 1);
+
         // first ten
         ResultMap<Association> associations1 = source.associations(QName.create("a:child"), pagination);
         assertEquals(10, associations1.size());

@@ -150,14 +150,16 @@ public class PrincipalTest extends AbstractTestCase
         DomainGroup group2 = domain.createGroup("testgroup-" + System.currentTimeMillis() + "_2");
         DomainGroup group3 = domain.createGroup("testgroup-" + System.currentTimeMillis() + "_3");
 
+        int BASE = 1; // OneTeam Users
+
         // add users 1 and 2 into group 1
         // verify
         group1.addPrincipal(user1);
         group1.addPrincipal(user2);
         assertEquals(2, group1.listPrincipals(false).size());
         assertEquals(2, group1.listPrincipals(true).size());
-        assertEquals(1, user1.listParentGroups().size());
-        assertEquals(1, user2.listParentGroups().size());
+        assertEquals(BASE + 1, user1.listParentGroups().size());
+        assertEquals(BASE + 1, user2.listParentGroups().size());
 
         // add users 3, 4, 5 into group 2
         // verify
@@ -166,16 +168,16 @@ public class PrincipalTest extends AbstractTestCase
         group2.addPrincipal(user5);
         assertEquals(3, group2.listPrincipals(false).size());
         assertEquals(3, group2.listPrincipals(true).size());
-        assertEquals(1, user3.listParentGroups().size());
-        assertEquals(1, user4.listParentGroups().size());
-        assertEquals(1, user5.listParentGroups().size());
+        assertEquals(BASE + 1, user3.listParentGroups().size());
+        assertEquals(BASE + 1, user4.listParentGroups().size());
+        assertEquals(BASE + 1, user5.listParentGroups().size());
 
         // add user 6 into group 3
         // verify
         group3.addPrincipal(user6);
         assertEquals(1, group3.listPrincipals(false).size());
         assertEquals(1, group3.listPrincipals(true).size());
-        assertEquals(1, user6.listParentGroups().size());
+        assertEquals(BASE + 1, user6.listParentGroups().size());
 
         // now add group2 as a child of group 3
         group3.addPrincipal(group2);
@@ -196,9 +198,9 @@ public class PrincipalTest extends AbstractTestCase
 
         // verify inherited memberships
         assertEquals(5, group3.listPrincipals(true).size());
-        assertEquals(2, user3.listParentGroups(true).size());
-        assertEquals(2, user4.listParentGroups(true).size());
-        assertEquals(2, user5.listParentGroups(true).size());
+        assertEquals(BASE + 2, user3.listParentGroups(true).size());
+        assertEquals(BASE + 2, user4.listParentGroups(true).size());
+        assertEquals(BASE + 2, user5.listParentGroups(true).size());
     }
 
     @Test
