@@ -99,4 +99,11 @@ public interface Identity extends DirectoryDocument, Selfable
      */
     public ResultMap<ObjectNode> findPolicyTenantObjects(Registrar registrar, String authorityId);
 
+    /**
+     * Retrieves a map of all of the user objects that are recipients of this identity.
+     *
+     * @return result map
+     */
+    public ResultMap<ObjectNode> findRecipientUserObjects();
+
 }

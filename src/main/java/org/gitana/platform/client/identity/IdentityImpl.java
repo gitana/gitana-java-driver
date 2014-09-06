@@ -200,4 +200,15 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
 
         return toResultMap(response);
     }
+
+    @Override
+    public ResultMap<ObjectNode> findRecipientUserObjects()
+    {
+        Map<String, String> params = DriverUtil.params();
+
+        Response response = getRemote().get(getResourceUri() + "/users", params);
+
+        return toResultMap(response);
+    }
+
 }
