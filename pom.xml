@@ -192,6 +192,7 @@
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>3.0.0-RC1</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

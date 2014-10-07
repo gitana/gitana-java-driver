@@ -49,7 +49,9 @@ public class AssociationTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // create a repository
-        Repository repository = platform.createRepository();
+        ObjectNode config = JsonUtil.createObject();
+        config.put("enableSocialAssembly", true);
+        Repository repository = platform.createRepository(config);
 
         // get the master branch
         Branch master = repository.readBranch("master");
