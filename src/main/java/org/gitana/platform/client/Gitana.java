@@ -21,12 +21,12 @@
 
 package org.gitana.platform.client;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.params.HttpConnectionParams;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.gitana.http.OAuth2HttpMethodExecutor;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
@@ -38,6 +38,7 @@ import org.gitana.platform.client.support.Environment;
 import org.gitana.platform.client.support.RemoteImpl;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.util.HttpUtil;
 import org.gitana.util.JsonUtil;
 
 import java.io.File;
@@ -130,17 +131,8 @@ public class Gitana
      */
     protected RemoteImpl createAnonymousRemote()
     {
-        // allow 100 threads to any given route
-        // which is high, but we're assuming we only go back to the Gitana Server
-        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
-        cm.setDefaultMaxPerRoute(100);
-        cm.setMaxTotal(100);
-
-        // build a new http client
-        DefaultHttpClient client = new DefaultHttpClient(cm);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 0);
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 0);
-        client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
+        // build a client and disable redirects
+        HttpClient client = HttpUtil.buildClient(false);
 
         // wrap into a remote object
         return new RemoteImpl(client, baseUrl);

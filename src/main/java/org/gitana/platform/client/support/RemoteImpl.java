@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.support;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -29,10 +30,8 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.util.EntityUtils;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.http.HttpInvoker;
 import org.gitana.http.HttpMethodExecutor;
 import org.gitana.http.HttpPayload;
@@ -82,7 +81,7 @@ public class RemoteImpl implements Remote
 
     public void addCookie(Cookie cookie)
     {
-        ((DefaultHttpClient)this.invoker.getClient()).getCookieStore().addCookie(cookie);
+        ((AbstractHttpClient)this.invoker.getClient()).getCookieStore().addCookie(cookie);
     }
 
     public void setFull(boolean full)
