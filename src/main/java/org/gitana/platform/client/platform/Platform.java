@@ -31,6 +31,7 @@ import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
@@ -407,6 +408,7 @@ public interface Platform extends DataStore
     public Project readProject(String projectId);
     public Project createProject();
     public Project createProject(ObjectNode object);
+    public Job startCreateProject(ObjectNode object);
     public void updateProject(Project project);
     public void deleteProject(Project project);
     public void deleteProject(String projectId);

@@ -70,4 +70,6 @@ public interface Cluster extends DataStore
     public Job readJob(String jobId);
 
     public void killJob(String jobId);
+
+    public Job waitForJobCompletion(String jobId);
 }

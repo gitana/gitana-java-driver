@@ -32,6 +32,7 @@ import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
@@ -1403,6 +1404,22 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
         String projectId = response.getId();
         return readProject(projectId);
+    }
+
+    @Override
+    public Job startCreateProject(ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post("/projects/start", object);
+
+        String jobId = response.getId();
+
+        return getCluster().readJob(jobId);
     }
 
     @Override

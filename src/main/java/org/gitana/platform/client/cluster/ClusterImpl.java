@@ -27,6 +27,7 @@ import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
@@ -271,5 +272,31 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     public void killJob(String jobId)
     {
         getRemote().post("/jobs/" + jobId);
+    }
+
+    @Override
+    public Job waitForJobCompletion(String jobId)
+    {
+        Job completedJob = null;
+
+        do
+        {
+            Job job = readJob(jobId);
+            if (JobState.FINISHED.equals(job.getState()))
+            {
+                completedJob = job;
+            }
+            else if (JobState.ERROR.equals(job.getState()))
+            {
+                completedJob = job;
+            }
+            else
+            {
+                // otherwise, try again
+            }
+        }
+        while (completedJob == null);
+
+        return completedJob;
     }
 }
