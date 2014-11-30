@@ -293,6 +293,14 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
             else
             {
                 // otherwise, try again
+                try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException ie)
+                {
+                    throw new RuntimeException(ie);
+                }
             }
         }
         while (completedJob == null);
