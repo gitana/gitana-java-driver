@@ -11,8 +11,8 @@ The driver can be utilized with Android mobile devices as well as Java applicati
 * Cloud CMS: http://www.cloudcms.com
 * Git Hub: http://github.com/gitana/gitana-java-driver
 * Java Driver Download: http://maven.cloudcms.com/public/org/gitana/gitana-java-driver/
-* Java Driver Documentation: http://docs.cloudcms.com
-* Getting Started Guide: https://www.cloudcms.com/tour/resources/drivers/java
+* Java Driver Documentation: https://www.cloudcms.com/documentation.html
+* Developers Guide: https://www.cloudcms.com/developers.html
 
 ### Questions and Bug Reports
 
@@ -21,4 +21,3 @@ http://github.com/gitana/gitana-java-driver
 ### Maintainers
 
 * Michael Uzquiano     uzi@cloudcms.com
-* Yong Qu     drq@cloudcms.com
