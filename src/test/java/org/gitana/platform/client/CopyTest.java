@@ -32,6 +32,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.services.association.Direction;
 import org.gitana.platform.support.QName;
 import org.gitana.util.JsonUtil;
@@ -182,7 +183,8 @@ public class CopyTest extends AbstractTestCase
         association3.update();
 
         // make a copy of the container
-        String nodeId2 = container1.copy(rootNode1);
+        CopyJob job = container1.copy(rootNode1);
+        String nodeId2 = job.getSingleImportTargetId();
         Node container2 = (Node) branch.readNode(nodeId2);
         assertNotNull(container2);
         assertEquals(1, container2.associations(QName.create("a:child"), Direction.INCOMING).size());

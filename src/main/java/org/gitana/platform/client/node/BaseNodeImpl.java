@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.repository.AbstractRepositoryDocumentImpl;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.DriverContext;
@@ -128,7 +129,13 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
     {
     	return this.typeQName;
     }
-    
+
+    @Override
+    public Changeset getChangeset()
+    {
+        return getRepository().readChangeset(getChangesetId());
+    }
+
     @Override
     public String getChangesetId()
     {

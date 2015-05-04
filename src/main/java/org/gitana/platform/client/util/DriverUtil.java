@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.ACLEntry;
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.BaseNode;
@@ -180,7 +181,11 @@ public class DriverUtil
 
         if (typedID instanceof Node)
         {
-            array.addAll(toCopyDependencyChain(((Node) typedID).getBranch()));
+            array.addAll(toCopyDependencyChain(((Node) typedID).getChangeset()));
+        }
+        else if (typedID instanceof Changeset)
+        {
+            array.addAll(toCopyDependencyChain(((Changeset) typedID).getBranch()));
         }
         else if (typedID instanceof Branch)
         {

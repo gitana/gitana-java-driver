@@ -24,6 +24,7 @@ package org.gitana.platform.client.node;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.branch.Branch;
+import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Selfable;
@@ -59,6 +60,7 @@ public interface BaseNode extends Document, Selfable, TypedID
     public QName getTypeQName();
 
     // changeset information
+    public Changeset getChangeset();
     public String getChangesetId();
     //public int getChangesetRev();
             

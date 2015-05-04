@@ -184,21 +184,15 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public String copy(TypedID targetContainer)
+    public CopyJob copy(TypedID targetContainer)
     {
-        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
-
-        CopyJob copyJob = new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
-
-        return copyJob.getSingleImportTargetId();
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
     public CopyJob copyAsync(TypedID targetContainer)
     {
-        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
-
-        return new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
     }
 
 }

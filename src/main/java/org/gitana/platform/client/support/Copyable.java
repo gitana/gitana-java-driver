@@ -34,7 +34,7 @@ public interface Copyable
      * @param targetContainer
      * @return id of the resulting object
      */
-    public String copy(TypedID targetContainer);
+    public CopyJob copy(TypedID targetContainer);
 
     /**
      * Copies this object into the target container.

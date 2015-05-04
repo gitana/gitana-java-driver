@@ -63,7 +63,13 @@ public class ChangesetImpl extends AbstractRepositoryDocumentImpl implements Cha
     public int getRev()
     {
     	return getInt(FIELD_REV);
-    }    
+    }
+
+    @Override
+    public Branch getBranch()
+    {
+        return getRepository().readBranch(getBranchId());
+    }
 
     @Override
     public String[] getTags()

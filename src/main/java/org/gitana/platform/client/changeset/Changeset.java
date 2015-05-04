@@ -21,6 +21,7 @@
 
 package org.gitana.platform.client.changeset;
 
+import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.repository.RepositoryDocument;
 import org.gitana.platform.support.ResultMap;
@@ -43,6 +44,7 @@ public interface Changeset extends RepositoryDocument
     public String getId();
     public int getRev();
 
+    public Branch getBranch();
     public String getBranchId();
 
     public String getSummary();    

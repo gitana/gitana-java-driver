@@ -41,7 +41,7 @@ import org.junit.Test;
 public class MeterTest extends AbstractTestCase
 {
     @Test
-    public void testMounts()
+    public void testMeter()
     {
         // authenticate
         Gitana gitana = new Gitana();
