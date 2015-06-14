@@ -24,6 +24,7 @@ package org.gitana.platform.client.platform;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.apache.http.HttpResponse;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
@@ -51,6 +52,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1454,6 +1456,48 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
         Response response = getRemote().post("/projects/permissions/check", object);
         return new PermissionCheckResults(response.getObjectNode());
+    }
+
+    /// test
+
+    public HttpResponse test(long size, long delay, int early)
+    {
+        String url = "/test/1";
+
+        if (size > -1)
+        {
+            if (url.indexOf("?") == -1) {
+                url += "?";
+            } else {
+                url += "&";
+            }
+
+            url += "size=" + size;
+        }
+
+        if (delay > -1)
+        {
+            if (url.indexOf("?") == -1) {
+                url += "?";
+            } else {
+                url += "&";
+            }
+
+            url += "delay=" + delay;
+        }
+
+        if (early > -1)
+        {
+            if (url.indexOf("?") == -1) {
+                url += "?";
+            } else {
+                url += "&";
+            }
+
+            url += "early=" + early;
+        }
+
+        return getRemote().getEx(url);
     }
 
 }

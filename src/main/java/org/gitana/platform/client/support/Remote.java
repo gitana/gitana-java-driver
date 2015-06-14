@@ -68,6 +68,8 @@ public interface Remote
 
     public HttpResponse postData(String uri, InputStream in, long length, String mimetype);
 
+    public HttpResponse getEx(String uri);
+
 
     /**
      * Performs a multipart post.

@@ -22,7 +22,7 @@
 package org.gitana.platform.client.platform;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.apache.http.HttpResponse;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
@@ -413,5 +413,15 @@ public interface Platform extends DataStore
     public void deleteProject(Project project);
     public void deleteProject(String projectId);
     public PermissionCheckResults checkProjectPermissions(List<PermissionCheck> list);
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TEST
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public HttpResponse test(long size, long delay, int early);
 
 }
