@@ -380,15 +380,15 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     }
 
     @Override
-    public ObjectNode getDependencies()
-    {
-        return getObject(FIELD_ARTIFACT_DEPENDENCIES);
-    }
-
-    @Override
     public ObjectNode getIncludes()
     {
         return getObject(FIELD_ARTIFACT_INCLUDES);
+    }
+
+    @Override
+    public ObjectNode getParts()
+    {
+        return getObject(FIELD_ARTIFACT_PARTS);
     }
 
     @Override

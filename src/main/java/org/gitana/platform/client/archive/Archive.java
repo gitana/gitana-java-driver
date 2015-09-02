@@ -50,8 +50,8 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
         throws IOException;
 
     public ObjectNode getContents();
-    public ObjectNode getDependencies();
     public ObjectNode getIncludes();
+    public ObjectNode getParts();
     public String getType();
 
     public void setTemplate(boolean template);
