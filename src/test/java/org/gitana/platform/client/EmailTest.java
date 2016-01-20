@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.support.QueryBuilder;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
 
 /**
@@ -182,7 +183,7 @@ public class EmailTest extends AbstractTestCase
 
         // create a domain and a principal
         Domain domain = platform.createDomain();
-        DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), "pw");
+        DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         user.setEmail("buildtest@gitanasoftware.com");
         user.update();
 
@@ -236,7 +237,7 @@ public class EmailTest extends AbstractTestCase
 
         // create a domain and a principal
         Domain domain = platform.createDomain();
-        DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), "pw");
+        DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         user.setEmail("buildtest@gitanasoftware.com");
         user.update();
 

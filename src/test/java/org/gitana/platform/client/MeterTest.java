@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.meter.MeterType;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -55,7 +56,7 @@ public class MeterTest extends AbstractTestCase
 
         // create a principal + tenant (#1)
         String userName1 = "user1-" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(userName1, "pw");
+        DomainUser user1 = domain.createUser(userName1, TestConstants.TEST_PASSWORD);
         Tenant tenant = registrar.createTenant(user1, "unlimited");
         ObjectNode defaultClientObject1 = tenant.readDefaultAllocatedClientObject();
         assertNotNull(defaultClientObject1);
@@ -76,11 +77,11 @@ public class MeterTest extends AbstractTestCase
         //
 
         gitana = new Gitana(clientKey1, clientSecret1);
-        platform = gitana.authenticateOnTenant(user1, "pw", tenant);
+        platform = gitana.authenticateOnTenant(user1, TestConstants.TEST_PASSWORD, tenant);
 
         // create a couple of things as this new tenant
         Domain domain1 = platform.createDomain();
-        domain1.createUser("bob", "zemeckis");
+        domain1.createUser("bob", TestConstants.TEST_PASSWORD);
         Repository repository1 = platform.createRepository();
         repository1.readBranch("master").createNode();
         repository1.readBranch("master").createNode();

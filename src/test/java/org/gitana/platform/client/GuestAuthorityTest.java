@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathResource;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
@@ -56,14 +57,14 @@ public class GuestAuthorityTest extends AbstractTestCase
         Platform platform = new Gitana().authenticate("admin", "admin");
         Registrar registrar = platform.readRegistrar("default");
         Domain tenantDomain = platform.createDomain();
-        DomainUser tenantUser = tenantDomain.createUser("user-" + System.currentTimeMillis(), "pw");
+        DomainUser tenantUser = tenantDomain.createUser("user-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         Tenant tenant = registrar.createTenant(tenantUser, "unlimited");
         ObjectNode tenantClientObject = tenant.readDefaultAllocatedClientObject();
         String tenantClientKey = JsonUtil.objectGetString(tenantClientObject, Client.FIELD_KEY);
         String tenantClientSecret = JsonUtil.objectGetString(tenantClientObject, Client.FIELD_SECRET);
 
         // connect to tenant as tenant user
-        platform = new Gitana(tenantClientKey, tenantClientSecret).authenticate(tenantUser.getName(), "pw");
+        platform = new Gitana(tenantClientKey, tenantClientSecret).authenticate(tenantUser.getName(), TestConstants.TEST_PASSWORD);
 
         // create a repository, node and attachment
         Repository repository = platform.createRepository();
@@ -77,18 +78,18 @@ public class GuestAuthorityTest extends AbstractTestCase
 
         // create TESTUSER and give consumer to platform + repository, but not node
         Domain domain = platform.createDomain();
-        DomainUser user = domain.createUser("testuser-" + System.currentTimeMillis(), "pw");
+        DomainUser user = domain.createUser("testuser-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         platform.grant(user, "consumer");
         repository.grant(user, "consumer");
         master.grant(user, "consumer");
 
         // log in as test user with the client and verify we can't access node
-        platform = new Gitana(client.getKey(), client.getSecret()).authenticate(user, "pw");
+        platform = new Gitana(client.getKey(), client.getSecret()).authenticate(user, TestConstants.TEST_PASSWORD);
         Node emptyNode = (Node) platform.readRepository(repository.getId()).readBranch("master").readNode(node.getId());
         assertNull(emptyNode);
 
         // log in as tenant user again and grant guest user access to the node
-        platform = new Gitana(tenantClientKey, tenantClientSecret).authenticate(tenantUser.getName(), "pw");
+        platform = new Gitana(tenantClientKey, tenantClientSecret).authenticate(tenantUser.getName(), TestConstants.TEST_PASSWORD);
         platform.grant("guest", "consumer");
         repository = platform.readRepository(repository.getId());
         repository.grant("guest", "consumer");
@@ -106,7 +107,7 @@ public class GuestAuthorityTest extends AbstractTestCase
         assertTrue(bytes.length > 0);
 
         // log in as tenant user again and switch off guest access on the client
-        platform = new Gitana(tenantClientKey, tenantClientSecret).authenticate(tenantUser.getName(), "pw");
+        platform = new Gitana(tenantClientKey, tenantClientSecret).authenticate(tenantUser.getName(), TestConstants.TEST_PASSWORD);
         client = platform.readClient(client.getId());
         client.setAllowGuestLogin(false);
         client.update();

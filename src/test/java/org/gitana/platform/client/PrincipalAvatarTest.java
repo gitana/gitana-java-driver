@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class PrincipalAvatarTest extends AbstractTestCase
 
         // create user1
         String user1name = "testuser1_" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(user1name, "password");
+        DomainUser user1 = domain.createUser(user1name, TestConstants.TEST_PASSWORD);
 
         // upload an "avatar" attachment for user1
         byte[] avatarBytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/avatar.png");
@@ -56,7 +57,7 @@ public class PrincipalAvatarTest extends AbstractTestCase
 
         // create user2
         String user2name = "testuser2_" + System.currentTimeMillis();
-        DomainUser user2 = domain.createUser(user2name, "password");
+        DomainUser user2 = domain.createUser(user2name, TestConstants.TEST_PASSWORD);
 
 
 
@@ -73,7 +74,7 @@ public class PrincipalAvatarTest extends AbstractTestCase
         // log in as user1
         // ensure can retrieve "avatar"
         //
-        Platform platform2 = gitana.authenticate(user1.getName(), "password");
+        Platform platform2 = gitana.authenticate(user1.getName(), TestConstants.TEST_PASSWORD);
         DomainUser user1x = (DomainUser) domain.readPrincipal(user1name);
         byte[] avatarBytes1x = user1x.downloadAttachment("avatar");
         assertEquals(avatarBytes.length, avatarBytes1x.length);
@@ -83,7 +84,7 @@ public class PrincipalAvatarTest extends AbstractTestCase
         //
         // log in as user2
         //
-        Platform platform3 = gitana.authenticate(user1.getName(), "password");
+        Platform platform3 = gitana.authenticate(user1.getName(), TestConstants.TEST_PASSWORD);
         DomainUser user1xx = (DomainUser) domain.readPrincipal(user1name);
 
         // download the "avatar" attachment

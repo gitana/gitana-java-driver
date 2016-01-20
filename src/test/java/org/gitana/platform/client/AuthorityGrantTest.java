@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.util.TestConstants;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -155,9 +156,9 @@ public class AuthorityGrantTest extends AbstractTestCase
 
         // create two users
         String userName1 = "testuser1_" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(userName1, "password");
+        DomainUser user1 = domain.createUser(userName1, TestConstants.TEST_PASSWORD);
         String userName2 = "testuser2_" + System.currentTimeMillis();
-        DomainUser user2 = domain.createUser(userName2, "password");
+        DomainUser user2 = domain.createUser(userName2, TestConstants.TEST_PASSWORD);
 
         // grant user1 consumer rights to the server
         accessControllable.grant(userName1, "consumer");

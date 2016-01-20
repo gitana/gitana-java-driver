@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.gitana.platform.client.webhost.AutoClientMapping;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.junit.Test;
 
 /**
@@ -54,7 +55,7 @@ public class AutoClientMappingTest extends AbstractTestCase
 
         // create a user
         String userName1 = "testuser1_" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(userName1, "test");
+        DomainUser user1 = domain.createUser(userName1, TestConstants.TEST_PASSWORD);
 
         // create client + app #1
         Application application1 = platform.createApplication();

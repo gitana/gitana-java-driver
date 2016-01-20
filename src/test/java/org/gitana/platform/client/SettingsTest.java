@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.gitana.platform.client.application.Settings;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.support.QueryBuilder;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -90,9 +91,9 @@ public class SettingsTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // create some users
-        DomainUser user1 = platform.readPrimaryDomain().createUser("user1-" + System.currentTimeMillis(), "pw");
-        DomainUser user2 = platform.readPrimaryDomain().createUser("user2-" + System.currentTimeMillis(), "pw");
-        DomainUser user3 = platform.readPrimaryDomain().createUser("user3-" + System.currentTimeMillis(), "pw");
+        DomainUser user1 = platform.readPrimaryDomain().createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user2 = platform.readPrimaryDomain().createUser("user2-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user3 = platform.readPrimaryDomain().createUser("user3-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         // create an application
         Application application = platform.createApplication();
