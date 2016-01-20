@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.QueryBuilder;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -151,7 +152,7 @@ public class RegistrationTest extends AbstractTestCase
         registration1.update();
 
         // confirm (and supply the password for the new user)
-        registration1.confirm("password");
+        registration1.confirm(TestConstants.TEST_PASSWORD);
         
         // verify the registration completed
         registration1.reload();
@@ -180,7 +181,7 @@ public class RegistrationTest extends AbstractTestCase
         String newClientSecret = JsonUtil.objectGetString(newClientObject, Client.FIELD_SECRET);
 
         // connect to the platform as the new user
-        Platform newPlatform = new Gitana(newClientKey, newClientSecret).authenticate("bud", "password");
+        Platform newPlatform = new Gitana(newClientKey, newClientSecret).authenticate("bud", TestConstants.TEST_PASSWORD);
 
         // load the user object
         DomainUser newUser = (DomainUser) newPlatform.readPrimaryDomain().readPrincipal(newPrincipalId);

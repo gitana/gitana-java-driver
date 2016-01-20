@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class PrincipalAttachmentTest extends AbstractTestCase
 
         // create a user
         String userId = "testuser-" + System.currentTimeMillis();
-        DomainUser user = domain.createUser(userId, "fiddledee");
+        DomainUser user = domain.createUser(userId, TestConstants.TEST_PASSWORD);
 
         // upload an attachment
         String filename = "testfilename-" + System.currentTimeMillis() + "-bugs.jpeg";

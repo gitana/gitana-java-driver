@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class PrincipalTest extends AbstractTestCase
 
         // create a user
         String name = "testuser" + System.currentTimeMillis();
-        DomainUser user = domain.createUser(name, "password");
+        DomainUser user = domain.createUser(name, TestConstants.TEST_PASSWORD);
 
         // user map (verify)
         Pagination pagination = new Pagination(0, 10000);
@@ -138,12 +139,12 @@ public class PrincipalTest extends AbstractTestCase
         Domain domain = platform.readDomain("default");
 
         // create six users
-        DomainUser user1 = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
-        DomainUser user2 = domain.createUser("testuser-" + System.currentTimeMillis() + "_2", "password");
-        DomainUser user3 = domain.createUser("testuser-" + System.currentTimeMillis() + "_3", "password");
-        DomainUser user4 = domain.createUser("testuser-" + System.currentTimeMillis() + "_4", "password");
-        DomainUser user5 = domain.createUser("testuser-" + System.currentTimeMillis() + "_5", "password");
-        DomainUser user6 = domain.createUser("testuser-" + System.currentTimeMillis() + "_6", "password");
+        DomainUser user1 = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", TestConstants.TEST_PASSWORD);
+        DomainUser user2 = domain.createUser("testuser-" + System.currentTimeMillis() + "_2", TestConstants.TEST_PASSWORD);
+        DomainUser user3 = domain.createUser("testuser-" + System.currentTimeMillis() + "_3", TestConstants.TEST_PASSWORD);
+        DomainUser user4 = domain.createUser("testuser-" + System.currentTimeMillis() + "_4", TestConstants.TEST_PASSWORD);
+        DomainUser user5 = domain.createUser("testuser-" + System.currentTimeMillis() + "_5", TestConstants.TEST_PASSWORD);
+        DomainUser user6 = domain.createUser("testuser-" + System.currentTimeMillis() + "_6", TestConstants.TEST_PASSWORD);
 
         // create three groups
         DomainGroup group1 = domain.createGroup("testgroup-" + System.currentTimeMillis() + "_1");
@@ -216,8 +217,8 @@ public class PrincipalTest extends AbstractTestCase
         Domain domain = platform.readDomain("default");
 
         // create two users
-        DomainUser daffy = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
-        DomainUser bugs = domain.createUser("testuser-" + System.currentTimeMillis() + "_2", "password");
+        DomainUser daffy = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", TestConstants.TEST_PASSWORD);
+        DomainUser bugs = domain.createUser("testuser-" + System.currentTimeMillis() + "_2", TestConstants.TEST_PASSWORD);
 
         // upload
         byte[] daffyBytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/daffy.jpeg");
@@ -250,7 +251,7 @@ public class PrincipalTest extends AbstractTestCase
 
         // create test user #1
         String name1 = "testuser1_" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(name1, "password");
+        DomainUser user1 = domain.createUser(name1, TestConstants.TEST_PASSWORD);
         user1.set("tag", tag);
         user1.set("season", "summer");
         user1.set("month", "june");
@@ -258,7 +259,7 @@ public class PrincipalTest extends AbstractTestCase
 
         // create test user #2
         String name2 = "testuser2_" + System.currentTimeMillis();
-        DomainUser user2 = domain.createUser(name2, "password");
+        DomainUser user2 = domain.createUser(name2, TestConstants.TEST_PASSWORD);
         user2.set("tag", tag);
         user2.set("season", "summer");
         user2.set("month", "july");
@@ -266,7 +267,7 @@ public class PrincipalTest extends AbstractTestCase
 
         // create test user #3
         String name3 = "testuser3_" + System.currentTimeMillis();
-        DomainUser user3 = domain.createUser(name3, "password");
+        DomainUser user3 = domain.createUser(name3, TestConstants.TEST_PASSWORD);
         user3.set("tag", tag);
         user3.set("season", "summer");
         user3.set("month", "august");
@@ -274,7 +275,7 @@ public class PrincipalTest extends AbstractTestCase
 
         // create test user #4
         String name4 = "testuser4_" + System.currentTimeMillis();
-        DomainUser user4 = domain.createUser(name4, "password");
+        DomainUser user4 = domain.createUser(name4, TestConstants.TEST_PASSWORD);
         user4.set("tag", tag);
         user4.set("season", "autumn");
         user4.set("month", "august");
@@ -356,12 +357,12 @@ public class PrincipalTest extends AbstractTestCase
         // create a domain
         // create a user
         Domain mikeDomain = platform.createDomain();
-        DomainUser mike = mikeDomain.createUser("mike", "abc");
+        DomainUser mike = mikeDomain.createUser("mike", TestConstants.TEST_PASSWORD);
 
         // create a domain
         // create a user
         Domain tonyDomain = platform.createDomain();
-        DomainUser tony = tonyDomain.createUser("tony", "abc");
+        DomainUser tony = tonyDomain.createUser("tony", TestConstants.TEST_PASSWORD);
         
         // invite tony into mike's domain
         DomainUser tony2 = mikeDomain.inviteUser(tony);
@@ -381,16 +382,16 @@ public class PrincipalTest extends AbstractTestCase
         // create a domain
         // create a user
         Domain mikeDomain = platform.createDomain();
-        DomainUser mike = mikeDomain.createUser("mike", "abc");
+        DomainUser mike = mikeDomain.createUser("mike", TestConstants.TEST_PASSWORD);
         
         // change password
-        mike.readIdentity().changePassword("def", "def");
+        mike.readIdentity().changePassword(TestConstants.TEST_PASSWORD + "def", TestConstants.TEST_PASSWORD + "def");
 
         // authenticate with old password (should fail)
         Throwable ex1 = null;
         try
         {
-            gitana.authenticate(mike.getDomainQualifiedName(), "abc");
+            gitana.authenticate(mike.getDomainQualifiedName(), TestConstants.TEST_PASSWORD);
         }
         catch (Exception ex)
         {
@@ -402,7 +403,7 @@ public class PrincipalTest extends AbstractTestCase
         Throwable ex2 = null;
         try
         {
-            gitana.authenticate(mike.getDomainQualifiedName(), "def");
+            gitana.authenticate(mike.getDomainQualifiedName(), TestConstants.TEST_PASSWORD + "def");
         }
         catch (Exception ex)
         {

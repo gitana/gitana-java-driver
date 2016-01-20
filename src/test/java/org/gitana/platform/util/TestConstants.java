@@ -19,15 +19,18 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.client.platform;
-
-import org.gitana.platform.client.cluster.ClusterDataStore;
-import org.gitana.platform.client.support.Copyable;
+package org.gitana.platform.util;
 
 /**
  * @author uzi
  */
-public interface PlatformDataStore extends ClusterDataStore, Copyable
+public abstract class TestConstants
 {
-    public Platform getPlatform();
+    public final static String TEST_PASSWORD = "test1234";
+
+    public final static String TEST_CLOUDCMS_CLIENT_KEY = "20f4375d-31a8-4a50-8377-7e5a61111e68";
+    public final static String TEST_CLOUDCMS_CLIENT_SECRET = "Eyv8sf3ygml724ko1zWJvD4iEZQqiBMof427Yga5GVRrWMQnN/hxcykysmDWXXm/cm9hCECjxir595ONl264vyH1IBAnTWSILrLJHvjcmR0=";
+    public final static String TEST_CLOUDCMS_AUTHGRANT_KEY = "5b88f3ba-bac6-448a-b0e3-359b936b29f0";
+    public final static String TEST_CLOUDCMS_AUTHGRANT_SECRET = "x2XVWjV9ivzP+VlwRFzORXP6AxwXipj++SO+95sugmaghmlqESn25eyCeZyBTXWyp/SHqzy3j3T5h9yC2Q6d1oOyeYSz1Tn17ovg+o+QYKo=";
+
 }

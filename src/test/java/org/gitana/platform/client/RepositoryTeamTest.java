@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.team.Team;
+import org.gitana.platform.util.TestConstants;
 import org.junit.Test;
 
 /**
@@ -55,9 +56,9 @@ public class RepositoryTeamTest extends AbstractTestCase
         assertEquals(1, owners.listMembers().size()); // admin
 
         // create three users
-        DomainUser user1 = domain.createUser("user1-" + System.currentTimeMillis(), "pw");
-        DomainUser user2 = domain.createUser("user2-" + System.currentTimeMillis(), "pw");
-        DomainUser user3 = domain.createUser("user3-" + System.currentTimeMillis(), "pw");
+        DomainUser user1 = domain.createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user2 = domain.createUser("user2-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user3 = domain.createUser("user3-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         // add users to the owners team
         owners.addMember(user1.getId());
@@ -87,11 +88,11 @@ public class RepositoryTeamTest extends AbstractTestCase
         assertEquals(1, grifters.listAuthorities().size());
 
         // user 1 should be able to UPDATE the branch since they have manager rights
-        gitana.authenticate(user1.getName(), "pw");
+        gitana.authenticate(user1.getName(), TestConstants.TEST_PASSWORD);
         platform.readRepository(repository.getId()).readBranch(branch.getId()).update();
 
         // user 2 should be able to READ the branch
-        gitana.authenticate(user2.getName(), "pw");
+        gitana.authenticate(user2.getName(), TestConstants.TEST_PASSWORD);
         Exception ex2 = null;
         try
         {
@@ -104,7 +105,7 @@ public class RepositoryTeamTest extends AbstractTestCase
         assertNull(ex2);
 
         // user 2 should be able to READ the branch but not UPDATE it
-        gitana.authenticate(user2.getName(), "pw");
+        gitana.authenticate(user2.getName(), TestConstants.TEST_PASSWORD);
         Exception ex3 = null;
         try
         {
@@ -118,7 +119,7 @@ public class RepositoryTeamTest extends AbstractTestCase
 
         // user 3 cannot even read branch
         // not a member of any teams
-        gitana.authenticate(user3.getName(), "pw");
+        gitana.authenticate(user3.getName(), TestConstants.TEST_PASSWORD);
         Branch branch3 = platform.readRepository(repository.getId()).readBranch(branch.getId());
         assertNull(branch3);
 
@@ -127,7 +128,7 @@ public class RepositoryTeamTest extends AbstractTestCase
         repository.deleteTeam("grifters");
 
         // user 2 can no longer read
-        gitana.authenticate(user2.getName(), "pw");
+        gitana.authenticate(user2.getName(), TestConstants.TEST_PASSWORD);
         Branch branch20 = platform.readRepository(repository.getId()).readBranch(branch.getId());
         assertNull(branch20);
     }

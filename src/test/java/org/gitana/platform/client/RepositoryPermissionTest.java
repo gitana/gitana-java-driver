@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.util.TestConstants;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -57,10 +58,10 @@ public class RepositoryPermissionTest extends AbstractTestCase
         // default domain
         Domain domain = platform.readDomain("default");
 
-        DomainUser user1 = domain.createUser("user1-" + System.currentTimeMillis(), "password");
-        DomainUser user2 = domain.createUser("user2-" + System.currentTimeMillis(), "password");
-        DomainUser user3 = domain.createUser("user3-" + System.currentTimeMillis(), "password");
-        DomainUser userTest = domain.createUser("usertest-" + System.currentTimeMillis(), "password");
+        DomainUser user1 = domain.createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user2 = domain.createUser("user2-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user3 = domain.createUser("user3-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser userTest = domain.createUser("usertest-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         /*
         // now add users to the tenant platform
@@ -111,7 +112,7 @@ public class RepositoryPermissionTest extends AbstractTestCase
         // authenticate as the test user
         // this is to ensure that a non-admin can check permissions
         Gitana gitana = new Gitana();
-        Platform platform = gitana.authenticate(userTestId, "password");
+        Platform platform = gitana.authenticate(userTestId, TestConstants.TEST_PASSWORD);
 
         // define a bunch of permissions to check
         List<PermissionCheck> checks = new ArrayList<PermissionCheck>();

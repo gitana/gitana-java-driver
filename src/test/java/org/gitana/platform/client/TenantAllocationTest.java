@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -54,7 +55,7 @@ public class TenantAllocationTest extends AbstractTestCase
 
         // create a principal + tenant (#1)
         String userName1 = "user1-" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(userName1, "pw");
+        DomainUser user1 = domain.createUser(userName1, TestConstants.TEST_PASSWORD);
         Tenant tenant1 = registrar.createTenant(user1, "unlimited");
         ObjectNode defaultClientObject1 = tenant1.readDefaultAllocatedClientObject();
         assertNotNull(defaultClientObject1);
@@ -66,7 +67,7 @@ public class TenantAllocationTest extends AbstractTestCase
         //
 
         gitana = new Gitana(clientKey1, clientSecret1);
-        platform = gitana.authenticateOnTenant(user1, "pw", tenant1);
+        platform = gitana.authenticateOnTenant(user1, TestConstants.TEST_PASSWORD, tenant1);
 
         // there are 11 things created by default
         //

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.support.QName;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
 import org.junit.Ignore;
@@ -56,7 +57,7 @@ public class LogTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // create a user on default domain
-        DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), "pw");
+        DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         // create a tenant for this user
         Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
@@ -71,7 +72,7 @@ public class LogTest extends AbstractTestCase
         //
 
         gitana = new Gitana(clientKey, clientSecret);
-        platform = gitana.authenticate(user.getName(), "pw");
+        platform = gitana.authenticate(user.getName(), TestConstants.TEST_PASSWORD);
 
         // build a stack with repository, domain, vault...
         Stack stack1 = platform.createStack();

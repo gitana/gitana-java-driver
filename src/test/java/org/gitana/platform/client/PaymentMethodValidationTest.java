@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.billing.PaymentMethodValidation;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -58,7 +59,7 @@ public class PaymentMethodValidationTest extends AbstractTestCase
         Domain domain = platform.createDomain();
 
         // create a principal
-        DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), "pw");
+        DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         // create a tenant for this principal (unlimited plan);
         Tenant tenant = registrar.createTenant(user, "unlimited");
@@ -71,7 +72,7 @@ public class PaymentMethodValidationTest extends AbstractTestCase
 
         // authenticate as the tenant user
         gitana = new Gitana(clientKey, clientSecret);
-        platform = gitana.authenticateOnTenant(user, "pw", tenant);
+        platform = gitana.authenticateOnTenant(user, TestConstants.TEST_PASSWORD, tenant);
 
         // create a billing provider configuration
         ObjectNode configObject = JsonUtil.createObject();

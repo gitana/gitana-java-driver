@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -50,9 +51,9 @@ public class TenantTeamTest extends AbstractTestCase
         Platform platform = gitana.authenticate("admin", "admin");
 
         // create user #1
-        DomainUser user1 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), "pw");
+        DomainUser user1 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         // create user #2
-        DomainUser user2 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), "pw");
+        DomainUser user2 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         // default registrar
         Registrar registrar = platform.readRegistrar("default");
@@ -95,7 +96,7 @@ public class TenantTeamTest extends AbstractTestCase
         String clientKey2 = JsonUtil.objectGetString(defaultClientObject2, Client.FIELD_KEY);
         String clientSecret2 = JsonUtil.objectGetString(defaultClientObject2, Client.FIELD_SECRET);
         gitana = new Gitana(clientKey2, clientSecret2);
-        platform = gitana.authenticateOnTenant(user2, "pw", tenant2.getId());
+        platform = gitana.authenticateOnTenant(user2, TestConstants.TEST_PASSWORD, tenant2.getId());
 
         // invite user 1 into user2's default domain
         DomainUser user1inTenant2 = platform.readPrimaryDomain().inviteUser(user1);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -54,7 +55,7 @@ public class TenantAuthenticationTest extends AbstractTestCase
 
         // create a principal + tenant (#1)
         String userName = "user1-" + System.currentTimeMillis();
-        DomainUser user = domain.createUser(userName, "pw");
+        DomainUser user = domain.createUser(userName, TestConstants.TEST_PASSWORD);
         Tenant tenant = registrar.createTenant(user, "unlimited");
         ObjectNode defaultClientObject = tenant.readDefaultAllocatedClientObject();
         assertNotNull(defaultClientObject);
@@ -65,7 +66,7 @@ public class TenantAuthenticationTest extends AbstractTestCase
 
         // 1. Authenticate as tenant (should work)
         gitana = new Gitana(clientKey, clientSecret);
-        gitana.authenticateOnTenant(user, "pw", tenant);
+        gitana.authenticateOnTenant(user, TestConstants.TEST_PASSWORD, tenant);
 
 
         // 2. Authenticate as admin and disable tenant
@@ -80,7 +81,7 @@ public class TenantAuthenticationTest extends AbstractTestCase
         try
         {
             gitana = new Gitana(clientKey, clientSecret);
-            gitana.authenticateOnTenant(user, "pw", tenant);
+            gitana.authenticateOnTenant(user, TestConstants.TEST_PASSWORD, tenant);
         }
         catch (Exception ex)
         {
@@ -98,7 +99,7 @@ public class TenantAuthenticationTest extends AbstractTestCase
 
         // 5. Authenticate as tenant (should work)
         gitana = new Gitana(clientKey, clientSecret);
-        gitana.authenticateOnTenant(user, "pw", tenant);
+        gitana.authenticateOnTenant(user, TestConstants.TEST_PASSWORD, tenant);
 
     }
 

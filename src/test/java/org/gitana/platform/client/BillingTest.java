@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.payment.BillingSchedule;
 import org.gitana.platform.services.plan.DataUnit;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
@@ -138,7 +139,7 @@ public class BillingTest extends AbstractTestCase
 
         // create a new principal
         String userName = "user-" + System.currentTimeMillis();
-        DomainUser user = domain.createUser(userName, "pw");
+        DomainUser user = domain.createUser(userName, TestConstants.TEST_PASSWORD);
 
         // define a payment method
         ObjectNode paymentMethodObject = JsonUtil.createObject();
@@ -161,7 +162,7 @@ public class BillingTest extends AbstractTestCase
         String clientKey = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_KEY);
         String clientSecret = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_SECRET);
         gitana = new Gitana(clientKey, clientSecret);
-        platform = gitana.authenticateOnTenant(user, "pw", tenant);
+        platform = gitana.authenticateOnTenant(user, TestConstants.TEST_PASSWORD, tenant);
         */
         
         return tenant;

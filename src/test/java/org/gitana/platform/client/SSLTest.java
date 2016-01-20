@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ package org.gitana.platform.client;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.junit.Test;
 
 /**
@@ -36,11 +37,11 @@ public class SSLTest extends AbstractTestCase
     {
         // connect to the "demo" account on cloudcms in order to establish that SSL works
         String environmentId = "cloudcms";
-        String clientId = "676e3450-6131-46c2-99cc-496aa2ad80fa";
-        String clientSecret = "5fGkvesH/tWEMX6SpevL54rY6iJK5ADzLH963sif2ljrWvFOhV2zXv6rSpLF2uMWlJ9SG0uEO9uQO4JZac0i7DZquA/5W8ixJwhj76g0Ksk=";
+        String clientId = TestConstants.TEST_CLOUDCMS_CLIENT_KEY;
+        String clientSecret = TestConstants.TEST_CLOUDCMS_CLIENT_SECRET;
 
         Gitana gitana = new Gitana(environmentId, clientId, clientSecret);
-        Platform platform = gitana.authenticate("demo", "demo");
+        Platform platform = gitana.authenticate(TestConstants.TEST_CLOUDCMS_AUTHGRANT_KEY, TestConstants.TEST_CLOUDCMS_AUTHGRANT_SECRET);
         ResultMap<Repository> repositories = platform.listRepositories();
 
         assertTrue("SSL Authentication passed", (repositories.size() >= 0));

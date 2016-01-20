@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.api.GrantTypes;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -57,7 +58,7 @@ public class ClientTest extends AbstractTestCase
         Domain domain = platform.createDomain();
 
         // create user #1 and tenant #1
-        DomainUser user1 = domain.createUser("abc-" + System.currentTimeMillis(), "pw");
+        DomainUser user1 = domain.createUser("abc-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         Tenant tenant1 = registrar.createTenant(user1, "unlimited");
         ObjectNode defaultClientObject1 = tenant1.readDefaultAllocatedClientObject();
         assertNotNull(defaultClientObject1);
@@ -65,7 +66,7 @@ public class ClientTest extends AbstractTestCase
         String clientSecret1 = JsonUtil.objectGetString(defaultClientObject1, Client.FIELD_SECRET);
 
         // authenticate as this new tenant + principal
-        platform = new Gitana(clientKey1, clientSecret1).authenticate(user1.getName(), "pw");
+        platform = new Gitana(clientKey1, clientSecret1).authenticate(user1.getName(), TestConstants.TEST_PASSWORD);
 
         // count the # of client objects on the platform
         int startingSize = platform.listClients().size();

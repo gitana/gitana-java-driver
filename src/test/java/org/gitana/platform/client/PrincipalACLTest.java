@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainGroup;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.util.TestConstants;
 import org.junit.Test;
 
 /**
@@ -42,11 +43,11 @@ public class PrincipalACLTest extends AbstractTestCase
 
         // create three users
         String userName1 = "testuser1_" + System.currentTimeMillis();
-        DomainUser user1 = domain.createUser(userName1, "test");
+        DomainUser user1 = domain.createUser(userName1, TestConstants.TEST_PASSWORD);
         String userName2 = "testuser2_" + System.currentTimeMillis();
-        DomainUser user2 = domain.createUser(userName2, "test");
+        DomainUser user2 = domain.createUser(userName2, TestConstants.TEST_PASSWORD);
         String userName3 = "testuser3_" + System.currentTimeMillis();
-        DomainUser user3 = domain.createUser(userName3, "test");
+        DomainUser user3 = domain.createUser(userName3, TestConstants.TEST_PASSWORD);
 
         // create a group
         String groupId1 = "testgroup1_" + System.currentTimeMillis();
@@ -60,10 +61,10 @@ public class PrincipalACLTest extends AbstractTestCase
 
 
         // verify that user1 can read and update user3
-        new Gitana().authenticate(userName1, "test").readDomain("default").readPrincipal(userName1).update();
+        new Gitana().authenticate(userName1, TestConstants.TEST_PASSWORD).readDomain("default").readPrincipal(userName1).update();
 
         // verify that user2 can read but NOT update user3
-        DomainUser u3 = (DomainUser) new Gitana().authenticate(userName2, "test").readDomain("default").readPrincipal(userName3);
+        DomainUser u3 = (DomainUser) new Gitana().authenticate(userName2, TestConstants.TEST_PASSWORD).readDomain("default").readPrincipal(userName3);
         Exception ex1 = null;
         try
         {
@@ -76,17 +77,17 @@ public class PrincipalACLTest extends AbstractTestCase
         assertNotNull(ex1);
 
         // verify that user3 can read and update user3 (self manager)
-        new Gitana().authenticate(userName3, "test").readDomain("default").readPrincipal(userName3).update();
+        new Gitana().authenticate(userName3, TestConstants.TEST_PASSWORD).readDomain("default").readPrincipal(userName3).update();
 
         // revoke EVERYONE CONSUMER from user3
         user3.revokeAll("everyone");
 
         // verify that user2 cannot read user3
-        DomainUser testRead3 = (DomainUser) new Gitana().authenticate(userName2, "test").readDomain("default").readPrincipal(userName3);
+        DomainUser testRead3 = (DomainUser) new Gitana().authenticate(userName2, TestConstants.TEST_PASSWORD).readDomain("default").readPrincipal(userName3);
         assertNull(testRead3);
 
         // verify that user3 can read user3 (self manager)
-        new Gitana().authenticate(userName3, "test").readDomain("default").readPrincipal(userName3).update();
+        new Gitana().authenticate(userName3, TestConstants.TEST_PASSWORD).readDomain("default").readPrincipal(userName3).update();
     }
 
 }

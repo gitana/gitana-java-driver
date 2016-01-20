@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Gitana Software, Inc.
+ * Copyright 2016 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -107,8 +108,8 @@ public class BranchTest extends AbstractTestCase
         assertTrue(master.isMaster());
 
         // add authority to test users
-        DomainUser daffy = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", "password");
-        DomainUser bugs = domain.createUser("testuser-" + System.currentTimeMillis() + "_2", "password");
+        DomainUser daffy = domain.createUser("testuser-" + System.currentTimeMillis() + "_1", TestConstants.TEST_PASSWORD);
+        DomainUser bugs = domain.createUser("testuser-" + System.currentTimeMillis() + "_2", TestConstants.TEST_PASSWORD);
 
         master.grant(daffy.getId(),"manager");
         master.grant(bugs.getId(),"consumer");
