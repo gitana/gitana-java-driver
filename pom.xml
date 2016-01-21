@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gitana</groupId>
     <artifactId>gitana-java-driver</artifactId>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.10-SNAPSHOT</version>
     <name>Gitana Java Driver</name>
     <packaging>jar</packaging>
-    <url>http://www.gitanasoftware.org/</url>
+    <url>https://www.cloudcms.com/</url>
     <organization>
         <name>Gitana Software, Inc</name>
-        <url>http://www.gitanasoftware.org/</url>
+        <url>https://www.cloudcms.com/</url>
     </organization>
     <inceptionYear>2010</inceptionYear>
     <licenses>
@@ -29,7 +29,7 @@
                 <role>Developer</role>
             </roles>
             <organization>Gitana, Inc</organization>
-            <organizationUrl>http://www.gitanasoftware.com</organizationUrl>
+            <organizationUrl>https://www.cloudcms.com</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -79,7 +79,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh-external</artifactId>
-                <version>2.6</version>
+                <version>2.10</version>
             </extension>
         </extensions>
 
@@ -153,6 +153,14 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- release plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+            </plugin>
+
         </plugins>
     </build>
     <dependencies>
