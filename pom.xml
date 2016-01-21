@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gitana</groupId>
     <artifactId>gitana-java-driver</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.8-SNAPSHOT</version>
     <name>Gitana Java Driver</name>
     <packaging>jar</packaging>
     <url>http://www.gitanasoftware.org/</url>
@@ -34,8 +33,9 @@
         </developer>
     </developers>
     <scm>
-        <url>http://github.com/gitana/gitana-java-driver</url>
-    </scm>
+        <developerConnection>scm:git:https://github.com/gitana/gitana-java-driver</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
     <repositories>
         <repository>
             <id>maven.springframework.org.release</id>
