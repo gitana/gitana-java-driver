@@ -407,7 +407,7 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
         catch (Exception ex)
         {
             // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: the remote layer needs to hand back more interesting
             // TODO: information so that we can detect a proper 404
         }
 
@@ -466,7 +466,7 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
         catch (Exception ex)
         {
             // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: the remote layer needs to hand back more interesting
             // TODO: information so that we can detect a proper 404
         }
 
@@ -552,7 +552,7 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
         catch (Exception ex)
         {
             // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: the remote layer needs to hand back more interesting
             // TODO: information so that we can detect a proper 404
         }
 
@@ -602,7 +602,7 @@ public class TenantImpl extends AbstractRegistrarDocumentImpl implements Tenant
         catch (Exception ex)
         {
             // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting more interesting
+            // TODO: the remote layer needs to hand back more interesting
             // TODO: information so that we can detect a proper 404
         }
 
