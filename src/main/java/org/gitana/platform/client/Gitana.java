@@ -38,6 +38,8 @@ import org.gitana.platform.client.support.Environment;
 import org.gitana.platform.client.support.RemoteImpl;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.util.HttpCredentials;
+import org.gitana.util.HttpProxyConfiguration;
 import org.gitana.util.HttpUtil;
 import org.gitana.util.JsonUtil;
 
@@ -131,8 +133,45 @@ public class Gitana
      */
     protected RemoteImpl createAnonymousRemote()
     {
-        // build a client and disable redirects
-        HttpClient client = HttpUtil.buildClient(false);
+        HttpCredentials credentials = null;
+        HttpProxyConfiguration proxyConfig = null;
+
+        if (baseUrl != null && baseUrl.toLowerCase().startsWith("http://"))
+        {
+            String httpProxyHost = System.getProperty("http.proxyHost");
+            String httpProxyPort = System.getProperty("http.proxyPort");
+            if (httpProxyHost != null && !"".equals(httpProxyHost))
+            {
+                if (httpProxyPort != null && !"".equals(httpProxyPort))
+                {
+                    Integer _httpProxyPort = Integer.parseInt(httpProxyPort);
+
+                    proxyConfig = new HttpProxyConfiguration();
+                    proxyConfig.setHost(httpProxyHost);
+                    proxyConfig.setPort(_httpProxyPort);
+                }
+            }
+        }
+
+        if (baseUrl != null && baseUrl.toLowerCase().startsWith("https://"))
+        {
+            String httpsProxyHost = System.getProperty("https.proxyHost");
+            String httpsProxyPort = System.getProperty("https.proxyPort");
+            if (httpsProxyHost !=null && !"".equals(httpsProxyHost))
+            {
+                if (httpsProxyPort !=null && !"".equals(httpsProxyPort))
+                {
+                    Integer _httpsProxyPort = Integer.parseInt(httpsProxyPort);
+
+                    proxyConfig = new HttpProxyConfiguration();
+                    proxyConfig.setHost(httpsProxyHost);
+                    proxyConfig.setPort(_httpsProxyPort);
+                }
+            }
+        }
+
+        // build a client, disable redirects, plug in any proxy config
+        HttpClient client = HttpUtil.buildClient(false, credentials, proxyConfig);
 
         // wrap into a remote object
         return new RemoteImpl(client, baseUrl);
