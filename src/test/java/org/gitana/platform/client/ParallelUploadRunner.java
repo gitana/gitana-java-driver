@@ -19,18 +19,22 @@
  *   info@gitanasoftware.com
  */
 
-package org.gitana.platform.load;
+package org.gitana.platform.client;
 
+import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.Gitana;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
+import org.gitana.platform.load.AbstractRunner;
+import org.gitana.platform.support.QName;
+import org.gitana.util.ClasspathUtil;
 
 /**
  * @author uzi
  */
-public class NodeCreationRunner extends AbstractRunner<Void>
+public class ParallelUploadRunner extends AbstractRunner<Void>
 {
     private String repositoryId = null;
     private String branchId = null;
@@ -47,7 +51,7 @@ public class NodeCreationRunner extends AbstractRunner<Void>
         this.branchId = branchId;
     }
 
-    public NodeCreationRunner(String id)
+    public ParallelUploadRunner(String id)
     {
         super(id);
     }
@@ -74,7 +78,11 @@ public class NodeCreationRunner extends AbstractRunner<Void>
     @Override
     protected Void doExecute() throws Exception
     {
+        byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/load/IPCIMMGLPICT000000274104.JPEG");
+
+        // create a node and upload attachment
         Node node = (Node) branch.createNode();
+        node.uploadAttachment("image", bytes, MimeTypeMap.IMAGE_JPEG);
 
         System.out.println("Thread: " + Thread.currentThread().getId() + ", runner: " + getId() + ", completed");
 
