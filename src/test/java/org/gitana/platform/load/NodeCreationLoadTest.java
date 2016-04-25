@@ -21,7 +21,6 @@
 
 package org.gitana.platform.load;
 
-import com.codahale.metrics.Histogram;
 import org.gitana.platform.client.Gitana;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.platform.Platform;
