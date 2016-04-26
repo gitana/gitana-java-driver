@@ -22,13 +22,10 @@
 package org.gitana.platform.client;
 
 import org.gitana.mimetype.MimeTypeMap;
-import org.gitana.platform.client.Gitana;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.node.Node;
-import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.load.AbstractRunner;
-import org.gitana.platform.support.QName;
 import org.gitana.util.ClasspathUtil;
 
 /**
@@ -36,43 +33,35 @@ import org.gitana.util.ClasspathUtil;
  */
 public class ParallelUploadRunner extends AbstractRunner<Void>
 {
-    private String repositoryId = null;
-    private String branchId = null;
-
     private Branch branch = null;
+    private Driver originalDriver = null;
 
-    public void setRepositoryId(String repositoryId)
+    public ParallelUploadRunner(String runnerId)
     {
-        this.repositoryId = repositoryId;
+        super(runnerId);
     }
 
-    public void setBranchId(String branchId)
+    public void setDriver(Driver originalDriver)
     {
-        this.branchId = branchId;
+        this.originalDriver = originalDriver;
     }
 
-    public ParallelUploadRunner(String id)
+    public void setBranch(Branch branch)
     {
-        super(id);
+        this.branch = branch;
     }
 
     @Override
     protected void doBeforeExecute() throws Exception
     {
-        Gitana gitana = new Gitana();
-
-        // authenticate
-        Platform platform = gitana.authenticate("admin", "admin");
-
-        // branch reference
-        branch = platform.readRepository(repositoryId).readBranch(branchId);
+        DriverContext.setDriver(this.originalDriver);
     }
 
     @Override
     protected void doAfterExecute() throws Exception
     {
         DriverContext.releaseDriver();
-        branch = null;
+        this.branch = null;
     }
 
     @Override
@@ -80,11 +69,14 @@ public class ParallelUploadRunner extends AbstractRunner<Void>
     {
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/load/IPCIMMGLPICT000000274104.JPEG");
 
+        long t1 = System.currentTimeMillis();
+
         // create a node and upload attachment
         Node node = (Node) branch.createNode();
         node.uploadAttachment("image", bytes, MimeTypeMap.IMAGE_JPEG);
+        long t2 = System.currentTimeMillis();
 
-        System.out.println("Thread: " + Thread.currentThread().getId() + ", runner: " + getId() + ", completed");
+        System.out.println("Thread: " + Thread.currentThread().getId() + ", runner: " + getId() + ", completed in: " + (t2-t1) + " ms");
 
         return null;
     }

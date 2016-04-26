@@ -24,7 +24,7 @@ package org.gitana.platform.client;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
-import org.gitana.platform.load.NodeImageUploadRunner;
+import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.load.Runner;
 import org.gitana.platform.load.RunnerResult;
 import org.junit.Test;
@@ -56,14 +56,14 @@ public class ParallelUploadTest extends AbstractTestCase
         // master branch
         Branch master = repo.readBranch("master");
 
-        // run 30 threads
+        // run 30 uploads
         int count = 30;
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         CompletionService<Void> cs = new ExecutorCompletionService<Void>(executorService);
         for (int i = 0; i < count; i++)
         {
             // create the runner
-            Runner<Void> runner = createRunner(repo.getId(), master.getId(), "runner-" + i);
+            Runner<Void> runner = createRunner("runner-" + i, DriverContext.getDriver(), master);
             runner.init();
 
             cs.submit(runner);
@@ -93,11 +93,11 @@ public class ParallelUploadTest extends AbstractTestCase
         }
     }
 
-    protected Runner<Void> createRunner(String repositoryId, String branchId, String id)
+    protected Runner<Void> createRunner(String runnerId, Driver driver, Branch branch)
     {
-        ParallelUploadRunner runner = new ParallelUploadRunner(id);
-        runner.setRepositoryId(repositoryId);
-        runner.setBranchId(branchId);
+        ParallelUploadRunner runner = new ParallelUploadRunner(runnerId);
+        runner.setDriver(driver);
+        runner.setBranch(branch);
 
         return runner;
     }

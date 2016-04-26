@@ -42,6 +42,11 @@ public class DriverContext
     {
         DriverContext context = get();
 
+        if (context.driver == null)
+        {
+            throw new RuntimeException("The current thread is not authenticated.  DriverContext does not have a Driver set.  You must authenticate before using the Cloud CMS API or if you are working with multiple threads, you must call DriverContext.setDriver before using the Cloud CMS API.");
+        }
+
         return context.driver;
     }
 
