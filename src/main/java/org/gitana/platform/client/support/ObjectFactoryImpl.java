@@ -22,7 +22,6 @@
 package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.AuthenticationGrantImpl;
 import org.gitana.platform.client.api.Client;
@@ -39,6 +38,8 @@ import org.gitana.platform.client.branch.BranchImpl;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.changeset.ChangesetImpl;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.deletion.Deletion;
+import org.gitana.platform.client.deletion.DeletionImpl;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.directory.DirectoryImpl;
 import org.gitana.platform.client.domain.Domain;
@@ -491,6 +492,41 @@ public class ObjectFactoryImpl implements ObjectFactory
         }
 
         return node;
+    }
+
+    @Override
+    public Deletion deletion(Branch branch, ObjectNode object)
+    {
+        return new DeletionImpl(branch, object, false);
+    }
+
+    @Override
+    public Deletion deletion(Branch branch, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return deletion(branch, response.getObjectNode());
+    }
+
+    @Override
+    public ResultMap<Deletion> deletions(Branch branch, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Deletion> map = new ResultMapImpl<Deletion>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Deletion deletion = deletion(branch, object);
+            map.put(deletion.getId(), deletion);
+        }
+
+        return map;
     }
 
     @Override

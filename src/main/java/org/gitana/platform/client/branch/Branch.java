@@ -24,6 +24,7 @@ package org.gitana.platform.client.branch;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.http.HttpPayload;
+import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -297,7 +298,7 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      *
      * @param listKey
      * @param itemTypeQName
-     * @return
+     * @return node list
      */
     public NodeList createList(String listKey, QName itemTypeQName);
 
@@ -305,7 +306,44 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * Reads a node list.
      *
      * @param listKey
-     * @return
+     * @return node list
      */
     public NodeList readList(String listKey);
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DELETIONS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Reads a deletion by node ID.
+     *
+     * @param nodeId
+     * @return deletion
+     */
+    public Deletion readDeletion(String nodeId);
+
+    /**
+     * Queries for deletions.
+     *
+     * @param query
+     * @return result map of deletions
+     */
+    public ResultMap<Deletion> queryDeletions(ObjectNode query);
+
+    /**
+     * Queries for deletions.
+     *
+     * @param query
+     * @param pagination
+     * @return result map of deletions
+     */
+    public ResultMap<Deletion> queryDeletions(ObjectNode query, Pagination pagination);
+
+    /**
+     * Purges all deletions for the current branch.
+     */
+    public void purgeAllDeletions();
 }

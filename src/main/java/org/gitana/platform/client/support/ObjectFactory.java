@@ -35,6 +35,7 @@ import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
@@ -107,6 +108,10 @@ public interface ObjectFactory
 
     // produces a node (raw function)
     public BaseNode produce(Branch branch, ObjectNode object, boolean isSaved);
+
+    public Deletion deletion(Branch branch, ObjectNode object);
+    public Deletion deletion(Branch branch, Response response);
+    public ResultMap<Deletion> deletions(Branch branch, Response response);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

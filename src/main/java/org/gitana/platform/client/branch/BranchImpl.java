@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.beans.ACL;
+import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -648,6 +649,47 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         }
 
         return nodeList;
+    }
+
+    @Override
+    public Deletion readDeletion(String nodeId)
+    {
+        Deletion deletion = null;
+
+        try
+        {
+            Response response = getRemote().get(getResourceUri() + "/deletions/" + nodeId);
+            deletion = (Deletion) getFactory().deletion(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return deletion;
+    }
+
+    @Override
+    public ResultMap<Deletion> queryDeletions(ObjectNode query)
+    {
+        return queryDeletions(query, null);
+    }
+
+    @Override
+    public ResultMap<Deletion> queryDeletions(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(getResourceUri() + "/deletions/query", params, query);
+        return getFactory().deletions(this, response);
+    }
+
+    @Override
+    public void purgeAllDeletions()
+    {
+        getRemote().post(getResourceUri() + "/deletions/purgeall");
     }
 
 }
