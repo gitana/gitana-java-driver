@@ -21,18 +21,14 @@
 
 package org.gitana.platform.load;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.Gitana;
 import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.node.BaseNodeImpl;
 import org.gitana.platform.client.node.Node;
-import org.gitana.platform.client.node.NodeImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.support.QName;
 import org.gitana.util.ClasspathUtil;
-import org.gitana.util.JsonUtil;
 
 /**
  * @author uzi

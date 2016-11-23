@@ -61,7 +61,7 @@ public class NodeImageUploadLoadTest extends AbstractLoadTest<Void>
     @Override
     protected int getIterationCount()
     {
-        return 100000;
+        return 100;
     }
 
     @Test

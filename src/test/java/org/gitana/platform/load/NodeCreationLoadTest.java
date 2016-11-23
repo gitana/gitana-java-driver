@@ -50,13 +50,13 @@ public class NodeCreationLoadTest extends AbstractLoadTest<Void>
     @Override
     protected int getNumberOfRunners()
     {
-        return 100;
+        return 10;
     }
 
     @Override
     protected int getIterationCount()
     {
-        return 1000;
+        return 100;
     }
 
     @Test

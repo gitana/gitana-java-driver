@@ -101,30 +101,30 @@ public class TraversalTest extends AbstractTestCase
 
 
         // who are harry's friends? (depth 1)
-        ObjectNode traversal1 = TraversalBuilder.start().depth(1).follow(friends).get();
+        ObjectNode traversal1 = TraversalBuilder.start().depth(1).filter("ALL_BUT_START_NODE").follow(friends).get();
         TraversalResults results1 = harry.traverse(traversal1);
         assertEquals(3, results1.getNodes().size()); // hermione, ron and dudley
         assertEquals(3, results1.getAssociations().size()); // associations to hermione, ron and dudley
 
         // who are is harry's teacher?
-        ObjectNode traversal2 = TraversalBuilder.start().depth(1).follow(taught, Direction.INCOMING).get();
+        ObjectNode traversal2 = TraversalBuilder.start().depth(1).filter("ALL_BUT_START_NODE").follow(taught, Direction.INCOMING).get();
         TraversalResults results2 = harry.traverse(traversal2);
         assertEquals(1, results2.getNodes().size()); // dumbledore
         assertEquals(1, results2.getAssociations().size()); // dumbledore
 
         // traverse all friends from dudley (depth 1)
-        ObjectNode traversal3 = TraversalBuilder.start().depth(1).follow(friends).get();
+        ObjectNode traversal3 = TraversalBuilder.start().depth(1).filter("ALL_BUT_START_NODE").follow(friends).get();
         TraversalResults results3 = dudley.traverse(traversal3);
         assertEquals(1, results3.getNodes().size()); // harry
 
         // traverse all friends from dudley (any depth)
-        ObjectNode traversal4 = TraversalBuilder.start().follow(friends).get();
+        ObjectNode traversal4 = TraversalBuilder.start().depth(-1).filter("ALL_BUT_START_NODE").follow(friends).get();
         TraversalResults results4 = dudley.traverse(traversal4);
         assertEquals(3, results4.getNodes().size()); // harry, hermione, ron
 
         // find any bad guys nearby dudley with no depth constraint
         /*
-        ObjectNode traversal5 = TraversalBuilder.start().type(baddie).get();
+        ObjectNode traversal5 = TraversalBuilder.start().filter("ALL_BUT_START_NODE").type(baddie).get();
         TraversalResults results5 = dudley.traverse(traversal5);
         assertEquals(1, results5.getNodes().size()); // voldemort
         */
