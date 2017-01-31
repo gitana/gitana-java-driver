@@ -23,10 +23,6 @@ package org.gitana.platform.client;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.gitana.http.OAuth2HttpMethodExecutor;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
@@ -53,11 +49,15 @@ import java.util.ResourceBundle;
  */
 public class Gitana
 {
-    private String baseUrl;
+    private String baseURL;
 
-    private String environmentId;
     private String clientKey;
     private String clientSecret;
+
+    public String getBaseURL()
+    {
+        return this.baseURL;
+    }
 
     /**
      * Creates a Gitana instance that loads all of its settings from a properties bundle.
@@ -89,40 +89,48 @@ public class Gitana
             environmentId = Environment.DEFAULT;
         }
 
-        this.environmentId = environmentId;
-
         // load environment properties
-        ResourceBundle bundle = readBundle("gitana-environments");
-        this.baseUrl = bundle.getString("gitana.environment." + environmentId + ".uri");
-
-        // load client properties if not provided
-        if (clientKey == null && clientSecret == null)
+        ResourceBundle environmentsBundle = readBundle("gitana-environments");
+        if (environmentsBundle != null)
         {
-            bundle = readBundle("gitana");
-
-            if (bundle.containsKey("gitana.clientKey"))
+            if (environmentsBundle.containsKey("gitana.environment." + environmentId + ".uri"))
             {
-                this.clientKey = bundle.getString("gitana.clientKey");
+                this.baseURL = environmentsBundle.getString("gitana.environment." + environmentId + ".uri");
+            }
+        }
+
+        // load api keys
+        ResourceBundle apiKeysBundle = readBundle("gitana");
+        if (apiKeysBundle != null)
+        {
+            // load client properties if not provided
+            if (clientKey == null && clientSecret == null)
+            {
+                if (apiKeysBundle.containsKey("gitana.clientKey"))
+                {
+                    this.clientKey = apiKeysBundle.getString("gitana.clientKey");
+                }
+
+                // legacy support
+                if (this.clientKey == null && apiKeysBundle.containsKey("gitana.clientId"))
+                {
+                    this.clientKey = apiKeysBundle.getString("gitana.clientId");
+                }
+
+                this.clientSecret = apiKeysBundle.getString("gitana.clientSecret");
             }
 
-            // legacy support
-            if (this.clientKey == null && bundle.containsKey("gitana.clientId"))
+            // allow baseURL
+            if (apiKeysBundle.containsKey("gitana.baseURL"))
             {
-                this.clientKey = bundle.getString("gitana.clientId");
+                this.baseURL = apiKeysBundle.getString("gitana.baseURL");
             }
-
-            this.clientSecret = bundle.getString("gitana.clientSecret");
         }
         else
         {
             this.clientKey = clientKey;
             this.clientSecret = clientSecret;
         }
-    }
-
-    public String getEnvironmentId()
-    {
-        return environmentId;
     }
 
     /**
@@ -136,7 +144,7 @@ public class Gitana
         HttpCredentials credentials = null;
         HttpProxyConfiguration proxyConfig = null;
 
-        if (baseUrl != null && baseUrl.toLowerCase().startsWith("http://"))
+        if (baseURL != null && baseURL.toLowerCase().startsWith("http://"))
         {
             String httpProxyHost = System.getProperty("http.proxyHost");
             String httpProxyPort = System.getProperty("http.proxyPort");
@@ -153,7 +161,7 @@ public class Gitana
             }
         }
 
-        if (baseUrl != null && baseUrl.toLowerCase().startsWith("https://"))
+        if (baseURL != null && baseURL.toLowerCase().startsWith("https://"))
         {
             String httpsProxyHost = System.getProperty("https.proxyHost");
             String httpsProxyPort = System.getProperty("https.proxyPort");
@@ -174,7 +182,7 @@ public class Gitana
         HttpClient client = HttpUtil.buildClient(false, credentials, proxyConfig);
 
         // wrap into a remote object
-        return new RemoteImpl(client, baseUrl);
+        return new RemoteImpl(client, baseURL);
     }
 
     /**
@@ -344,7 +352,7 @@ public class Gitana
 
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
-        httpMethodExecutor.setUri(this.baseUrl + "/oauth/token");
+        httpMethodExecutor.setUri(this.baseURL + "/oauth/token");
         httpMethodExecutor.setClientId(this.clientKey);
         httpMethodExecutor.setClientSecret(this.clientSecret);
         httpMethodExecutor.setResourceOwnerPasswordCredentialsFlow(username, password);
@@ -377,7 +385,7 @@ public class Gitana
 
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
-        httpMethodExecutor.setUri(this.baseUrl + "/oauth/token");
+        httpMethodExecutor.setUri(this.baseURL + "/oauth/token");
         httpMethodExecutor.setClientId(this.clientKey);
         httpMethodExecutor.setClientSecret(this.clientSecret);
         httpMethodExecutor.setAuthorizationCodeFlow(code, redirectUri);
