@@ -34,6 +34,7 @@ import org.gitana.platform.client.support.Environment;
 import org.gitana.platform.client.support.RemoteImpl;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
+import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.util.HttpCredentials;
 import org.gitana.util.HttpProxyConfiguration;
 import org.gitana.util.HttpUtil;
@@ -41,6 +42,7 @@ import org.gitana.util.JsonUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -58,6 +60,73 @@ public class Gitana
     {
         return this.baseURL;
     }
+
+    public static Platform connect(ResourceBundle bundle)
+    {
+        String clientKey = DriverUtil.readKey(bundle, "clientKey");
+        String clientSecret = DriverUtil.readKey(bundle, "clientSecret");
+
+        String username = DriverUtil.readKey(bundle, "username");
+        if (username == null)
+        {
+            username = DriverUtil.readKey(bundle, "authGrantKey");
+        }
+
+        String password = DriverUtil.readKey(bundle, "password");
+        if (password == null)
+        {
+            password = DriverUtil.readKey(bundle, "authGrantSecret");
+        }
+
+        String baseURL = DriverUtil.readKey(bundle, "baseURL");
+
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+    }
+
+    public static Platform connect(ObjectNode config)
+    {
+        String clientKey = JsonUtil.objectGetString(config, "clientKey");
+        String clientSecret = JsonUtil.objectGetString(config, "clientSecret");
+
+        String username = JsonUtil.objectGetString(config, "username");
+        if (username == null)
+        {
+            username = JsonUtil.objectGetString(config, "authGrantKey");
+        }
+
+        String password = JsonUtil.objectGetString(config, "password");
+        if (password == null)
+        {
+            password = JsonUtil.objectGetString(config, "authGrantSecret");
+        }
+
+        String baseURL = JsonUtil.objectGetString(config, "baseURL");
+
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+    }
+
+    public static Platform connect(Map<String, String> properties)
+    {
+        String clientKey = properties.get("clientKey");
+        String clientSecret = properties.get("clientSecret");
+
+        String username = properties.get("username");
+        if (username == null)
+        {
+            username = properties.get("authGrantKey");
+        }
+
+        String password = properties.get("password");
+        if (password == null)
+        {
+            password = properties.get("authGrantSecret");
+        }
+
+        String baseURL = properties.get("baseURL");
+
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+    }
+
 
     /**
      * Creates a Gitana instance that loads all of its settings from a properties bundle.
@@ -84,22 +153,39 @@ public class Gitana
      */
     public Gitana(String environmentId, String clientKey, String clientSecret)
     {
-        if (environmentId == null)
-        {
-            environmentId = Environment.DEFAULT;
-        }
+        this(environmentId, clientKey, clientSecret, null);
+    }
 
-        // load environment properties
-        ResourceBundle environmentsBundle = readBundle("gitana-environments");
-        if (environmentsBundle != null)
+    public Gitana(String environmentId, String clientKey, String clientSecret, String baseURL)
+    {
+        this.clientKey = clientKey;
+        this.clientSecret = clientSecret;
+        this.baseURL = baseURL;
+
+        if (this.baseURL == null)
         {
-            if (environmentsBundle.containsKey("gitana.environment." + environmentId + ".uri"))
+            if (environmentId == null)
             {
-                this.baseURL = environmentsBundle.getString("gitana.environment." + environmentId + ".uri");
+                environmentId = Environment.DEFAULT;
+            }
+
+            // load environment properties
+            ResourceBundle environmentsBundle = readBundle("gitana-environments");
+            if (environmentsBundle != null)
+            {
+                if (environmentsBundle.containsKey("gitana.environment." + environmentId + ".uri"))
+                {
+                    this.baseURL = environmentsBundle.getString("gitana.environment." + environmentId + ".uri");
+                }
             }
         }
 
-        // load api keys
+        if (this.baseURL == null)
+        {
+            this.baseURL = "https://api.cloudcms.com";
+        }
+
+        // load api keys?
         ResourceBundle apiKeysBundle = readBundle("gitana");
         if (apiKeysBundle != null)
         {
@@ -121,15 +207,13 @@ public class Gitana
             }
 
             // allow baseURL
-            if (apiKeysBundle.containsKey("gitana.baseURL"))
+            if (this.baseURL == null)
             {
-                this.baseURL = apiKeysBundle.getString("gitana.baseURL");
+                if (apiKeysBundle.containsKey("gitana.baseURL"))
+                {
+                    this.baseURL = apiKeysBundle.getString("gitana.baseURL");
+                }
             }
-        }
-        else
-        {
-            this.clientKey = clientKey;
-            this.clientSecret = clientSecret;
         }
     }
 

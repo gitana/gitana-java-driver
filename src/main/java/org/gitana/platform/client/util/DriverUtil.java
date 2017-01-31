@@ -23,7 +23,6 @@ package org.gitana.platform.client.util;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.ACLEntry;
 import org.gitana.platform.client.branch.Branch;
@@ -46,10 +45,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.ResultMapImpl;
 import org.gitana.util.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uzi
@@ -255,5 +251,18 @@ public class DriverUtil
 
         return job;
     }
+
+    public static String readKey(ResourceBundle bundle, String key)
+    {
+        String value = null;
+
+        if (bundle.containsKey(key))
+        {
+            value = bundle.getString(key);
+        }
+
+        return value;
+    }
+
 
 }
