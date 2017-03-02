@@ -28,6 +28,7 @@ import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.TypedID;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 
 /**
@@ -60,13 +61,25 @@ public abstract class AbstractPlatformDataStoreImpl extends AbstractClusterDataS
     @Override
     public CopyJob copy(TypedID targetContainer)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
+        return copy(targetContainer, null);
+    }
+
+    @Override
+    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy)
+    {
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
     public CopyJob copyAsync(TypedID targetContainer)
     {
-        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
+        return copyAsync(targetContainer, null);
+    }
+
+    @Override
+    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy)
+    {
+        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.ASYNCHRONOUS);
 
         return new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
     }

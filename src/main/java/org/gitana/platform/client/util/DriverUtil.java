@@ -39,6 +39,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.support.TypedID;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -153,9 +154,14 @@ public class DriverUtil
      * @param source
      * @param target
      */
-    public static CopyJob copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferSchedule schedule)
+    public static CopyJob copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferImportStrategy strategy, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
+
+        if (strategy == null)
+        {
+            strategy = TransferImportStrategy.COPY_EVERYTHING;
+        }
 
         ArrayNode sourceDependencies = toCopyDependencyChain(source);
         ArrayNode targetDependencies = toCopyDependencyChain(target);
@@ -164,7 +170,7 @@ public class DriverUtil
         ObjectNode payload = JsonUtil.createObject();
         payload.put("sources", sourceDependencies);
         payload.put("targets", targetDependencies);
-        Response response1 = remote.post("/tools/copy?schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), payload);
+        Response response1 = remote.post("/tools/copy?schedule=" + TransferSchedule.ASYNCHRONOUS.toString() + "&strategy=" + strategy.toString(), payload);
         String jobId = response1.getId();
 
         Job job = DriverUtil.retrieveOrPollJob(cluster, jobId, synchronous);
@@ -243,7 +249,7 @@ public class DriverUtil
 
                 if (!completed)
                 {
-                    try { Thread.sleep(250); } catch (Exception ex) { completed = true; }
+                    try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
                 }
             }
             while (!completed);

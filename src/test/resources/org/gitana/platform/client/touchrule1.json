@@ -1,0 +1,22 @@
+{
+    "_type": "n:rule",
+    "title": "Publish Rule",
+    "conditions": [
+        {
+            "type": "propertyEquals",
+            "config": {
+                "property": "state",
+                "value": "published"
+            }
+        }
+    ],
+    "actions": [
+        {
+            "type": "syncNode",
+            "config": {
+                "targetRepositoryId": "",
+                "targetBranchId": ""
+            }
+        }
+    ]
+}

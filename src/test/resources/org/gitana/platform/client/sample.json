@@ -1,0 +1,45 @@
+{
+    "_id": "58b88a64db4eee2f46dddd8d",
+    "index": 0,
+    "guid": "99fbaee3-2a81-43cc-ab60-d770048ec8ff",
+    "isActive": false,
+    "balance": "$2,407.17",
+    "picture": "http://placehold.it/32x32",
+    "age": 32,
+    "eyeColor": "blue",
+    "name": "Marisa Cannon",
+    "gender": "female",
+    "company": "VIXO",
+    "email": "marisacannon@vixo.com",
+    "phone": "+1 (828) 457-3493",
+    "address": "903 Maple Avenue, Wells, Alaska, 1872",
+    "about": "Exercitation quis ut tempor ea magna ad ad exercitation cillum magna aliqua enim. Eiusmod tempor ea voluptate quis sint eiusmod. Magna et sint eu est dolore esse aliquip nisi id irure. Proident ea id duis ipsum. Consequat excepteur laboris magna enim.\r\n",
+    "registered": "2017-02-13T12:22:23 +05:00",
+    "latitude": 22.590636,
+    "longitude": 43.694901,
+    "tags": [
+        "nulla",
+        "deserunt",
+        "eiusmod",
+        "consequat",
+        "ut",
+        "ex",
+        "in"
+    ],
+    "friends": [
+        {
+            "id": 0,
+            "name": "Allyson Cardenas"
+        },
+        {
+            "id": 1,
+            "name": "Marta Santos"
+        },
+        {
+            "id": 2,
+            "name": "Cooley Pierce"
+        }
+    ],
+    "greeting": "Hello, Marisa Cannon! You have 4 unread messages.",
+    "favoriteFruit": "banana"
+}

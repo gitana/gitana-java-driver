@@ -22,7 +22,6 @@
 package org.gitana.platform.client.platform;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.cluster.Cluster;
@@ -36,6 +35,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
+import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 
 /**
@@ -186,13 +186,25 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     @Override
     public CopyJob copy(TypedID targetContainer)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.SYNCHRONOUS);
+        return copy(targetContainer, null);
+    }
+
+    @Override
+    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy)
+    {
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
     public CopyJob copyAsync(TypedID targetContainer)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, TransferSchedule.ASYNCHRONOUS);
+        return copyAsync(targetContainer, null);
+    }
+
+    @Override
+    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy)
+    {
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.ASYNCHRONOUS);
     }
 
 }
