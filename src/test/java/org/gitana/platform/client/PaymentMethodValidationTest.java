@@ -87,17 +87,17 @@ public class PaymentMethodValidationTest extends AbstractTestCase
         registrar = platform.createRegistrar(JSONBuilder.start(Registrar.FIELD_BILLING_PROVIDER_CONFIGURATION_ID).is(billingProviderConfiguration.getId()).get());
         
         // validate (GOOD)
-        PaymentMethodValidation validation1 = registrar.validateCreditCard("Chuck Berry", NUMBER_VISA_GOOD, 1, 2017);
+        PaymentMethodValidation validation1 = registrar.validateCreditCard("Chuck Berry", NUMBER_VISA_GOOD, 1, 2019);
         assertTrue(validation1.isValid());
         assertTrue(validation1.listErrors().size() == 0);
 
         // validate (BAD NUMBER)
-        PaymentMethodValidation validation2 = registrar.validateCreditCard("Chuck Berry", NUMBER_VISA_BAD, 1, 2017);
+        PaymentMethodValidation validation2 = registrar.validateCreditCard("Chuck Berry", NUMBER_VISA_BAD, 1, 2019);
         assertFalse(validation2.isValid());
         assertTrue(validation2.listErrors().size() > 0);
 
         // validate (BAD MONTH)
-        PaymentMethodValidation validation3 = registrar.validateCreditCard("Chuck Berry", NUMBER_VISA_GOOD, 13, 2017);
+        PaymentMethodValidation validation3 = registrar.validateCreditCard("Chuck Berry", NUMBER_VISA_GOOD, 13, 2019);
         assertFalse(validation3.isValid());
         assertTrue(validation3.listErrors().size() > 0);
 

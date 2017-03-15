@@ -55,6 +55,8 @@ public class ArchiveTest extends AbstractTestCase
         byte[] bytes1 = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/archive-repository.zip");
         InputStream in1 = new ByteArrayInputStream(bytes1);
         vault.uploadArchive(in1, bytes1.length);
+        // wait for completion
+        Thread.sleep(10000);
         // verify
         Archive archive1 = vault.lookupArchive("org.gitana", "test-artifact1", "1.0.0");
         assertNotNull(archive1);
@@ -65,6 +67,8 @@ public class ArchiveTest extends AbstractTestCase
         byte[] bytes2 = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/archive-domain.zip");
         InputStream in2 = new ByteArrayInputStream(bytes2);
         vault.uploadArchive(in2, bytes2.length);
+        // wait for completion
+        Thread.sleep(10000);
         // verify
         Archive archive2 = vault.lookupArchive("org.gitana", "test-artifact2", "2.0.0");
         assertNotNull(archive2);
@@ -75,6 +79,8 @@ public class ArchiveTest extends AbstractTestCase
         byte[] bytes3 = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/archive-node.zip");
         InputStream in3 = new ByteArrayInputStream(bytes3);
         vault.uploadArchive(in3, bytes3.length);
+        // wait for completion
+        Thread.sleep(10000);
         // verify
         Archive archive3 = vault.lookupArchive("org.cloudcms", "test-artifact3", "1.0.0");
         assertNotNull(archive3);

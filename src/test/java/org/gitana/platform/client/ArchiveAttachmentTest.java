@@ -53,6 +53,8 @@ public class ArchiveAttachmentTest extends AbstractTestCase
         byte[] bytes1 = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/archive-repository.zip");
         InputStream in1 = new ByteArrayInputStream(bytes1);
         vault.uploadArchive(in1, bytes1.length);
+        // wait for completion
+        Thread.sleep(10000);
         // verify
         Archive archive = vault.lookupArchive("org.gitana", "test-artifact1", "1.0.0");
         assertNotNull(archive);

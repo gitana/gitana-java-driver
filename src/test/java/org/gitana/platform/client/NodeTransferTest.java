@@ -102,6 +102,8 @@ public class NodeTransferTest extends AbstractTestCase
         // upload the archive anew
         in = new ByteArrayInputStream(bytes);
         vault.uploadArchive(in, bytes.length);
+        // wait for completion
+        Thread.sleep(10000);
 
         // verify the archive exists
         archive = vault.lookupArchive(groupId, artifactId, versionId);
