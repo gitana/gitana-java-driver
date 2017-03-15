@@ -24,11 +24,13 @@ package org.gitana.platform.client;
 import junit.framework.TestCase;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.util.TestConstants;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author uzi
  */
+@Ignore
 public class HttpProxyTest extends TestCase
 {
     @Test

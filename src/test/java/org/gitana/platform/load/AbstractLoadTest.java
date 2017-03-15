@@ -58,18 +58,7 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
 
     protected ExecutorService createExecutorService()
     {
-        int corePoolSize = getNumberOfRunners();
-        //int maximumPoolSize = getNumberOfRunners();
-        //int keepAliveTime = 1;
-        //TimeUnit timeUnit = TimeUnit.MINUTES;
-        //BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<Runnable>(maximumPoolSize, true);
-        //RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
-
-        //int nrOfProcessors = Runtime.getRuntime().availableProcessors();
-        return Executors.newFixedThreadPool(corePoolSize);
-
-
-        //return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, timeUnit, workQueue, rejectedExecutionHandler);
+        return Executors.newFixedThreadPool(getNumberOfRunners());
     }
 
     protected List<RunnerResult<V>> execute() throws Exception

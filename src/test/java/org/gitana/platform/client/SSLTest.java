@@ -25,11 +25,13 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.util.TestConstants;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author uzi
  */
+@Ignore
 public class SSLTest extends AbstractTestCase
 {
     @Test
