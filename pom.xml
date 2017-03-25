@@ -165,11 +165,11 @@
     </build>
     <dependencies>
 
-        <!-- Gitana Objects + Core -->
+        <!-- Gitana Common - Objects + Core -->
         <dependency>
             <groupId>org.gitana</groupId>
             <artifactId>gitana-objects</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${gitana.common.version}</version>
             <exclusions>
                 <!-- We exclude xom so that we exclude Xerces which isn't needed and interferes with Android runtime -->
                 <exclusion>
@@ -183,6 +183,23 @@
                 <exclusion>
                     <groupId>xpp3</groupId>
                     <artifactId>xpp3</artifactId>
+                </exclusion>
+                <!-- exclude jackson - keep our own -->
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-scala_2.11</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -203,12 +220,38 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- set to a specific version of jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_2.11</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
     </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+        <gitana.common.version>1.0.1-SNAPSHOT</gitana.common.version>
+
+        <!-- we keep this version of Jackson because it is 1.6 compatible -->
+        <jackson.version>2.6.1</jackson.version>
     </properties>
 
 </project>

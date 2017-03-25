@@ -29,6 +29,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
@@ -44,6 +45,8 @@ public class BranchTest extends AbstractTestCase
     @Test
     public void testCRUD()
     {
+        JobState state = JobState.AWAITING;
+
         Gitana gitana = new Gitana();
 
         // authenticate
