@@ -35,7 +35,7 @@
     <scm>
         <developerConnection>scm:git:https://github.com/gitana/gitana-java-driver</developerConnection>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
     <repositories>
         <repository>
             <id>maven.springframework.org.release</id>
