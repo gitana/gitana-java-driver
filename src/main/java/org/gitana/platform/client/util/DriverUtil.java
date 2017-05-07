@@ -39,6 +39,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.support.TypedID;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.services.transfer.TransferDependency;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.Pagination;
@@ -154,7 +155,7 @@ public class DriverUtil
      * @param source
      * @param target
      */
-    public static CopyJob copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferImportStrategy strategy, TransferSchedule schedule)
+    public static CopyJob copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -166,10 +167,18 @@ public class DriverUtil
         ArrayNode sourceDependencies = toCopyDependencyChain(source);
         ArrayNode targetDependencies = toCopyDependencyChain(target);
 
-        // execute
+        // build payload
         ObjectNode payload = JsonUtil.createObject();
         payload.put("sources", sourceDependencies);
         payload.put("targets", targetDependencies);
+
+        if (additionalConfiguration != null)
+        {
+            ObjectNode configuration = (ObjectNode) JsonUtil.toJsonNode(additionalConfiguration);
+            payload.put("configuration", configuration);
+        }
+
+        // execute
         Response response1 = remote.post("/tools/copy?schedule=" + TransferSchedule.ASYNCHRONOUS.toString() + "&strategy=" + strategy.toString(), payload);
         String jobId = response1.getId();
 
@@ -210,8 +219,8 @@ public class DriverUtil
     public static ObjectNode toDependencyObject(TypedID typedID)
     {
         ObjectNode obj = JsonUtil.createObject();
-        obj.put("typeId", typedID.getTypeId());
-        obj.put("id", typedID.getId());
+        obj.put(TransferDependency.TYPE_ID, typedID.getTypeId());
+        obj.put(TransferDependency.ID, typedID.getId());
 
         return obj;
     }

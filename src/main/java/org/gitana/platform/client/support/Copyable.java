@@ -24,6 +24,8 @@ package org.gitana.platform.client.support;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 
+import java.util.Map;
+
 /**
  * @author uzi
  */
@@ -43,17 +45,18 @@ public interface Copyable
      *
      * @param targetContainer
      * @param strategy
+     * @param additionalConfiguration
      *
      * @return id of the resulting object
      */
-    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy);
+    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration);
 
     /**
      * Copies this object into the target container.
      *
      * @param targetContainer
      *
-     * @return
+     * @return copy job
      */
     public CopyJob copyAsync(TypedID targetContainer);
 
@@ -62,8 +65,9 @@ public interface Copyable
      *
      * @param targetContainer
      * @param strategy
+     * @param additionalConfiguration
      *
-     * @return
+     * @return copy job
      */
-    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy);
+    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration);
 }

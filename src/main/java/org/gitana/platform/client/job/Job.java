@@ -124,4 +124,7 @@ public interface Job extends ClusterDocument
 
     public String getPlatformId();
     public void setPlatformId(String platformId);
+
+    public boolean getSuccess();
+    public boolean getError();
 }

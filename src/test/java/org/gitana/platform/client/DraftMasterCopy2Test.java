@@ -72,7 +72,7 @@ public class DraftMasterCopy2Test extends AbstractTestCase
         assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("1").get()).size());
 
         // copy the draft node to the master branch
-        draftNode.copy(master, TransferImportStrategy.CLONE);
+        draftNode.copy(master, TransferImportStrategy.CLONE, null);
 
         // assert - node exists on draft and on master
         assertEquals(1, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());
@@ -89,7 +89,7 @@ public class DraftMasterCopy2Test extends AbstractTestCase
         assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("2").get()).size());
 
         // copy the draft node to the master branch
-        draftNode.copy(master, TransferImportStrategy.CLONE);
+        draftNode.copy(master, TransferImportStrategy.CLONE, null);
 
         // assert - node exists on draft (v2) and on master (v2)
         assertEquals(0, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());

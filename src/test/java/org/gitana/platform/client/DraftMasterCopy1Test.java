@@ -28,6 +28,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.support.QueryBuilder;
@@ -77,7 +78,8 @@ public class DraftMasterCopy1Test extends AbstractTestCase
         assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("1").get()).size());
 
         // copy the draft node to the master branch
-        draftNode.copy(master, TransferImportStrategy.CLONE);
+        CopyJob job1 = draftNode.copy(master, TransferImportStrategy.CLONE, null);
+        assertTrue(job1.getSuccess());
 
         // assert - node exists on draft and on master
         assertEquals(1, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());
@@ -94,7 +96,7 @@ public class DraftMasterCopy1Test extends AbstractTestCase
         assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("2").get()).size());
 
         // copy the draft node to the master branch
-        draftNode.copy(master, TransferImportStrategy.CLONE);
+        draftNode.copy(master, TransferImportStrategy.CLONE, null);
 
         // assert - node exists on draft (v2) and on master (v2)
         assertEquals(0, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());

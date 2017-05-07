@@ -22,7 +22,6 @@
 package org.gitana.platform.client.platform;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.TypedID;
@@ -30,6 +29,8 @@ import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
+
+import java.util.Map;
 
 /**
  * @author uzi
@@ -61,25 +62,25 @@ public abstract class AbstractPlatformDataStoreImpl extends AbstractClusterDataS
     @Override
     public CopyJob copy(TypedID targetContainer)
     {
-        return copy(targetContainer, null);
+        return copy(targetContainer, null, null);
     }
 
     @Override
-    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy)
+    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.SYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
     public CopyJob copyAsync(TypedID targetContainer)
     {
-        return copyAsync(targetContainer, null);
+        return copyAsync(targetContainer, null, null);
     }
 
     @Override
-    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy)
+    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.ASYNCHRONOUS);
+        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
 
         return new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
     }

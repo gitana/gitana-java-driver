@@ -19,34 +19,25 @@
  *   info@cloudcms.com
  */
 
-package org.gitana.platform.client.exceptions;
-
-import org.gitana.platform.client.support.Response;
+package org.gitana.platform.client.exception;
 
 /**
  * @author uzi
  */
-public class RemoteServerException extends RuntimeException
+public class AuthenticationFailedException extends RuntimeException
 {
-    private Response response;
-
-    public RemoteServerException(Response response)
+    public AuthenticationFailedException(String message, Throwable cause)
     {
-        super(response.getMessage());
+        super(message, cause);
     }
 
-    public Response getResponse()
+    public AuthenticationFailedException(Throwable cause)
     {
-        return response;
+        super(cause);
     }
 
-    public String getRemoteMessage()
+    public AuthenticationFailedException(String message)
     {
-        return response.getMessage();
-    }
-
-    public String getRemoteStackTrace()
-    {
-        return response.getStackTrace();
+        super(message, null);
     }
 }

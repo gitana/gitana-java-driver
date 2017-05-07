@@ -22,7 +22,6 @@
 package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
@@ -31,12 +30,16 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.client.transfer.CopyJob;
+import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.transfer.TransferImportConfiguration;
+import org.gitana.platform.services.transfer.TransferImportStrategy;
+import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.QName;
 import org.gitana.util.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Base class for nodes
@@ -266,4 +269,76 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
 
         return hasFeature;
     }
+
+    @Override
+    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
+    {
+        if (additionalConfiguration == null)
+        {
+            additionalConfiguration = new HashMap<String, Object>();
+        }
+
+        // if we're copying to the same branch, we assume COPY_EVERYTHING and COPY_ON_EXISTING = false
+        boolean sameBranch = false;
+        if (targetContainer instanceof Branch)
+        {
+            sameBranch = this.getBranchId().equals((targetContainer).getId());
+        }
+        else if (targetContainer instanceof BaseNode)
+        {
+            sameBranch = this.getBranchId().equals(((BaseNode) targetContainer).getBranchId());
+        }
+        if (sameBranch)
+        {
+            if (strategy == null)
+            {
+                strategy = TransferImportStrategy.COPY_EVERYTHING;
+            }
+
+            if (TransferImportStrategy.COPY_EVERYTHING.equals(strategy))
+            {
+                if (additionalConfiguration.get(TransferImportConfiguration.FIELD_COPY_ON_EXISTING) == null)
+                {
+                    additionalConfiguration.put(TransferImportConfiguration.FIELD_COPY_ON_EXISTING, false);
+                }
+            }
+        }
+
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
+    }
+
+    @Override
+    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
+    {
+        // if we're copying to the same branch, we assume COPY_EVERYTHING and COPY_ON_EXISTING = false
+        boolean sameBranch = false;
+        if (targetContainer instanceof Branch)
+        {
+            sameBranch = this.getBranchId().equals((targetContainer).getId());
+        }
+        else if (targetContainer instanceof BaseNode)
+        {
+            sameBranch = this.getBranchId().equals(((BaseNode) targetContainer).getBranchId());
+        }
+        if (sameBranch)
+        {
+            if (strategy == null)
+            {
+                strategy = TransferImportStrategy.COPY_EVERYTHING;
+            }
+
+            if (TransferImportStrategy.COPY_EVERYTHING.equals(strategy))
+            {
+                if (additionalConfiguration == null)
+                {
+                    additionalConfiguration = new HashMap<String, Object>();
+                }
+
+                additionalConfiguration.put(TransferImportConfiguration.FIELD_COPY_ON_EXISTING, false);
+            }
+        }
+
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
+    }
+
 }

@@ -23,10 +23,7 @@ package org.gitana.platform.client;
 
 import org.gitana.platform.client.node.type.*;
 import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.ObjectFactoryImpl;
-import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.support.RemoteImpl;
+import org.gitana.platform.client.support.*;
 
 import java.util.Locale;
 
@@ -55,7 +52,7 @@ public class Driver
         this.authInfo = authInfo;
     }
 
-    public void removeAuthInfo()
+    //public void removeAuthInfo()
     {
         this.authInfo = null;
     }
@@ -117,4 +114,11 @@ public class Driver
         return factory;
     }
 
+    /**
+     * Expires the access token for the currently authenticated driver.
+     */
+    public void expire()
+    {
+        getRemote().post("/auth/expire");
+    }
 }

@@ -23,7 +23,6 @@ package org.gitana.platform.client.job;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.services.job.JobState;
@@ -326,4 +325,17 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     {
         set(FIELD_STATE, state.toString());
     }
+
+    @Override
+    public boolean getSuccess()
+    {
+        return JobState.FINISHED.equals(getState());
+    }
+
+    @Override
+    public boolean getError()
+    {
+        return JobState.ERROR.equals(getState());
+    }
+
 }

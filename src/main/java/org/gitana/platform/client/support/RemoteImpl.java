@@ -36,7 +36,7 @@ import org.gitana.http.HttpInvoker;
 import org.gitana.http.HttpMethodExecutor;
 import org.gitana.http.HttpPayload;
 import org.gitana.http.HttpPayloadContentBody;
-import org.gitana.platform.client.exceptions.RemoteServerException;
+import org.gitana.platform.client.exception.RemoteServerException;
 import org.gitana.util.HttpUtil;
 import org.gitana.util.JsonUtil;
 

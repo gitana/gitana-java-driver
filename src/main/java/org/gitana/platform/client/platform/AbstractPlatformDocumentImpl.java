@@ -38,6 +38,8 @@ import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 
+import java.util.Map;
+
 /**
  * Abstract implementation of a platform document.
  *
@@ -186,25 +188,25 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     @Override
     public CopyJob copy(TypedID targetContainer)
     {
-        return copy(targetContainer, null);
+        return copy(targetContainer, null, null);
     }
 
     @Override
-    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy)
+    public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.SYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
     public CopyJob copyAsync(TypedID targetContainer)
     {
-        return copyAsync(targetContainer, null);
+        return copyAsync(targetContainer, null, null);
     }
 
     @Override
-    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy)
+    public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, TransferSchedule.ASYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
     }
 
 }
