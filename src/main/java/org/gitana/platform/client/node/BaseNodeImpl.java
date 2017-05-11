@@ -22,21 +22,21 @@
 package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.Driver;
+import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.repository.AbstractRepositoryDocumentImpl;
 import org.gitana.platform.client.repository.Repository;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.client.support.*;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 import org.gitana.platform.support.QName;
+import org.gitana.platform.support.ResultMap;
 import org.gitana.util.JsonUtil;
 
 import java.util.*;
@@ -341,4 +341,128 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
         return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ATTACHMENTS
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void uploadAttachment(byte[] bytes, String contentType)
+    {
+        uploadAttachment(null, bytes, contentType);
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
+    {
+        if (attachmentId == null)
+        {
+            attachmentId = "default";
+        }
+
+        // build the uri
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
+    {
+        if (attachmentId == null)
+        {
+            attachmentId = "default";
+        }
+
+        // build the uri
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+
+        try
+        {
+            getRemote().upload(uri, bytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void uploadAttachments(HttpPayload... payloads)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+
+        uploadAttachments(params, payloads);
+    }
+
+    @Override
+    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
+    {
+        // build the uri
+        String uri = getResourceUri() + "/attachments";
+
+        try
+        {
+            getRemote().upload(uri, params, payloads);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] downloadAttachment()
+    {
+        return downloadAttachment(null);
+    }
+
+    @Override
+    public byte[] downloadAttachment(String attachmentId)
+    {
+        if (attachmentId == null)
+        {
+            attachmentId = "default";
+        }
+
+        // build the uri
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+
+        byte[] bytes = null;
+        try
+        {
+            bytes = getRemote().downloadBytes(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return bytes;
+    }
+
+    @Override
+    public ResultMap<Attachment> listAttachments()
+    {
+        Response response = getRemote().get(getResourceUri() + "/attachments");
+
+        return getFactory().attachments(this, response);
+    }
+
+    @Override
+    public String getDownloadUri(String attachmentId)
+    {
+        return getResourceUri() + "/attachments/" + attachmentId;
+    }
 }

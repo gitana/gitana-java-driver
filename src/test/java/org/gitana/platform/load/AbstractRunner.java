@@ -56,11 +56,13 @@ public abstract class AbstractRunner<V> implements Runner<V>
     {
         V result = null;
 
+        long t1 = -1;
         try
         {
             doBeforeExecute();
 
             // execute
+            t1 = System.currentTimeMillis();
             result = doExecute();
         }
         catch (Exception ex)
@@ -73,6 +75,11 @@ public abstract class AbstractRunner<V> implements Runner<V>
         }
         finally
         {
+            if (t1 > -1)
+            {
+                long t2 = System.currentTimeMillis() - t1;
+            }
+
             doAfterExecute();
 
             // custom handler

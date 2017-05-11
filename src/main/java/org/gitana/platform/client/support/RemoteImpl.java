@@ -23,15 +23,20 @@ package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.gitana.exception.HttpException;
+import org.gitana.exception.HttpRateLimitedException;
 import org.gitana.http.HttpInvoker;
 import org.gitana.http.HttpMethodExecutor;
 import org.gitana.http.HttpPayload;
@@ -122,7 +127,11 @@ public class RemoteImpl implements Remote
     private String buildURL(String uri, Map<String, String> params)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.remoteURL);
+
+        if (!uri.toLowerCase().startsWith("http://") && !uri.toLowerCase().startsWith("https://"))
+        {
+            sb.append(this.remoteURL);
+        }
         sb.append(uri);
 
         boolean added = false;
@@ -181,13 +190,10 @@ public class RemoteImpl implements Remote
         {
             String URL = buildURL(uri, params, true);
 
+            // this method throws an HTTP exception unless we get a 20x or 404
+            // a 404 returns null
             byte[] x = invoker.GET(URL);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -205,13 +211,9 @@ public class RemoteImpl implements Remote
         {
             String URL = buildURL(uri, true);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.DELETE(URL);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -235,13 +237,9 @@ public class RemoteImpl implements Remote
         {
             String URL = buildURL(uri, params, true);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.POST(URL);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -294,13 +292,9 @@ public class RemoteImpl implements Remote
         {
             String URL = buildURL(uri, params, true);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.POST(URL, in, length, mimetype);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -313,11 +307,11 @@ public class RemoteImpl implements Remote
     @Override
     public HttpResponse postData(String uri, InputStream in, long length, String mimetype) 
     {
+        String URL = buildURL(uri, true);
+
         HttpResponse httpResponse = null;
         try
         {
-            String URL = buildURL(uri, true);
-
             httpResponse = invoker.post(URL, in, length, mimetype);
         }
         catch (Exception ex)
@@ -328,17 +322,22 @@ public class RemoteImpl implements Remote
             throw new RuntimeException(ex);
         }
 
+        if (!HttpUtil.isOk(httpResponse))
+        {
+            HttpUtil.raiseHttpException(URL, httpResponse, null);
+        }
+
         return httpResponse;
     }
 
     @Override
     public HttpResponse getEx(String uri)
     {
+        String URL = buildURL(uri, true);
+
         HttpResponse httpResponse = null;
         try
         {
-            String URL = buildURL(uri, true);
-
             httpResponse = invoker.get(URL);
         }
         catch (Exception ex)
@@ -349,17 +348,22 @@ public class RemoteImpl implements Remote
             throw new RuntimeException(ex);
         }
 
+        if (!HttpUtil.isOk(httpResponse))
+        {
+            HttpUtil.raiseHttpException(URL, httpResponse, null);
+        }
+
         return httpResponse;
     }
 
     @Override
     public HttpResponse postEx(String uri)
     {
+        String URL = buildURL(uri, true);
+
         HttpResponse httpResponse = null;
         try
         {
-            String URL = buildURL(uri, true);
-
             httpResponse = invoker.post(URL);
         }
         catch (Exception ex)
@@ -368,6 +372,11 @@ public class RemoteImpl implements Remote
             try { EntityUtils.consume(httpResponse.getEntity()); } catch (Exception ex1) { }
 
             throw new RuntimeException(ex);
+        }
+
+        if (!HttpUtil.isOk(httpResponse))
+        {
+            HttpUtil.raiseHttpException(URL, httpResponse, null);
         }
 
         return httpResponse;
@@ -387,13 +396,9 @@ public class RemoteImpl implements Remote
             }
             buildParams(params);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.MULTIPART_POST(URL, params, object, payload);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -417,13 +422,9 @@ public class RemoteImpl implements Remote
         {
             String URL = buildURL(uri, params, true);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.PUT(URL);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -476,13 +477,9 @@ public class RemoteImpl implements Remote
         {
             String URL = buildURL(uri, params, true);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.PUT(URL, in, length, mimetype);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -506,13 +503,9 @@ public class RemoteImpl implements Remote
             }
             buildParams(params);
 
+            // this method throws an HTTP exception unless we get a 20x
             byte[] x = invoker.MULTIPART_PUT(URL, params, object, payload);
             response = toResult(x);
-
-            if (!response.isOk())
-            {
-                throw new RemoteServerException(response);
-            }
         }
         catch (Exception ex)
         {
@@ -537,7 +530,7 @@ public class RemoteImpl implements Remote
         HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
+            raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
 
         // consume the response fully so that the client connection can be reused
@@ -565,7 +558,7 @@ public class RemoteImpl implements Remote
         HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
+            raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
 
         // consume the response fully so that the client connection can be reused
@@ -585,7 +578,7 @@ public class RemoteImpl implements Remote
         HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
+            raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
 
         // consume the response fully so that the client connection can be reused
@@ -608,7 +601,7 @@ public class RemoteImpl implements Remote
         HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Upload failed: " + EntityUtils.toString(httpResponse.getEntity()));
+            raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
 
         // consume the response fully so that the client connection can be reused
@@ -642,17 +635,33 @@ public class RemoteImpl implements Remote
             payloadMap.put(payload.getFilename(), payload);
         }
 
-        HttpResponse response = invoker.multipartPost(URL, params, payloadMap);
-        return toResult(EntityUtils.toByteArray(response.getEntity()));
+        HttpResponse httpResponse = invoker.multipartPost(URL, params, payloadMap);
+        if (!HttpUtil.isOk(httpResponse))
+        {
+            HttpUtil.raiseHttpException(URL, httpResponse, null);
+        }
+
+        return toResult(EntityUtils.toByteArray(httpResponse.getEntity()));
     }
 
     @Override
     public byte[] downloadBytes(String uri)
         throws Exception
     {
-        HttpResponse httpResponse = download(uri);
+        byte[] bytes = null;
 
-        return EntityUtils.toByteArray(httpResponse.getEntity());
+        HttpResponse httpResponse = null;
+        try
+        {
+            httpResponse = download(uri);
+            bytes = EntityUtils.toByteArray(httpResponse.getEntity());
+        }
+        finally
+        {
+            try { EntityUtils.consumeQuietly(httpResponse.getEntity()); } catch (Exception ex) { }
+        }
+
+        return bytes;
     }
 
     @Override
@@ -666,7 +675,7 @@ public class RemoteImpl implements Remote
         HttpResponse httpResponse = invoker.execute(httpGet);
         if (!HttpUtil.isOk(httpResponse))
         {
-            throw new RuntimeException("Download failed: " + EntityUtils.toString(httpResponse.getEntity()));
+            raiseHttpException(httpGet, httpResponse, "Download failed");
         }
 
         return httpResponse;
@@ -691,5 +700,10 @@ public class RemoteImpl implements Remote
         ObjectNode object = toObjectNode(response);
 
         return new Response(object);
+    }
+
+    private void raiseHttpException(HttpRequestBase httpRequest, HttpResponse httpResponse, String message)
+    {
+        HttpUtil.raiseHttpException(httpRequest, httpResponse, message);
     }
 }

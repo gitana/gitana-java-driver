@@ -25,6 +25,7 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import org.gitana.platform.client.AbstractTestCase;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -32,7 +33,7 @@ import java.util.concurrent.*;
 /**
  * @author uzi
  */
-public abstract class AbstractLoadTest<V> extends AbstractTestCase
+public abstract class AbstractStepLoadTest<V> extends AbstractTestCase
 {
     protected abstract Runner<V> createRunner(String id);
 
@@ -41,22 +42,13 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
         return MetricUtil.registry();
     }
 
-    protected abstract int getNumberOfRunners();
-
-    protected abstract int getIterationCount();
-
-    protected ExecutorService createExecutorService()
+    protected List<RunnerResult<V>> execute(int numberOfThreads, int totalNumberOfRuns) throws Exception
     {
-        return Executors.newFixedThreadPool(getNumberOfRunners());
-    }
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
 
-    protected List<RunnerResult<V>> execute() throws Exception
-    {
-        ExecutorService executorService = createExecutorService();
+            CompletionService<V> cs = new ExecutorCompletionService<V>(executorService);
 
-        CompletionService<V> cs = new ExecutorCompletionService<V>(executorService);
-
-        for (int i = 0; i < getIterationCount(); i++)
+        for (int i = 0; i < totalNumberOfRuns; i++)
         {
             // create the runner
             Runner<V> runner = createRunner("runner-" + i);
@@ -67,7 +59,7 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
 
         // wait for everything to finish
         List<RunnerResult<V>> results = new ArrayList<RunnerResult<V>>();
-        for (int i = 0; i < getIterationCount(); i++)
+        for (int i = 0; i < totalNumberOfRuns; i++)
         {
             RunnerResult<V> result = null;
 
@@ -87,6 +79,16 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
 
             results.add(result);
         }
+
+        try {
+            executorService.shutdownNow();
+        } catch (Exception ex) {
+            // swallow
+        }
+
+        executorService.awaitTermination(20000, TimeUnit.SECONDS);
+
+        //System.out.println("Total Threads: " + ManagementFactory.getThreadMXBean().getThreadCount());
 
         return results;
     }

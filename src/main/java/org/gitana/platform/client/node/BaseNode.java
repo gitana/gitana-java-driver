@@ -22,7 +22,7 @@
 package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.document.Document;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface BaseNode extends Document, Selfable, TypedID
+public interface BaseNode extends Document, Selfable, TypedID, Attachable
 {
 	// additional metadata fields
     public final static String FIELD_FEATURES = "_features";

@@ -31,6 +31,8 @@ import org.gitana.platform.support.Pagination;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * 13 concurrent threads.  257 total iterations.
  *
@@ -81,7 +83,7 @@ public class MultiThreadTest extends AbstractLoadTest<Void>
         int nodeCount1 = this.branch.queryNodes(q, Pagination.limit(99999)).size();
 
         long t1 = System.currentTimeMillis();
-        execute();
+        List<RunnerResult<Void>> runners = execute();
         long totalTime = System.currentTimeMillis() - t1;
 
         float timePerRunner = ((float) ((float) totalTime) / ((float) getIterationCount()));

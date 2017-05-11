@@ -23,9 +23,6 @@ package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.gitana.http.HttpPayload;
-import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.branch.Branch;
@@ -41,7 +38,10 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Default "n:node" implementation for a node.
@@ -179,131 +179,6 @@ public class NodeImpl extends BaseNodeImpl implements Node
     public boolean hasPermission(DomainPrincipal principal, String permissionId)
     {
         return hasPermission(principal.getDomainQualifiedId(), permissionId);
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ATTACHMENTS
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void uploadAttachment(byte[] bytes, String contentType)
-    {
-        uploadAttachment(null, bytes, contentType);
-    }
-
-    @Override
-    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
-    {
-        if (attachmentId == null)
-        {
-            attachmentId = "default";
-        }
-
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        try
-        {
-            getRemote().upload(uri, bytes, contentType);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
-    {
-        if (attachmentId == null)
-        {
-            attachmentId = "default";
-        }
-
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        try
-        {
-            getRemote().upload(uri, bytes, contentType, fileName);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void uploadAttachments(HttpPayload... payloads)
-    {
-        Map<String, String> params = new HashMap<String, String>();
-
-        uploadAttachments(params, payloads);
-    }
-
-    @Override
-    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
-    {
-        // build the uri
-        String uri = getResourceUri() + "/attachments";
-
-        try
-        {
-            getRemote().upload(uri, params, payloads);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public byte[] downloadAttachment()
-    {
-        return downloadAttachment(null);
-    }
-
-    @Override
-    public byte[] downloadAttachment(String attachmentId)
-    {
-        if (attachmentId == null)
-        {
-            attachmentId = "default";
-        }
-
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        byte[] bytes = null;
-        try
-        {
-            bytes = getRemote().downloadBytes(uri);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-        return bytes;
-    }
-
-    @Override
-    public ResultMap<Attachment> listAttachments()
-    {
-        Response response = getRemote().get(getResourceUri() + "/attachments");
-
-        return getFactory().attachments(this, response);
-    }
-
-    @Override
-    public String getDownloadUri(String attachmentId)
-    {
-        return getResourceUri() + "/attachments/" + attachmentId;
     }
 
 

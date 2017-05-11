@@ -21,12 +21,20 @@
 
 package org.gitana.platform.load;
 
-import java.util.concurrent.Callable;
-
 /**
  * @author uzi
  */
-public interface Runner<V> extends Callable<V>
+public class MultiThreadDownloadRunnerResponse
 {
-    public void init() throws Exception;
+    private long responseTime;
+
+    public MultiThreadDownloadRunnerResponse(long responseTime)
+    {
+        this.responseTime = responseTime;
+    }
+
+    public long getResponseTime()
+    {
+        return this.responseTime;
+    }
 }

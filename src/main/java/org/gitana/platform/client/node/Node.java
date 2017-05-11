@@ -40,7 +40,7 @@ import java.util.Locale;
 /**
  * @author uzi
  */
-public interface Node extends BaseNode, AccessControllable, Attachable, Transferable, Copyable
+public interface Node extends BaseNode, AccessControllable, Transferable, Copyable
 {
     /**
      * Lists all associations in ANY direction involving this node.
