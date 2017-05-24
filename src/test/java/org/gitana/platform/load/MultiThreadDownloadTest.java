@@ -21,43 +21,34 @@
 
 package org.gitana.platform.load;
 
-import org.apache.http.client.HttpClient;
-import org.gitana.mimetype.MimeTypeMap;
-import org.gitana.platform.client.Driver;
-import org.gitana.platform.client.Gitana;
-import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.node.Node;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.support.RemoteImpl;
-import org.gitana.util.ClasspathUtil;
 import org.gitana.util.HttpUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * 13 concurrent threads.  257 total iterations.
- *
  * @author uzi
  */
-public class MultiThreadDownloadTest extends AbstractStepLoadTest<MultiThreadDownloadRunnerResponse>
+public class MultiThreadDownloadTest extends AbstractStepLoadTest<RunnerResponse>
 {
-    //private Driver driver = null;
-    //private Branch branch = null;
-
-    //private Node node = null;
-
     private Remote remote = new RemoteImpl(HttpUtil.buildClient(), null);
 
     @Override
-    protected Runner<MultiThreadDownloadRunnerResponse> createRunner(String id)
+    public void tearDown() throws Exception
+    {
+        System.gc();
+    }
+
+    @Override
+    protected Runner<RunnerResponse> createRunner(String id)
     {
         MultiThreadDownloadRunner runner = new MultiThreadDownloadRunner(id);
         runner.setRemote(remote);
-        //runner.setDriver(this.driver);
-        //runner.setNode(node);
 
         return runner;
     }
@@ -66,44 +57,54 @@ public class MultiThreadDownloadTest extends AbstractStepLoadTest<MultiThreadDow
     public void test1()
         throws Exception
     {
-        int incrementSize = 5;
-        int startSize = 5;
-        int maxSize = 100;
-        int iterationsPerStep = 200;
+        int numberOfThreads = 100;
 
-        System.out.println("");
-        System.out.println("Timings1");
-        System.out.println("--------------------------------");
-        for (int numberOfThreads = startSize; numberOfThreads < maxSize; numberOfThreads += incrementSize)
+        String _numberOfThreads = System.getProperty("numberOfThreads");
+        if (_numberOfThreads != null)
         {
-            long t1 = System.currentTimeMillis();
-            float average = measure(numberOfThreads, iterationsPerStep);
-            long t2 = System.currentTimeMillis();
+            numberOfThreads = Integer.parseInt(_numberOfThreads);
+        }
 
-            float requestsPerSecond = (((float) (t2-t1)) / average);
+        doTest(numberOfThreads);
+    }
 
-            System.out.println("Number of Threads: " + numberOfThreads + ", size: " + maxSize + ", avg: " + average + ", total: " + (t2-t1) + ", req/sec: " + requestsPerSecond);
+    protected void doTest(int numberOfThreads)
+        throws Exception
+    {
+        int iterationsPerThread = 100;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+
+        int count = 0;
+        while (count < 10)
+        {
+            float avgMsPerThread = measure(executorService, iterationsPerThread);
+
+            //float totalMeanAcrossAllConcurrentRequestsMs = (avgMsPerThread / ((float) numberOfThreads));
+
+            System.out.println(count + "> Number of Threads: " + numberOfThreads + ", iterations: " + iterationsPerThread + ", mean concurrent request ms: " + avgMsPerThread);
+            count++;
         }
     }
 
-    protected float measure(int numberOfThreads, int totalNumberOfRuns)
+    protected float measure(ExecutorService executorService, int iterationsPerThread)
         throws Exception
     {
-        List<RunnerResult<MultiThreadDownloadRunnerResponse>> runners = execute(numberOfThreads, totalNumberOfRuns);
+        List<RunnerResult<RunnerResponse>> runners = execute(executorService, iterationsPerThread);
         float totalResponseTime = (float) 0;
 
         for (int i = 0; i < runners.size(); i++)
         {
-            RunnerResult<MultiThreadDownloadRunnerResponse> runner = runners.get(i);
+            RunnerResult<RunnerResponse> runner = runners.get(i);
 
-            MultiThreadDownloadRunnerResponse response = runner.get();
+            RunnerResponse response = runner.get();
             long responseTime = response.getResponseTime();
 
             totalResponseTime += ((float) responseTime);
         }
 
         // average out
-        return ((float) totalResponseTime / ((float) runners.size()));
+        return ((float) totalResponseTime / ((float) iterationsPerThread));
     }
 
 }

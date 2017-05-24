@@ -24,11 +24,11 @@ package org.gitana.platform.load;
 /**
  * @author uzi
  */
-public class MultiThreadDownloadRunnerResponse
+public class RunnerResponse
 {
     private long responseTime;
 
-    public MultiThreadDownloadRunnerResponse(long responseTime)
+    public RunnerResponse(long responseTime)
     {
         this.responseTime = responseTime;
     }

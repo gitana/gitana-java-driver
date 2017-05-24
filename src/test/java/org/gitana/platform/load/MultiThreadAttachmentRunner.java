@@ -21,23 +21,29 @@
 
 package org.gitana.platform.load;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
-import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.client.Driver;
+import org.gitana.platform.client.node.BaseNode;
+import org.gitana.platform.client.support.DriverContext;
 
 /**
  * @author uzi
  */
-public class MultiThreadDownloadRunner extends AbstractRunner<RunnerResponse>
+public class MultiThreadAttachmentRunner extends AbstractRunner<RunnerResponse>
 {
-    private Remote remote = null;
+    private Driver driver = null;
+    private BaseNode node = null;
 
-    public void setRemote(Remote remote)
+    public void setDriver(Driver driver)
     {
-        this.remote = remote;
+        this.driver = driver;
     }
 
-    public MultiThreadDownloadRunner(String id)
+    public void setNode(BaseNode node)
+    {
+        this.node = node;
+    }
+
+    public MultiThreadAttachmentRunner(String id)
     {
         super(id);
     }
@@ -45,19 +51,22 @@ public class MultiThreadDownloadRunner extends AbstractRunner<RunnerResponse>
     @Override
     protected void doBeforeExecute() throws Exception
     {
+        DriverContext.setDriver(driver);
     }
 
     @Override
     protected void doAfterExecute() throws Exception
     {
+        DriverContext.releaseDriver();
+        node = null;
+        driver = null;
     }
 
     @Override
     protected RunnerResponse doExecute() throws Exception
     {
         long t1 = System.currentTimeMillis();
-        HttpResponse httpResponse = remote.getEx("http://localhost:8080/favicon.ico");
-        EntityUtils.consumeQuietly(httpResponse.getEntity());
+        this.node.downloadAttachment();
         long t2 = System.currentTimeMillis();
 
         return new RunnerResponse(t2 - t1);

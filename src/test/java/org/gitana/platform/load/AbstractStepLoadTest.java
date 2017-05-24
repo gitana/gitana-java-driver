@@ -25,10 +25,11 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import org.gitana.platform.client.AbstractTestCase;
 
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author uzi
@@ -42,11 +43,15 @@ public abstract class AbstractStepLoadTest<V> extends AbstractTestCase
         return MetricUtil.registry();
     }
 
-    protected List<RunnerResult<V>> execute(int numberOfThreads, int totalNumberOfRuns) throws Exception
+    @Override
+    public void tearDown() throws Exception
     {
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+        System.gc();
+    }
 
-            CompletionService<V> cs = new ExecutorCompletionService<V>(executorService);
+    protected List<RunnerResult<V>> execute(ExecutorService executorService, int totalNumberOfRuns) throws Exception
+    {
+        CompletionService<V> cs = new ExecutorCompletionService<V>(executorService);
 
         for (int i = 0; i < totalNumberOfRuns; i++)
         {
@@ -79,16 +84,6 @@ public abstract class AbstractStepLoadTest<V> extends AbstractTestCase
 
             results.add(result);
         }
-
-        try {
-            executorService.shutdownNow();
-        } catch (Exception ex) {
-            // swallow
-        }
-
-        executorService.awaitTermination(20000, TimeUnit.SECONDS);
-
-        //System.out.println("Total Threads: " + ManagementFactory.getThreadMXBean().getThreadCount());
 
         return results;
     }

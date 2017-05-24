@@ -317,7 +317,7 @@ public class RemoteImpl implements Remote
         catch (Exception ex)
         {
             // make sure to consume the response
-            try { EntityUtils.consume(httpResponse.getEntity()); } catch (Exception ex1) { }
+            consumeQuietly(httpResponse);
 
             throw new RuntimeException(ex);
         }
@@ -343,7 +343,7 @@ public class RemoteImpl implements Remote
         catch (Exception ex)
         {
             // make sure to consume the response
-            try { EntityUtils.consume(httpResponse.getEntity()); } catch (Exception ex1) { }
+            consumeQuietly(httpResponse);
 
             throw new RuntimeException(ex);
         }
@@ -369,7 +369,7 @@ public class RemoteImpl implements Remote
         catch (Exception ex)
         {
             // make sure to consume the response
-            try { EntityUtils.consume(httpResponse.getEntity()); } catch (Exception ex1) { }
+            consumeQuietly(httpResponse);
 
             throw new RuntimeException(ex);
         }
@@ -658,7 +658,7 @@ public class RemoteImpl implements Remote
         }
         finally
         {
-            try { EntityUtils.consumeQuietly(httpResponse.getEntity()); } catch (Exception ex) { }
+            try { consumeQuietly(httpResponse); } catch (Exception ex) { }
         }
 
         return bytes;
@@ -705,5 +705,20 @@ public class RemoteImpl implements Remote
     private void raiseHttpException(HttpRequestBase httpRequest, HttpResponse httpResponse, String message)
     {
         HttpUtil.raiseHttpException(httpRequest, httpResponse, message);
+    }
+
+    private void consumeQuietly(HttpResponse httpResponse)
+    {
+        try
+        {
+            if (httpResponse != null)
+            {
+                EntityUtils.consumeQuietly(httpResponse.getEntity());
+            }
+        }
+        catch (Exception ex)
+        {
+            // swallow
+        }
     }
 }
