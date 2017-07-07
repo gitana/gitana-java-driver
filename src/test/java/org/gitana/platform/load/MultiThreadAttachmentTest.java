@@ -30,13 +30,12 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.Pair;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.FileWriter;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author uzi
@@ -64,6 +63,10 @@ public class MultiThreadAttachmentTest extends AbstractStepLoadTest<RunnerRespon
         Platform platform = (new Gitana()).authenticate("admin", "admin");
         this.driver = DriverContext.getDriver();
 
+        // set up a __nolimits header
+        // this makes it so that our calls won't be rate limited
+        this.driver.getRemote().addHeader("__nolimits", "cantdrive55");
+
         // create repository and fetch the branch reference
         Branch branch = platform.createRepository().readBranch("master");
 
@@ -76,29 +79,42 @@ public class MultiThreadAttachmentTest extends AbstractStepLoadTest<RunnerRespon
 
         // run the timings
 
-        int maxThreadPoolSize = 100;
-        int incrementThreadPoolSize = 5;
-        int startSize = 5;
-        int iterationsPerStep = 100;
+        int maxThreadPoolSize = 5000;
+        int incrementThreadPoolSize = 20;
+        int startSize = 20;
+        int runsPerThread = 5;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("threads,total_execution_time,all_response_times_added_together");
+        sb.append("\n");
 
         System.out.println("");
         System.out.println("Timings");
         System.out.println("--------------------------------");
         for (int numberOfThreads = startSize; numberOfThreads < maxThreadPoolSize; numberOfThreads += incrementThreadPoolSize)
         {
-            Pair<Float, Float> result = measure(numberOfThreads, iterationsPerStep);
+            int totalNumberOfRuns = runsPerThread * numberOfThreads;
+
+            Pair<Float, Float> result = measure(numberOfThreads, totalNumberOfRuns);
 
             float totalExecutionTime = result.first();
             float allResponseTimesAddedTogether = result.other();
 
-            //float meanExecutionTimePerThread = (totalExecutionTime / ((float) numberOfThreads));
-            float meanResponseTime = (allResponseTimesAddedTogether / ((float) iterationsPerStep * (float) numberOfThreads));
+            float meanResponseTime = (allResponseTimesAddedTogether / ((float) totalNumberOfRuns * (float) numberOfThreads));
 
-            System.out.println("Number of Threads: " + numberOfThreads + ", iterations: " + iterationsPerStep + ", total execution time: " + totalExecutionTime + ", mean response time: " + meanResponseTime);
+            System.out.println("Number of Threads: " + numberOfThreads + ", total execution time: " + totalExecutionTime + ", mean response time: " + meanResponseTime);
+
+            sb.append("" + numberOfThreads + "," + + totalExecutionTime + "," + allResponseTimesAddedTogether);
+            sb.append("\n");
         }
+
+        // write to file
+        FileWriter writer = new FileWriter("./multi_thread_attachment_test.csv", false);
+        writer.write(sb.toString());
+        writer.close();
     }
 
-    protected Pair<Float, Float> measure(int numberOfThreads, int iterationsPerThread)
+    protected Pair<Float, Float> measure(int numberOfThreads, int totalNumberOfRuns)
         throws Exception
     {
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
@@ -106,7 +122,7 @@ public class MultiThreadAttachmentTest extends AbstractStepLoadTest<RunnerRespon
         {
             long t1 = System.currentTimeMillis();
 
-            List<RunnerResult<RunnerResponse>> runners = execute(executorService, iterationsPerThread);
+            List<RunnerResult<RunnerResponse>> runners = execute(executorService, totalNumberOfRuns);
             float totalResponseTime = (float) 0;
 
             for (int i = 0; i < runners.size(); i++)

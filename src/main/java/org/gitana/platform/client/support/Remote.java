@@ -35,6 +35,9 @@ import java.util.Map;
  */
 public interface Remote
 {
+    public void addHeader(String name, String value);
+    public void setHeaders(Map<String, String> headers);
+
     public Response get(String uri);
 
     public Response get(String uri, Map<String, String> params);

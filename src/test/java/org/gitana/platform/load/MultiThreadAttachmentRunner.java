@@ -66,8 +66,13 @@ public class MultiThreadAttachmentRunner extends AbstractRunner<RunnerResponse>
     protected RunnerResponse doExecute() throws Exception
     {
         long t1 = System.currentTimeMillis();
-        this.node.downloadAttachment();
+        byte[] bytes = this.node.downloadAttachment();
         long t2 = System.currentTimeMillis();
+
+        if (bytes.length != 154213)
+        {
+            throw new RuntimeException("Byte size did not match");
+        }
 
         return new RunnerResponse(t2 - t1);
     }

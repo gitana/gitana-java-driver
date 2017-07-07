@@ -23,25 +23,20 @@ package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.gitana.exception.HttpException;
-import org.gitana.exception.HttpRateLimitedException;
 import org.gitana.http.HttpInvoker;
 import org.gitana.http.HttpMethodExecutor;
 import org.gitana.http.HttpPayload;
 import org.gitana.http.HttpPayloadContentBody;
-import org.gitana.platform.client.exception.RemoteServerException;
 import org.gitana.util.HttpUtil;
 import org.gitana.util.JsonUtil;
 
@@ -102,6 +97,18 @@ public class RemoteImpl implements Remote
     public void setLocale(Locale locale)
     {
         this.invoker.setLocale(locale);
+    }
+
+    @Override
+    public void addHeader(String name, String value)
+    {
+        this.invoker.addHeader(name, value);
+    }
+
+    @Override
+    public void setHeaders(Map<String, String> headers)
+    {
+        this.invoker.setHeaders(headers);
     }
 
     private String buildURL(String uri, boolean expand)
@@ -525,6 +532,8 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpPost httpPost = new HttpPost(URL);
+        invoker.configure(httpPost);
+
         httpPost.setEntity(entity);
 
         HttpResponse httpResponse = invoker.execute(httpPost);
@@ -544,6 +553,7 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpPost httpPost = new HttpPost(URL);
+        invoker.configure(httpPost);
 
         HttpPayload payload = new HttpPayload();
         payload.setBytes(bytes);
@@ -573,6 +583,7 @@ public class RemoteImpl implements Remote
 
         String URL = buildURL(uri, false);
         HttpPost httpPost = new HttpPost(URL);
+        invoker.configure(httpPost);
         httpPost.setEntity(entity);
 
         HttpResponse httpResponse = invoker.execute(httpPost);
@@ -591,6 +602,7 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpPost httpPost = new HttpPost(URL);
+        invoker.configure(httpPost);
 
         InputStreamBody inputStreamBody = new InputStreamBody(in, mimetype, filename);
 
@@ -671,6 +683,7 @@ public class RemoteImpl implements Remote
         String URL = buildURL(uri, false);
 
         HttpGet httpGet = new HttpGet(URL);
+        invoker.configure(httpGet);
 
         HttpResponse httpResponse = invoker.execute(httpGet);
         if (!HttpUtil.isOk(httpResponse))

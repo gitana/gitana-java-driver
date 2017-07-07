@@ -71,26 +71,26 @@ public class MultiThreadDownloadTest extends AbstractStepLoadTest<RunnerResponse
     protected void doTest(int numberOfThreads)
         throws Exception
     {
-        int iterationsPerThread = 100;
+        int runsPerThread = 100;
 
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
 
         int count = 0;
         while (count < 10)
         {
-            float avgMsPerThread = measure(executorService, iterationsPerThread);
+            int totalNumberOfRuns = runsPerThread * numberOfThreads;
 
-            //float totalMeanAcrossAllConcurrentRequestsMs = (avgMsPerThread / ((float) numberOfThreads));
+            float avgMsPerThread = measure(executorService, totalNumberOfRuns);
 
-            System.out.println(count + "> Number of Threads: " + numberOfThreads + ", iterations: " + iterationsPerThread + ", mean concurrent request ms: " + avgMsPerThread);
+            System.out.println(count + "> Number of Threads: " + numberOfThreads + ", mean concurrent request ms: " + avgMsPerThread);
             count++;
         }
     }
 
-    protected float measure(ExecutorService executorService, int iterationsPerThread)
+    protected float measure(ExecutorService executorService, int totalNumberOfRuns)
         throws Exception
     {
-        List<RunnerResult<RunnerResponse>> runners = execute(executorService, iterationsPerThread);
+        List<RunnerResult<RunnerResponse>> runners = execute(executorService, totalNumberOfRuns);
         float totalResponseTime = (float) 0;
 
         for (int i = 0; i < runners.size(); i++)
@@ -104,7 +104,7 @@ public class MultiThreadDownloadTest extends AbstractStepLoadTest<RunnerResponse
         }
 
         // average out
-        return ((float) totalResponseTime / ((float) iterationsPerThread));
+        return ((float) totalResponseTime / ((float) totalNumberOfRuns));
     }
 
 }
