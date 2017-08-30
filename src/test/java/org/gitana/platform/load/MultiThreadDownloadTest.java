@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 /**
  * @author uzi
  */
+@Ignore
 public class MultiThreadDownloadTest extends AbstractStepLoadTest<RunnerResponse>
 {
     private Remote remote = new RemoteImpl(HttpUtil.buildClient(), null);

@@ -30,6 +30,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.Pair;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileWriter;
@@ -40,6 +41,7 @@ import java.util.concurrent.Executors;
 /**
  * @author uzi
  */
+@Ignore
 public class MultiThreadAttachmentTest extends AbstractStepLoadTest<RunnerResponse>
 {
     private Driver driver = null;

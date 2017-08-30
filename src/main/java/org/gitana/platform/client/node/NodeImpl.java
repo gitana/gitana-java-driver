@@ -475,7 +475,13 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ObjectNode fileFolderTree(String basePath, String leafPath)
     {
-        return fileFolderTree(basePath, -1, Arrays.asList(leafPath), true, false, null);
+        List<String> leafPaths = new ArrayList<String>();
+        if (leafPath != null)
+        {
+            leafPaths.add(leafPath);
+        }
+
+        return fileFolderTree(basePath, -1, leafPaths, true, false, null);
     }
 
     @Override

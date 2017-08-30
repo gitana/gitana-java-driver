@@ -25,6 +25,7 @@ import org.gitana.platform.client.Gitana;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,7 @@ import org.junit.Test;
  *
  * @author uzi
  */
+@Ignore
 public class NodeCreationLoadTest extends AbstractLoadTest<Void>
 {
     private String repositoryId = null;

@@ -30,6 +30,7 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,7 @@ import org.junit.Test;
  *
  * @author uzi
  */
+@Ignore
 public class NodeImageUploadLoadTest extends AbstractLoadTest<Void>
 {
     private String repositoryId = null;
