@@ -21,7 +21,6 @@
 
 package org.gitana.platform.client.release;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.branch.Branch;
@@ -30,8 +29,8 @@ import org.gitana.platform.client.repository.AbstractRepositoryDocumentImpl;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
-import org.gitana.platform.services.association.Directionality;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.DateUtil;
 import org.gitana.util.JsonUtil;
 
@@ -54,7 +53,7 @@ public class ReleaseImpl extends AbstractRepositoryDocumentImpl implements Relea
     @Override
     public String getTypeId()
     {
-        return "release";
+        return TypedIDConstants.TYPE_RELEASE;
     }
 
     @Override
