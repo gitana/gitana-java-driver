@@ -23,7 +23,6 @@ package org.gitana.platform.client.principal;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
@@ -280,6 +279,35 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
     public String getDownloadUri(String attachmentId)
     {
         return getResourceUri() + "/attachments/" + attachmentId;
+    }
+
+    @Override
+    public void deleteAttachment()
+    {
+        deleteAttachment(null);
+    }
+
+    @Override
+    public void deleteAttachment(String attachmentId)
+    {
+        if (attachmentId == null)
+        {
+            attachmentId = "default";
+        }
+
+        // build the uri
+        String uri = getResourceUri() + "/attachments/" + attachmentId;
+
+        try
+        {
+            getRemote().delete(uri);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+
+            throw new RuntimeException(ex);
+        }
     }
 
 

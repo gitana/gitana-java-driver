@@ -22,11 +22,10 @@
 package org.gitana.platform.client.principal;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.node.type.Group;
+import org.gitana.platform.client.support.Response;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;

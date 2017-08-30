@@ -22,17 +22,16 @@
 package org.gitana.platform.client.branch;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
+import org.gitana.platform.client.node.type.*;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.repository.RepositoryDocument;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Selfable;
-import org.gitana.platform.client.node.type.*;
 import org.gitana.platform.services.branch.BranchType;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.QName;
@@ -110,6 +109,16 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return node
      */
     public BaseNode readNode(String nodeId);
+
+    /**
+     * Reads a single node from the brancnh.
+     *
+     * @param nodeId
+     * @param path
+     *
+     * @return node
+     */
+    public BaseNode readNode(String nodeId, String path);
 
     /**
      * Creates an empty node on the branch.

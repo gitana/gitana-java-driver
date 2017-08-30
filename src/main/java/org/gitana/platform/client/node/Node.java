@@ -22,8 +22,6 @@
 package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Copyable;
@@ -282,5 +280,72 @@ public interface Node extends BaseNode, AccessControllable, Transferable, Copyab
     public ObjectNode fileFolderTree();
     public ObjectNode fileFolderTree(String basePath);
     public ObjectNode fileFolderTree(String basePath, String leafPath);
+    public ObjectNode fileFolderTree(String basePath, int depth, List<String> leafPaths, boolean includeProperties, boolean containersOnly, ObjectNode query);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CHILDREN
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Retrieves the children of the current node.
+     *
+     * @return a map of node objects keyed by node id
+     */
+    public ResultMap<BaseNode> listChildren();
+
+    /**
+     * Retrieves the children of the current node.
+     *
+     * @param pagination
+     *
+     * @return a map of node objects keyed by node id
+     */
+    public ResultMap<BaseNode> listChildren(Pagination pagination);
+
+    /**
+     * Retrieves the relatives of the current node.
+     *
+     * @param type
+     * @param direction
+     *
+     * @return a map of node objects keyed by node id
+     */
+    public ResultMap<BaseNode> listRelatives(QName type, Direction direction);
+
+    /**
+     * Retrieves the relatives of the current node.
+     *
+     * @param type
+     * @param direction
+     * @param pagination
+     *
+     * @return a map of node objects keyed by node id
+     */
+    public ResultMap<BaseNode> listRelatives(QName type, Direction direction, Pagination pagination);
+
+    /**
+     * Queries the relatives of the current node.
+     *
+     * @param type
+     * @param direction
+     * @param query
+     * @return map of nodes
+     */
+    public ResultMap<BaseNode> queryRelatives(QName type, Direction direction, ObjectNode query);
+
+    /**
+     * Queries the relatives of the current node.
+     *
+     * @param type
+     * @param direction
+     * @param query
+     * @param pagination
+     *
+     * @return map of nodes
+     */
+    public ResultMap<BaseNode> queryRelatives(QName type, Direction direction, ObjectNode query, Pagination pagination);
+
 
 }

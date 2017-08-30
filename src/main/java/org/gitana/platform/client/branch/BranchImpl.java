@@ -354,11 +354,24 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public BaseNode readNode(String nodeId)
     {
+        return readNode(nodeId, null);
+    }
+
+    @Override
+    public BaseNode readNode(String nodeId, String path)
+    {
         BaseNode baseNode = null;
 
         try
         {
-            Response response = getRemote().get(getResourceUri() + "/nodes/" + nodeId);
+            Map<String, String> params = new HashMap<String, String>();
+
+            if (path != null)
+            {
+                params.put("path", path);
+            }
+
+            Response response = getRemote().get(getResourceUri() + "/nodes/" + nodeId, params);
             baseNode = getFactory().node(this, response);
         }
         catch (Exception ex)

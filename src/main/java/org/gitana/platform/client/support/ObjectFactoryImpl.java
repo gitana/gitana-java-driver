@@ -65,6 +65,8 @@ import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.project.ProjectImpl;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.registrar.RegistrarImpl;
+import org.gitana.platform.client.release.Release;
+import org.gitana.platform.client.release.ReleaseImpl;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.repository.RepositoryImpl;
 import org.gitana.platform.client.stack.Stack;
@@ -196,6 +198,52 @@ public class ObjectFactoryImpl implements ObjectFactory
         {
             Branch branch = new BranchImpl(repository, object, true);
             map.put(branch.getId(), branch);
+        }
+
+        return map;
+    }
+
+    @Override
+    public Release release(Repository repository)
+    {
+        return release(repository, JsonUtil.createObject());
+    }
+
+    @Override
+    public Release release(Repository repository, ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        return new ReleaseImpl(repository, object, false);
+    }
+
+    @Override
+    public Release release(Repository repository, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new ReleaseImpl(repository, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<Release> releases(Repository repository, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<Release> map = new ResultMapImpl<Release>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            Release release = new ReleaseImpl(repository, object, true);
+            map.put(release.getId(), release);
         }
 
         return map;

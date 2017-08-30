@@ -103,4 +103,15 @@ public interface Attachable
      */
     public String getDownloadUri(String attachmentId);
 
+    /**
+     * Deletes the default attachment.
+     */
+    public void deleteAttachment();
+
+    /**
+     * Deletes an attachment.
+     *
+     * @param attachmentId
+     */
+    public void deleteAttachment(String attachmentId);
 }

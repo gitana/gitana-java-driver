@@ -184,23 +184,6 @@
                     <groupId>xpp3</groupId>
                     <artifactId>xpp3</artifactId>
                 </exclusion>
-                <!-- exclude jackson - keep our own -->
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.module</groupId>
-                    <artifactId>jackson-module-scala_2.11</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
@@ -220,28 +203,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- set to a specific version of jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-scala_2.11</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
     </dependencies>
 
     <properties>
@@ -249,9 +210,6 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <gitana.common.version>1.0.14</gitana.common.version>
-
-        <!-- we keep this version of Jackson because it is 1.6 compatible -->
-        <jackson.version>2.6.1</jackson.version>
     </properties>
 
 </project>

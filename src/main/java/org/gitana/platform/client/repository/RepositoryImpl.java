@@ -23,13 +23,13 @@ package org.gitana.platform.client.repository;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.release.Release;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.support.Pagination;
@@ -37,6 +37,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -264,4 +265,104 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
         return getFactory().changesets(this, response);
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // RELEASES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public ResultMap<Release> listReleases()
+    {
+        return listReleases(null);
+    }
+
+    @Override
+    public ResultMap<Release> listReleases(Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get("/repositories/" + getId() + "/releases", params);
+        return getFactory().releases(this, response);
+    }
+
+    @Override
+    public Release readRelease(String releaseId)
+    {
+        Release release = null;
+
+        try
+        {
+            Response response = getRemote().get("/repositories/" + getId() + "/releases/" + releaseId);
+            release = getFactory().release(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return release;
+    }
+
+    @Override
+    public Release createRelease(ObjectNode object)
+    {
+        return createRelease(object, null);
+    }
+
+    @Override
+    public Release createRelease(ObjectNode object, String sourceReleaseId)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        if (sourceReleaseId != null)
+        {
+            params.put("sourceId", sourceReleaseId);
+        }
+
+        Response response = getRemote().post("/repositories/" + getId() + "/releases", params, object);
+
+        String releaseId = response.getId();
+        return readRelease(releaseId);
+    }
+
+    @Override
+    public ResultMap<Release> queryReleases(ObjectNode query)
+    {
+        return queryReleases(query, null);
+    }
+
+    @Override
+    public ResultMap<Release> queryReleases(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/repositories/" + getId() + "/releases/query", params, query);
+        return getFactory().releases(this, response);
+    }
+
+    @Override
+    public PermissionCheckResults checkReleasePermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/repositories/" + getId() + "/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
 }

@@ -22,15 +22,12 @@
 package org.gitana.platform.client.repository;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
-import org.gitana.platform.client.datastore.DataStore;
-import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
-import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformDataStore;
+import org.gitana.platform.client.release.Release;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -178,4 +175,81 @@ public interface Repository extends PlatformDataStore
      * @return
      */
     public ResultMap<Changeset> queryChangesets(ObjectNode query, Pagination pagination);
+
+
+
+
+    // RELEASES
+
+    /**
+     * Retrieves releases for the repository
+     *
+     * @return a map of release objects keyed by release id
+     */
+    public ResultMap<Release> listReleases();
+
+    /**
+     * Retrieves releases for the repository
+     *
+     * @param pagination
+     *
+     * @return a map of release objects keyed by release id
+     */
+    public ResultMap<Release> listReleases(Pagination pagination);
+
+    /**
+     * Reads a single release from the server.
+     *
+     * @param releaseId
+     *
+     * @return release
+     */
+    public Release readRelease(String releaseId);
+
+    /**
+     * Creates a release on the server.
+     *
+     * @param object
+     *
+     * @return release
+     */
+    public Release createRelease(ObjectNode object);
+
+    /**
+     * Creates a release on the server by copying a source release.
+     *
+     * @param object
+     * @param sourceReleaseId source release id
+     *
+     * @return release
+     */
+    public Release createRelease(ObjectNode object, String sourceReleaseId);
+
+    /**
+     * Queries for releases.
+     *
+     * @param query
+     *
+     * @return map of releases
+     */
+    public ResultMap<Release> queryReleases(ObjectNode query);
+
+    /**
+     * Queries for releases.
+     *
+     * @param query
+     * @param pagination
+     *
+     * @return map of releases
+     */
+    public ResultMap<Release> queryReleases(ObjectNode query, Pagination pagination);
+
+    /**
+     * Check release permissions.
+     *
+     * @param list
+     *
+     * @return results
+     */
+    public PermissionCheckResults checkReleasePermissions(List<PermissionCheck> list);
 }

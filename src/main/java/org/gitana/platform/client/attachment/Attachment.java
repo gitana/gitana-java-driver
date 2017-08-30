@@ -22,13 +22,14 @@
 package org.gitana.platform.client.attachment;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * Describes an attachment to an object (document, node or otherwise)
  * 
  * @author uzi
  */
-public interface Attachment 
+public interface Attachment extends Serializable
 {
     // fields
     public final static String FIELD_ATTACHMENT_LENGTH = "length";

@@ -21,29 +21,28 @@
 
 package org.gitana.platform.client.attachment;
 
-import org.apache.http.HttpResponse;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.apache.http.HttpResponse;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.support.GitanaObjectImpl;
 
 import java.io.InputStream;
 
 /**
  * @author uzi
  */
-public class AttachmentImpl implements Attachment
+public class AttachmentImpl extends GitanaObjectImpl implements Attachment
 {
     private Attachable attachable;
-    private ObjectNode objectNode;
 
     public AttachmentImpl(Attachable attachable, ObjectNode objectNode)
     {
-        this.attachable = attachable;
+        super(objectNode);
 
-        this.objectNode = objectNode;
+        this.attachable = attachable;
     }
 
     protected ObjectFactory getFactory()
@@ -64,31 +63,31 @@ public class AttachmentImpl implements Attachment
     @Override
     public String getId()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_ID).textValue();
+        return getString(Attachment.FIELD_ATTACHMENT_ID);
     }
 
     @Override
     public String getObjectId()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_OBJECT_ID).textValue();
+        return getString(Attachment.FIELD_ATTACHMENT_OBJECT_ID);
     }
 
     @Override
     public long getLength()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_LENGTH).longValue();
+        return getLong(Attachment.FIELD_ATTACHMENT_LENGTH);
     }
 
     @Override
     public String getContentType()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_CONTENT_TYPE).textValue();
+        return getString(Attachment.FIELD_ATTACHMENT_CONTENT_TYPE);
     }
     
     @Override
     public String getFilename()
     {
-        return objectNode.get(Attachment.FIELD_ATTACHMENT_FILENAME).textValue();
+        return getString(Attachment.FIELD_ATTACHMENT_FILENAME);
     }
 
     @Override

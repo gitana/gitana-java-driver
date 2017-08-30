@@ -50,6 +50,7 @@ import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
+import org.gitana.platform.client.release.Release;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.team.Team;
@@ -88,6 +89,11 @@ public interface ObjectFactory
     public Branch branch(Repository repository, ObjectNode object);
     public Branch branch(Repository repository, Response response);
     public ResultMap<Branch> branches(Repository repository, Response response);
+
+    public Release release(Repository repository);
+    public Release release(Repository repository, ObjectNode object);
+    public Release release(Repository repository, Response response);
+    public ResultMap<Release> releases(Repository repository, Response response);
 
     public Changeset changeset(Repository repository, Response response);
     public ResultMap<Changeset> changesets(Repository repository, Response response);

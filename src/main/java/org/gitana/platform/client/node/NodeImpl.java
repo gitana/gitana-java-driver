@@ -38,10 +38,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Default "n:node" implementation for a node.
@@ -478,6 +475,12 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ObjectNode fileFolderTree(String basePath, String leafPath)
     {
+        return fileFolderTree(basePath, -1, Arrays.asList(leafPath), true, false, null);
+    }
+
+    @Override
+    public ObjectNode fileFolderTree(String basePath, int depth, List<String> leafPaths, boolean includeProperties, boolean containersOnly, ObjectNode query)
+    {
         String uri = getResourceUri() + "/tree";
 
         Map<String, String> params = DriverUtil.params();
@@ -485,14 +488,91 @@ public class NodeImpl extends BaseNodeImpl implements Node
         {
             params.put("base", basePath);
         }
-        if (leafPath != null)
+        if (leafPaths != null && leafPaths.size() > 0)
         {
-            params.put("leaf", leafPath);
+            params.put("leaf", leafPaths.get(0));
+        }
+        if (depth > -1)
+        {
+            params.put("depth", "" + depth);
+        }
+        if (includeProperties)
+        {
+            params.put("properties", "true");
+        }
+        if (containersOnly)
+        {
+            params.put("containers", "true");
         }
 
-        Response response = getRemote().get(uri, params);
+        Response response = getRemote().post(uri, params);
 
         return response.getObjectNode();
     }
 
+    @Override
+    public ResultMap<BaseNode> listChildren()
+    {
+        return listChildren(null);
+    }
+
+    @Override
+    public ResultMap<BaseNode> listChildren(Pagination pagination)
+    {
+        String uri = getResourceUri() + "/children";
+
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().get(uri, params);
+
+        return getFactory().nodes(getBranch(), response);
+    }
+
+    @Override
+    public ResultMap<BaseNode> listRelatives(QName type, Direction direction)
+    {
+        return listRelatives(type, direction, null);
+    }
+
+    @Override
+    public ResultMap<BaseNode> listRelatives(QName type, Direction direction, Pagination pagination)
+    {
+        String uri = getResourceUri() + "/relatives";
+
+        Map<String, String> params = DriverUtil.params(pagination);
+        params.put("type", type.toString());
+
+        if (direction != null)
+        {
+            params.put("direction", direction.toString());
+        }
+
+        Response response = getRemote().get(uri, params);
+
+        return getFactory().nodes(getBranch(), response);
+    }
+
+    @Override
+    public ResultMap<BaseNode> queryRelatives(QName type, Direction direction, ObjectNode query)
+    {
+        return queryRelatives(type, direction, query, null);
+    }
+
+    @Override
+    public ResultMap<BaseNode> queryRelatives(QName type, Direction direction, ObjectNode query, Pagination pagination)
+    {
+        String uri = getResourceUri() + "/relatives/query";
+
+        Map<String, String> params = DriverUtil.params(pagination);
+        params.put("type", type.toString());
+
+        if (direction != null)
+        {
+            params.put("direction", direction.toString());
+        }
+
+        Response response = getRemote().post(uri, params, query);
+
+        return getFactory().nodes(getBranch(), response);
+    }
 }
