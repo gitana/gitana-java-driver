@@ -23,6 +23,7 @@ package org.gitana.platform.client;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.client.HttpClient;
+import org.gitana.http.HttpClientConfiguration;
 import org.gitana.http.OAuth2HttpMethodExecutor;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
@@ -221,9 +222,21 @@ public class Gitana
      * Creates an anonymous remote that can be used to access any resources on the Gitana server that are not
      * protected behind oauth.
      *
-     * @return
+     * @return remote
      */
-    protected RemoteImpl createAnonymousRemote()
+    protected RemoteImpl createRemote() {
+        return createRemote(null);
+    }
+
+    /**
+     * Creates an anonymous remote that can be used to access any resources on the Gitana server that are not
+     * protected behind oauth.
+     *
+     * @param clientConfiguration
+     *
+     * @return remote
+     */
+    protected RemoteImpl createRemote(HttpClientConfiguration clientConfiguration)
     {
         HttpCredentials credentials = null;
         HttpProxyConfiguration proxyConfig = null;
@@ -263,20 +276,10 @@ public class Gitana
         }
 
         // build a client, disable redirects, plug in any proxy config
-        HttpClient client = HttpUtil.buildClient(false, credentials, proxyConfig);
+        HttpClient client = HttpUtil.buildClient(false, credentials, proxyConfig, clientConfiguration);
 
         // wrap into a remote object
         return new RemoteImpl(client, baseURL);
-    }
-
-    /**
-     * Creates an anonymous remote instance.
-     *
-     * @return
-     */
-    protected RemoteImpl createRemote()
-    {
-        return createAnonymousRemote();
     }
 
     protected void populateAuthenticationInformation(Driver driver)
@@ -427,12 +430,11 @@ public class Gitana
         if (username == null && password == null)
         {
             ResourceBundle bundle = readBundle("gitana");
-
             username = bundle.getString("gitana.credentials.username");
             password = bundle.getString("gitana.credentials.password");
         }
 
-        RemoteImpl remote = createRemote();
+        RemoteImpl remote = createRemote(acquireClientConfiguration());
 
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
@@ -465,7 +467,7 @@ public class Gitana
      */
     public Platform authenticateWithCode(String code, String redirectUri)
     {
-        RemoteImpl remote = createRemote();
+        RemoteImpl remote = createRemote(acquireClientConfiguration());
 
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
@@ -499,7 +501,7 @@ public class Gitana
         long ping = -1;
 
         long t1 = System.currentTimeMillis();
-        Response response = createRemote().get("/ping");
+        Response response = createRemote(acquireClientConfiguration()).get("/ping");
         long t2 = System.currentTimeMillis();
         if (response.isOk())
         {
@@ -543,4 +545,19 @@ public class Gitana
         return bundle;
     }
 
+    private HttpClientConfiguration acquireClientConfiguration()
+    {
+        HttpClientConfiguration clientConfiguration = new HttpClientConfiguration();
+
+        ResourceBundle bundle = readBundle("gitana");
+        if (bundle != null)
+        {
+            clientConfiguration.socketSoTimeout = DriverUtil.acquireInt(bundle, "gitana.config.socketSoTimeout", 600000);
+            clientConfiguration.requestConnectTimeout = DriverUtil.acquireInt(bundle, "gitana.config.requestConnectTimeout", 120000);
+            clientConfiguration.requestSocketTimeout = DriverUtil.acquireInt(bundle, "gitana.config.requestSocketTimeout", 600000);
+            clientConfiguration.connectionRequestTimeout = DriverUtil.acquireInt(bundle, "gitana.config.connectionRequestTimeout", 60000);
+        }
+
+        return clientConfiguration;
+    }
 }

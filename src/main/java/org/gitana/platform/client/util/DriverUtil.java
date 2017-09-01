@@ -279,5 +279,23 @@ public class DriverUtil
         return value;
     }
 
+    public static int acquireInt(ResourceBundle bundle, String key, int defaultValue)
+    {
+        int value = defaultValue;
 
+        String text = bundle.getString(key);
+        if (text != null)
+        {
+            try
+            {
+                value = Integer.parseInt(text, 10);
+            }
+            catch (Exception ex)
+            {
+                // swallow
+            }
+        }
+
+        return value;
+    }
 }
