@@ -43,9 +43,12 @@ import org.gitana.util.JsonUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author uzi
@@ -56,6 +59,20 @@ public class Gitana
 
     private String clientKey;
     private String clientSecret;
+
+    private static Map<String, Lock> LOCKS = new HashMap<String, Lock>();
+
+    private synchronized static Lock getOrCreateLock(String key) {
+
+        Lock lock = LOCKS.get(key);
+        if (lock == null)
+        {
+            lock = new ReentrantLock();
+            LOCKS.put(key, lock);
+        }
+
+        return lock;
+    }
 
     public String getBaseURL()
     {
@@ -446,6 +463,10 @@ public class Gitana
         httpMethodExecutor.setRequestedScope("api");
         remote.setHttpMethodExecutor(httpMethodExecutor);
 
+        // set token lock
+        Lock tokenLock = getOrCreateLock("tokenLock-" + this.baseURL);
+        httpMethodExecutor.setTokenLock(tokenLock);
+
         // build driver instance
         Driver driver = new Driver(remote);
         DriverContext.setDriver(driver);
@@ -478,6 +499,10 @@ public class Gitana
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
         httpMethodExecutor.setRequestedScope("api");
         remote.setHttpMethodExecutor(httpMethodExecutor);
+
+        // set token lock
+        Lock tokenLock = getOrCreateLock("tokenLock-" + this.baseURL);
+        httpMethodExecutor.setTokenLock(tokenLock);
 
         // build driver and bind to thread local context
         Driver driver = new Driver(remote);

@@ -283,17 +283,14 @@ public class DriverUtil
     {
         int value = defaultValue;
 
-        String text = bundle.getString(key);
-        if (text != null)
+        try
         {
-            try
-            {
+            String text = bundle.getString(key);
+            if (text != null) {
                 value = Integer.parseInt(text, 10);
             }
-            catch (Exception ex)
-            {
-                // swallow
-            }
+        } catch (Exception ex) {
+            // swallow
         }
 
         return value;

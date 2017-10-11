@@ -209,7 +209,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
-        <gitana.common.version>1.0.25</gitana.common.version>
+        <gitana.common.version>1.0.27-SNAPSHOT</gitana.common.version>
     </properties>
 
 </project>
