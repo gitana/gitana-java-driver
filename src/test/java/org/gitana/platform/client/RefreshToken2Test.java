@@ -51,7 +51,6 @@ public class RefreshToken2Test extends TestCase
 
         // create 10 query threads
         RefreshTokenTestQueryRunner r0 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
-        /*
         RefreshTokenTestQueryRunner r1 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
         RefreshTokenTestQueryRunner r2 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
         RefreshTokenTestQueryRunner r3 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
@@ -61,14 +60,12 @@ public class RefreshToken2Test extends TestCase
         RefreshTokenTestQueryRunner r7 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
         RefreshTokenTestQueryRunner r8 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
         RefreshTokenTestQueryRunner r9 = new RefreshTokenTestQueryRunner(DriverContext.getDriver(), platform);
-        */
 
         // create a sabotage thread
         RefreshTokenTestSabotageRunner r10 = new RefreshTokenTestSabotageRunner(DriverContext.getDriver());
 
         // start 10 threads
         r0.start();
-        /*
         r1.start();
         r2.start();
         r3.start();
@@ -78,7 +75,6 @@ public class RefreshToken2Test extends TestCase
         r7.start();
         r8.start();
         r9.start();
-        */
         r10.start();
 
         // sleep for a minute
@@ -86,7 +82,6 @@ public class RefreshToken2Test extends TestCase
 
         // stop all threads
         r0.setTerminate(true);
-        /*
         r1.setTerminate(true);
         r2.setTerminate(true);
         r3.setTerminate(true);
@@ -96,7 +91,6 @@ public class RefreshToken2Test extends TestCase
         r7.setTerminate(true);
         r8.setTerminate(true);
         r9.setTerminate(true);
-        */
         r10.setTerminate(true);
 
         // wait a tick
