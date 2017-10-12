@@ -34,11 +34,13 @@ import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.services.meter.MeterType;
 import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author uzi
  */
+@Ignore
 public class MeterTest extends AbstractTestCase
 {
     @Test

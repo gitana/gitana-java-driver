@@ -147,8 +147,6 @@ public class NodeI18NTest extends AbstractTestCase
         // now read and verify we get the node back in polish
         Node polishTranslation3 = (Node) master.readNode(node1.getId());
         assertEquals("Joel", polishTranslation3.getString("author"));
-
-
     }
 
 }
