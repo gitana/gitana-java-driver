@@ -54,7 +54,7 @@ public class ArchiveAttachmentTest extends AbstractTestCase
         InputStream in1 = new ByteArrayInputStream(bytes1);
         vault.uploadArchive(in1, bytes1.length);
         // wait for completion
-        Thread.sleep(10000);
+        Thread.sleep(20000);
         // verify
         Archive archive = vault.lookupArchive("org.gitana", "test-artifact1", "1.0.0");
         assertNotNull(archive);
