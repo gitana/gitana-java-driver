@@ -33,6 +33,7 @@ import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -201,6 +202,9 @@ public interface Application extends PlatformDataStore
     public DeployedApplication deploy(String deploymentKey);
 
     public DeployedApplication findDeployed(String deploymentKey);
+
+    public Map<String, Map<String, String>> readApiKeys();
+    public Map<String, String> readApiKeys(String deploymentKey);
 
 
 }

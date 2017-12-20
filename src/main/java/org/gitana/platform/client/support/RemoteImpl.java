@@ -84,6 +84,11 @@ public class RemoteImpl implements Remote
         ((AbstractHttpClient)this.invoker.getClient()).getCookieStore().addCookie(cookie);
     }
 
+    public String getRemoteURL()
+    {
+        return this.remoteURL;
+    }
+
     public void setFull(boolean full)
     {
         this.full = full;

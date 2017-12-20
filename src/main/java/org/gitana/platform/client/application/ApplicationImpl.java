@@ -22,12 +22,12 @@
 package org.gitana.platform.client.application;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
+import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.webhost.DeployedApplication;
@@ -38,10 +38,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uzi
@@ -702,5 +699,42 @@ public class ApplicationImpl extends AbstractPlatformDataStoreImpl implements Ap
 
         Response response = getRemote().post(getResourceUri() + "/deployed/" + deploymentKey);
         return getFactory().deployedApplication(webhost, response);
+    }
+
+    @Override
+    public Map<String, Map<String, String>> readApiKeys()
+    {
+        Map<String, Map<String, String>> results = new HashMap<String, Map<String, String>>();
+
+        Response response = getRemote().get("/applications/" + getId() + "/apikeys");
+        ObjectNode deployments = JsonUtil.objectGetObject(response.getObjectNode(), "deployments");
+
+        Iterator<String> deploymentIds = deployments.fieldNames();
+        while (deploymentIds.hasNext())
+        {
+            String deploymentId = deploymentIds.next();
+
+            ObjectNode deployment = JsonUtil.objectGetObject(deployments, deploymentId);
+
+            Map<String, String> properties = new HashMap<String, String>();
+            properties.put("clientKey", JsonUtil.objectGetString(deployment, "clientKey"));
+            properties.put("clientSecret", JsonUtil.objectGetString(deployment, "clientSecret"));
+            properties.put("username", JsonUtil.objectGetString(deployment, "username"));
+            properties.put("password", JsonUtil.objectGetString(deployment, "password"));
+            properties.put("application", JsonUtil.objectGetString(deployment, "application"));
+            properties.put("baseURL", DriverContext.getDriver().getBaseURL());
+
+            results.put(deploymentId, properties);
+        }
+
+        return results;
+    }
+
+    @Override
+    public Map<String, String> readApiKeys(String deploymentKey)
+    {
+        Map<String, Map<String, String>> results = readApiKeys();
+
+        return results.get(deploymentKey);
     }
 }

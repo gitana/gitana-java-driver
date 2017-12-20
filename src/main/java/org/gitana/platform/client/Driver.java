@@ -52,10 +52,12 @@ public class Driver
         this.authInfo = authInfo;
     }
 
-    //public void removeAuthInfo()
+    /*
+    public void removeAuthInfo()
     {
         this.authInfo = null;
     }
+    */
 
     public AuthInfo getAuthInfo()
     {
@@ -112,6 +114,11 @@ public class Driver
     public ObjectFactory getFactory()
     {
         return factory;
+    }
+
+    public String getBaseURL()
+    {
+        return ((RemoteImpl) remote).getRemoteURL();
     }
 
     /**
