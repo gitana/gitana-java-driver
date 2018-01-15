@@ -34,6 +34,8 @@ import org.junit.Ignore;
 {
 	public void setUp() throws Exception
 	{
+        // turn this bad boy on
+        System.getProperties().setProperty("gitana.useAutomaticReattempt", "true");
 	}
 
 	public void tearDown() throws Exception

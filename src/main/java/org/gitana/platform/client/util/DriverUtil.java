@@ -279,13 +279,42 @@ public class DriverUtil
         return value;
     }
 
-    public static int acquireInt(ResourceBundle bundle, String key, int defaultValue)
+    public static int acquireIntFromSystemOrBundle(ResourceBundle bundle, String key, String systemKey, int defaultValue)
+    {
+        int value = defaultValue;
+
+        // check gitana properties file (legacy)
+        try
+        {
+            String text = bundle.getString(key);
+            if (text != null)
+            {
+                value = Integer.parseInt(text, 10);
+            }
+        } catch (Exception ex) {
+            // swallow
+        }
+
+        // if we have a system properties value, use that instead
+        if (systemKey != null)
+        {
+            int systemValue = acquireInt(System.getProperties(), systemKey, -1);
+            if (systemValue != -1)
+            {
+                value = systemValue;
+            }
+        }
+
+        return value;
+    }
+
+    public static int acquireInt(Properties properties, String key, int defaultValue)
     {
         int value = defaultValue;
 
         try
         {
-            String text = bundle.getString(key);
+            String text = properties.getProperty(key);
             if (text != null) {
                 value = Integer.parseInt(text, 10);
             }
@@ -295,4 +324,23 @@ public class DriverUtil
 
         return value;
     }
+
+    public static boolean acquireBoolean(Properties properties, String key, boolean defaultValue)
+    {
+        boolean value = defaultValue;
+
+        try
+        {
+            String text = properties.getProperty(key);
+            if (text != null)
+            {
+                value = Boolean.parseBoolean(text);
+            }
+        } catch (Exception ex) {
+            // swallow
+        }
+
+        return value;
+    }
+
 }

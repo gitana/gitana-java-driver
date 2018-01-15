@@ -463,6 +463,10 @@ public class Gitana
         httpMethodExecutor.setRequestedScope("api");
         remote.setHttpMethodExecutor(httpMethodExecutor);
 
+        // "automatic" mode support
+        boolean useAutomaticReattempt = DriverUtil.acquireBoolean(System.getProperties(), "gitana.useAutomaticReattempt", false);
+        httpMethodExecutor.setUseAutomaticReattempt(useAutomaticReattempt);
+
         // set token lock
         Lock tokenLock = getOrCreateLock("tokenLock-" + this.baseURL);
         httpMethodExecutor.setTokenLock(tokenLock);
@@ -499,6 +503,10 @@ public class Gitana
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
         httpMethodExecutor.setRequestedScope("api");
         remote.setHttpMethodExecutor(httpMethodExecutor);
+
+        // "automatic" mode support
+        boolean useAutomaticReattempt = DriverUtil.acquireBoolean(System.getProperties(), "gitana.useAutomaticReattempt", false);
+        httpMethodExecutor.setUseAutomaticReattempt(useAutomaticReattempt);
 
         // set token lock
         Lock tokenLock = getOrCreateLock("tokenLock-" + this.baseURL);
@@ -577,10 +585,10 @@ public class Gitana
         ResourceBundle bundle = readBundle("gitana");
         if (bundle != null)
         {
-            clientConfiguration.socketSoTimeout = DriverUtil.acquireInt(bundle, "gitana.config.socketSoTimeout", 600000);
-            clientConfiguration.requestConnectTimeout = DriverUtil.acquireInt(bundle, "gitana.config.requestConnectTimeout", 120000);
-            clientConfiguration.requestSocketTimeout = DriverUtil.acquireInt(bundle, "gitana.config.requestSocketTimeout", 600000);
-            clientConfiguration.connectionRequestTimeout = DriverUtil.acquireInt(bundle, "gitana.config.connectionRequestTimeout", 60000);
+            clientConfiguration.socketSoTimeout = DriverUtil.acquireIntFromSystemOrBundle(bundle, "gitana.config.socketSoTimeout", "gitana.socketSoTimeout", 600000);
+            clientConfiguration.requestConnectTimeout = DriverUtil.acquireIntFromSystemOrBundle(bundle, "gitana.config.requestConnectTimeout", "gitana.requestConnectTimeout", 120000);
+            clientConfiguration.requestSocketTimeout = DriverUtil.acquireIntFromSystemOrBundle(bundle, "gitana.config.requestSocketTimeout", "gitana.requestSocketTimeout", 600000);
+            clientConfiguration.connectionRequestTimeout = DriverUtil.acquireIntFromSystemOrBundle(bundle, "gitana.config.connectionRequestTimeout", "gitana.connectionRequestTimeout", 60000);
         }
 
         return clientConfiguration;
