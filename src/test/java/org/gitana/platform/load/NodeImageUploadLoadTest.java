@@ -45,7 +45,7 @@ public class NodeImageUploadLoadTest extends AbstractLoadTest<Void>
     private String branchId = null;
 
     @Override
-    protected Runner<Void> createRunner(String id)
+    protected Runner<Void> createRunner(String id, int index)
     {
         NodeImageUploadRunner runner = new NodeImageUploadRunner(id);
         runner.setRepositoryId(repositoryId);

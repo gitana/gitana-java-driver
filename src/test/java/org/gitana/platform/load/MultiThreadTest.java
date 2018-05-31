@@ -44,7 +44,7 @@ public class MultiThreadTest extends AbstractLoadTest<Void>
     private Branch branch = null;
 
     @Override
-    protected Runner<Void> createRunner(String id)
+    protected Runner<Void> createRunner(String id, int index)
     {
         MultiThreadRunner runner = new MultiThreadRunner(id);
         runner.setDriver(this.driver);

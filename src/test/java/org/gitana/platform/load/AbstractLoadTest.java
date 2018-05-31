@@ -27,14 +27,17 @@ import org.gitana.platform.client.AbstractTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author uzi
  */
 public abstract class AbstractLoadTest<V> extends AbstractTestCase
 {
-    protected abstract Runner<V> createRunner(String id);
+    protected abstract Runner<V> createRunner(String id, int index);
 
     protected MetricRegistry metrics()
     {
@@ -59,7 +62,7 @@ public abstract class AbstractLoadTest<V> extends AbstractTestCase
         for (int i = 0; i < getIterationCount(); i++)
         {
             // create the runner
-            Runner<V> runner = createRunner("runner-" + i);
+            Runner<V> runner = createRunner("runner-" + i, i);
             runner.init();
 
             cs.submit(runner);

@@ -21,12 +21,6 @@
 
 package org.gitana.platform.load;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.gitana.platform.client.Gitana;
-import org.gitana.platform.client.branch.Branch;
-import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.support.Pagination;
-import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 import java.util.List;
@@ -34,21 +28,19 @@ import java.util.List;
 /**
  * @author uzi
  */
-public class MultiThreadConcurrentToken1Test
+public class MultiThreadConcurrentToken2Test
         extends AbstractLoadTest<Void>
 {
-    private Branch branch = null;
-
     @Override
     protected Runner<Void> createRunner(String id, int index)
     {
-        return new MultiThreadConcurrentToken1TestRunner(id, this.branch);
+        return new MultiThreadConcurrentToken2TestRunner(index);
     }
 
     @Override
     protected int getNumberOfRunners()
     {
-        return 10;
+        return 5;
     }
 
     @Override
@@ -61,18 +53,6 @@ public class MultiThreadConcurrentToken1Test
     public void test1()
         throws Exception
     {
-        // authenticate
-        Platform platform = (new Gitana()).authenticate("admin", "admin");
-
-        // create repository and fetch the branch reference
-        this.branch = platform.createRepository().readBranch("master");
-
-        ObjectNode q = JsonUtil.createObject();
-        q.put("_type", "n:node");
-
-        // count the number of nodes
-        int nodeCount1 = this.branch.queryNodes(q, Pagination.limit(99999)).size();
-
         long t1 = System.currentTimeMillis();
         List<RunnerResult<Void>> runners = execute();
         long totalTime = System.currentTimeMillis() - t1;
@@ -81,18 +61,6 @@ public class MultiThreadConcurrentToken1Test
 
         // read back the histogram
         System.out.println("Total time: " + totalTime + ", time per runner: " + timePerRunner);
-
-        // count the number of nodes
-        int nodeCount2 = this.branch.queryNodes(q, Pagination.limit(99999)).size();
-
-        // we do 100 loops per iteration internally
-        System.out.println("Node Count 1: " + nodeCount1);
-        System.out.println("Node Count 2: " + nodeCount2);
-
-        // this should be 1000 but is sometimes 99...
-        int total = nodeCount2 - nodeCount1;
-        //assertEquals(getIterationCount() * 100, total);
-        assertTrue(total >= (getIterationCount() * 100) - 1);
     }
 
 }

@@ -128,9 +128,9 @@
             <!-- License file helper -->
             <plugin>
                 <inherited>false</inherited>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.5.0</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
                     <header>${basedir}/src/etc/license.txt</header>
                     <aggregate>true</aggregate>

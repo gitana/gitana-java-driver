@@ -34,7 +34,7 @@ import org.gitana.platform.client.support.RemoteImpl;
  * @author uzi
  */
 public class MultiThreadConcurrentToken1TestRunner
-    extends AbstractRunner<Void>
+        extends AbstractRunner<Void>
 {
     private Branch branch = null;
     private Driver driver = null;
