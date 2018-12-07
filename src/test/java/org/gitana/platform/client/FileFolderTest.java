@@ -33,6 +33,8 @@ import org.gitana.platform.support.QName;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * @author uzi
  */
@@ -128,6 +130,14 @@ public class FileFolderTest extends AbstractTestCase
         // read the tree from root with the "/a1/b1/c1" path already expanded
         ObjectNode tree2 = root.fileFolderTree("/", "/a1/b1/c1");
         System.out.println(JsonUtil.stringify(tree2, true));
+
+        // read the tree from root with the "/a1/b1/c1" path already expanded
+        ObjectNode tree21 = root.fileFolderTree("/", 1, Arrays.asList("/a1/b1/c1"), false, true, null);
+        System.out.println(JsonUtil.stringify(tree21, true));
+
+        // read the tree from root with the "/a1/b1/c1" and "/a2" paths already expanded
+        ObjectNode tree22 = root.fileFolderTree("/", 1, Arrays.asList("/a1/b1/c1", "/a2"), false, true, null);
+        System.out.println(JsonUtil.stringify(tree22, true));
 
         // read the tree segment starting at "/a1/b1"
         ObjectNode tree3 = root.fileFolderTree("/a1/b1");

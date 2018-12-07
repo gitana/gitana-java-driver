@@ -496,7 +496,20 @@ public class NodeImpl extends BaseNodeImpl implements Node
         }
         if (leafPaths != null && leafPaths.size() > 0)
         {
-            params.put("leaf", leafPaths.get(0));
+            int lpSize = leafPaths.size();
+
+            // construct a string of all paths
+            String leafPathsParamString = "";
+            for (int i = 0; i < lpSize; ++i)
+            {
+                leafPathsParamString += leafPaths.get(i);
+                if (i < lpSize - 1)
+                {
+                   leafPathsParamString += ",";
+                }
+            }
+
+            params.put("leaf", leafPathsParamString);
         }
         if (depth > -1)
         {
