@@ -26,7 +26,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Wraps a JSON response from the Gitana server.
@@ -44,15 +46,27 @@ public class Response
     public final static String FIELD_STACKTRACE = "stacktrace";
 
     private ObjectNode object;
+    private Map<String, String> headers = new HashMap<String, String>();
 
-    public Response(ObjectNode object)
+    public Response(ObjectNode object, Map<String, String> headers)
     {
         this.object = object;
+        this.headers = headers;
     }
 
     public ObjectNode getObjectNode()
     {
         return this.object;
+    }
+
+    public Map<String, String> getHeaders()
+    {
+        return headers;
+    }
+
+    public String getHeader(String name)
+    {
+        return getHeaders().get(name);
     }
 
     public boolean isStatusDocument()
