@@ -27,6 +27,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.support.Pagination;
 import org.gitana.util.JsonUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.List;
 /**
  * @author uzi
  */
+@Ignore
 public class MultiThreadConcurrentToken1Test
         extends AbstractLoadTest<Void>
 {

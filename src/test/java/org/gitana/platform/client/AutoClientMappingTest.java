@@ -77,27 +77,30 @@ public class AutoClientMappingTest extends AbstractTestCase
 
         // create the following mappings
         //
-        //      http://abc.test.com/x1                               -> app1, client1
-        //      http://private.company.com/y1                        -> app2, client2
-        //      /lalala                                              -> app3, client3
+        //      abc.test.com / appKey1                            -> app1, client1
+        //      private.company.com / appKey2                     -> app2, client2
+        //      abc.test.com / appKey3                            -> app3, client3
         //
         
-        String uri1 = "http://abc.test.com/x1";
-        String uri2 = "http://private.company.com/y1";
-        String uri3 = "/lalala";
+        String host1 = "abc.test.com";
+        String host2 = "private.company.com";
 
-        webhost.createAutoClientMapping(uri1, application1.getId(), client1.getId(), authGrant1.getKey());
-        webhost.createAutoClientMapping(uri2, application2.getId(), client2.getId(), authGrant2.getKey());
-        webhost.createAutoClientMapping(uri3, application3.getId(), client3.getId(), authGrant3.getKey());
+        String appKey1 = "appKey1";
+        String appKey2 = "appKey2";
+        String appKey3 = "appKey3";
+
+        webhost.createAutoClientMapping(host1, appKey1, application1.getId(), client1.getId(), authGrant1.getKey());
+        webhost.createAutoClientMapping(host2, appKey2, application2.getId(), client2.getId(), authGrant2.getKey());
+        webhost.createAutoClientMapping(host1, appKey3, application3.getId(), client3.getId(), authGrant3.getKey());
         
-        // now test out querying by URI
-        ResultMap<AutoClientMapping> mappings0 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_URI).is(uri1).get());
+        // now test out querying by host / appKey
+        ResultMap<AutoClientMapping> mappings0 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_HOST).is(host1).and(AutoClientMapping.FIELD_APPLICATION_KEY).is(appKey1).get());
         assertEquals(1, mappings0.size());
-        ResultMap<AutoClientMapping> mappings1 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_URI).is(uri2).get());
+        ResultMap<AutoClientMapping> mappings1 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_HOST).is(host2).and(AutoClientMapping.FIELD_APPLICATION_KEY).is(appKey2).get());
         assertEquals(1, mappings1.size());
-        ResultMap<AutoClientMapping> mappings2 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_URI).is(uri3).get());
+        ResultMap<AutoClientMapping> mappings2 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_HOST).is(host1).and(AutoClientMapping.FIELD_APPLICATION_KEY).is(appKey3).get());
         assertEquals(1, mappings2.size());
-        ResultMap<AutoClientMapping> mappings3 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_URI).is("/blah").get());
+        ResultMap<AutoClientMapping> mappings3 = webhost.queryAutoClientMappings(QueryBuilder.start(AutoClientMapping.FIELD_HOST).is(host1).and(AutoClientMapping.FIELD_APPLICATION_KEY).is("blah").get());
         assertEquals(0, mappings3.size());
 
         // test our querying by app

@@ -79,7 +79,6 @@ public class TenantAllocationTest extends AbstractTestCase
         //   1 console application
         //   1 default directory
         //   1 default web host
-        //   1 default warehouse
         //   1 default vault
         //   1 default repository
         //   1 oneteam application
@@ -142,7 +141,7 @@ public class TenantAllocationTest extends AbstractTestCase
         
 
         // now check allocations for the tenant object
-        assertEquals(21+11, tenant1.listAllocatedObjects().size()); // 21 + 11 defaults
+        assertEquals(21+10, tenant1.listAllocatedObjects().size()); // 21 + 10 defaults
         assertEquals(6+2, tenant1.listAllocatedApplicationObjects().size()); // 2
         assertEquals(5+1, tenant1.listAllocatedRepositoryObjects().size()); // 1
         assertEquals(4+1, tenant1.listAllocatedDomainObjects().size()); // 1

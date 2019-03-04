@@ -28,20 +28,26 @@ import org.gitana.platform.client.support.Selfable;
  */
 public interface AutoClientMapping extends WebHostDocument, Selfable
 {
-    // the incoming uri
-    public final static String FIELD_URI = "uri";
+    // the host
+    public final static String FIELD_HOST = "host";
 
     // the target application id
     public final static String FIELD_APPLICATION_ID = "applicationId";
 
+    // the target application key
+    public final static String FIELD_APPLICATION_KEY = "applicationKey";
+
     // the target client key
     public final static String FIELD_CLIENT_KEY = "clientKey";
 
-    // the target auth grant key
+    // the target authgrant key
     public final static String FIELD_AUTH_GRANT_KEY = "authGrantKey";
 
-    public String getUri();
-    public void setUri(String uri);
+    public String getHost();
+    public void setHost(String host);
+
+    public String getApplicationKey();
+    public void setApplicationKey(String applicationKey);
 
     public String getApplicationId();
     public void setApplicationId(String applicationId);

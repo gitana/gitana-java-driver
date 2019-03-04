@@ -42,7 +42,6 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.vault.Vault;
-import org.gitana.platform.client.warehouse.Warehouse;
 import org.gitana.platform.client.webhost.WebHost;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -280,29 +279,6 @@ public interface Platform extends DataStore
 
     public PermissionCheckResults checkWebHostPermissions(List<PermissionCheck> list);
 
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // WAREHOUSES
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public ResultMap<Warehouse> listWarehouses();
-
-    public ResultMap<Warehouse> listWarehouses(Pagination pagination);
-
-    public Warehouse readWarehouse(String webhostId);
-
-    public Warehouse createWarehouse();
-
-    public Warehouse createWarehouse(ObjectNode object);
-
-    public ResultMap<Warehouse> queryWarehouses(ObjectNode query);
-
-    public ResultMap<Warehouse> queryWarehouses(ObjectNode query, Pagination pagination);
-
-    public PermissionCheckResults checkWarehousePermissions(List<PermissionCheck> list);
 
 
 

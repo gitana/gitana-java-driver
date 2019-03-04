@@ -112,9 +112,9 @@ public class TypeDefinitionImpl extends AbstractDefinitionImpl implements TypeDe
         Form form = (Form) getBranch().createNode(object);
 
         // create the association
-        HasFormAssociation association = (HasFormAssociation) associate(form, HasFormAssociation.QNAME);
-        association.set(HasFormAssociation.FIELD_FORM_KEY, formKey);
-        association.update();
+        ObjectNode associationObject = JsonUtil.createObject();
+        associationObject.put(HasFormAssociation.FIELD_FORM_KEY, formKey);
+        associate(form, HasFormAssociation.QNAME, associationObject);
 
         return form;
     }

@@ -22,7 +22,6 @@
 package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.*;
@@ -57,7 +56,6 @@ import org.gitana.platform.client.team.Team;
 import org.gitana.platform.client.team.Teamable;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.vault.Vault;
-import org.gitana.platform.client.warehouse.*;
 import org.gitana.platform.client.webhost.AutoClientMapping;
 import org.gitana.platform.client.webhost.DeployedApplication;
 import org.gitana.platform.client.webhost.WebHost;
@@ -282,49 +280,6 @@ public interface ObjectFactory
     // deployed applications
     public DeployedApplication deployedApplication(WebHost webhost, Response response);
     public ResultMap<DeployedApplication> deployedApplications(WebHost webhost, Response response);
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // WARE HOUSE
-    //
-
-    public Warehouse warehouse(Platform platform);
-    public Warehouse warehouse(Platform platform, ObjectNode object);
-    public Warehouse warehouse(Platform platform, Response response);
-    public ResultMap<Warehouse> warehouses(Platform platform, Response response);
-
-    // interactions
-    public Interaction interaction(Warehouse warehouse, Response response);
-    public ResultMap<Interaction> interactions(Warehouse warehouse, Response response);
-
-    // interaction applications
-    public InteractionApplication interactionApplication(Warehouse warehouse, Response response);
-    public ResultMap<InteractionApplication> interactionApplications(Warehouse warehouse, Response response);
-
-    // interaction nodes
-    public InteractionNode interactionNode(Warehouse warehouse, Response response);
-    public ResultMap<InteractionNode> interactionNodes(Warehouse warehouse, Response response);
-
-    // interaction pages
-    public InteractionPage interactionPage(Warehouse warehouse, Response response);
-    public ResultMap<InteractionPage> interactionPages(Warehouse warehouse, Response response);
-
-    // interaction reports
-    public InteractionReport interactionReport(Warehouse warehouse, Response response);
-    public ResultMap<InteractionReport> interactionReports(Warehouse warehouse, Response response);
-
-    // interaction report entries
-    public InteractionReportEntry interactionReportEntry(Warehouse warehouse, Response response);
-    public ResultMap<InteractionReportEntry> interactionReportEntries(Warehouse warehouse, Response response);
-
-    // interaction session
-    public InteractionSession interactionSession(Warehouse warehouse, Response response);
-    public ResultMap<InteractionSession> interactionSessions(Warehouse warehouse, Response response);
-
-    // interaction user
-    public InteractionUser interactionUser(Warehouse warehouse, Response response);
-    public ResultMap<InteractionUser> interactionUsers(Warehouse warehouse, Response response);
 
     public PlatformDataStore platformDataStore(Platform platform, ObjectNode object);
     public ResultMap<PlatformDataStore> platformDataStores(Platform platform, Response response);

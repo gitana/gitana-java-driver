@@ -22,7 +22,6 @@
 package org.gitana.platform.client.webhost;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.support.TypedIDConstants;
 
 /**
@@ -102,15 +101,27 @@ public class AutoClientMappingImpl extends AbstractWebHostDocumentImpl implement
     }
 
     @Override
-    public String getUri()
+    public String getApplicationKey()
     {
-        return getString(FIELD_URI);
+        return getString(FIELD_APPLICATION_KEY);
     }
 
     @Override
-    public void setUri(String uri)
+    public void setApplicationKey(String applicationKey)
     {
-        set(FIELD_URI, uri);
+        set(FIELD_APPLICATION_KEY, applicationKey);
+    }
+
+    @Override
+    public String getHost()
+    {
+        return getString(FIELD_HOST);
+    }
+
+    @Override
+    public void setHost(String host)
+    {
+        set(FIELD_HOST, host);
     }
 
     @Override

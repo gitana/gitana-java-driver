@@ -146,7 +146,7 @@ public class BillingTest extends AbstractTestCase
         paymentMethodObject.put(PaymentMethod.FIELD_NUMBER, creditCardNumber);
         paymentMethodObject.put(PaymentMethod.FIELD_HOLDER_NAME, "Bruce Springsteen");
         paymentMethodObject.put(PaymentMethod.FIELD_EXPIRATION_MONTH, 12);
-        paymentMethodObject.put(PaymentMethod.FIELD_EXPIRATION_YEAR, 2017);
+        paymentMethodObject.put(PaymentMethod.FIELD_EXPIRATION_YEAR, 2020);
 
         // create a new tenant
         // this should succeed if the credit card successfully billed

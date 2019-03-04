@@ -89,7 +89,6 @@ public class TenantObjectTest extends AbstractTestCase
         //   1 console application
         //   1 default directory
         //   1 default web host
-        //   1 default warehouse
         //   1 default vault
         //   1 default repository
         //   1 oneteam application

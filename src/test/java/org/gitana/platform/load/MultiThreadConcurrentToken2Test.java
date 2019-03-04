@@ -21,6 +21,7 @@
 
 package org.gitana.platform.load;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 /**
  * @author uzi
  */
+@Ignore
 public class MultiThreadConcurrentToken2Test
         extends AbstractLoadTest<Void>
 {

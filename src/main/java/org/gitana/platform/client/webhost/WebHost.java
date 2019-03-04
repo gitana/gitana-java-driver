@@ -69,7 +69,7 @@ public interface WebHost extends PlatformDataStore
 
     public AutoClientMapping readAutoClientMapping(String autoClientMappingId);
 
-    public AutoClientMapping createAutoClientMapping(String uri, String applicationId, String clientKey, String authGrantKey);
+    public AutoClientMapping createAutoClientMapping(String host, String appKey, String applicationId, String clientKey, String authGrantKey);
 
     public ResultMap<AutoClientMapping> queryAutoClientMappings(ObjectNode query);
     public ResultMap<AutoClientMapping> queryAutoClientMappings(ObjectNode query, Pagination pagination);
