@@ -24,6 +24,7 @@ package org.gitana.platform.client.application;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -37,6 +38,12 @@ public abstract class AbstractApplicationDocumentImpl extends AbstractPlatformDo
     	super(application.getPlatform(), obj, isSaved);
 
         this.application = application;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getApplicationId(), getId());
     }
 
     @Override

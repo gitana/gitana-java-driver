@@ -32,6 +32,7 @@ import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.*;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
@@ -96,6 +97,12 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
     protected Remote getRemote()
     {
         return getDriver().getRemote();
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getRepositoryId(), getBranchId(), getId());
     }
 
     @Override

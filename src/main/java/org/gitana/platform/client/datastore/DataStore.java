@@ -28,6 +28,6 @@ import org.gitana.platform.client.team.Teamable;
 /**
  * @author uzi
  */
-public interface DataStore extends Document, AccessControllable, Selfable, Teamable, Transferable, TypedID
+public interface DataStore extends Document, AccessControllable, Selfable, Teamable, Transferable, TypedID, Referenceable
 {
 }

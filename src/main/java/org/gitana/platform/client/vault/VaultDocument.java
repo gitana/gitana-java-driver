@@ -21,7 +21,6 @@
 
 package org.gitana.platform.client.vault;
 
-import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.platform.PlatformDocument;
 

@@ -24,6 +24,7 @@ package org.gitana.platform.client.domain;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -37,6 +38,12 @@ public abstract class AbstractDomainDocumentImpl extends AbstractPlatformDocumen
         super(domain.getPlatform(), obj, isSaved);
 
         this.domain = domain;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getDomainId(), getId());
     }
 
     @Override

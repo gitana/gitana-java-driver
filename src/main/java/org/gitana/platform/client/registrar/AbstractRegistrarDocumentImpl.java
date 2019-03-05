@@ -24,6 +24,7 @@ package org.gitana.platform.client.registrar;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -37,6 +38,12 @@ public abstract class AbstractRegistrarDocumentImpl extends AbstractPlatformDocu
         super(registrar.getPlatform(), obj, isSaved);
 
         this.registrar = registrar;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getRegistrarId(), getId());
     }
 
     @Override

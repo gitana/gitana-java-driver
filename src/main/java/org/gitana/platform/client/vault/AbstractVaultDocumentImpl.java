@@ -24,6 +24,7 @@ package org.gitana.platform.client.vault;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -37,6 +38,12 @@ public abstract class AbstractVaultDocumentImpl extends AbstractPlatformDocument
         super(vault.getPlatform(), obj, isSaved);
 
         this.vault = vault;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getVaultId(), getId());
     }
 
     @Override

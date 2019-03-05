@@ -28,6 +28,7 @@ import org.gitana.platform.client.document.DocumentImpl;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -41,6 +42,12 @@ public abstract class AbstractClusterDocumentImpl extends DocumentImpl implement
     	super(obj, isSaved);
 
         this.cluster = cluster;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), "default", getId());
     }
 
     protected abstract String getResourceUri();

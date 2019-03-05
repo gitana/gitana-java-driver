@@ -33,6 +33,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.billing.PaymentMethodValidation;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;

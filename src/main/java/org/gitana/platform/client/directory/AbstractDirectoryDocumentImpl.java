@@ -22,9 +22,9 @@
 package org.gitana.platform.client.directory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -38,6 +38,12 @@ public abstract class AbstractDirectoryDocumentImpl extends AbstractPlatformDocu
     	super(directory.getPlatform(), obj, isSaved);
 
         this.directory = directory;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getDirectoryId(), getId());
     }
 
     @Override

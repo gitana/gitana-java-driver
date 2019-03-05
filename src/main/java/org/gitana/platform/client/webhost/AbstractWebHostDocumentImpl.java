@@ -24,6 +24,7 @@ package org.gitana.platform.client.webhost;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.platform.AbstractPlatformDocumentImpl;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
@@ -37,6 +38,12 @@ public abstract class AbstractWebHostDocumentImpl extends AbstractPlatformDocume
     	super(webhost.getPlatform(), obj, isSaved);
 
         this.webhost = webhost;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getWebHostId(), getId());
     }
 
     @Override

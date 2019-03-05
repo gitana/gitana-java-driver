@@ -34,6 +34,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.AbstractVaultDocumentImpl;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
@@ -467,5 +468,4 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     {
         return getString(FIELD_TEMPLATE_KEY);
     }
-
 }

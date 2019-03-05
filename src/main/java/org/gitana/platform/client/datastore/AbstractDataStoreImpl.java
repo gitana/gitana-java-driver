@@ -40,6 +40,7 @@ import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferSchedule;
@@ -75,6 +76,12 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     }
 
     public abstract Cluster getCluster();
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getId());
+    }
 
     @Override
     public String getId()

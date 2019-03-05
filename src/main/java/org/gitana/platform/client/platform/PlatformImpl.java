@@ -45,6 +45,7 @@ import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.webhost.WebHost;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;

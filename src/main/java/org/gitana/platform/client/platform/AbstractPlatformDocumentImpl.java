@@ -33,6 +33,7 @@ import org.gitana.platform.client.transfer.TransferExportJob;
 import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
@@ -54,6 +55,12 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     	super(obj, isSaved);
 
         this.platform = platform;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatformId(), getId());
     }
 
     protected abstract String getResourceUri();
@@ -208,5 +215,4 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     {
         return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
     }
-
 }

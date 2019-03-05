@@ -19,19 +19,14 @@
  *   info@cloudcms.com
  */
 
-package org.gitana.platform.client.platform;
+package org.gitana.platform.client.support;
 
-import org.gitana.platform.client.document.Document;
-import org.gitana.platform.client.support.Copyable;
-import org.gitana.platform.client.support.Referenceable;
-import org.gitana.platform.client.support.Transferable;
-import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.services.reference.Reference;
 
 /**
  * @author uzi
  */
-public interface PlatformDocument extends Document, Transferable, Copyable, TypedID, Referenceable
-{	
-    public Platform getPlatform();
-    public String getPlatformId();
+public interface Referenceable
+{
+    public Reference ref();
 }

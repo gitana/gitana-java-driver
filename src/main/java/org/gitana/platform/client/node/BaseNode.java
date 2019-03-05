@@ -27,6 +27,7 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.document.Document;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.support.Referenceable;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.client.support.TypedID;
 import org.gitana.platform.support.QName;
@@ -36,7 +37,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface BaseNode extends Document, Selfable, TypedID, Attachable
+public interface BaseNode extends Document, Selfable, TypedID, Attachable, Referenceable
 {
 	// additional metadata fields
     public final static String FIELD_FEATURES = "_features";
