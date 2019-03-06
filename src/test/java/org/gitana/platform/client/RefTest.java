@@ -38,7 +38,7 @@ import org.junit.Test;
  *
  * @author uzi
  */
-public class ClientRefTest extends AbstractTestCase
+public class RefTest extends AbstractTestCase
 {
     @Test
     public void testClients1()
