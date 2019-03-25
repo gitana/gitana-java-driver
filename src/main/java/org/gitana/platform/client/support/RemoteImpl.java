@@ -56,6 +56,8 @@ import java.util.Map;
  */
 public class RemoteImpl implements Remote
 {
+    private static final String UTF_8 = "UTF-8";
+
     private HttpInvoker invoker;
     private String remoteURL;
 
@@ -842,7 +844,7 @@ public class RemoteImpl implements Remote
 
         if (response.length > 0)
         {
-            object = JsonUtil.createObject(new String(response));
+            object = JsonUtil.createObject(new String(response, UTF_8));
         }
 
         return object;
