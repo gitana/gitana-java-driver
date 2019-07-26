@@ -34,6 +34,7 @@ import org.gitana.platform.support.QName;
 import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
+import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
 /**
@@ -82,11 +83,27 @@ public class FindTest extends AbstractTestCase
         ResultMap<BaseNode> search1 = master.searchNodes("usa");
         assertEquals(6, search1.size());
 
+        // verify that each result row has a _search subobject
+        for (BaseNode bn: search1.values())
+        {
+            float score = JsonUtil.getByPath(bn.getObject(), "_search/score").floatValue();
+            System.out.println("Score: " + score);
+            assertTrue(score > 0);
+        }
+
         // use a FIND
         // find where city == "chicago" and has text "usa"
         ObjectNode query2 = QueryBuilder.start("city").is("chicago").get();
         ResultMap<BaseNode> search2 = master.findNodes(query2, "usa");
         assertEquals(2, search2.size());
+
+        // verify that each result row has a _search subobject
+        for (BaseNode bn: search2.values())
+        {
+            float score = JsonUtil.getByPath(bn.getObject(), "_search/score").floatValue();
+            System.out.println("Score: " + score);
+            assertTrue(score > 0);
+        }
 
         // use a FIND
         // empty query, just text "usa"

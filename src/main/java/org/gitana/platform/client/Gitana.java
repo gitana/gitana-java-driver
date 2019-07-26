@@ -145,6 +145,15 @@ public class Gitana
         return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
     }
 
+    public static Platform connect()
+    {
+        return new Gitana(null, null, null, null).authenticate();
+    }
+
+    public static Platform connect(String clientKey, String clientSecret, String username, String password, String baseURL)
+    {
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+    }
 
     /**
      * Creates a Gitana instance that loads all of its settings from a properties bundle.
