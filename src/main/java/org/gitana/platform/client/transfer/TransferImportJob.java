@@ -23,9 +23,9 @@ package org.gitana.platform.client.transfer;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.JobImpl;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.services.transfer.TransferDependency;
 import org.gitana.platform.services.transfer.TransferDependencyChain;
 import org.gitana.platform.services.transfer.TransferImport;
@@ -98,8 +98,15 @@ public class TransferImportJob extends JobImpl
 
             String typeId = JsonUtil.objectGetString(object, "typeId");
             String id = JsonUtil.objectGetString(object, "id");
+            String ref = JsonUtil.objectGetString(object, "ref");
 
-            TransferDependency dependency = new TransferDependency(typeId, id);
+            Reference reference = null;
+            if (ref != null)
+            {
+                reference = Reference.create(ref);
+            }
+
+            TransferDependency dependency = new TransferDependency(typeId, id, reference);
             targets.add(dependency);
         }
 
