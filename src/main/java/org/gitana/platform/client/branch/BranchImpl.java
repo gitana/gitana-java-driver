@@ -477,6 +477,28 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
+    public ResultMap<BaseNode> searchNodes(String text, Pagination pagination)
+    {
+        // url encode the text
+        try
+        {
+            text = URLEncoder.encode(text, "utf-8");
+        }
+        catch (UnsupportedEncodingException uee)
+        {
+            throw new RuntimeException(uee);
+        }
+
+        // Put pagination and text in params
+        Map<String, String> params = DriverUtil.params(pagination);
+        params.put("text", text);
+
+        Response response = getRemote().get(getResourceUri() + "/nodes/search", params);
+
+        return getFactory().nodes(this, response);
+    }
+
+    @Override
     public Node rootNode()
     {
         return (Node) this.readNode("root");

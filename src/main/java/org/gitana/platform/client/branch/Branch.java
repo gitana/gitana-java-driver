@@ -180,6 +180,15 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public ResultMap<BaseNode> searchNodes(String text);
 
+    /**
+     * Full-text search
+     *
+     * @param text
+     * @param pagination
+     * @return map of nodes
+     */
+    public ResultMap<BaseNode> searchNodes(String text, Pagination pagination);
+
     public Node rootNode();
 
     /**
