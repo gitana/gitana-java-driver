@@ -52,7 +52,7 @@ public class NodeSearch2Test extends AbstractTestCase
         // master branch
         Branch master = repo.readBranch("master");
 
-        String test = "test-" + System.currentTimeMillis();
+        // String test = "test-" + System.currentTimeMillis();
 
         // create first node
         ObjectNode obj1 = NodeBuilder.start("title").is("Gone with the Wind").and("author").is("Margaret Mitchell").get();

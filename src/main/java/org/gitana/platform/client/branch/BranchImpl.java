@@ -467,6 +467,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> searchNodes(String text, Pagination pagination)
     {
+        /*
         // url encode the text
         try
         {
@@ -476,6 +477,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         {
             throw new RuntimeException(uee);
         }
+        */
 
         // Put pagination and text in params
         Map<String, String> params = DriverUtil.params(pagination);
