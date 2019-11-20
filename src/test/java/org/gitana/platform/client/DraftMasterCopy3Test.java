@@ -54,7 +54,7 @@ public class DraftMasterCopy3Test extends AbstractTestCase
         Repository repository2 = platform.createRepository();
 
         // live branch
-        Branch master = repository1.readBranch("master");
+        Branch live = repository1.readBranch("master");
 
         // draft branch
         Branch draft = repository2.readBranch("master");
@@ -65,8 +65,8 @@ public class DraftMasterCopy3Test extends AbstractTestCase
 
         // create a rule on draft where any instances of my:article are automatically sync'd to master
         ObjectNode touchRuleObject = ClasspathUtil.objectFromClasspath("org/gitana/platform/client/touchrule1.json");
-        ((ObjectNode) touchRuleObject.get("actions").get(0).get("config")).put("targetRepositoryId", master.getRepositoryId());
-        ((ObjectNode) touchRuleObject.get("actions").get(0).get("config")).put("targetBranchId", master.getId());
+        ((ObjectNode) touchRuleObject.get("actions").get(0).get("config")).put("targetRepositoryId", live.getRepositoryId());
+        ((ObjectNode) touchRuleObject.get("actions").get(0).get("config")).put("targetBranchId", live.getId());
         Node rule1 = (Node) draft.createNode(touchRuleObject);
 
         // bind the rule to the "p:afterTouchNode" policy for all draft my:articles
@@ -90,7 +90,7 @@ public class DraftMasterCopy3Test extends AbstractTestCase
 
         // assert - node exists on draft, not on master
         assertEquals(1, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());
-        assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("1").get()).size());
+        assertEquals(0, live.queryNodes(JSONBuilder.start("version").is("1").get()).size());
 
         // set draft to published
         draftNode.set("state", "published");
@@ -101,7 +101,9 @@ public class DraftMasterCopy3Test extends AbstractTestCase
 
         // assert - node exists on draft and on master
         assertEquals(1, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());
-        assertEquals(1, master.queryNodes(JSONBuilder.start("version").is("1").get()).size());
+        assertEquals(1, live.queryNodes(JSONBuilder.start("version").is("1").get()).size());
+
+        System.out.println("a1: " + draftNode.getString("state"));
 
         // update on draft
         draftNode.set("version", "2");
@@ -113,8 +115,8 @@ public class DraftMasterCopy3Test extends AbstractTestCase
         // assert - node exists on draft (v2) and on master (v2)
         assertEquals(0, draft.queryNodes(JSONBuilder.start("version").is("1").get()).size());
         assertEquals(1, draft.queryNodes(JSONBuilder.start("version").is("2").get()).size());
-        assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("1").get()).size());
-        assertEquals(1, master.queryNodes(JSONBuilder.start("version").is("2").get()).size());
+        assertEquals(0, live.queryNodes(JSONBuilder.start("version").is("1").get()).size());
+        assertEquals(1, live.queryNodes(JSONBuilder.start("version").is("2").get()).size());
 
         // delete the node
         draftNode.delete();
@@ -123,8 +125,8 @@ public class DraftMasterCopy3Test extends AbstractTestCase
         Thread.sleep(10000);
 
         // verify it was also deleted on master
-        assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("1").get()).size());
-        assertEquals(0, master.queryNodes(JSONBuilder.start("version").is("2").get()).size());
+        assertEquals(0, live.queryNodes(JSONBuilder.start("version").is("1").get()).size());
+        assertEquals(0, live.queryNodes(JSONBuilder.start("version").is("2").get()).size());
 
     }
 }
