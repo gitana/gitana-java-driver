@@ -87,10 +87,26 @@ public class Gitana
         String username = DriverUtil.readKey(bundle, "username");
         if (username == null)
         {
+            username = DriverUtil.readKey(bundle, "gitana.username");
+        }
+        if (username == null)
+        {
+            username = DriverUtil.readKey(bundle, "gitana.credentials.username");
+        }
+        if (username == null)
+        {
             username = DriverUtil.readKey(bundle, "authGrantKey");
         }
 
         String password = DriverUtil.readKey(bundle, "password");
+        if (password == null)
+        {
+            password = DriverUtil.readKey(bundle, "gitana.password");
+        }
+        if (password == null)
+        {
+            password = DriverUtil.readKey(bundle, "gitana.credentials.password");
+        }
         if (password == null)
         {
             password = DriverUtil.readKey(bundle, "authGrantSecret");
@@ -456,8 +472,26 @@ public class Gitana
         if (username == null && password == null)
         {
             ResourceBundle bundle = readBundle("gitana");
-            username = bundle.getString("gitana.credentials.username");
-            password = bundle.getString("gitana.credentials.password");
+
+            username = bundle.getString("username");
+            if (username == null)
+            {
+                username = bundle.getString("gitana.username");
+            }
+            if (username == null)
+            {
+                username = bundle.getString("gitana.credentials.username");
+            }
+
+            password = bundle.getString("password");
+            if (password == null)
+            {
+                password = bundle.getString("gitana.password");
+            }
+            if (password == null)
+            {
+                password = bundle.getString("gitana.credentials.password");
+            }
         }
 
         RemoteImpl remote = createRemote(acquireClientConfiguration());
