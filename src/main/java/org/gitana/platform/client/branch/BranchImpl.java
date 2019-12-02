@@ -461,24 +461,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> searchNodes(String text)
     {
-        // url encode the text
-        try
-        {
-            text = URLEncoder.encode(text, "utf-8");
-        }
-        catch (UnsupportedEncodingException uee)
-        {
-            throw new RuntimeException(uee);
-        }
-
-        Response response = getRemote().get(getResourceUri() + "/nodes/search?text=" + text);
-
-        return getFactory().nodes(this, response);
+        return searchNodes(text, null);
     }
 
     @Override
     public ResultMap<BaseNode> searchNodes(String text, Pagination pagination)
     {
+        /*
         // url encode the text
         try
         {
@@ -488,6 +477,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         {
             throw new RuntimeException(uee);
         }
+        */
 
         // Put pagination and text in params
         Map<String, String> params = DriverUtil.params(pagination);
@@ -497,6 +487,35 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
 
         return getFactory().nodes(this, response);
     }
+
+    @Override
+    public ResultMap<BaseNode> searchNodes(ObjectNode searchObject)
+    {
+        return searchNodes(searchObject, null);
+    }
+
+    @Override
+    public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        ObjectNode payload = null;
+
+        if (searchObject.has("search"))
+        {
+            payload = searchObject;
+        }
+        else
+        {
+            payload = JsonUtil.createObject();
+            payload.put("search", searchObject);
+        }
+
+        Response response = getRemote().post(getResourceUri() + "/nodes/search", params, payload);
+
+        return getFactory().nodes(this, response);
+    }
+
 
     @Override
     public Node rootNode()

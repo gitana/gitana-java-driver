@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class NodeQueryTest extends AbstractTestCase
+public class NodeQuery1Test extends AbstractTestCase
 {
     @Test
     public void testQuery()
