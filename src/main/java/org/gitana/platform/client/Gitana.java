@@ -23,8 +23,10 @@ package org.gitana.platform.client;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.gitana.http.HttpClientConfiguration;
 import org.gitana.http.OAuth2HttpMethodExecutor;
+import org.gitana.http.OAuth2TokenRequestConfigurer;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
 import org.gitana.platform.client.identity.Identity;
@@ -81,6 +83,11 @@ public class Gitana
 
     public static Platform connect(ResourceBundle bundle)
     {
+        return connect(bundle, null);
+    }
+
+    public static Platform connect(ResourceBundle bundle, ConnectOptions connectOptions)
+    {
         String clientKey = DriverUtil.readKey(bundle, "clientKey");
         String clientSecret = DriverUtil.readKey(bundle, "clientSecret");
 
@@ -98,10 +105,15 @@ public class Gitana
 
         String baseURL = DriverUtil.readKey(bundle, "baseURL");
 
-        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password, connectOptions);
     }
 
     public static Platform connect(ObjectNode config)
+    {
+        return connect(config, null);
+    }
+
+    public static Platform connect(ObjectNode config, ConnectOptions connectOptions)
     {
         String clientKey = JsonUtil.objectGetString(config, "clientKey");
         String clientSecret = JsonUtil.objectGetString(config, "clientSecret");
@@ -120,10 +132,15 @@ public class Gitana
 
         String baseURL = JsonUtil.objectGetString(config, "baseURL");
 
-        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password, connectOptions);
     }
 
     public static Platform connect(Map<String, String> properties)
+    {
+        return connect(properties, null);
+    }
+
+    public static Platform connect(Map<String, String> properties, ConnectOptions connectOptions)
     {
         String clientKey = properties.get("clientKey");
         String clientSecret = properties.get("clientSecret");
@@ -142,7 +159,7 @@ public class Gitana
 
         String baseURL = properties.get("baseURL");
 
-        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password, connectOptions);
     }
 
     public static Platform connect()
@@ -150,9 +167,19 @@ public class Gitana
         return new Gitana(null, null, null, null).authenticate();
     }
 
+    public static Platform connect(ConnectOptions connectOptions)
+    {
+        return new Gitana(null, null, null, null).authenticate(connectOptions);
+    }
+
     public static Platform connect(String clientKey, String clientSecret, String username, String password, String baseURL)
     {
-        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password);
+        return connect(clientKey, clientSecret, username, password, baseURL, null);
+    }
+
+    public static Platform connect(String clientKey, String clientSecret, String username, String password, String baseURL, ConnectOptions connectOptions)
+    {
+        return new Gitana(null, clientKey, clientSecret, baseURL).authenticate(username, password, connectOptions);
     }
 
     /**
@@ -352,7 +379,12 @@ public class Gitana
      */
     public Platform authenticate()
     {
-        return authenticate((String)null, (String)null);
+        return authenticate(null);
+    }
+
+    public Platform authenticate(ConnectOptions connectOptions)
+    {
+        return authenticate((String)null, (String)null, connectOptions);
     }
 
     /**
@@ -374,8 +406,14 @@ public class Gitana
      */
     public Platform authenticate(DomainUser user, String password)
     {
-        return authenticate(user.getDomainQualifiedId(), password);
+        return authenticate(user, password, null);
     }
+
+    public Platform authenticate(DomainUser user, String password, ConnectOptions connectOptions)
+    {
+        return authenticate(user.getDomainQualifiedId(), password, connectOptions);
+    }
+
 
     /**
      * Authenticates as the given identity using a domain user that belongs to a domain on the given
@@ -452,6 +490,11 @@ public class Gitana
      */
     public Platform authenticate(String username, String password)
     {
+        return authenticate(username, password, null);
+    }
+
+    public Platform authenticate(String username, String password, final ConnectOptions connectOptions)
+    {
         // if username and password are null, authenticate using credentials supplied in properties file
         if (username == null && password == null)
         {
@@ -470,6 +513,23 @@ public class Gitana
         httpMethodExecutor.setResourceOwnerPasswordCredentialsFlow(username, password);
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
         httpMethodExecutor.setRequestedScope("api");
+
+        // if we have auth options, add in a token request configurer to supply things like MFA CODE and other auth options
+        if (connectOptions != null)
+        {
+            OAuth2TokenRequestConfigurer tokenRequestConfigurer = new OAuth2TokenRequestConfigurer() {
+                @Override
+                public void configure(HttpRequestBase httpMethod, String clientKey, String clientSecret, String username, String password, String refreshToken, String code, String redirectUri)
+                {
+                    if (connectOptions.getAuthenticatorCode() != null)
+                    {
+                        httpMethod.setHeader("authenticator_code", connectOptions.getAuthenticatorCode());
+                    }
+                }
+            };
+
+            httpMethodExecutor.setTokenRequestConfigurer(tokenRequestConfigurer);
+        }
         remote.setHttpMethodExecutor(httpMethodExecutor);
 
         // "automatic" mode support
