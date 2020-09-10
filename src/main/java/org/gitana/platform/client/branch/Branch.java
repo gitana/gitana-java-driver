@@ -249,6 +249,8 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public Map<QName, Definition> listDefinitions();
 
+    public Map<QName, Definition> listDefinitions(DefinitionType filter, boolean custom, boolean system, Pagination pagination);
+
     /**
      * Reads a definition
      *

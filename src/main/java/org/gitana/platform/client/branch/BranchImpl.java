@@ -566,6 +566,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public Map<QName, Definition> listDefinitions()
     {
+        System.out.println("word");
         Response response = getRemote().get(getResourceUri() + "/definitions");
 
         Map<String, BaseNode> nodes = getFactory().nodes(this, response);
@@ -577,7 +578,46 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         }
 
         return definitions;
+//        return listDefinitions(null, false, false, null);
     }
+
+    @Override
+    public Map<QName, Definition> listDefinitions(DefinitionType filter, boolean custom, boolean system, Pagination pagination)
+    {
+
+        Map<String, String> params = DriverUtil.params(pagination);
+
+//        params.put("capabilities", "true");
+
+        if (filter != null)
+        {
+            params.put("filter", filter.toString());
+        }
+
+        if (custom)
+        {
+            params.put("custom", Boolean.toString(custom));
+        }
+
+        if (system)
+        {
+            params.put("system", Boolean.toString(system));
+        }
+
+        Response response = getRemote().get(getResourceUri() + "/definitions", params);
+
+        Map<String, BaseNode> nodes = getFactory().nodes(this, response);
+
+        Map<QName, Definition> definitions = new LinkedHashMap<QName, Definition>();
+        for (BaseNode node: nodes.values())
+        {
+            definitions.put(node.getQName(), (Definition) node);
+        }
+
+        return definitions;
+    }
+
+
 
     @Override
     public Definition readDefinition(QName qname)
