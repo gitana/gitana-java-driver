@@ -126,6 +126,19 @@ public class Driver
      */
     public void expire()
     {
-        getRemote().post("/auth/expire");
+        expire(false);
     }
+
+    public void expire(boolean expireRefreshToken)
+    {
+        String uri = "/auth/expire";
+
+        if (expireRefreshToken)
+        {
+            uri += "?all=true";
+        }
+
+        getRemote().post(uri);
+    }
+
 }

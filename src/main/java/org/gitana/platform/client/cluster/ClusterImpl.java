@@ -28,6 +28,7 @@ import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
@@ -51,6 +52,13 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
 
         setId(clusterId);
     }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getId());
+    }
+
 
     @Override
     public Cluster getCluster()

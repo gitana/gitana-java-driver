@@ -27,6 +27,7 @@ import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.TypedID;
 import org.gitana.platform.client.transfer.CopyJob;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
 
@@ -44,6 +45,12 @@ public abstract class AbstractPlatformDataStoreImpl extends AbstractClusterDataS
         super(platform.getCluster(), obj, isSaved);
 
         this.platform = platform;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getPlatform().getId(), getId());
     }
 
     @Override

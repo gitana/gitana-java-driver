@@ -53,7 +53,7 @@ public class TenantTeamTest extends AbstractTestCase
         // create user #1
         DomainUser user1 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
         // create user #2
-        DomainUser user2 = platform.readDomain("default").createUser("user1-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
+        DomainUser user2 = platform.readDomain("default").createUser("user2-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
 
         // default registrar
         Registrar registrar = platform.readRegistrar("default");
@@ -69,12 +69,13 @@ public class TenantTeamTest extends AbstractTestCase
         ResultMap<ObjectNode> userObjects = user1.readIdentity().findPolicyUserObjects();
         assertEquals(2, userObjects.size());
 
-        // verify we can find tenants with this user
+        // verify we can find tenants with this user identity
+        // there will be 2 for user1 (the tenant we created above + the admin tenant)
         ResultMap<ObjectNode> tenantObjects = user1.readIdentity().findPolicyTenantObjects(registrar);
-        assertEquals(1, tenantObjects.size());
+        assertEquals(2, tenantObjects.size());
         
         // verify we can pick out the account this user has on tenant1
-        ObjectNode foundTenantObject = tenantObjects.values().iterator().next();
+        ObjectNode foundTenantObject = tenantObjects.get(tenant1.getId());
         assertEquals(tenant1.getId(), foundTenantObject.get(Tenant.FIELD_ID).textValue());
         ObjectNode user1inTenant1Object = user1.readIdentity().findPolicyUserObjectForTenant(foundTenantObject.get(Tenant.FIELD_ID).textValue());
         assertNotNull(user1inTenant1Object);
@@ -116,8 +117,9 @@ public class TenantTeamTest extends AbstractTestCase
         assertEquals(3, userObjects.size());
 
         // verify we can find tenants with this user
+        // there will be 3 (admin + tenant1 + tenant2)
         tenantObjects = user1.readIdentity().findPolicyTenantObjects(registrar);
-        assertEquals(2, tenantObjects.size());
+        assertEquals(3, tenantObjects.size());
 
         // verify we can pick out the account this user has on tenant1
         ObjectNode userObject1inTenant1check = user1.readIdentity().findPolicyUserObjectForTenant(tenant1.getId());

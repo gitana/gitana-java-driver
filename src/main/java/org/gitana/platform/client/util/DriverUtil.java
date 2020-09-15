@@ -34,6 +34,7 @@ import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.principal.DomainPrincipal;
+import org.gitana.platform.client.support.Referenceable;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.support.TypedID;
@@ -221,6 +222,11 @@ public class DriverUtil
         ObjectNode obj = JsonUtil.createObject();
         obj.put(TransferDependency.TYPE_ID, typedID.getTypeId());
         obj.put(TransferDependency.ID, typedID.getId());
+
+        if (typedID instanceof Referenceable)
+        {
+            obj.put(TransferDependency.REF, ((Referenceable) typedID).ref().getReference());
+        }
 
         return obj;
     }

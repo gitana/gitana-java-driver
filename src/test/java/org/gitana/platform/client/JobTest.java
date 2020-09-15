@@ -73,11 +73,8 @@ public class JobTest extends AbstractTestCase
         byte[] bytes = ClasspathUtil.bytesFromClasspath("org/gitana/platform/client/gone.pdf");
         node.uploadAttachment(bytes, MimeTypeMap.APPLICATION_PDF);
 
-        int inflight2 = cluster.listWaitingJobs().size() + cluster.listRunningJobs().size();
-
-        assertTrue(inflight2 > inflight1);
-
-        Thread.sleep(4000);
+        // wait for indexing to finish
+        Thread.sleep(12000);
 
         // count jobs
         int count2 = countTotalJobs(cluster);
@@ -93,7 +90,7 @@ public class JobTest extends AbstractTestCase
 
         // read job manually
         job = cluster.readJob(job.getId());
-        assertEquals("index", job.getType());
+        assertEquals("bulkIndex", job.getType());
 
         // test out various methods
         ResultMap<Job> unstarted = cluster.listUnstartedJobs();

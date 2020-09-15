@@ -54,7 +54,7 @@ public class Authentication3Test extends AbstractTestCase
         assertTrue(domains.size() >= 0);
 
         // now wipe out the access token
-        DriverContext.getDriver().expire();
+        DriverContext.getDriver().expire(true);
         OAuth2HttpMethodExecutor executor = ((OAuth2HttpMethodExecutor) ((RemoteImpl) DriverContext.getDriver().getRemote()).getHttpMethodExecutor());
         executor.invalidateAccessToken();
 

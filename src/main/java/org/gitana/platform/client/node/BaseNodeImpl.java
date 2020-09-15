@@ -301,13 +301,13 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
             {
                 strategy = TransferImportStrategy.COPY_EVERYTHING;
             }
+        }
 
-            if (TransferImportStrategy.COPY_EVERYTHING.equals(strategy))
+        if (TransferImportStrategy.COPY_EVERYTHING.equals(strategy))
+        {
+            if (additionalConfiguration.get(TransferImportConfiguration.FIELD_COPY_ON_EXISTING) == null)
             {
-                if (additionalConfiguration.get(TransferImportConfiguration.FIELD_COPY_ON_EXISTING) == null)
-                {
-                    additionalConfiguration.put(TransferImportConfiguration.FIELD_COPY_ON_EXISTING, false);
-                }
+                additionalConfiguration.put(TransferImportConfiguration.FIELD_COPY_ON_EXISTING, false);
             }
         }
 

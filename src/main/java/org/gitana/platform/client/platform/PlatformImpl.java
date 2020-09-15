@@ -71,6 +71,12 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     }
 
     @Override
+    public Reference ref()
+    {
+        return Reference.create(getTypeId(), getId());
+    }
+
+    @Override
     public String getResourceUri()
     {
         return "";

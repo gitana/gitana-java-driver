@@ -78,12 +78,6 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     public abstract Cluster getCluster();
 
     @Override
-    public Reference ref()
-    {
-        return Reference.create(getTypeId(), getId());
-    }
-
-    @Override
     public String getId()
     {
         return getString(DataStore.FIELD_ID);
