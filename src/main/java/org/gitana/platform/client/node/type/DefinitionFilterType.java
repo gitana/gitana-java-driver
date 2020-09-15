@@ -23,7 +23,7 @@ package org.gitana.platform.client.node.type;
 /**
  * @author mwhitman
  */
-public enum DefinitionType
+public enum DefinitionFilterType
 {
     TYPE,
     ASSOCIATION,

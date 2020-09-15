@@ -45,8 +45,6 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -566,7 +564,6 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public Map<QName, Definition> listDefinitions()
     {
-        System.out.println("word");
         Response response = getRemote().get(getResourceUri() + "/definitions");
 
         Map<String, BaseNode> nodes = getFactory().nodes(this, response);
@@ -578,16 +575,12 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         }
 
         return definitions;
-//        return listDefinitions(null, false, false, null);
     }
 
     @Override
-    public Map<QName, Definition> listDefinitions(DefinitionType filter, boolean custom, boolean system, Pagination pagination)
+    public Map<QName, Definition> listDefinitions(DefinitionFilterType filter, boolean custom, boolean system, Pagination pagination)
     {
-
         Map<String, String> params = DriverUtil.params(pagination);
-
-//        params.put("capabilities", "true");
 
         if (filter != null)
         {
@@ -616,8 +609,6 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
 
         return definitions;
     }
-
-
 
     @Override
     public Definition readDefinition(QName qname)
