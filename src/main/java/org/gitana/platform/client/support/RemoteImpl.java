@@ -63,6 +63,7 @@ public class RemoteImpl implements Remote
 
     private boolean full;
     private boolean metadata;
+    private boolean paths;
 
     public RemoteImpl(HttpClient client, String remoteURL)
     {
@@ -70,6 +71,7 @@ public class RemoteImpl implements Remote
 
         this.full = true;
         this.metadata = true;
+        this.paths = false;
 
         this.invoker = new HttpInvoker(client);
     }
@@ -102,6 +104,11 @@ public class RemoteImpl implements Remote
     public void setMetadata(boolean metadata)
     {
         this.metadata = metadata;
+    }
+
+    public void setPaths(boolean paths)
+    {
+        this.paths = paths;
     }
 
     public void setLocale(Locale locale)
@@ -190,6 +197,10 @@ public class RemoteImpl implements Remote
         if (this.full)
         {
             params.put("full", "true");
+        }
+        if (this.paths)
+        {
+            params.put("paths", "true");
         }
     }
 
