@@ -38,21 +38,6 @@
     </scm>
     <repositories>
         <repository>
-            <id>maven.springframework.org.release</id>
-            <name>Spring Framework Maven Repository - Releases</name>
-            <url>http://maven.springframework.org/release</url>
-        </repository>
-        <repository>
-            <id>maven.springframework.org.milestone</id>
-            <name>Spring Framework Maven Repository - Milestone Releases</name>
-            <url>http://maven.springframework.org/milestone</url>
-        </repository>
-        <repository>
-            <id>maven.springframework.org.snapshot</id>
-            <name>Spring Framework Maven Repository - Nightly Snapshots</name>
-            <url>http://maven.springframework.org/snapshot</url>
-        </repository>
-        <repository>
             <id>apache-snapshot</id>
             <name>Apache snapshot repository</name>
             <url>https://repository.apache.org/content/repositories/snapshots/</url>
@@ -219,7 +204,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
-        <gitana.common.version>1.0.92</gitana.common.version>
+        <gitana.common.version>1.0.106-SNAPSHOT</gitana.common.version>
     </properties>
 
 </project>
