@@ -383,4 +383,26 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * Purges all deletions for the current branch.
      */
     public void purgeAllDeletions();
+
+    /**
+     * Performs a graphql query
+     * @param query
+     * @return
+     */
+    public ObjectNode graphqlQuery(String query);
+
+    /**
+     * Performs a graphql query
+     * @param query
+     * @param operationName
+     * @param variables
+     * @return query results json
+     */
+    public ObjectNode graphqlQuery(String query, String operationName, Map<String, Object> variables);
+
+    /**
+     * Finds the graphql schema for types on this branch
+     * @return schema string
+     */
+    public String graphqlSchema();
 }

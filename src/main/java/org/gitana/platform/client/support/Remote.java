@@ -42,6 +42,8 @@ public interface Remote
 
     public Response get(String uri, Map<String, String> params);
 
+    public String getString(String uri, Map<String, String> params);
+
     public Response delete(String uri);
 
 

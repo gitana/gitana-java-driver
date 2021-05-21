@@ -23,6 +23,7 @@ package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -245,6 +246,51 @@ public class RemoteImpl implements Remote
             }
 
             response = toResponse(httpResponse);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        return response;
+    }
+
+    @Override
+    public String getString(String uri, Map<String, String> params)
+    {
+        String response = null;
+        try
+        {
+            String URL = buildURL(uri, params, true);
+
+            // this method throws an HTTP exception unless we get a 20x or 404
+            // a 404 returns null
+            HttpResponse httpResponse = null;
+            try
+            {
+                httpResponse = invoker.get(URL);
+            }
+            catch (Exception ex)
+            {
+                // make sure to consume the response
+                consumeQuietly(httpResponse);
+
+                throw new RuntimeException(ex);
+            }
+
+            if (!HttpUtil.isOk(httpResponse))
+            {
+                if (httpResponse.getStatusLine().getStatusCode() == 404)
+                {
+                    EntityUtils.consume(httpResponse.getEntity());
+                    return null;
+                }
+
+                HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
+            }
+
+            HttpEntity entity = httpResponse.getEntity();
+            response = EntityUtils.toString(entity);
         }
         catch (Exception ex)
         {

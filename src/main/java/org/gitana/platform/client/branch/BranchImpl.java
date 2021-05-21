@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.http.HttpPayload;
+import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.node.BaseNode;
@@ -777,4 +778,38 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         getRemote().post(getResourceUri() + "/deletions/purgeall");
     }
 
+    @Override
+    public ObjectNode graphqlQuery(String query)
+    {
+        return graphqlQuery(query, null, null);
+    }
+
+    @Override
+    public ObjectNode graphqlQuery(String query, String operationName, Map<String, Object> variables)
+    {
+        Map<String, String> params = DriverUtil.params();
+        params.put("query", query);
+
+        // convert variables to a json string
+        if (variables != null)
+        {
+            ObjectNode variablesObj = JsonUtil.createObject(variables);
+            params.put("variables", variablesObj.toString());
+        }
+
+        if (operationName != null)
+        {
+            params.put("operationName", operationName);
+        }
+
+        Response response = getRemote().get(getResourceUri() + "/graphql", params);
+        return response.getObjectNode();
+    }
+
+    @Override
+    public String graphqlSchema()
+    {
+        String response = getRemote().getString(getResourceUri() + "/graphql/schema", null);
+        return response;
+    }
 }
