@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gitana</groupId>
     <artifactId>gitana-java-driver</artifactId>
-    <version>1.0.40-SNAPSHOT</version>
+    <version>1.0.40</version>
     <name>Gitana Java Driver</name>
     <packaging>jar</packaging>
     <url>https://www.cloudcms.com/</url>
@@ -34,7 +34,7 @@
     </developers>
     <scm>
         <developerConnection>scm:git:https://github.com/gitana/gitana-java-driver</developerConnection>
-        <tag>HEAD</tag>
+        <tag>gitana-java-driver-1.0.40</tag>
     </scm>
     <repositories>
         <repository>
