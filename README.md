@@ -17,7 +17,7 @@ To include this driver in your projects, add the following repository to your bu
     <repository>
         <id>cloudcms-public</id>
         <name>cloudcms-public</name>
-        <url>http://maven.cloudcms.com/public</url>
+        <url>https://maven.cloudcms.com/public</url>
     </repository>
 </repositories>
 ````
