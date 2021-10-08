@@ -45,7 +45,7 @@
         <repository>
             <id>cloudcms-public</id>
             <name>cloudcms-public</name>
-            <url>http://maven.cloudcms.com/public</url>
+            <url>https://maven.cloudcms.com/public</url>
         </repository>
     </repositories>
     <distributionManagement>
@@ -204,7 +204,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
-        <gitana.common.version>1.0.106</gitana.common.version>
+        <gitana.common.version>1.0.112</gitana.common.version>
     </properties>
 
 </project>

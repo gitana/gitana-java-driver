@@ -27,7 +27,7 @@
         <repository>
             <id>cloudcms-public</id>
             <name>cloudcms-public</name>
-            <url>http://maven.cloudcms.com/public</url>
+            <url>https://maven.cloudcms.com/public</url>
         </repository>
     </repositories>
     <build>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.gitana</groupId>
             <artifactId>gitana-java-driver</artifactId>
-            <version>1.0.18-SNAPSHOT</version>
+            <version>1.0.41-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
