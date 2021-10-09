@@ -51,11 +51,11 @@
     <distributionManagement>
         <repository>
             <id>cloudcms-public</id>
-            <url>scpexe://maven.cloudcms.com/web/maven/public</url>
+            <url>scpexe://maven-internal.cloudcms.com/web/maven/public</url>
         </repository>
         <snapshotRepository>
             <id>cloudcms-public</id>
-            <url>scpexe://maven.cloudcms.com/web/maven/public</url>
+            <url>scpexe://maven-internal.cloudcms.com/web/maven/public</url>
         </snapshotRepository>
     </distributionManagement>
     <build>
