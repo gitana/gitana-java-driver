@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.permission.PermissionCheck;
 import org.gitana.platform.client.permission.PermissionCheckResults;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
@@ -121,15 +122,25 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
     @Override
     public Branch createBranch(String changesetId, ObjectNode object)
     {
+        Changeset changeset = readChangeset(changesetId);
+        String rootBranchId = changeset.getBranchId();
+
+        return createBranch(rootBranchId, changesetId, object);
+    }
+
+    @Override
+    public Branch createBranch(String rootBranchId, String changesetId, ObjectNode object)
+    {
         // allow for null object
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        Response response = getRemote().post("/repositories/" + getId() + "/branches?changeset=" + changesetId, object);
-
-        String branchId = response.getId();
+        Response response = getRemote().post("/repositories/" + getId() + "/branches/create/start?changeset=" + changesetId + "&rootBranchId=" + rootBranchId, object);
+        String jobId = response.getId();
+        Job job = getCluster().waitForJobCompletion(jobId);
+        String branchId = job.getString("createdBranchId");
         return readBranch(branchId);
     }
 
@@ -329,9 +340,11 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
             params.put("sourceId", sourceReleaseId);
         }
 
-        Response response = getRemote().post("/repositories/" + getId() + "/releases", params, object);
+        Response response = getRemote().post("/repositories/" + getId() + "/releases/create/start", params, object);
+        String jobId = response.getId();
+        Job job = getCluster().waitForJobCompletion(jobId);
+        String releaseId = job.getString("created-release-id");
 
-        String releaseId = response.getId();
         return readRelease(releaseId);
     }
 

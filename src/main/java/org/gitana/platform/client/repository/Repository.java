@@ -82,6 +82,17 @@ public interface Repository extends PlatformDataStore
     public Branch createBranch(String changesetId, ObjectNode object);
 
     /**
+     * Creates a branch on the server.
+     *
+     * @param rootBranchId the root branch id
+     * @param changesetId the root changeset id
+     * @param object
+     *
+     * @return branch
+     */
+    public Branch createBranch(String rootBranchId, String changesetId, ObjectNode object);
+
+    /**
      * Performs a query over the branch index.
      *
      * @param query

@@ -1310,9 +1310,11 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
             object = JsonUtil.createObject();
         }
 
-        Response response = getRemote().post("/projects", object);
+        Response response = getRemote().post("/projects/start", object);
+        String jobId = response.getId();
+        Job job = getCluster().waitForJobCompletion(jobId);
+        String projectId = job.getString("created-project-id");
 
-        String projectId = response.getId();
         return readProject(projectId);
     }
 
