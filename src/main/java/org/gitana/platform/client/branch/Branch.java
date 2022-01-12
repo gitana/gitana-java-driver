@@ -24,6 +24,7 @@ package org.gitana.platform.client.branch;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.deletion.Deletion;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.node.type.*;
@@ -405,4 +406,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return schema string
      */
     public String graphqlSchema();
+
+    public Job startCopyFrom(String sourceRepositoryId, String sourceBranchId, List<String> nodeIds, ObjectNode config);
 }

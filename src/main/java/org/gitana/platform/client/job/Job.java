@@ -127,4 +127,6 @@ public interface Job extends ClusterDocument
 
     public boolean getSuccess();
     public boolean getError();
+
+    public void waitForCompletion();
 }

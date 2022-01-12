@@ -137,7 +137,7 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
             object = JsonUtil.createObject();
         }
 
-        Response response = getRemote().post("/repositories/" + getId() + "/branches/create/start?changeset=" + changesetId + "&rootBranchId=" + rootBranchId, object);
+        Response response = getRemote().post("/repositories/" + getId() + "/branches/create/start?changeset=" + changesetId + "&branch=" + rootBranchId, object);
         String jobId = response.getId();
         Job job = getCluster().waitForJobCompletion(jobId);
         String branchId = job.getString("createdBranchId");

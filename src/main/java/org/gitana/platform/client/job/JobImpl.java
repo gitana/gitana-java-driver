@@ -23,8 +23,10 @@ package org.gitana.platform.client.job;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.exception.GitanaRuntimeException;
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.project.Project;
 import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.DateUtil;
@@ -338,4 +340,10 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
         return JobState.ERROR.equals(getState());
     }
 
+    @Override
+    public void waitForCompletion()
+    {
+        getCluster().waitForJobCompletion(this.getId());
+        this.reload(getCluster().readJob(this.getId()));
+    }
 }

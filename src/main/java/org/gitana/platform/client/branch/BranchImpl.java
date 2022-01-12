@@ -28,6 +28,7 @@ import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.deletion.Deletion;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.permission.PermissionCheck;
@@ -811,5 +812,29 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     {
         String response = getRemote().getString(getResourceUri() + "/graphql/schema", null);
         return response;
+    }
+
+    @Override
+    public Job startCopyFrom(String sourceRepositoryId, String sourceBranchId, List<String> nodeIds, ObjectNode config)
+    {
+        Map<String, String> params = DriverUtil.params();
+        params.put("id", sourceBranchId);
+
+        if (config == null)
+        {
+            config = JsonUtil.createObject();
+        }
+
+        config.set("nodeIds", JsonUtil.createArray(nodeIds));
+        config.put("branchId", sourceBranchId);
+        config.put("targetBranchId", this.getId());
+        config.put("repositoryId", sourceRepositoryId);
+        config.put("sourceRepositoryId", sourceRepositoryId);
+        config.put("targetRepositoryId", this.getRepositoryId());
+
+        Response response = getRemote().post(getResourceUri() + "/copyfrom/start", params, config);
+        String jobId = response.getId();
+
+        return getCluster().readJob(jobId);
     }
 }
