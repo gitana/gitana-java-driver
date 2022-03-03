@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Gitana Software, Inc.
+ * Copyright 2022 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
  *
  *   info@cloudcms.com
  */
-
 package org.gitana.platform.client.cluster;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -304,6 +303,42 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
                 try
                 {
                     Thread.sleep(1000);
+                }
+                catch (InterruptedException ie)
+                {
+                    throw new RuntimeException(ie);
+                }
+            }
+        }
+        while (completedJob == null);
+
+        return completedJob;
+    }
+
+    @Override
+    public Job pollForJobCompletion(String jobId)
+    {
+        Job completedJob = null;
+
+        do
+        {
+            Response response = getRemote().get("/jobs/" + jobId + "/poll");
+            Job job = getFactory().job(this, response);
+
+            if (JobState.FINISHED.equals(job.getState()))
+            {
+                completedJob = job;
+            }
+            else if (JobState.ERROR.equals(job.getState()))
+            {
+                completedJob = job;
+            }
+            else
+            {
+                // otherwise, try again
+                try
+                {
+                    Thread.sleep(250);
                 }
                 catch (InterruptedException ie)
                 {

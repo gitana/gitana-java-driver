@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Gitana Software, Inc.
+ * Copyright 2022 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
  *
  *   info@cloudcms.com
  */
-
 package org.gitana.platform.client.cluster;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -72,4 +71,12 @@ public interface Cluster extends DataStore
     public void killJob(String jobId);
 
     public Job waitForJobCompletion(String jobId);
+
+    /**
+     * Similar to waitForCompletion() call but uses Cloud CMS 4.0 Job Polling.
+     *
+     * @param jobId
+     * @return
+     */
+    public Job pollForJobCompletion(String jobId);
 }

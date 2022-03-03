@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Gitana Software, Inc.
+ * Copyright 2022 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
  *
  *   info@cloudcms.com
  */
-
 package org.gitana.platform.client.registrar;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.platform.client.billing.PaymentMethod;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
@@ -189,6 +189,24 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
 
         String tenantId = response.getId();
         return readTenant(tenantId);
+    }
+
+    @Override
+    public String startCreateTenant(DomainPrincipal principal, String planKey, ObjectNode object)
+    {
+        // allow for null object
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        object.put("domainId", principal.getString("domainId"));
+        object.put("principalId", principal.getId());
+        object.put("planKey", planKey);
+
+        Response response = getRemote().post(getResourceUri() + "/tenants/start", object);
+
+        return response.getId();
     }
 
     @Override
