@@ -469,9 +469,9 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     }
 
     @Override
-    public void publish()
+    public void markAsTemplate()
     {
-        String uri = getResourceUri() + "/publish/";
+        String uri = getResourceUri() + "/publish";
         try
         {
             getRemote().post(uri);
@@ -483,9 +483,9 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     }
 
     @Override
-    public void unpublish()
+    public void unmarkAsTemplate()
     {
-        String uri = getResourceUri() + "/unpublish/";
+        String uri = getResourceUri() + "/unpublish";
         try
         {
             getRemote().post(uri);

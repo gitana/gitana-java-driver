@@ -62,6 +62,6 @@ public interface Archive extends VaultDocument, Attachable, AccessControllable, 
     public void setTemplateKey(String templateKey);
     public String getTemplateKey();
 
-    public void publish();
-    public void unpublish();
+    public void markAsTemplate();
+    public void unmarkAsTemplate();
 }

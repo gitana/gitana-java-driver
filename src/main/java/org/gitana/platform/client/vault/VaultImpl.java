@@ -161,13 +161,13 @@ public class VaultImpl extends AbstractPlatformDataStoreImpl implements Vault
     }
 
     @Override
-    public void uploadArchive(InputStream in, long length, boolean publish)
+    public void uploadArchive(InputStream in, long length, boolean markAsTemplate)
             throws IOException
     {
         String contentType = MimeTypeMap.APPLICATION_ZIP;
 
         Map<String, String> params = new HashMap<String, String>();
-        if (publish)
+        if (markAsTemplate)
         {
             params.put("published", Boolean.toString(true));
         }

@@ -54,7 +54,7 @@ public interface Vault extends PlatformDataStore
     public void uploadArchive(InputStream in, long length)
         throws IOException;
 
-    public void uploadArchive(InputStream in, long length, boolean publish)
+    public void uploadArchive(InputStream in, long length, boolean markAsTemplate)
             throws IOException;
 
     public InputStream downloadArchive(String archiveId)
