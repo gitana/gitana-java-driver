@@ -157,7 +157,21 @@ public class VaultImpl extends AbstractPlatformDataStoreImpl implements Vault
     public void uploadArchive(InputStream in, long length)
         throws IOException
     {
+        uploadArchive(in, length, false);
+    }
+
+    @Override
+    public void uploadArchive(InputStream in, long length, boolean publish)
+            throws IOException
+    {
         String contentType = MimeTypeMap.APPLICATION_ZIP;
+
+        Map<String, String> params = new HashMap<String, String>();
+        if (publish)
+        {
+            params.put("published", Boolean.toString(true));
+        }
+
         try
         {
             getRemote().upload(getResourceUri() + "/archives", in, length, contentType);

@@ -467,4 +467,32 @@ public class ArchiveImpl extends AbstractVaultDocumentImpl implements Archive
     {
         return getString(FIELD_TEMPLATE_KEY);
     }
+
+    @Override
+    public void publish()
+    {
+        String uri = getResourceUri() + "/publish/";
+        try
+        {
+            getRemote().post(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void unpublish()
+    {
+        String uri = getResourceUri() + "/unpublish/";
+        try
+        {
+            getRemote().post(uri);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
 }
