@@ -111,6 +111,11 @@ public class RemoteImpl implements Remote
         this.paths = paths;
     }
 
+    public boolean getPaths()
+    {
+        return this.paths;
+    }
+
     public void setLocale(Locale locale)
     {
         this.invoker.setLocale(locale);

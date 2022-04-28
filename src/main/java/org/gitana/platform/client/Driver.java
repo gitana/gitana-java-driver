@@ -120,6 +120,16 @@ public class Driver
         return ((RemoteImpl) remote).getRemoteURL();
     }
 
+    public boolean getPaths()
+    {
+        return ((RemoteImpl) remote).getPaths();
+    }
+
+    public void setPaths(boolean includePaths)
+    {
+        ((RemoteImpl) remote).setPaths(includePaths);
+    }
+
     /**
      * Expires the access token for the currently authenticated driver.
      */
