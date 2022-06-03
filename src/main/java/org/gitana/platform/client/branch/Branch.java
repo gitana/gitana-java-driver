@@ -206,6 +206,8 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, Pagination pagination);
 
+    public List<String> deleteNodes(List<String> nodeIds);
+
     public Node rootNode();
 
     /**

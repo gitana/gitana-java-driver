@@ -34,6 +34,9 @@ import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author uzi
  */
@@ -83,6 +86,16 @@ public class NodeTest extends AbstractTestCase
         // verify that we can't read it
         Node verify5 = (Node) master.readNode(node2.getId());
         assertNull(verify5);
+
+        // create a couple more nodes
+        Node node4 = (Node) master.createNode();
+        Node node5 = (Node) master.createNode();
+        Node node6 = (Node) master.createNode();
+
+        // Do a bulk delete
+        List<String> toDelete = Arrays.asList(node1.getId(), node3.getId(), node4.getId(), node5.getId(), node6.getId());
+        List<String> deleted = master.deleteNodes(toDelete);
+        assertEquals(toDelete.size(), deleted.size());
     }
 
     @Test

@@ -46,10 +46,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uzi
@@ -513,6 +510,20 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         Response response = getRemote().post(getResourceUri() + "/nodes/search", params, payload);
 
         return getFactory().nodes(this, response);
+    }
+
+    @Override
+    public List<String> deleteNodes(List<String> nodeIds)
+    {
+        ObjectNode payload = JsonUtil.createObject();
+        ArrayNode docIds = JsonUtil.createArray(nodeIds);
+        payload.set("_docs", docIds);
+
+        Response response = getRemote().post(getResourceUri() + "/nodes/delete", null, payload);
+        ObjectNode responseObj = response.getObjectNode();
+        ArrayNode docs = JsonUtil.objectGetArray(responseObj, "_docs");
+
+        return Arrays.asList(JsonUtil.toStringArray(docs));
     }
 
 
