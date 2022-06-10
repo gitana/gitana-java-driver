@@ -27,6 +27,8 @@ import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.client.support.DriverContext;
+import org.gitana.platform.client.support.RemoteImpl;
 import org.gitana.platform.services.association.Directionality;
 import org.gitana.platform.support.QName;
 import org.gitana.util.JsonUtil;
@@ -71,6 +73,10 @@ public class FileFolderTest extends AbstractTestCase
 
         // authenticate
         Platform platform = gitana.authenticate("admin", "admin");
+
+        Driver driver = DriverContext.getDriver();
+        ((RemoteImpl) driver.getRemote()).setPaths(true);
+
 
         // create a repository
         Repository repository = platform.createRepository();
@@ -141,5 +147,21 @@ public class FileFolderTest extends AbstractTestCase
         // read the tree segment starting at "/a1/b1"
         ObjectNode tree3 = root.fileFolderTree("/a1/b1");
         System.out.println(JsonUtil.stringify(tree3, true));
+
+        // Test out moving nodes
+        master.moveNodes(Arrays.asList(d2.getId(), d3.getId()), "root", "/a2");
+
+        d2.reload();
+        d3.reload();
+        assertEquals("/a2/d2", d2.getObject("_paths").get("r:root").textValue());
+        assertEquals("/a2/d3", d3.getObject("_paths").get("r:root").textValue());
+
+        c2.move("root", "/a2");
+        c2.reload();
+        assertEquals("/a2/c2", c2.getObject("_paths").get("r:root").textValue());
+
+        // test path resolves
+        assertEquals("/a2/d2", d2.resolvePath());
+        assertTrue(d2.resolvePaths().has("r:root"));
     }
 }

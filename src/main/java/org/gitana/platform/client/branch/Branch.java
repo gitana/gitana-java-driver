@@ -206,7 +206,22 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      */
     public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, Pagination pagination);
 
+    /**
+     * Delete multiple nodes
+     * @param nodeIds
+     * @return list of node ids deleted
+     */
     public List<String> deleteNodes(List<String> nodeIds);
+
+
+    /**
+     * Moves a list of nodes to a configured target node
+     * @param sourceNodeIds list of nodes to move
+     * @param targetNodeId id of target folder, default is "root" for top folder
+     * @param targetPath optional relative path to apply to targetNodeId for determining move target
+     */
+    public void moveNodes(List<String> sourceNodeIds, String targetNodeId, String targetPath);
+    public void moveNodes(List<String> sourceNodeIds, String targetNodeId);
 
     public Node rootNode();
 
