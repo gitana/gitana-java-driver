@@ -510,11 +510,11 @@ public class Gitana
 
     public Platform authenticate(String username, String password, final ConnectOptions connectOptions)
     {
+        ResourceBundle bundle = readBundle("gitana");
+
         // if username and password are null, authenticate using credentials supplied in properties file
         if (username == null && password == null)
         {
-            ResourceBundle bundle = readBundle("gitana");
-
             username = bundle.getString("username");
             if (username == null)
             {
@@ -566,7 +566,7 @@ public class Gitana
         remote.setHttpMethodExecutor(httpMethodExecutor);
 
         // "automatic" mode support
-        boolean useAutomaticReattempt = DriverUtil.acquireBoolean(System.getProperties(), "gitana.useAutomaticReattempt", false);
+        boolean useAutomaticReattempt = DriverUtil.acquireBooleanFromSystemOrBundle(bundle, "gitana.useAutomaticReattempt", null, false);
         httpMethodExecutor.setUseAutomaticReattempt(useAutomaticReattempt);
 
         // set token lock
