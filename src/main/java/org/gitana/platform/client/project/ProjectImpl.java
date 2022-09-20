@@ -404,4 +404,14 @@ public class ProjectImpl extends AbstractPlatformDocumentImpl implements Project
         }
     }
 
+    @Override
+    public void inviteUser(String userId)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", userId);
+
+        String uri = getResourceUri() + "/users/invite";
+        getRemote().post(uri, params);
+    }
+
 }

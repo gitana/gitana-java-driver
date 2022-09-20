@@ -515,22 +515,28 @@ public class Gitana
         // if username and password are null, authenticate using credentials supplied in properties file
         if (username == null && password == null)
         {
-            username = bundle.getString("username");
-            if (username == null)
+            if (bundle.containsKey("username"))
+            {
+                username = bundle.getString("username");
+            }
+            if (username == null && bundle.containsKey("gitana.username"))
             {
                 username = bundle.getString("gitana.username");
             }
-            if (username == null)
+            if (username == null && bundle.containsKey("gitana.credentials.username"))
             {
                 username = bundle.getString("gitana.credentials.username");
             }
 
-            password = bundle.getString("password");
-            if (password == null)
+            if (bundle.containsKey("password"))
+            {
+                password = bundle.getString("password");
+            }
+            if (password == null && bundle.containsKey("gitana.password"))
             {
                 password = bundle.getString("gitana.password");
             }
-            if (password == null)
+            if (password == null && bundle.containsKey("gitana.credentials.password"))
             {
                 password = bundle.getString("gitana.credentials.password");
             }
