@@ -181,6 +181,25 @@ public interface Node extends BaseNode, AccessControllable, Transferable, Copyab
      */
     public TraversalResults traverse(ObjectNode traverse);
 
+    /**
+     * Moves the node to a configured target node
+     * @param targetNodeId id of target folder, default is "root" for top folder
+     * @param targetPath optional relative path to apply to targetNodeId for determining move target
+     */
+    public void move(String targetNodeId, String targetPath);
+    public void move(String targetNodeId);
+
+    /**
+     * Resolves the path for the node relative to the root directory.
+     * @return the path
+     */
+    public String resolvePath();
+
+    /**
+     * Resolves all of the paths for the node.
+     * @return paths keyed by root identifier
+     */
+    public ObjectNode resolvePaths();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //

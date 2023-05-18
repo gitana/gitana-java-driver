@@ -526,6 +526,33 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         return Arrays.asList(JsonUtil.toStringArray(docs));
     }
 
+    @Override
+    public void moveNodes(List<String> sourceNodeIds, String targetNodeId)
+    {
+        moveNodes(sourceNodeIds, targetNodeId, null);
+    }
+
+    @Override
+    public void moveNodes(List<String> sourceNodeIds, String targetNodeId, String targetPath)
+    {
+        if (targetNodeId == null)
+        {
+            targetNodeId = "root";
+        }
+
+        ObjectNode payload = JsonUtil.createObject();
+        ArrayNode sourcesArr = JsonUtil.createArray(sourceNodeIds);
+        payload.set("sourceNodeIds", sourcesArr);
+        payload.put("targetNodeId", targetNodeId);
+
+        if (targetPath != null)
+        {
+            payload.put("targetPath", targetPath);
+        }
+
+        getRemote().post(getResourceUri() + "/movenodes", null, payload);
+    }
+
 
     @Override
     public Node rootNode()

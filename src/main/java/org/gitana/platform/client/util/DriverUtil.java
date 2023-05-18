@@ -313,6 +313,32 @@ public class DriverUtil
         return value;
     }
 
+    public static boolean acquireBooleanFromSystemOrBundle(ResourceBundle bundle, String key, String systemKey, boolean defaultValue)
+    {
+        boolean value = defaultValue;
+
+        // check gitana properties file (legacy)
+        try
+        {
+            String text = bundle.getString(key);
+            if (text != null)
+            {
+                value = Boolean.parseBoolean(text);
+            }
+        } catch (Exception ex) {
+            // swallow
+        }
+
+        // if we have a system properties value, use that instead
+        if (systemKey != null)
+        {
+            boolean systemValue = acquireBoolean(System.getProperties(), systemKey, false);
+            value |= systemValue;
+        }
+
+        return value;
+    }
+
     public static int acquireInt(Properties properties, String key, int defaultValue)
     {
         int value = defaultValue;

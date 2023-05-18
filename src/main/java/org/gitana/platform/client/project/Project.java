@@ -50,4 +50,6 @@ public interface Project extends PlatformDocument, AccessControllable, Selfable,
 
     public boolean getSharedStack();
     public void setSharedStack(boolean sharedStack);
+
+    public void inviteUser(String userId);
 }

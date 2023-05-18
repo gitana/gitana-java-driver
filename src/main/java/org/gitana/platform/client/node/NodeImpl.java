@@ -31,10 +31,7 @@ import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.association.Direction;
 import org.gitana.platform.services.association.Directionality;
 import org.gitana.platform.services.authority.AuthorityGrant;
-import org.gitana.platform.support.Pagination;
-import org.gitana.platform.support.QName;
-import org.gitana.platform.support.ResultMap;
-import org.gitana.platform.support.TypedIDConstants;
+import org.gitana.platform.support.*;
 import org.gitana.util.JsonUtil;
 
 import java.util.*;
@@ -526,6 +523,46 @@ public class NodeImpl extends BaseNodeImpl implements Node
         Response response = getRemote().post(uri, params);
 
         return response.getObjectNode();
+    }
+
+    @Override
+    public void move(String targetNodeId)
+    {
+        move(targetNodeId, null);
+    }
+
+    @Override
+    public void move(String targetNodeId, String targetPath)
+    {
+        if (targetNodeId == null)
+        {
+            targetNodeId = "root";
+        }
+
+        Map<String, String> params = DriverUtil.params();
+        params.put("targetNodeId", targetNodeId);
+
+        if (targetPath != null)
+        {
+            params.put("targetPath", targetPath);
+        }
+
+        getRemote().post(getResourceUri() + "/move", params, JsonUtil.createObject());
+    }
+
+
+    @Override
+    public String resolvePath()
+    {
+        Response response = getRemote().get(getResourceUri() + "/path");
+        return JsonUtil.objectGetString(response.getObjectNode(), "path");
+    }
+
+    @Override
+    public ObjectNode resolvePaths()
+    {
+        Response response = getRemote().get(getResourceUri() + "/paths");
+        return JsonUtil.objectGetObject(response.getObjectNode(), "paths");
     }
 
     @Override
