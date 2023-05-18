@@ -286,31 +286,50 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     {
         Job completedJob = null;
 
+        boolean done = false;
+
         do
         {
             Job job = readJob(jobId);
-            if (JobState.FINISHED.equals(job.getState()))
+
+            // if job came back null, try again in case a non-404 exception produced null
+            if (job == null)
             {
-                completedJob = job;
+                job = readJob(jobId);
             }
-            else if (JobState.ERROR.equals(job.getState()))
+
+            if (job == null)
             {
-                completedJob = job;
+                completedJob = null;
+                done = true;
             }
             else
             {
-                // otherwise, try again
-                try
+                if (JobState.FINISHED.equals(job.getState()))
                 {
-                    Thread.sleep(1000);
+                    completedJob = job;
+                    done = true;
                 }
-                catch (InterruptedException ie)
+                else if (JobState.ERROR.equals(job.getState()))
                 {
-                    throw new RuntimeException(ie);
+                    completedJob = job;
+                    done = true;
+                }
+                else
+                {
+                    // otherwise, try again
+                    try
+                    {
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException ie)
+                    {
+                        throw new RuntimeException(ie);
+                    }
                 }
             }
         }
-        while (completedJob == null);
+        while (!done);
 
         return completedJob;
     }
