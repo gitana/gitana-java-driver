@@ -278,7 +278,7 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     @Override
     public void killJob(String jobId)
     {
-        getRemote().post("/jobs/" + jobId);
+        getRemote().post("/jobs/" + jobId + "/kill");
     }
 
     @Override
