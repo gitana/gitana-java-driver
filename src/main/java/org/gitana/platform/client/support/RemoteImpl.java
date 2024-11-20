@@ -38,6 +38,7 @@ import org.gitana.http.HttpInvoker;
 import org.gitana.http.HttpMethodExecutor;
 import org.gitana.http.HttpPayload;
 import org.gitana.http.HttpPayloadContentBody;
+import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.util.HttpUtil;
 import org.gitana.util.JsonUtil;
 import org.gitana.util.StreamUtil;
@@ -238,7 +239,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 if (httpResponse.getStatusLine().getStatusCode() == 404)
                 {
@@ -282,7 +283,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 if (httpResponse.getStatusLine().getStatusCode() == 404)
                 {
@@ -326,7 +327,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
             }
@@ -369,7 +370,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
             }
@@ -441,7 +442,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
             }
@@ -474,7 +475,7 @@ public class RemoteImpl implements Remote
             throw new RuntimeException(ex);
         }
 
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             HttpUtil.raiseHttpException(URL, httpResponse, null);
         }
@@ -500,7 +501,7 @@ public class RemoteImpl implements Remote
             throw new RuntimeException(ex);
         }
 
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             HttpUtil.raiseHttpException(URL, httpResponse, null);
         }
@@ -526,7 +527,7 @@ public class RemoteImpl implements Remote
             throw new RuntimeException(ex);
         }
 
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             HttpUtil.raiseHttpException(URL, httpResponse, null);
         }
@@ -562,7 +563,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
             }
@@ -662,7 +663,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
             }
@@ -705,7 +706,7 @@ public class RemoteImpl implements Remote
                 throw new RuntimeException(ex);
             }
 
-            if (!HttpUtil.isOk(httpResponse))
+            if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
             {
                 HttpUtil.raiseHttpException(URL, httpResponse, (String)null);
             }
@@ -735,7 +736,7 @@ public class RemoteImpl implements Remote
         httpPost.setEntity(entity);
 
         HttpResponse httpResponse = invoker.execute(httpPost);
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
@@ -764,7 +765,7 @@ public class RemoteImpl implements Remote
         httpPost.setEntity(entity);
 
         HttpResponse httpResponse = invoker.execute(httpPost);
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
@@ -785,7 +786,7 @@ public class RemoteImpl implements Remote
         httpPost.setEntity(entity);
 
         HttpResponse httpResponse = invoker.execute(httpPost);
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
@@ -809,7 +810,7 @@ public class RemoteImpl implements Remote
         httpPost.setEntity(entity);
 
         HttpResponse httpResponse = invoker.execute(httpPost);
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             raiseHttpException(httpPost, httpResponse, "Upload failed");
         }
@@ -846,7 +847,7 @@ public class RemoteImpl implements Remote
         }
 
         HttpResponse httpResponse = invoker.multipartPost(URL, params, payloadMap);
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             HttpUtil.raiseHttpException(URL, httpResponse, null);
         }
@@ -887,7 +888,7 @@ public class RemoteImpl implements Remote
         invoker.configure(httpGet);
 
         HttpResponse httpResponse = invoker.execute(httpGet);
-        if (!HttpUtil.isOk(httpResponse))
+        if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
         {
             raiseHttpException(httpGet, httpResponse, "Download failed");
         }
@@ -953,14 +954,24 @@ public class RemoteImpl implements Remote
 
         ObjectNode object = null;
         InputStream in = null;
-        try
+
+        HttpEntity httpEntity = httpResponse.getEntity();
+        if (httpEntity != null)
         {
-            in = httpResponse.getEntity().getContent();
-            object = JsonUtil.createObject(in, ObjectNode.class);
-        }
-        finally
-        {
-            StreamUtil.safeClose(in);
+            Header contentTypeHeader = httpEntity.getContentType();
+            String mimeType = contentTypeHeader == null ? null : contentTypeHeader.getValue();
+            if (mimeType != null && mimeType.startsWith(MimeTypeMap.APPLICATION_JSON))
+            {
+                try
+                {
+                    in = httpResponse.getEntity().getContent();
+                    object = JsonUtil.createObject(in, ObjectNode.class);
+                }
+                finally
+                {
+                    StreamUtil.safeClose(in);
+                }
+            }
         }
 
         return toResponse(object, headerMap);
