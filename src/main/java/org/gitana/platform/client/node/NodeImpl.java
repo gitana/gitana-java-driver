@@ -22,6 +22,7 @@ package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.platform.client.LookupOptions;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.branch.Branch;
@@ -427,11 +428,17 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse)
     {
-        return findNodes(query, searchTerm, traverse, null);
+        return findNodes(query, searchTerm, traverse, (Pagination) null);
     }
 
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, Pagination pagination)
+    {
+        return findNodes(query, searchTerm, traverse, LookupOptions.fromPagination(pagination));
+    }
+
+    @Override
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, LookupOptions options)
     {
         String uri = getResourceUri() + "/find";
 
@@ -449,7 +456,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
             payload.put("traverse", traverse);
         }
 
-        Map<String, String> params = DriverUtil.params(pagination);
+        Map<String, String> params = DriverUtil.params(options);
 
         Response response = getRemote().post(uri, params, payload);
 
@@ -459,7 +466,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ObjectNode fileFolderTree()
     {
-        return fileFolderTree(null);
+        return fileFolderTree((String) null);
     }
 
     @Override
@@ -483,12 +490,10 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ObjectNode fileFolderTree(String basePath, int depth, List<String> leafPaths, boolean includeProperties, boolean containersOnly, ObjectNode query)
     {
-        String uri = getResourceUri() + "/tree";
-
-        Map<String, String> params = DriverUtil.params();
+        TreeLookupOptions options = new TreeLookupOptions();
         if (basePath != null)
         {
-            params.put("base", basePath);
+            options.setBase(basePath);
         }
         if (leafPaths != null && leafPaths.size() > 0)
         {
@@ -505,22 +510,37 @@ public class NodeImpl extends BaseNodeImpl implements Node
                 }
             }
 
-            params.put("leaf", leafPathsParamString);
+            options.setLeafPathString(leafPathsParamString);
         }
         if (depth > -1)
         {
-            params.put("depth", "" + depth);
+            options.setDepth(depth);
         }
         if (includeProperties)
         {
-            params.put("properties", "true");
+            options.setProperties(includeProperties);
         }
         if (containersOnly)
         {
-            params.put("containers", "true");
+            options.setContainers(containersOnly);
         }
 
-        Response response = getRemote().post(uri, params);
+        if (query != null)
+        {
+            options.setQuery(query);
+        }
+
+        return fileFolderTree(options);
+    }
+
+    @Override
+    public ObjectNode fileFolderTree(TreeLookupOptions options)
+    {
+        String uri = getResourceUri() + "/tree";
+
+        Map<String, String> params = DriverUtil.params(options);
+        ObjectNode payload = options.getPayload();
+        Response response = getRemote().post(uri, params, payload);
 
         return response.getObjectNode();
     }
