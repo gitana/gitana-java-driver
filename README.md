@@ -1,11 +1,11 @@
-# Cloud CMS Java Driver
+# Gitana Java Driver
 
-The Cloud CMS Java Driver is an Apache 2.0 licensed client library that you can drop into your Java or Android
-applications to connect to Cloud CMS.  It provides a nice client interface with multi-threaded support that works
+The Gitana Java Driver is an Apache 2.0 licensed client library that you can drop into your Java or Android
+applications to connect to the Gitana Cloud CMS platform.  It provides a nice client interface with multi-threaded support that works
 well with modern Java applications including those that run on mobile devices and the Spring Framework.
 
-The Cloud CMS Java driver handles all of the HTTPS calls, data conversions, OAuth2 authorization handshakes and any and
-all interaction with the Cloud CMS platform in a secure manner.  It works against Cloud CMS running on our SaaS platform
+The Gitana Java driver handles all of the HTTPS calls, data conversions, OAuth2 authorization handshakes and any and
+all interaction with the Gitana platform in a secure manner.  It works against Gitana running on our SaaS platform
 as well as on-premise installations at any endpoint you configure.
 
 ## Maven Dependency
@@ -29,10 +29,17 @@ And then add the following Maven dependency:
     <dependency>
         <groupId>org.gitana</groupId>
         <artifactId>gitana-java-driver</artifactId>
-        <version>1.0.26</version>
+        <version>{version}</version>
     </dependency>
 </dependencies>
 ````
+
+## Gitana 4.0 vs Gitana 3.2
+
+If you're connecting to Gitana 4.0, we recommend using the `4.x.y` versions of this driver.  Going forward,
+the major version number of this driver will correspond with the API release version. 
+
+For Gitana 3.2, you will need to use the `1.x.y` versions of the driver.
 
 ## Connecting to Cloud CMS
 
