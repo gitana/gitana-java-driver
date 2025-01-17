@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -80,7 +80,7 @@ public class DomainTransferTest extends AbstractTestCase
 
         // TEST - import into platform (new domain)
         TransferImportJob job2 = platform.importArchive(archive);
-        Domain domain2 = platform.readDomain(job2.getSingleImportTargetId());
+        Domain domain2 = platform.readDomain(job2.getResult().getSingleImportTargetId());
         assertNotNull(domain2.readPrincipal("group1"));
         assertNotNull(domain2.readPrincipal("user1"));
     }

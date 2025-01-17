@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -370,8 +370,8 @@ public class PrincipalTest extends AbstractTestCase
     }
 
     @Test
-    public void testChangePassword()
-            throws Exception
+    public void testChangePassword1()
+        throws Exception
     {
         Gitana gitana = new Gitana();
 
@@ -409,6 +409,70 @@ public class PrincipalTest extends AbstractTestCase
             ex2 = ex;
         }
         assertNull(ex2);
+    }
+
+    @Test
+    public void testChangePassword2()
+        throws Exception
+    {
+        Gitana gitana = new Gitana();
+
+        // authenticate
+        Platform platform = gitana.authenticate("admin", "admin");
+
+        // create a domain
+        // create a user
+        Domain mikeDomain = platform.createDomain();
+        DomainUser mike = mikeDomain.createUser("mike", TestConstants.TEST_PASSWORD);
+
+        // change password
+        // this should fail since previous password was wrong
+        Exception ex1 = null;
+        try
+        {
+            mike.readIdentity().changePassword(TestConstants.TEST_PASSWORD + "def", TestConstants.TEST_PASSWORD + "def", true, "wrong_current_password");
+        }
+        catch (Exception ex)
+        {
+            ex1 = ex;
+        }
+        assertNotNull(ex1);
+
+        // now change with the correct current password
+        Exception ex2 = null;
+        try
+        {
+            mike.readIdentity().changePassword(TestConstants.TEST_PASSWORD + "def", TestConstants.TEST_PASSWORD + "def", true, TestConstants.TEST_PASSWORD);
+        }
+        catch (Exception ex)
+        {
+            ex2 = ex;
+        }
+        assertNull(ex2);
+
+        // authenticate with old password (should fail)
+        Throwable ex3 = null;
+        try
+        {
+            gitana.authenticate(mike.getDomainQualifiedName(), TestConstants.TEST_PASSWORD);
+        }
+        catch (Exception ex)
+        {
+            ex3 = ex;
+        }
+        assertNotNull(ex3);
+
+        // authenticate with new password (should succeed)
+        Throwable ex4 = null;
+        try
+        {
+            gitana.authenticate(mike.getDomainQualifiedName(), TestConstants.TEST_PASSWORD + "def");
+        }
+        catch (Exception ex)
+        {
+            ex4 = ex;
+        }
+        assertNull(ex4);
     }
 
 }

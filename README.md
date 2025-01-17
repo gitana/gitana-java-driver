@@ -180,13 +180,13 @@ driver to accomplish what you need.
 
 ## Resources
 
-* Cloud CMS: https://www.cloudcms.com
+* Gitana: https://gitana.io
 * Git Hub: http://github.com/gitana/gitana-java-driver
 * Java Driver Download: http://maven.cloudcms.com/public/org/gitana/gitana-java-driver/
-* Java Driver Documentation: https://www.cloudcms.com/documentation.html
-* Developers Guide: https://www.cloudcms.com/developers.html
+* Java Driver Documentation: https://gitana.io/documentation.html
+* Developers Guide: https://gitana.io/developers.html
 
 ## Support
 
-For information or questions about the Java Driver, please contact Cloud CMS
-at <a href="mailto:support@cloudcms.com">support@cloudcms.com</a>.
+For information or questions about the Java Driver, please contact Gitana
+at <a href="mailto:support@gitana.io">support@gitana.io</a>.

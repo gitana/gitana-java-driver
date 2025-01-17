@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -31,6 +31,8 @@ import org.junit.Test;
 /**
  * Tests out the scenario where the access token expires on the server.
  * Both the access token and refresh token are expired.
+ *
+ * A new access token is acquired by the username/password flow.
  *
  * @author uzi
  */
@@ -55,9 +57,13 @@ public class Authentication3Test extends AbstractTestCase
         // now wipe out the access token
         DriverContext.getDriver().expire(true);
         OAuth2HttpMethodExecutor executor = ((OAuth2HttpMethodExecutor) ((RemoteImpl) DriverContext.getDriver().getRemote()).getHttpMethodExecutor());
+        String accessToken1 = executor.getAccessToken();
+        String refreshToken1 = executor.getRefreshToken();
         executor.invalidateAccessToken();
 
-        // list domains again (this should fail because both access token and refresh token have expired)
+        // list domains again
+        // the existing access token is expired and the refresh token is invalid
+        // as such, with username/password flow, we should acquire a NEW access token and refresh token
         Exception ex1 = null;
         try
         {
@@ -67,7 +73,14 @@ public class Authentication3Test extends AbstractTestCase
         {
             ex1 = ex;
         }
-        assertNotNull(ex1);
-    }
+        assertNull(ex1);
 
+        assertTrue(domains.size() > 0);
+
+        String accessToken2 = executor.getAccessToken();
+        String refreshToken2 = executor.getRefreshToken();
+
+        assertTrue(!accessToken2.equals(accessToken1));
+        assertTrue(!refreshToken2.equals(refreshToken1));
+    }
 }

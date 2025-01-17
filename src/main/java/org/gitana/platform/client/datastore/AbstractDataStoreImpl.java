@@ -16,30 +16,26 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.datastore;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.DriverContext;
 import org.gitana.platform.client.support.ObjectFactory;
 import org.gitana.platform.client.support.Remote;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.team.Team;
-import org.gitana.platform.client.transfer.TransferExportJob;
-import org.gitana.platform.client.transfer.TransferImportJob;
+import org.gitana.platform.client.transfer.*;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.authority.AuthorityGrant;
-import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
 import org.gitana.platform.services.transfer.TransferImportConfiguration;
 import org.gitana.platform.services.transfer.TransferSchedule;
@@ -343,8 +339,6 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     @Override
     public TransferExportJob exportArchive(Vault vault, String groupId, String artifactId, String versionId, TransferExportConfiguration configuration, TransferSchedule schedule)
     {
-        boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
-
         if (configuration == null)
         {
             configuration = new TransferExportConfiguration();
@@ -355,9 +349,12 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response1.getId();
 
-        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        if (TransferSchedule.SYNCHRONOUS.equals(schedule))
+        {
+            return (TransferExportJob) getCluster().pollForJobCompletion(jobId, TransferExportJob.class, TransferExportJobData.class, TransferExportJobResult.class);
+        }
 
-        return new TransferExportJob(job.getCluster(), job.getObject(), job.isSaved());
+        return (TransferExportJob) getCluster().readJob(jobId);
     }
 
     @Override
@@ -375,8 +372,6 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
     @Override
     public TransferImportJob importArchive(Archive archive, TransferImportConfiguration configuration, TransferSchedule schedule)
     {
-        boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
-
         String vaultId = archive.getVaultId();
         String groupId = archive.getGroupId();
         String artifactId = archive.getArtifactId();
@@ -393,9 +388,12 @@ public abstract class AbstractDataStoreImpl extends DocumentImpl implements Data
         Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response.getId();
 
-        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        if (TransferSchedule.SYNCHRONOUS.equals(schedule))
+        {
+            return (TransferImportJob) getCluster().pollForJobCompletion(jobId, TransferImportJob.class, TransferImportJobData.class, TransferImportJobResult.class);
+        }
 
-        return new TransferImportJob(job.getCluster(), job.getObject(), job.isSaved());
+        return (TransferImportJob) getCluster().readJob(jobId);
     }
 
 }

@@ -1,0 +1,2 @@
+[ERROR] Failures:
+[ERROR]   Authentication3Test.testAutoRefresh:70

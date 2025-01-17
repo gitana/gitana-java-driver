@@ -16,16 +16,14 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.job;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.gitana.exception.GitanaRuntimeException;
 import org.gitana.platform.client.cluster.AbstractClusterDocumentImpl;
 import org.gitana.platform.client.cluster.Cluster;
-import org.gitana.platform.client.project.Project;
 import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.DateUtil;
@@ -37,8 +35,11 @@ import java.util.List;
 /**
  * @author uzi
  */
-public class JobImpl extends AbstractClusterDocumentImpl implements Job
+public class JobImpl<D extends JobData, R extends JobResult> extends AbstractClusterDocumentImpl implements Job<D, R>
 {
+    private transient D _jobData = null;
+    private transient R _jobResult = null;
+
     public JobImpl(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
         super(cluster, obj, isSaved);
@@ -340,9 +341,31 @@ public class JobImpl extends AbstractClusterDocumentImpl implements Job
     }
 
     @Override
-    public void waitForCompletion()
+    public void pollForCompletion()
     {
-        getCluster().waitForJobCompletion(this.getId());
+        getCluster().pollForJobCompletion(this.getId());
         this.reload(getCluster().readJob(this.getId()));
+    }
+
+    public void setData(D jobData)
+    {
+        this._jobData = jobData;
+    }
+
+    @Override
+    public D getData()
+    {
+        return _jobData;
+    }
+
+    public void setResult(R jobResult)
+    {
+        this._jobResult = jobResult;
+    }
+
+    @Override
+    public R getResult()
+    {
+        return _jobResult;
     }
 }

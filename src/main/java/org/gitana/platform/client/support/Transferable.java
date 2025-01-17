@@ -16,11 +16,12 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.support;
 
 import org.gitana.platform.client.archive.Archive;
+import org.gitana.platform.client.job.JobResponse;
 import org.gitana.platform.client.transfer.TransferExportJob;
 import org.gitana.platform.client.transfer.TransferImportJob;
 import org.gitana.platform.client.vault.Vault;

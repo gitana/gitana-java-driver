@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.support;
 
@@ -27,9 +27,6 @@ import org.gitana.platform.client.application.*;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
-import org.gitana.platform.client.billing.BillingProviderConfiguration;
-import org.gitana.platform.client.billing.BillingTransaction;
-import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.cluster.Cluster;
@@ -38,6 +35,8 @@ import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.job.Job;
+import org.gitana.platform.client.job.JobData;
+import org.gitana.platform.client.job.JobResult;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.node.Association;
@@ -185,6 +184,11 @@ public interface ObjectFactory
     public Job job(Cluster cluster, Response response);
     public ResultMap<Job> jobs(Cluster cluster, Response response);
 
+    public JobData jobData(Cluster cluster, Response response);
+    public JobData jobData(Cluster cluster, ObjectNode object);
+    public JobResult jobResult(Cluster cluster, Response response);
+    public JobResult jobResult(Cluster cluster, ObjectNode object);
+
     // log entries
     public LogEntry logEntry(Cluster cluster, Response response);
     public ResultMap<LogEntry> logEntries(Cluster cluster, Response response);
@@ -286,22 +290,6 @@ public interface ObjectFactory
 
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // BILLING
-    //
-
-    // payment methods
-    public PaymentMethod paymentMethod(Tenant tenant, Response response);
-    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response);
-
-    // billing transaction
-    public BillingTransaction billingTransaction(Tenant tenant, Response response);
-    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response);
-
-    // billing provider configuration
-    public BillingProviderConfiguration billingProviderConfiguration(Platform platform, Response response);
-    public ResultMap<BillingProviderConfiguration> billingProviderConfigurations(Platform platform, Response response);
 
 
 

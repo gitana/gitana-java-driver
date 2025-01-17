@@ -16,14 +16,14 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.cluster;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.datastore.AbstractDataStoreImpl;
-import org.gitana.platform.client.job.Job;
+import org.gitana.platform.client.job.*;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.job.JobState;
@@ -34,6 +34,7 @@ import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author uzi
@@ -105,155 +106,196 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
         return getFactory().jobs(this, response);
     }
 
-    @Override
-    public ResultMap<Job> listUnstartedJobs()
+//    @Override
+//    public ResultMap<Job> listUnstartedJobs()
+//    {
+//        return listUnstartedJobs(null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listUnstartedJobs(Pagination pagination)
+//    {
+//        ObjectNode notTrue = JsonUtil.createObject();
+//        notTrue.put("$ne", true);
+//
+//        ObjectNode query = JsonUtil.createObject();
+//        query.put(Job.FIELD_STARTED, notTrue);
+//
+//        return queryJobs(query, pagination);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryUnstartedJobs(ObjectNode query)
+//    {
+//        return queryUnstartedJobs(query, null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryUnstartedJobs(ObjectNode query, Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().post("/jobs/unstarted/query", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listRunningJobs()
+//    {
+//        return listRunningJobs(null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listRunningJobs(Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().get("/jobs/running", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryRunningJobs(ObjectNode query)
+//    {
+//        return queryRunningJobs(query, null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryRunningJobs(ObjectNode query, Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().post("/jobs/running/query", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listFailedJobs()
+//    {
+//        return listFailedJobs(null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listFailedJobs(Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().get("/jobs/failed", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryFailedJobs(ObjectNode query)
+//    {
+//        return queryFailedJobs(query, null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().post("/jobs/failed/query", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listWaitingJobs()
+//    {
+//        return listWaitingJobs(null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listWaitingJobs(Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().get("/jobs/waiting", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryWaitingJobs(ObjectNode query)
+//    {
+//        return queryWaitingJobs(query, null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryWaitingJobs(ObjectNode query, Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().post("/jobs/waiting/query", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listFinishedJobs()
+//    {
+//        return listFinishedJobs(null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> listFinishedJobs(Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().get("/jobs/finished", params);
+//        return getFactory().jobs(this, response);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryFinishedJobs(ObjectNode query)
+//    {
+//        return queryFinishedJobs(query, null);
+//    }
+//
+//    @Override
+//    public ResultMap<Job> queryFinishedJobs(ObjectNode query, Pagination pagination)
+//    {
+//        Map<String, String> params = DriverUtil.params(pagination);
+//
+//        Response response = getRemote().post("/jobs/finished/query", params);
+//        return getFactory().jobs(this, response);
+//    }
+
+    public int countJobs(ObjectNode query)
     {
-        return listUnstartedJobs(null);
+        Pagination p = Pagination.limit(1);
+        p.getOptions().setCountTotal(true);
+
+        return queryJobs(query, p).totalRows();
     }
 
     @Override
-    public ResultMap<Job> listUnstartedJobs(Pagination pagination)
+    public int countUnstartedJobs()
     {
-        Map<String, String> params = DriverUtil.params(pagination);
+        ObjectNode notTrue = JsonUtil.createObject();
+        notTrue.put("$ne", true);
 
-        Response response = getRemote().get("/jobs/unstarted", params);
-        return getFactory().jobs(this, response);
+        ObjectNode query = JsonUtil.createObject();
+        query.put(Job.FIELD_STARTED, notTrue);
+
+        return countJobs(query);
     }
 
     @Override
-    public ResultMap<Job> queryUnstartedJobs(ObjectNode query)
+    public int countJobsInState(Set<JobState> states)
     {
-        return queryUnstartedJobs(query, null);
+        ArrayNode inArray = JsonUtil.createArray();
+        for (JobState state: states)
+        {
+            inArray.add(state.toString());
+        }
+        ObjectNode in = JsonUtil.createObject();
+        in.put("$in", inArray);
+
+        ObjectNode query = JsonUtil.createObject();
+        query.put(Job.FIELD_STATE, in);
+
+        return countJobs(query);
     }
 
-    @Override
-    public ResultMap<Job> queryUnstartedJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/unstarted/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listRunningJobs()
-    {
-        return listRunningJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listRunningJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/running", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryRunningJobs(ObjectNode query)
-    {
-        return queryRunningJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryRunningJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/running/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listFailedJobs()
-    {
-        return listFailedJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listFailedJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/failed", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryFailedJobs(ObjectNode query)
-    {
-        return queryFailedJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryFailedJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/failed/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listWaitingJobs()
-    {
-        return listWaitingJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listWaitingJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/waiting", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryWaitingJobs(ObjectNode query)
-    {
-        return queryWaitingJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryWaitingJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/waiting/query", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> listFinishedJobs()
-    {
-        return listFinishedJobs(null);
-    }
-
-    @Override
-    public ResultMap<Job> listFinishedJobs(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get("/jobs/finished", params);
-        return getFactory().jobs(this, response);
-    }
-
-    @Override
-    public ResultMap<Job> queryFinishedJobs(ObjectNode query)
-    {
-        return queryFinishedJobs(query, null);
-    }
-
-    @Override
-    public ResultMap<Job> queryFinishedJobs(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post("/jobs/finished/query", params);
-        return getFactory().jobs(this, response);
-    }
 
     @Override
     public Job readJob(String jobId)
@@ -282,75 +324,96 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
     }
 
     @Override
-    public Job waitForJobCompletion(String jobId)
+    public Job pollForJobCompletion(String jobId)
     {
-        Job completedJob = null;
-
-        boolean done = false;
-
-        do
-        {
-            Job job = readJob(jobId);
-
-            // if job came back null, try again in case a non-404 exception produced null
-            if (job == null)
-            {
-                job = readJob(jobId);
-            }
-
-            if (job == null)
-            {
-                completedJob = null;
-                done = true;
-            }
-            else
-            {
-                if (JobState.FINISHED.equals(job.getState()))
-                {
-                    completedJob = job;
-                    done = true;
-                }
-                else if (JobState.ERROR.equals(job.getState()))
-                {
-                    completedJob = job;
-                    done = true;
-                }
-                else
-                {
-                    // otherwise, try again
-                    try
-                    {
-                        Thread.sleep(1000);
-                    }
-                    catch (InterruptedException ie)
-                    {
-                        throw new RuntimeException(ie);
-                    }
-                }
-            }
-        }
-        while (!done);
-
-        return completedJob;
+        return pollForJobCompletion(jobId,null, null, null);
     }
 
     @Override
-    public Job pollForJobCompletion(String jobId)
+    public Job pollForJobCompletion(String jobId, Class jobClass, Class jobDataClass, Class jobResultClass)
     {
-        Job completedJob = null;
+        if (jobClass == null)
+        {
+            jobClass = JobImpl.class;
+        }
+
+        if (jobDataClass == null)
+        {
+            jobDataClass = JobDataImpl.class;
+        }
+
+        if (jobResultClass == null)
+        {
+            jobResultClass = JobResultImpl.class;
+        }
+
+        ObjectNode _job = _pollForJobCompletion(jobId);
+
+        // instantiate desired job type
+        Job job = null;
+        try
+        {
+            job = (Job) jobClass.getConstructor(Cluster.class, ObjectNode.class, boolean.class).newInstance(this, _job, true);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        // instantiate desired job data type
+        JobData jobData = null;
+        try
+        {
+            ObjectNode _jobData = (ObjectNode) job.getObject().get("_data");
+            if (_jobData != null)
+            {
+                jobData = (JobData) jobDataClass.getConstructor(Cluster.class, ObjectNode.class, boolean.class).newInstance(this, _jobData, true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        // instantiate desired job result type
+        JobResult jobResult = null;
+        try
+        {
+            ObjectNode _jobResult = (ObjectNode) job.getObject().get("_result");
+            if (_jobResult != null)
+            {
+                jobResult = (JobResult) jobResultClass.getConstructor(Cluster.class, ObjectNode.class, boolean.class).newInstance(this, _jobResult, true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        ((JobImpl) job).setData(jobData);
+        ((JobImpl) job).setResult(jobResult);
+
+        return job;
+    }
+
+    private ObjectNode _pollForJobCompletion(String jobId)
+    {
+        ObjectNode completedJobObject = null;
 
         do
         {
             Response response = getRemote().get("/jobs/" + jobId + "/poll");
-            Job job = getFactory().job(this, response);
+            ObjectNode jobObject = response.getObjectNode();
 
-            if (JobState.FINISHED.equals(job.getState()))
+            String jobState = JsonUtil.objectGetString(jobObject, Job.FIELD_STATE);
+
+            if (JobState.FINISHED.toString().equals(jobState))
             {
-                completedJob = job;
+                completedJobObject = jobObject;
             }
-            else if (JobState.ERROR.equals(job.getState()))
+            else if (JobState.ERROR.toString().equals(jobState))
             {
-                completedJob = job;
+                completedJobObject = jobObject;
             }
             else
             {
@@ -365,8 +428,8 @@ public class ClusterImpl extends AbstractDataStoreImpl implements Cluster
                 }
             }
         }
-        while (completedJob == null);
+        while (completedJobObject == null);
 
-        return completedJob;
+        return completedJobObject;
     }
 }

@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.platform;
 
@@ -26,7 +26,6 @@ import org.apache.http.HttpResponse;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
-import org.gitana.platform.client.billing.BillingProviderConfiguration;
 import org.gitana.platform.client.cluster.AbstractClusterDataStoreImpl;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.directory.Directory;
@@ -1161,79 +1160,6 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // BILLIN PROVIDER CONFIGURATIONS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations()
-    {
-        return listBillingProviderConfigurations(null);
-    }
-
-    @Override
-    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations(Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().get(getResourceUri() + "/billing/configurations", params);
-        return getFactory().billingProviderConfigurations(this, response);
-    }
-
-    @Override
-    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query)
-    {
-        return queryBillingProviderConfigurations(query, null);
-    }
-
-    @Override
-    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-
-        Response response = getRemote().post(getResourceUri() + "/billing/configurations/query", params, query);
-        return getFactory().billingProviderConfigurations(this, response);
-    }
-
-    @Override
-    public BillingProviderConfiguration readBillingProviderConfiguration(String billingProviderConfigurationId)
-    {
-        BillingProviderConfiguration billingProviderConfiguration = null;
-
-        try
-        {
-            Response response = getRemote().get(getResourceUri() + "/billing/configurations/" + billingProviderConfigurationId);
-            billingProviderConfiguration = getFactory().billingProviderConfiguration(this, response);
-        }
-        catch (Exception ex)
-        {
-            // swallow for the time being
-            // TODO: the remote layer needs to hand back more interesting
-            // TODO: information so that we can detect a proper 404
-        }
-
-        return billingProviderConfiguration;
-    }
-
-    @Override
-    public BillingProviderConfiguration createBillingProviderConfiguration(String providerId, ObjectNode object)
-    {
-        // allow for null object
-        if (object == null)
-        {
-            object = JsonUtil.createObject();
-        }
-        
-        object.put(BillingProviderConfiguration.FIELD_PROVIDER_ID, providerId);
-
-        Response response = getRemote().post(getResourceUri() + "/billing/configurations", object);
-
-        String billingProviderConfigurationId = response.getId();
-        return readBillingProviderConfiguration(billingProviderConfigurationId);
-    }
-
 
 
 
@@ -1311,8 +1237,11 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
 
         Response response = getRemote().post("/projects/start", object);
         String jobId = response.getId();
-        Job job = getCluster().waitForJobCompletion(jobId);
-        String projectId = job.getString("created-project-id");
+
+        Job job = getCluster().pollForJobCompletion(jobId);
+
+        // result variable: created-project-id
+        String projectId = job.getResult().getString("created-project-id");
 
         return readProject(projectId);
     }

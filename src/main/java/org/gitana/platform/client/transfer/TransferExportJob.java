@@ -16,12 +16,11 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.transfer;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.job.JobImpl;
 import org.gitana.platform.services.transfer.TransferExportConfiguration;
@@ -29,42 +28,14 @@ import org.gitana.platform.services.transfer.TransferExportConfiguration;
 /**
  * @author uzi
  */
-public class TransferExportJob extends JobImpl
+public class TransferExportJob extends JobImpl<TransferExportJobData, TransferExportJobResult>
 {
-    // manifest properties
-    public final static String FIELD_ARCHIVE_GROUP = "archiveGroup";
-    public final static String FIELD_ARCHIVE_ARTIFACT = "archiveArtifact";
-    public final static String FIELD_ARCHIVE_VERSION = "archiveVersion";
-
-    // vault
-    public final static String FIELD_VAULT_ID = "vaultId";
-
     // configuration
     public final static String FIELD_CONFIGURATION = "configuration";
 
     public TransferExportJob(Cluster cluster, ObjectNode obj, boolean isSaved)
     {
         super(cluster, obj, isSaved);
-    }
-
-    public String getArchiveGroup()
-    {
-        return getString(FIELD_ARCHIVE_GROUP);
-    }
-
-    public String getArchiveArtifact()
-    {
-        return getString(FIELD_ARCHIVE_ARTIFACT);
-    }
-
-    public String getArchiveVersion()
-    {
-        return getString(FIELD_ARCHIVE_VERSION);
-    }
-
-    public String getVaultId()
-    {
-        return getString(FIELD_VAULT_ID);
     }
 
     public TransferExportConfiguration getConfiguration()

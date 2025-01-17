@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.node;
 
@@ -310,7 +310,7 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
             }
         }
 
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), getFactory(),  this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
@@ -344,7 +344,7 @@ public abstract class BaseNodeImpl extends AbstractRepositoryDocumentImpl implem
             }
         }
 
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), getFactory(),  this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
     }
 
 

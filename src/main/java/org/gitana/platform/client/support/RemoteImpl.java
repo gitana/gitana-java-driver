@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.support;
 
@@ -832,7 +832,7 @@ public class RemoteImpl implements Remote
     public Response upload(String uri, Map<String, String> params, HttpPayload... payloads)
         throws Exception
     {
-        String URL = buildURL(uri, false);
+        String URL = buildURL(uri, true);
 
         if (params == null)
         {

@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.identity;
 
@@ -101,13 +101,25 @@ public class IdentityImpl extends AbstractDirectoryDocumentImpl implements Ident
     @Override
     public void changePassword(String password, String verifyPassword)
     {
+        changePassword(password, verifyPassword, false,null);
+    }
+
+    @Override
+    public void changePassword(String password, String verifyPassword, boolean validateCurrentPassword, String currentPassword)
+    {
         ObjectNode object = JsonUtil.createObject();
         object.put("password", password);
         object.put("verifyPassword", verifyPassword);
 
+        if (validateCurrentPassword)
+        {
+            object.put("validateCurrentPassword", true);
+            object.put("currentPassword", currentPassword);
+        }
+
         getRemote().post(getResourceUri() + "/changepassword", object);
     }
-    
+
     private ResultMap<ObjectNode> toResultMap(Response response)
     {
         ResultMap<ObjectNode> results = new ResultMapImpl<ObjectNode>();

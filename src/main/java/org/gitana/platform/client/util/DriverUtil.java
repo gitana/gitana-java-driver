@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.util;
 
@@ -27,18 +27,15 @@ import org.gitana.platform.client.beans.ACLEntry;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.changeset.Changeset;
 import org.gitana.platform.client.cluster.Cluster;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.BaseNode;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.principal.DomainPrincipal;
-import org.gitana.platform.client.support.Referenceable;
-import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.support.Response;
-import org.gitana.platform.client.support.TypedID;
+import org.gitana.platform.client.support.*;
 import org.gitana.platform.client.transfer.CopyJob;
-import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.client.transfer.CopyJobData;
+import org.gitana.platform.client.transfer.CopyJobResult;
 import org.gitana.platform.services.transfer.TransferDependency;
 import org.gitana.platform.services.transfer.TransferImportStrategy;
 import org.gitana.platform.services.transfer.TransferSchedule;
@@ -113,7 +110,6 @@ public class DriverUtil
             if (pagination.getSorting().size() > 0)
             {
                 String sort = JsonUtil.stringify((ObjectNode) pagination.getSorting().toJSON(), false);
-                //sort = sort.replace("\"", "");
                 params.put("sort", sort);
             }
 
@@ -131,6 +127,16 @@ public class DriverUtil
             else if (pagination.getLimit() == -1)
             {
                 params.put("limit", String.valueOf(-1));
+            }
+
+            // options
+            if (pagination.getOptions() != null)
+            {
+                ObjectNode json = pagination.getOptions().toJSON();
+                if (json.size() > 0)
+                {
+                    params.put("options", JsonUtil.stringify(json, false));
+                }
             }
         }
 
@@ -152,10 +158,18 @@ public class DriverUtil
     /**
      * Generic helper method to copy the source object into the target container.
      *
+     * @param cluster
+     * @param remote
+     * @param factory
      * @param source
      * @param target
+     * @param strategy
+     * @param additionalConfiguration
+     * @param schedule
+     *
+     * @return
      */
-    public static CopyJob copy(Cluster cluster, Remote remote, TypedID source, TypedID target, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration, TransferSchedule schedule)
+    public static CopyJob copy(Cluster cluster, Remote remote, ObjectFactory factory, TypedID source, TypedID target, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration, TransferSchedule schedule)
     {
         boolean synchronous = TransferSchedule.SYNCHRONOUS.equals(schedule);
 
@@ -182,8 +196,9 @@ public class DriverUtil
         Response response1 = remote.post("/tools/copy?schedule=" + TransferSchedule.ASYNCHRONOUS.toString() + "&strategy=" + strategy.toString(), payload);
         String jobId = response1.getId();
 
-        Job job = DriverUtil.retrieveOrPollJob(cluster, jobId, synchronous);
-        return new CopyJob(cluster, job.getObject(), job.isSaved());
+        CopyJob job = (CopyJob) cluster.pollForJobCompletion(jobId, CopyJob.class, CopyJobData.class, CopyJobResult.class);
+
+        return job;
     }
 
     public static ArrayNode toCopyDependencyChain(TypedID typedID)
@@ -228,48 +243,6 @@ public class DriverUtil
         }
 
         return obj;
-    }
-
-    /**
-     * Retrieves a job that was just posted for execution.  If synchronous, then this will poll until the job
-     * either finishes or errors out before handing back.
-     *
-     * @param cluster
-     * @param jobId
-     * @param synchronous
-     * @return
-     */
-    public static Job retrieveOrPollJob(Cluster cluster, String jobId, boolean synchronous)
-    {
-        Job job = null;
-        if (!synchronous)
-        {
-            job = cluster.readJob(jobId);
-        }
-        else
-        {
-            boolean completed = false;
-
-            do
-            {
-                job = cluster.readJob(jobId);
-                if (job != null)
-                {
-                    if (JobState.FINISHED.equals(job.getState()) || JobState.ERROR.equals(job.getState()))
-                    {
-                        completed = true;
-                    }
-                }
-
-                if (!completed)
-                {
-                    try { Thread.sleep(500); } catch (Exception ex) { completed = true; }
-                }
-            }
-            while (!completed);
-        }
-
-        return job;
     }
 
     public static String readKey(ResourceBundle bundle, String key)
@@ -373,5 +346,4 @@ public class DriverUtil
 
         return value;
     }
-
 }

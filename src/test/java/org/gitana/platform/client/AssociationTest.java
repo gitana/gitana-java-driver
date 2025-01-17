@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -143,6 +143,7 @@ public class AssociationTest extends AbstractTestCase
         Pagination pagination = new Pagination();
         pagination.setSkip(0);
         pagination.setLimit(10);
+        pagination.getOptions().setCountTotal(true);
 
         // sort by creation time
         pagination.getSorting().addSort("_system.created_on.ms", 1);

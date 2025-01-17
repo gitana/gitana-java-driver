@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.platform;
 
@@ -74,7 +74,7 @@ public abstract class AbstractPlatformDataStoreImpl extends AbstractClusterDataS
     @Override
     public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), getFactory(),  this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
@@ -86,7 +86,7 @@ public abstract class AbstractPlatformDataStoreImpl extends AbstractClusterDataS
     @Override
     public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        Job job = DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
+        Job job = DriverUtil.copy(getCluster(), getRemote(), getFactory(),  this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
 
         return new CopyJob(job.getCluster(), job.getObject(), job.isSaved());
     }

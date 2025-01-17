@@ -16,25 +16,21 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
-package org.gitana.platform.client.billing;
+package org.gitana.platform.client.transfer;
 
-import org.gitana.platform.client.platform.PlatformDocument;
-import org.gitana.platform.client.support.AccessControllable;
-import org.gitana.platform.client.support.Selfable;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.platform.client.cluster.Cluster;
+import org.gitana.platform.client.job.JobDataImpl;
 
 /**
  * @author uzi
  */
-public interface BillingProviderConfiguration extends PlatformDocument, AccessControllable, Selfable
+public class CopyJobData extends JobDataImpl
 {
-    public final static String FIELD_KEY = "key";
-    public final static String FIELD_PROVIDER_ID = "providerId";
-
-    public String getKey();
-    public void setKey(String key);
-
-    public String getProviderId();
-    public void setProviderId(String providerId);
+    public CopyJobData(Cluster cluster, ObjectNode obj, boolean isSaved)
+    {
+        super(cluster, obj, isSaved);
+    }
 }

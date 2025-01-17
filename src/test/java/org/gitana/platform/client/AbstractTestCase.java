@@ -16,13 +16,22 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import junit.framework.TestCase;
+import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.services.job.JobState;
+import org.gitana.platform.support.Pagination;
+import org.gitana.platform.support.ResultMap;
+import org.gitana.util.JsonUtil;
 import org.junit.Ignore;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Base class for tests
@@ -51,17 +60,27 @@ import org.junit.Ignore;
         // authenticate as admin/admin
         Platform platform = new Gitana().authenticate("admin", "admin");
 
-        // wait
-        while (platform.getCluster().listWaitingJobs().totalRows() > 0)
+        boolean done = false;
+        do
         {
-            try
+            int count = platform.getCluster().countJobsInState(Set.of(JobState.WAITING));
+            if (count == 0)
             {
-                Thread.sleep(1000);
+                done = true;
             }
-            catch (InterruptedException ie)
+
+            if (!done)
             {
-                throw new RuntimeException(ie);
+                try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException ie)
+                {
+                    throw new RuntimeException(ie);
+                }
             }
         }
+        while (!done);
     }
 }

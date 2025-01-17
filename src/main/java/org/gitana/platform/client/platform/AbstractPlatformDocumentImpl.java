@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.platform;
 
@@ -25,11 +25,8 @@ import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.archive.Archive;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.document.DocumentImpl;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.support.*;
-import org.gitana.platform.client.transfer.CopyJob;
-import org.gitana.platform.client.transfer.TransferExportJob;
-import org.gitana.platform.client.transfer.TransferImportJob;
+import org.gitana.platform.client.transfer.*;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.services.reference.Reference;
@@ -141,9 +138,12 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
         Response response1 = getRemote().post(getResourceUri() + "/export?vault=" + vault.getId() + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response1.getId();
 
-        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        if (TransferSchedule.SYNCHRONOUS.equals(schedule))
+        {
+            return (TransferExportJob) getCluster().pollForJobCompletion(jobId, TransferExportJob.class, TransferExportJobData.class, TransferExportJobResult.class);
+        }
 
-        return new TransferExportJob(job.getCluster(), job.getObject(), job.isSaved());
+        return (TransferExportJob) getCluster().readJob(jobId);
     }
 
     @Override
@@ -179,9 +179,12 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
         Response response = getRemote().post(getResourceUri() + "/import?vault=" + vaultId + "&group=" + groupId + "&artifact=" + artifactId + "&version=" + versionId + "&schedule=" + TransferSchedule.ASYNCHRONOUS.toString(), configObject);
         String jobId = response.getId();
 
-        Job job = DriverUtil.retrieveOrPollJob(getCluster(), jobId, synchronous);
+        if (TransferSchedule.SYNCHRONOUS.equals(schedule))
+        {
+            return (TransferImportJob) getCluster().pollForJobCompletion(jobId, TransferImportJob.class, TransferImportJobData.class, TransferImportJobResult.class);
+        }
 
-        return new TransferImportJob(job.getCluster(), job.getObject(), job.isSaved());
+        return (TransferImportJob) getCluster().readJob(jobId);
     }
 
 
@@ -200,7 +203,7 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     @Override
     public CopyJob copy(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), getFactory(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.SYNCHRONOUS);
     }
 
     @Override
@@ -212,6 +215,6 @@ public abstract class AbstractPlatformDocumentImpl extends DocumentImpl implemen
     @Override
     public CopyJob copyAsync(TypedID targetContainer, TransferImportStrategy strategy, Map<String, Object> additionalConfiguration)
     {
-        return DriverUtil.copy(getCluster(), getRemote(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
+        return DriverUtil.copy(getCluster(), getRemote(), getFactory(), this, targetContainer, strategy, additionalConfiguration, TransferSchedule.ASYNCHRONOUS);
     }
 }

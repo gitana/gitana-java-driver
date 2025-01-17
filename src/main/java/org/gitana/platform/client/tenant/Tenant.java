@@ -16,14 +16,11 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.tenant;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.gitana.platform.client.billing.BillingTransaction;
-import org.gitana.platform.client.billing.PaymentMethod;
 import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.registrar.RegistrarDocument;
 import org.gitana.platform.client.support.Selfable;
@@ -145,21 +142,6 @@ public interface Tenant extends RegistrarDocument, Selfable
     public String getBillingMethodPaymentId();
 
 
-    // PAYMENT METHODS
-    public ResultMap<PaymentMethod> listPaymentMethods();
-    public ResultMap<PaymentMethod> listPaymentMethods(Pagination pagination);
-    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query);
-    public ResultMap<PaymentMethod> queryPaymentMethods(ObjectNode query, Pagination pagination);
-    public PaymentMethod readPaymentMethod(String paymentMethodId);
-    public PaymentMethod createPaymentMethod(String holderName, String number, int expirationMonth, int expirationYear);
-    public PaymentMethod createPaymentMethod(ObjectNode object);
-
-    // BILLING TRANSACTIONS
-    public ResultMap<BillingTransaction> listBillingTransactions();
-    public ResultMap<BillingTransaction> listBillingTransactions(Pagination pagination);
-    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query);
-    public ResultMap<BillingTransaction> queryBillingTransactions(ObjectNode query, Pagination pagination);
-    public BillingTransaction readBillingTransaction(String transactionId);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

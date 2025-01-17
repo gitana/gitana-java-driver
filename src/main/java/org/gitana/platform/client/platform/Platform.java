@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.platform;
 
@@ -25,7 +25,6 @@ import org.apache.http.HttpResponse;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
-import org.gitana.platform.client.billing.BillingProviderConfiguration;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.datastore.DataStore;
 import org.gitana.platform.client.directory.Directory;
@@ -352,21 +351,6 @@ public interface Platform extends DataStore
     public void updateAuthenticationGrant(AuthenticationGrant authenticationGrant);
     public void deleteAuthenticationGrant(AuthenticationGrant authenticationGrant);
     public void deleteAuthenticationGrant(String authenticationGrantId);
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // BILLING
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations();
-    public ResultMap<BillingProviderConfiguration> listBillingProviderConfigurations(Pagination pagination);
-    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query);
-    public ResultMap<BillingProviderConfiguration> queryBillingProviderConfigurations(ObjectNode query, Pagination pagination);
-    public BillingProviderConfiguration readBillingProviderConfiguration(String billingProviderConfigurationId);
-    public BillingProviderConfiguration createBillingProviderConfiguration(String providerId, ObjectNode object);
 
 
 

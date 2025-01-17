@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.repository;
 
@@ -138,8 +138,12 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
 
         Response response = getRemote().post("/repositories/" + getId() + "/branches/create/start?changeset=" + changesetId + "&branch=" + rootBranchId, object);
         String jobId = response.getId();
-        Job job = getCluster().waitForJobCompletion(jobId);
-        String branchId = job.getString("createdBranchId");
+
+        Job job = getCluster().pollForJobCompletion(jobId);
+
+        // result variable: createdBranchId
+        String branchId = job.getResult().getString("createdBranchId");
+
         return readBranch(branchId);
     }
 
@@ -341,8 +345,11 @@ public class RepositoryImpl extends AbstractPlatformDataStoreImpl implements Rep
 
         Response response = getRemote().post("/repositories/" + getId() + "/releases/create/start", params, object);
         String jobId = response.getId();
-        Job job = getCluster().waitForJobCompletion(jobId);
-        String releaseId = job.getString("created-release-id");
+
+        Job job = getCluster().pollForJobCompletion(jobId);
+
+        // result variable: created-release-id
+        String releaseId = job.getResult().getString("created-release-id");
 
         return readRelease(releaseId);
     }

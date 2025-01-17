@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -110,7 +110,7 @@ public class EmailTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                    .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
+                    .and(EmailProvider.FIELD_USERNAME).is("buildtest@cloudcms.com")
                     .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
                     .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                     .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
@@ -121,9 +121,9 @@ public class EmailTest extends AbstractTestCase
         
         // create an email
         Email email = application.createEmail(
-                JSONBuilder.start(Email.FIELD_TO).is("buildtest@gitanasoftware.com")
+                JSONBuilder.start(Email.FIELD_TO).is("buildtest@cloudcms.com")
                     .and(Email.FIELD_BODY).is("Here is a test body")
-                    .and(Email.FIELD_FROM).is("buildtest@gitanasoftware.com")
+                    .and(Email.FIELD_FROM).is("buildtest@cloudcms.com")
                     .get()
         );
         
@@ -183,7 +183,7 @@ public class EmailTest extends AbstractTestCase
         // create a domain and a principal
         Domain domain = platform.createDomain();
         DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-        user.setEmail("buildtest@gitanasoftware.com");
+        user.setEmail("buildtest@cloudcms.com");
         user.update();
 
         // create an application
@@ -192,7 +192,7 @@ public class EmailTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
+                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@cloudcms.com")
                         .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
@@ -204,7 +204,7 @@ public class EmailTest extends AbstractTestCase
         // create an email
         Email email = application.createEmail(
                 JSONBuilder.start(Email.FIELD_BODY).is("Here is a test body")
-                        .and(Email.FIELD_FROM).is("buildtest@gitanasoftware.com")
+                        .and(Email.FIELD_FROM).is("buildtest@cloudcms.com")
                         .get()
         );
         email.setToDomainUser(user);
@@ -237,7 +237,7 @@ public class EmailTest extends AbstractTestCase
         // create a domain and a principal
         Domain domain = platform.createDomain();
         DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-        user.setEmail("buildtest@gitanasoftware.com");
+        user.setEmail("buildtest@cloudcms.com");
         user.update();
 
         // create a repository
@@ -255,7 +255,7 @@ public class EmailTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
+                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@cloudcms.com")
                         .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
@@ -267,7 +267,7 @@ public class EmailTest extends AbstractTestCase
         // create an email
         Email email = application.createEmail(
                 JSONBuilder.start(Email.FIELD_BODY).is("Here is a test body")
-                        .and(Email.FIELD_FROM).is("buildtest@gitanasoftware.com")
+                        .and(Email.FIELD_FROM).is("buildtest@cloudcms.com")
                         .get()
         );
         email.setToDomainUser(user);

@@ -16,14 +16,11 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.registrar;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.gitana.platform.client.billing.PaymentMethod;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.AbstractPlatformDataStoreImpl;
@@ -32,8 +29,6 @@ import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.tenant.Tenant;
 import org.gitana.platform.client.util.DriverUtil;
-import org.gitana.platform.services.billing.PaymentMethodValidation;
-import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
@@ -398,43 +393,4 @@ public class RegistrarImpl extends AbstractPlatformDataStoreImpl implements Regi
     {
         getRemote().delete(getResourceUri() + "/meters/" + meterId);
     }
-
-    /*
-    @Override
-    public ResultMap<Tenant> findTenantsWithPrincipalTeamMember(String principalId, Pagination pagination)
-    {
-        Map<String, String> params = DriverUtil.params(pagination);
-        params.put("id", principalId);
-
-        Response response = getRemote().post(getResourceUri() + "/tenants/withmember", params);
-        return getFactory().tenants(this, response);
-    }
-    */
-
-    @Override
-    public PaymentMethodValidation validateCreditCard(String holderName, String number, int expirationMonth, int expirationYear)
-    {
-        ObjectNode object = JsonUtil.createObject();
-        object.put(PaymentMethod.FIELD_HOLDER_NAME, holderName);
-        object.put(PaymentMethod.FIELD_NUMBER, number);
-        object.put(PaymentMethod.FIELD_EXPIRATION_MONTH, expirationMonth);
-        object.put(PaymentMethod.FIELD_EXPIRATION_YEAR, expirationYear);
-
-        return validateCreditCard(object);
-    }
-
-    @Override
-    public PaymentMethodValidation validateCreditCard(ObjectNode object)
-    {
-        // allow for null object
-        if (object == null)
-        {
-            object = JsonUtil.createObject();
-        }
-
-        Response response = getRemote().post(getResourceUri() + "/billing/paymentmethods/validate", object);
-
-        return new PaymentMethodValidation(response.getObjectNode());
-    }
-    
 }

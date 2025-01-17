@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -112,7 +112,7 @@ public class NodeTransferTest extends AbstractTestCase
         Repository repo2 = platform.createRepository();
         Branch master2 = repo2.readBranch("master");
         TransferImportJob job2 = master2.rootNode().importArchive(archive);
-        Node n1 = (Node) master2.readNode(job2.getSingleImportTargetId());
+        Node n1 = (Node) master2.readNode(job2.getResult().getSingleImportTargetId());
         assertTrue(n1.associations().size() > 0);
     }
 

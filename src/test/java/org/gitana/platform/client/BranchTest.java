@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -44,8 +44,6 @@ public class BranchTest extends AbstractTestCase
     @Test
     public void testCRUD()
     {
-        JobState state = JobState.AWAITING;
-
         Gitana gitana = new Gitana();
 
         // authenticate
@@ -152,6 +150,7 @@ public class BranchTest extends AbstractTestCase
         Pagination pagination = new Pagination();
         pagination.setSkip(0);
         pagination.setLimit(5);
+        pagination.getOptions().setCountTotal(true);
         assertEquals(5, repository.listBranches(pagination).size());
 
         // test size 7 offset 2

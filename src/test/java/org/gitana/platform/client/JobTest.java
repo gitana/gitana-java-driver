@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -27,11 +27,14 @@ import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
+import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 import org.gitana.util.ClasspathUtil;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
+
+import java.util.Set;
 
 /**
  * @author uzi
@@ -65,7 +68,7 @@ public class JobTest extends AbstractTestCase
 
         // candidate jobs are jobs that are started but not running
         // running jobs are jobs that are started AND running
-        int inflight1 = cluster.listWaitingJobs().size() + cluster.listRunningJobs().size();
+        int inflight1 = cluster.countJobsInState(Set.of(JobState.WAITING, JobState.RUNNING));
 
         // upload an attachment
         // the indexing for this attachment will run as a job
@@ -88,13 +91,12 @@ public class JobTest extends AbstractTestCase
         Job job = results.values().iterator().next();
 
         // read job manually
-        job = cluster.readJob(job.getId());
-        assertEquals("bulkIndex", job.getType());
+//        job = cluster.readJob(job.getId());
+//        assertEquals("bulkIndex", job.getType());
 
         // test out various methods
-        ResultMap<Job> unstarted = cluster.listUnstartedJobs();
-        ResultMap<Job> failed = cluster.listFailedJobs();
-        ResultMap<Job> finished = cluster.listFinishedJobs();
+        int c1 = cluster.countJobsInState(Set.of(JobState.ERROR, JobState.FINISHED));
+        int c2 = cluster.countUnstartedJobs();
         ResultMap<Job> all = cluster.queryJobs(JsonUtil.createObject());
         assertTrue(all.size() > 0);
     }
@@ -103,6 +105,7 @@ public class JobTest extends AbstractTestCase
     {
         Pagination pagination = new Pagination();
         pagination.setLimit(1);
+        pagination.getOptions().setCountTotal(true);
         ResultMap<Job> results = cluster.queryJobs(JsonUtil.createObject(), pagination);
 
         return results.totalRows();

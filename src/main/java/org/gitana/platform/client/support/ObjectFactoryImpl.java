@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.support;
 
@@ -31,7 +31,6 @@ import org.gitana.platform.client.archive.ArchiveImpl;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.attachment.AttachmentImpl;
-import org.gitana.platform.client.billing.*;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.branch.BranchImpl;
 import org.gitana.platform.client.changeset.Changeset;
@@ -45,8 +44,7 @@ import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.domain.DomainImpl;
 import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.identity.IdentityImpl;
-import org.gitana.platform.client.job.Job;
-import org.gitana.platform.client.job.JobImpl;
+import org.gitana.platform.client.job.*;
 import org.gitana.platform.client.log.LogEntry;
 import org.gitana.platform.client.log.LogEntryImpl;
 import org.gitana.platform.client.meter.Meter;
@@ -648,6 +646,40 @@ public class ObjectFactoryImpl implements ObjectFactory
         }
 
         return map;
+    }
+
+    @Override
+    public JobData jobData(Cluster cluster, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new JobDataImpl(cluster, response.getObjectNode(), true);
+    }
+
+    @Override
+    public JobData jobData(Cluster cluster, ObjectNode object)
+    {
+        return new JobDataImpl(cluster, object, true);
+    }
+
+    @Override
+    public JobResult jobResult(Cluster cluster, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new JobResultImpl(cluster, response.getObjectNode(), true);
+    }
+
+    @Override
+    public JobResult jobResult(Cluster cluster, ObjectNode object)
+    {
+        return new JobResultImpl(cluster, object, true);
     }
 
     @Override
@@ -1566,93 +1598,4 @@ public class ObjectFactoryImpl implements ObjectFactory
 
         return map;
     }
-
-    @Override
-    public PaymentMethod paymentMethod(Tenant tenant, Response response)
-    {
-        if (!response.isDataDocument())
-        {
-            throw new RuntimeException("Response must be a data document");
-        }
-
-        return new PaymentMethodImpl(tenant, response.getObjectNode());
-    }
-
-    @Override
-    public ResultMap<PaymentMethod> paymentMethods(Tenant tenant, Response response)
-    {
-        if (!response.isListDocument())
-        {
-            throw new RuntimeException("Response must be a list document");
-        }
-
-        ResultMap<PaymentMethod> map = new ResultMapImpl<PaymentMethod>(response.getListOffset(), response.getListTotalRows());
-        for (ObjectNode object : response.getObjectNodes())
-        {
-            PaymentMethod paymentMethod = new PaymentMethodImpl(tenant, object);
-            map.put(paymentMethod.getId(), paymentMethod);
-        }
-
-        return map;
-    }
-
-    @Override
-    public BillingTransaction billingTransaction(Tenant tenant, Response response)
-    {
-        if (!response.isDataDocument())
-        {
-            throw new RuntimeException("Response must be a data document");
-        }
-
-        return new BillingTransactionImpl(tenant, response.getObjectNode());
-    }
-
-    @Override
-    public ResultMap<BillingTransaction> billingTransactions(Tenant tenant, Response response)
-    {
-        if (!response.isListDocument())
-        {
-            throw new RuntimeException("Response must be a list document");
-        }
-
-        ResultMap<BillingTransaction> map = new ResultMapImpl<BillingTransaction>(response.getListOffset(), response.getListTotalRows());
-        for (ObjectNode object : response.getObjectNodes())
-        {
-            BillingTransaction billingTransaction = new BillingTransactionImpl(tenant, object);
-            map.put(billingTransaction.getId(), billingTransaction);
-        }
-
-        return map;
-    }
-
-    @Override
-    public BillingProviderConfiguration billingProviderConfiguration(Platform platform, Response response)
-    {
-        if (!response.isDataDocument())
-        {
-            throw new RuntimeException("Response must be a data document");
-        }
-
-        return new BillingProviderConfigurationImpl(platform, response.getObjectNode(), true);
-    }
-
-    @Override
-    public ResultMap<BillingProviderConfiguration> billingProviderConfigurations(Platform platform, Response response)
-    {
-        if (!response.isListDocument())
-        {
-            throw new RuntimeException("Response must be a list document");
-        }
-
-        ResultMap<BillingProviderConfiguration> map = new ResultMapImpl<BillingProviderConfiguration>(response.getListOffset(), response.getListTotalRows());
-        for (ObjectNode object : response.getObjectNodes())
-        {
-            BillingProviderConfiguration billingProviderConfiguration = new BillingProviderConfigurationImpl(platform, object, true);
-            map.put(billingProviderConfiguration.getId(), billingProviderConfiguration);
-        }
-
-        return map;
-    }
-
-
 }

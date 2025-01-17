@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -62,7 +62,7 @@ public class Email2Test extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
+                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@cloudcms.com")
                         .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)

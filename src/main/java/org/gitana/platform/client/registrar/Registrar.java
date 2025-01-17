@@ -16,19 +16,16 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.registrar;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.meter.Meter;
 import org.gitana.platform.client.plan.Plan;
 import org.gitana.platform.client.platform.PlatformDataStore;
 import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.tenant.Tenant;
-import org.gitana.platform.services.billing.PaymentMethodValidation;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -107,16 +104,4 @@ public interface Registrar extends PlatformDataStore
     public void updateMeter(Meter meter);
     public void deleteMeter(Meter meter);
     public void deleteMeter(String meterId);
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // CREDIT CARDS
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public PaymentMethodValidation validateCreditCard(String holderName, String number, int expirationMonth, int expirationYear);
-    public PaymentMethodValidation validateCreditCard(ObjectNode object);
-
 }

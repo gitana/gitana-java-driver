@@ -16,27 +16,22 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.JSONBuilder;
-import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.BaseNode;
-import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
-import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.repository.Repository;
-import org.gitana.platform.client.tenant.Tenant;
-import org.gitana.platform.client.transfer.CopyJob;
+import org.gitana.platform.client.transfer.TransferImportJob;
+import org.gitana.platform.client.transfer.TransferImportJobData;
+import org.gitana.platform.client.transfer.TransferImportJobResult;
 import org.gitana.platform.services.job.JobState;
 import org.gitana.platform.support.QueryBuilder;
-import org.gitana.platform.support.ResultMap;
-import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
@@ -56,52 +51,32 @@ public class CopyFrozenTest extends AbstractTestCase
         // authenticate as "admin"
         Platform platform = gitana.authenticate("admin", "admin");
 
-
-//        // create a tenant for this user
-//        Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
-//        ObjectNode defaultClientObject = tenant.readDefaultAllocatedClientObject();
-//        String clientKey = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_KEY);
-//        String clientSecret = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_SECRET);
-
         Project project1 = platform.createProject(QueryBuilder.start("title").is("Test Project " + System.currentTimeMillis()).get());
         Repository repository = (Repository) project1.getStack().readDataStore("content");
-        JsonUtil.setByPath(repository.getObject(), "releases/blockMaster", JsonUtil.toJsonNode(true), false);
-        repository.update();
-
-//        // AUTHENTICATE AS THE TENANT USER
-//        gitana = new Gitana(clientKey, clientSecret);
-//        platform = gitana.authenticate(user.getName(), TestConstants.TEST_PASSWORD);
-
 
         /////////////////////////////////////////////////////////////////////////////
 
         Branch master = repository.readBranch("master");
+
+        // block direct commits on master
+        master.set("blockDirectCommits", true);
+        master.update();
+
         Branch branch = repository.createBranch(master.getId(), master.getTipChangesetId(), JsonUtil.createObject());
 
         BaseNode myNode = branch.createNode(JSONBuilder.start("title").is("copy time").get());
 
-        Job job1 = null;
         List<String> nodeIds = Arrays.asList(myNode.getId());
-        job1 = master.startCopyFrom(branch.getRepositoryId(), branch.getId(), nodeIds, JsonUtil.createObject());
-        job1.waitForCompletion();
-//        try
-//        {
-//            job1 = master.startCopyFrom(branch.getRepositoryId(), branch.getId(), nodeIds, JsonUtil.createObject());
-//            job1.waitForCompletion();
-//        }
-//        catch (Exception ex)
-//        {
-//
-//        }
 
-//        job1 = job1.getCluster().readJob(job1.getId());
+        // try to copy onto master
+        // this should fail because BLOCK MASTER is set
+        Job job1 = master.startCopyFrom(branch.getRepositoryId(), branch.getId(), nodeIds, JsonUtil.createObject());
+        job1.pollForCompletion();
         assertEquals(JobState.ERROR, job1.getState());
 
-
+        // try again with flag "allowWriteToFrozenBranches" set high
         Job job2 = master.startCopyFrom(branch.getRepositoryId(), branch.getId(), nodeIds, JSONBuilder.start("allowWriteToFrozenBranches").is(true).get());
-        job2.waitForCompletion();
-
-
+        job2.pollForCompletion();
         assertEquals(JobState.FINISHED, job2.getState());
 
         BaseNode myNodeMaster = master.readNode(myNode.getId());

@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -163,6 +163,7 @@ public class NodeTest extends AbstractTestCase
         Pagination pagination = new Pagination();
         pagination.setSkip(0);
         pagination.setLimit(10);
+        pagination.getOptions().setCountTotal(true);
 
         // query
         ObjectNode query = QueryBuilder.start("value").greaterThan(0).get();

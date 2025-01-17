@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -98,7 +98,7 @@ public class RegistrationTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
+                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@cloudcms.com")
                         .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
@@ -114,14 +114,14 @@ public class RegistrationTest extends AbstractTestCase
         // confirmation email settings
         ObjectNode confirmationEmailObject = JsonUtil.createObject();
         confirmationEmailObject.put(Email.FIELD_BODY, "Please confirm!");
-        confirmationEmailObject.put(Email.FIELD_FROM, "buildtest@gitanasoftware.com");
+        confirmationEmailObject.put(Email.FIELD_FROM, "buildtest@cloudcms.com");
         registration1.setEmailConfiguration("confirmation", confirmationEmailObject);
         registration1.update();
 
         // welcome email settings
         ObjectNode welcomeEmailObject = JsonUtil.createObject();
         welcomeEmailObject.put(Email.FIELD_BODY, "Welcome!");
-        welcomeEmailObject.put(Email.FIELD_FROM, "buildtest@gitanasoftware.com");
+        welcomeEmailObject.put(Email.FIELD_FROM, "buildtest@cloudcms.com");
         registration1.setEmailConfiguration("welcome", welcomeEmailObject);
         registration1.update();
 

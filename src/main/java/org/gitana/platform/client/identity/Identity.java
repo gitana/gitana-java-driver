@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.identity;
 
@@ -39,6 +39,16 @@ public interface Identity extends DirectoryDocument, Selfable
      * @param verifyPassword
      */
     public void changePassword(String password, String verifyPassword);
+
+    /**
+     * Changes the password for this identity with validation of the current password.
+     *
+     * @param password
+     * @param verifyPassword
+     * @param validateCurrentPassword
+     * @param currentPassword
+     */
+    public void changePassword(String password, String verifyPassword, boolean validateCurrentPassword, String currentPassword);
 
     /**
      * Retrieves a map of all of the user objects that this identity's policy has on any platform.

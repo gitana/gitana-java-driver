@@ -16,12 +16,11 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client.job;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.cluster.ClusterDocument;
 import org.gitana.platform.services.job.JobState;
 
@@ -31,7 +30,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface Job extends ClusterDocument
+public interface Job<D extends JobData, R extends JobResult> extends ClusterDocument
 {
     // fields
     public final static String FIELD_TYPE = "type";
@@ -127,5 +126,8 @@ public interface Job extends ClusterDocument
     public boolean getSuccess();
     public boolean getError();
 
-    public void waitForCompletion();
+    public void pollForCompletion();
+
+    public D getData();
+    public R getResult();
 }

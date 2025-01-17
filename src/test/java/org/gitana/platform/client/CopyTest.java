@@ -16,12 +16,11 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.JSONBuilder;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
@@ -43,88 +42,6 @@ import org.junit.Test;
  */
 public class CopyTest extends AbstractTestCase
 {
-    /*
-    @Test
-    public void testCopyDomain()
-    {
-        Gitana gitana = new Gitana();
-
-        // authenticate as "admin"
-        Platform platform = gitana.authenticate("admin", "admin");
-
-        // create a user on default domain
-        DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-
-        // create a tenant for this user
-        Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
-        ObjectNode defaultClientObject = tenant.readDefaultAllocatedClientObject();
-        String clientKey = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_KEY);
-        String clientSecret = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_SECRET);
-
-        // AUTHENTICATE AS THE TENANT USER
-        gitana = new Gitana(clientKey, clientSecret);
-        platform = gitana.authenticate(user.getName(), TestConstants.TEST_PASSWORD);
-
-
-        /////////////////////////////////////////////////////////////////////////////
-
-
-        // create a domain
-        // and some users and groups
-        Domain domain = platform.createDomain();
-        domain.createUser("joe", TestConstants.TEST_PASSWORD);
-        domain.createUser("bob", TestConstants.TEST_PASSWORD);
-        domain.createGroup("guitarists");
-
-        // make a copy of the domain
-        String domainId2 = domain.copy(platform);
-        Domain domain2 = platform.readDomain(domainId2);
-        assertNotNull(domain2);
-        assertEquals(2, domain2.listUsers().size());
-        assertEquals(1, domain2.listGroups().size());
-    }
-
-    @Test
-    public void testCopyRepository()
-    {
-        Gitana gitana = new Gitana();
-
-        // authenticate as "admin"
-        Platform platform = gitana.authenticate("admin", "admin");
-
-        // create a user on default domain
-        DomainUser user = platform.readDomain("default").createUser("testuser-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-
-        // create a tenant for this user
-        Tenant tenant = platform.readRegistrar("default").createTenant(user, "unlimited");
-        ObjectNode defaultClientObject = tenant.readDefaultAllocatedClientObject();
-        String clientKey = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_KEY);
-        String clientSecret = JsonUtil.objectGetString(defaultClientObject, Client.FIELD_SECRET);
-
-        // AUTHENTICATE AS THE TENANT USER
-        gitana = new Gitana(clientKey, clientSecret);
-        platform = gitana.authenticate(user.getName(), TestConstants.TEST_PASSWORD);
-
-
-        /////////////////////////////////////////////////////////////////////////////
-
-
-        // create a repository
-        // and some nodes
-        Repository repository = platform.createRepository();
-        Branch branch = repository.readBranch("master");
-        branch.createNode(JSONBuilder.start("prop1").is("val1").get());
-        branch.createNode(JSONBuilder.start("prop1").is("val1").get());
-        branch.createNode(JSONBuilder.start("prop1").is("val1").get());
-
-        // make a copy of the repository
-        String repositoryId2 = repository.copy(platform);
-        Repository repository2 = platform.readRepository(repositoryId2);
-        assertNotNull(repository2);
-        assertEquals(3, repository2.readBranch("master").queryNodes(JSONBuilder.start("prop1").is("val1").get()).size());
-    }
-    */
-
     @Test
     public void testCopyNode()
     {
@@ -184,7 +101,7 @@ public class CopyTest extends AbstractTestCase
 
         // make a copy of the container
         CopyJob job = container1.copy(rootNode1);
-        String nodeId2 = job.getSingleImportTargetId();
+        String nodeId2 = job.getResult().getSingleImportTargetId();
         Node container2 = (Node) branch.readNode(nodeId2);
         assertNotNull(container2);
         assertEquals(1, container2.associations(QName.create("a:child"), Direction.INCOMING).size());
