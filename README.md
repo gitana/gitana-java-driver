@@ -181,17 +181,17 @@ Use the following system properties to control the HTTP proxy:
 
 ## More Examples
 
-One very good place to look for examples of the Cloud CMS Java Driver in use is within the source code itself.  The
+One very good place to look for examples of the Gitana Java Driver in use is within the source code itself.  The
 unit tests work through a variety of interesting use cases and may give you ideas of some of the ways you can use the
 driver to accomplish what you need.
 
 ## Resources
 
 * Gitana: https://gitana.io
-* Git Hub: http://github.com/gitana/gitana-java-driver
-* Java Driver Download: http://maven.cloudcms.com/public/org/gitana/gitana-java-driver/
-* Java Driver Documentation: https://gitana.io/documentation.html
-* Developers Guide: https://gitana.io/developers.html
+* Gitana Java Driver: https://gitana.io/documentation/gitana/4.0/developers/drivers/java.html
+* Gitana Java Cookbook: https://gitana.io/documentation/gitana/4.0/developers/cookbooks/java.html
+* Gitana Documentation: https://gitana.io/documentation.html
+* Gitana Developers Guide: https://gitana.io/developers.html
 
 ## Support
 
