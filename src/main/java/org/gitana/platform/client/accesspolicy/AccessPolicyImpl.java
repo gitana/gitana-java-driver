@@ -18,10 +18,10 @@
  *
  *   info@gitana.io
  */
-package org.gitana.platform.client.project;
+package org.gitana.platform.client.accesspolicy;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.http.HttpPayload;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
@@ -36,6 +36,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +44,9 @@ import java.util.Map;
 /**
  * @author uzi
  */
-public class ProjectImpl extends AbstractPlatformDocumentImpl implements Project
+public class AccessPolicyImpl extends AbstractPlatformDocumentImpl implements AccessPolicy
 {
-    public ProjectImpl(Platform platform, ObjectNode obj, boolean isSaved)
+    public AccessPolicyImpl(Platform platform, ObjectNode obj, boolean isSaved)
     {
         super(platform, obj, isSaved);
     }
@@ -53,75 +54,69 @@ public class ProjectImpl extends AbstractPlatformDocumentImpl implements Project
     @Override
     public String getTypeId()
     {
-        return TypedIDConstants.TYPE_STACK;
+        return TypedIDConstants.TYPE_ACCESS_POLICY;
     }
 
     @Override
     protected String getResourceUri()
     {
-        return "/projects/" + getId();
+        return "/access/policies/" + getId();
     }
 
     @Override
-    public String getStackId()
+    public String getScope()
     {
-        return getString(FIELD_STACK_ID);
+        return getString(FIELD_SCOPE);
     }
 
     @Override
-    public void setStackId(String stackId)
+    public void setScope(String scope)
     {
-        set(FIELD_STACK_ID, stackId);
+        set(FIELD_SCOPE, scope);
     }
 
     @Override
-    public String getProjectType()
+    public int getOrder()
     {
-        return getString(FIELD_PROJECT_TYPE);
+        return getInt(FIELD_ORDER);
     }
 
     @Override
-    public void setProjectType(String projectType)
+    public void setOrder(int order)
     {
-        set(FIELD_PROJECT_TYPE, projectType);
+        set(FIELD_ORDER, order);
     }
 
     @Override
-    public String getFamily()
+    public List<ObjectNode> getStatements()
     {
-        return getString(FIELD_FAMILY);
-    }
+        List<ObjectNode> list = new ArrayList<ObjectNode>();
 
-    @Override
-    public void setFamily(String family)
-    {
-        set(FIELD_FAMILY, family);
-    }
-
-    @Override
-    public boolean getSharedStack()
-    {
-        return getBoolean(FIELD_SHARED_STACK);
-    }
-
-    @Override
-    public void setSharedStack(boolean sharedStack)
-    {
-        set(FIELD_SHARED_STACK, sharedStack);
-    }
-
-
-    @Override
-    public Stack getStack()
-    {
-        Stack stack = null;
-
-        if (getStackId() != null)
+        ArrayNode array = getArray(FIELD_STATEMENTS);
+        if (array != null)
         {
-            stack = getPlatform().readStack(getStackId());
+            for (int i = 0; i < array.size(); i++)
+            {
+                list.add((ObjectNode) array.get(i));
+            }
         }
 
-        return stack;
+        return list;
+    }
+
+    @Override
+    public void setStatements(List<ObjectNode> statements)
+    {
+        ArrayNode array = JsonUtil.createArray();
+
+        for (int i = 0; i < statements.size(); i++)
+        {
+            ObjectNode object = statements.get(i);
+
+            array.add(object);
+        }
+
+        set(FIELD_STATEMENTS, array);
     }
 
 
@@ -134,9 +129,9 @@ public class ProjectImpl extends AbstractPlatformDocumentImpl implements Project
     @Override
     public void reload()
     {
-        Project project = getPlatform().readProject(this.getId());
+        AccessPolicy accessPolicy = getPlatform().readAccessPolicy(this.getId());
 
-        this.reload(project.getObject());
+        this.reload(accessPolicy.getObject());
     }
 
     @Override
@@ -259,159 +254,6 @@ public class ProjectImpl extends AbstractPlatformDocumentImpl implements Project
     public boolean hasPermission(DomainPrincipal principal, String authorityId)
     {
         return hasPermission(principal.getDomainQualifiedId(), authorityId);
-    }
-
-
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ATTACHMENTS
-    //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void uploadAttachment(byte[] bytes, String contentType)
-    {
-        uploadAttachment("default", bytes, contentType);
-    }
-
-    @Override
-    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType)
-    {
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        try
-        {
-            getRemote().upload(uri, bytes, contentType);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void uploadAttachment(String attachmentId, byte[] bytes, String contentType, String fileName)
-    {
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        try
-        {
-            getRemote().upload(uri, bytes, contentType, fileName);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void uploadAttachments(HttpPayload... payloads)
-    {
-        Map<String, String> params = new HashMap<String, String>();
-
-        uploadAttachments(params, payloads);
-    }
-
-    @Override
-    public void uploadAttachments(Map<String, String> params, HttpPayload... payloads)
-    {
-        // build the uri
-        String uri = getResourceUri() + "/attachments";
-
-        try
-        {
-            getRemote().upload(uri, params, payloads);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public byte[] downloadAttachment()
-    {
-        return downloadAttachment("default");
-    }
-
-    @Override
-    public byte[] downloadAttachment(String attachmentId)
-    {
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        byte[] bytes = null;
-        try
-        {
-            bytes = getRemote().downloadBytes(uri);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-        return bytes;
-    }
-
-    @Override
-    public ResultMap<Attachment> listAttachments()
-    {
-        // build the uri
-        String uri = getResourceUri() + "/attachments";
-
-        Response response = getRemote().get(uri);
-
-        return getFactory().attachments(this, response);
-    }
-
-    @Override
-    public String getDownloadUri(String attachmentId)
-    {
-        return getResourceUri() + "/attachments/" + attachmentId;
-    }
-
-    @Override
-    public void deleteAttachment()
-    {
-        deleteAttachment(null);
-    }
-
-    @Override
-    public void deleteAttachment(String attachmentId)
-    {
-        if (attachmentId == null)
-        {
-            attachmentId = "default";
-        }
-
-        // build the uri
-        String uri = getResourceUri() + "/attachments/" + attachmentId;
-
-        try
-        {
-            getRemote().delete(uri);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void inviteUser(String userId)
-    {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("id", userId);
-
-        String uri = getResourceUri() + "/users/invite";
-        Response response = getRemote().post(uri, params);
     }
 
 }

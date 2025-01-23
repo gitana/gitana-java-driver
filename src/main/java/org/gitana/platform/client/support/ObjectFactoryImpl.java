@@ -21,6 +21,8 @@
 package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
+import org.gitana.platform.client.accesspolicy.AccessPolicyImpl;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.AuthenticationGrantImpl;
 import org.gitana.platform.client.api.Client;
@@ -1041,6 +1043,34 @@ public class ObjectFactoryImpl implements ObjectFactory
         return map;
     }
 
+    @Override
+    public AccessPolicy accessPolicy(Platform platform, Response response)
+    {
+        if (!response.isDataDocument())
+        {
+            throw new RuntimeException("Response must be a data document");
+        }
+
+        return new AccessPolicyImpl(platform, response.getObjectNode(), true);
+    }
+
+    @Override
+    public ResultMap<AccessPolicy> accessPolicies(Platform platform, Response response)
+    {
+        if (!response.isListDocument())
+        {
+            throw new RuntimeException("Response must be a list document");
+        }
+
+        ResultMap<AccessPolicy> map = new ResultMapImpl<AccessPolicy>(response.getListOffset(), response.getListTotalRows());
+        for (ObjectNode object : response.getObjectNodes())
+        {
+            AccessPolicy accessPolicy = new AccessPolicyImpl(platform, object, true);
+            map.put(accessPolicy.getId(), accessPolicy);
+        }
+
+        return map;
+    }
 
     @Override
     public Vault vault(Platform platform)

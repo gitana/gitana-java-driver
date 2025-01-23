@@ -23,6 +23,8 @@ package org.gitana.platform.client.platform;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
+import org.gitana.platform.client.accesspolicy.AccessPolicyImpl;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
@@ -39,6 +41,8 @@ import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
+import org.gitana.platform.client.support.AccessPolicyHolder;
+import org.gitana.platform.client.support.Referenceable;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.client.vault.Vault;
@@ -49,8 +53,7 @@ import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.support.TypedIDConstants;
 import org.gitana.util.JsonUtil;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author uzi
@@ -1295,6 +1298,174 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
         Response response = getRemote().post("/projects/permissions/check", object);
         return new PermissionCheckResults(response.getObjectNode());
     }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACCESS POLICIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public ResultMap<AccessPolicy> listAccessPolicies()
+    {
+        return listAccessPolicies(null);
+    }
+
+    @Override
+    public ResultMap<AccessPolicy> listAccessPolicies(Pagination pagination)
+    {
+        Response response = getRemote().get(getResourceUri() + "/access/policies");
+        return getFactory().accessPolicies(this, response);
+    }
+
+    @Override
+    public ResultMap<AccessPolicy> queryAccessPolicies(ObjectNode query)
+    {
+        return queryAccessPolicies(query, null);
+    }
+
+    @Override
+    public ResultMap<AccessPolicy> queryAccessPolicies(ObjectNode query, Pagination pagination)
+    {
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post("/access/policies", params, query);
+        return getFactory().accessPolicies(this, response);
+    }
+
+    @Override
+    public AccessPolicy readAccessPolicy(String accessPolicyId)
+    {
+        AccessPolicy accessPolicy = null;
+
+        try
+        {
+            Response response = getRemote().get("/access/policies/" + accessPolicyId);
+            accessPolicy = getFactory().accessPolicy(this, response);
+        }
+        catch (Exception ex)
+        {
+            // swallow for the time being
+            // TODO: the remote layer needs to hand back more interesting
+            // TODO: information so that we can detect a proper 404
+        }
+
+        return accessPolicy;
+    }
+
+    @Override
+    public AccessPolicy createAccessPolicy(ObjectNode object)
+    {
+        if (object == null)
+        {
+            object = JsonUtil.createObject();
+        }
+
+        Response response = getRemote().post("/access/policies", object);
+
+        return readAccessPolicy(response.getId());
+    }
+
+    @Override
+    public void updateAccessPolicy(AccessPolicy accessPolicy)
+    {
+        getRemote().put("/access/policies/" + accessPolicy.getId(), accessPolicy.getObject());
+    }
+
+    @Override
+    public void deleteAccessPolicy(String accessPolicyId)
+    {
+        getRemote().delete("/access/policies/" + accessPolicyId);
+    }
+
+    @Override
+    public PermissionCheckResults checkAccessPoliciesPermissions(List<PermissionCheck> list)
+    {
+        ArrayNode array = JsonUtil.createArray();
+        for (PermissionCheck check: list)
+        {
+            array.add(check.getObject());
+        }
+
+        ObjectNode object = JsonUtil.createObject();
+        object.put("checks", array);
+
+        Response response = getRemote().post("/access/policies/permissions/check", object);
+        return new PermissionCheckResults(response.getObjectNode());
+    }
+
+    @Override
+    public ResultMap<AccessPolicy> findAccessPolicies(String ref, String scope)
+    {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("ref", ref);
+
+        if (scope != null)
+        {
+            params.put("scope", scope);
+        }
+
+        Response response = getRemote().post("/access/policies/find", params, null);
+        return getFactory().accessPolicies(this, response);
+    }
+
+    @Override
+    public void assignAccessPolicy(String accessPolicyId, String ref)
+    {
+        getRemote().post(getResourceUri() + "/access/policies/" + accessPolicyId + "/assign?ref=" + ref);
+    }
+
+    @Override
+    public void unassignAccessPolicy(String accessPolicyId, String ref)
+    {
+        getRemote().post(getResourceUri() + "/access/policies/" + accessPolicyId + "/unassign?ref=" + ref);
+    }
+
+    @Override
+    public Map<Reference, List<AccessPolicy>> collectAccessPolicies(Set<Reference> references, String userId)
+    {
+        // build payload
+        ObjectNode payload = JsonUtil.createObject();
+        ArrayNode array = JsonUtil.createArray();
+        for (Reference reference: references)
+        {
+            array.add(reference.getReference());
+        }
+        payload.put("references", array);
+        payload.put("userId", userId);
+
+        // invoke
+        Response response = getRemote().post(getResourceUri() + "/access/policies/collect", null, payload);
+
+        // build result
+        Map<Reference, List<AccessPolicy>> map = new LinkedHashMap<Reference, List<AccessPolicy>>();
+
+        ObjectNode referencesObject = JsonUtil.objectGetObject(response.getObjectNode(), "references");
+        Iterator<String> keys = referencesObject.fieldNames();
+        while (keys.hasNext())
+        {
+            String reference = keys.next();
+
+            List<AccessPolicy> list = new ArrayList<AccessPolicy>();
+
+            ArrayNode objects = (ArrayNode) referencesObject.get(reference);
+            for (int i = 0; i < objects.size(); i++)
+            {
+                ObjectNode object = (ObjectNode) objects.get(i);
+
+                AccessPolicy accessPolicy = new AccessPolicyImpl(this, object, true);
+                list.add(accessPolicy);
+            }
+
+            map.put(Reference.create(reference), list);
+        }
+
+        return map;
+    }
+
 
     /// test
 

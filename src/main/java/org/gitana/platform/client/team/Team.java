@@ -22,6 +22,8 @@ package org.gitana.platform.client.team;
 
 import org.gitana.platform.GitanaObject;
 import org.gitana.platform.client.principal.DomainPrincipal;
+import org.gitana.platform.client.support.AccessPolicyHolder;
+import org.gitana.platform.client.support.Referenceable;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
@@ -31,8 +33,10 @@ import java.util.List;
  *
  * @author uzi
  */
-public interface Team extends GitanaObject
+public interface Team extends GitanaObject, AccessPolicyHolder, Referenceable
 {
+    public final static String FIELD_ID = "_doc";
+
     public final static String FIELD_GROUP_ID = "groupId";
     public final static String FIELD_GROUP_DOMAIN_ID = "groupDomainId";
 
@@ -43,6 +47,7 @@ public interface Team extends GitanaObject
     public final static String FIELD_TEAMABLE_TYPE_ID = "teamableObjectTypeId";
     public final static String FIELD_TEAMABLE_ID = "teamableObjectId";
 
+    public String getTeamId();
 
     /**
      * @return the teamable that this team is a part of

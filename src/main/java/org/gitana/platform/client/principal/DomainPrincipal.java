@@ -23,6 +23,7 @@ package org.gitana.platform.client.principal;
 import org.gitana.platform.client.attachment.Attachable;
 import org.gitana.platform.client.domain.DomainDocument;
 import org.gitana.platform.client.support.AccessControllable;
+import org.gitana.platform.client.support.AccessPolicyHolder;
 import org.gitana.platform.client.support.Selfable;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.ResultMap;
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * @author uzi
  */
-public interface DomainPrincipal extends DomainDocument, Principal, Attachable, Selfable, AccessControllable
+public interface DomainPrincipal extends DomainDocument, Principal, Attachable, Selfable, AccessControllable, AccessPolicyHolder
 {
     // fields
     public final static String FIELD_NAME = "name";

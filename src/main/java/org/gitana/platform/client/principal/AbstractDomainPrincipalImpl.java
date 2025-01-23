@@ -23,10 +23,13 @@ package org.gitana.platform.client.principal;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.http.HttpPayload;
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
 import org.gitana.platform.client.attachment.Attachment;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.domain.AbstractDomainDocumentImpl;
 import org.gitana.platform.client.domain.Domain;
+import org.gitana.platform.client.support.AccessPolicyHolder;
+import org.gitana.platform.client.support.Referenceable;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.util.DriverUtil;
 import org.gitana.platform.services.authority.AuthorityGrant;
@@ -418,4 +421,35 @@ public abstract class AbstractDomainPrincipalImpl extends AbstractDomainDocument
         return hasPermission(principal.getDomainQualifiedId(), permissionId);
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACCESS POLICIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, AccessPolicy> getAccessPolicies()
+    {
+        String ref = ((Referenceable) this).ref().getReference();
+
+        return getPlatform().findAccessPolicies(ref, null);
+    }
+
+    @Override
+    public void assignPolicy(String accessPolicyId)
+    {
+        String ref = ((Referenceable) this).ref().getReference();
+
+        getPlatform().assignAccessPolicy(accessPolicyId, ref);
+    }
+
+    @Override
+    public void unassignPolicy(String accessPolicyId)
+    {
+        String ref = ((Referenceable) this).ref().getReference();
+
+        getPlatform().unassignAccessPolicy(accessPolicyId, ref);
+    }
 }

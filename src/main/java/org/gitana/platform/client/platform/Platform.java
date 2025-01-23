@@ -22,6 +22,7 @@ package org.gitana.platform.client.platform;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.Application;
@@ -41,10 +42,13 @@ import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.support.Response;
 import org.gitana.platform.client.vault.Vault;
 import org.gitana.platform.client.webhost.WebHost;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author uzi
@@ -373,6 +377,27 @@ public interface Platform extends DataStore
     public void deleteProject(String projectId);
     public PermissionCheckResults checkProjectPermissions(List<PermissionCheck> list);
 
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACCESS POLICIES
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public ResultMap<AccessPolicy> listAccessPolicies();
+    public ResultMap<AccessPolicy> listAccessPolicies(Pagination pagination);
+    public ResultMap<AccessPolicy> queryAccessPolicies(ObjectNode query);
+    public ResultMap<AccessPolicy> queryAccessPolicies(ObjectNode query, Pagination pagination);
+    public AccessPolicy readAccessPolicy(String accessPolicyId);
+    public AccessPolicy createAccessPolicy(ObjectNode object);
+    public void updateAccessPolicy(AccessPolicy accessPolicy);
+    public void deleteAccessPolicy(String accessPolicyId);
+    public PermissionCheckResults checkAccessPoliciesPermissions(List<PermissionCheck> list);
+    public ResultMap<AccessPolicy> findAccessPolicies(String ref, String scope);
+    public void assignAccessPolicy(String accessPolicyId, String ref);
+    public void unassignAccessPolicy(String accessPolicyId, String ref);
+    public Map<Reference, List<AccessPolicy>> collectAccessPolicies(Set<Reference> references, String userId);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

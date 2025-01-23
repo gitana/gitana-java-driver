@@ -21,6 +21,7 @@
 package org.gitana.platform.client.support;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
 import org.gitana.platform.client.api.AuthenticationGrant;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.application.*;
@@ -173,6 +174,9 @@ public interface ObjectFactory
     public Project project(Platform platform, Response response);
     public ResultMap<Project> projects(Platform platform, Response response);
 
+    // projects
+    public AccessPolicy accessPolicy(Platform platform, Response response);
+    public ResultMap<AccessPolicy> accessPolicies(Platform platform, Response response);
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

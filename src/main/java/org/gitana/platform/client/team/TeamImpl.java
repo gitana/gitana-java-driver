@@ -22,16 +22,16 @@ package org.gitana.platform.client.team;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.gitana.platform.client.Driver;
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.platform.PlatformDataStore;
+import org.gitana.platform.client.platform.PlatformDocument;
 import org.gitana.platform.client.principal.DomainPrincipal;
-import org.gitana.platform.client.support.DriverContext;
-import org.gitana.platform.client.support.ObjectFactory;
-import org.gitana.platform.client.support.Remote;
-import org.gitana.platform.client.support.Response;
+import org.gitana.platform.client.support.*;
 import org.gitana.platform.client.util.DriverUtil;
+import org.gitana.platform.services.reference.Reference;
 import org.gitana.platform.support.GitanaObjectImpl;
 import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
@@ -86,6 +86,12 @@ public class TeamImpl extends GitanaObjectImpl implements Team
     public Teamable getTeamable()
     {
         return this.teamable;
+    }
+
+    @Override
+    public String getTeamId()
+    {
+        return getString("teamId");
     }
 
     @Override
@@ -196,4 +202,91 @@ public class TeamImpl extends GitanaObjectImpl implements Team
 
         return Arrays.asList(JsonUtil.toStringArray(arrayNode));
     }
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ACCESS POLICIES
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Map<String, AccessPolicy> getAccessPolicies()
+    {
+        String ref = ((Referenceable) this).ref().getReference();
+
+        Platform platform = getTeamablePlatform();
+        if (platform == null)
+        {
+            throw new RuntimeException("Cannot find teamable platform for team: " + ref);
+        }
+
+        return platform.findAccessPolicies(ref, null);
+    }
+
+    @Override
+    public void assignPolicy(String accessPolicyId)
+    {
+        String ref = ((Referenceable) this).ref().getReference();
+
+        Platform platform = getTeamablePlatform();
+        if (platform == null)
+        {
+            throw new RuntimeException("Cannot find teamable platform for team: " + ref);
+        }
+
+        platform.assignAccessPolicy(accessPolicyId, ref);
+    }
+
+    @Override
+    public void unassignPolicy(String accessPolicyId)
+    {
+        String ref = ((Referenceable) this).ref().getReference();
+
+        Platform platform = getTeamablePlatform();
+        if (platform == null)
+        {
+            throw new RuntimeException("Cannot find teamable platform for team: " + ref);
+        }
+
+        platform.unassignAccessPolicy(accessPolicyId, ref);
+    }
+
+    private Platform getTeamablePlatform()
+    {
+        Teamable teamable = getTeamable();
+
+        if (teamable instanceof Platform)
+        {
+            return (Platform) teamable;
+        }
+        else if (teamable instanceof PlatformDataStore)
+        {
+            return ((PlatformDataStore) teamable).getPlatform();
+        }
+        else if (teamable instanceof PlatformDocument)
+        {
+            return ((PlatformDocument) teamable).getPlatform();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Reference ref()
+    {
+        Reference teamableReference = ((Referenceable) getTeamable()).ref();
+
+        List<String> identifiers = new ArrayList<String>();
+        identifiers.add(teamableReference.getType());
+        identifiers.addAll(teamableReference.getIdentifiers());
+        identifiers.add(getTeamId());
+
+        // team://{teamableTypeId}/...identifiers.../{teamId}
+        Reference teamReference = Reference.create("team", identifiers);
+
+        return teamReference;
+     }
 }

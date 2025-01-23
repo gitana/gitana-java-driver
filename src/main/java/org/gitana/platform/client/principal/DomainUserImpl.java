@@ -22,13 +22,17 @@ package org.gitana.platform.client.principal;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.gitana.platform.client.accesspolicy.AccessPolicy;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.directory.Directory;
 import org.gitana.platform.client.domain.Domain;
 import org.gitana.platform.client.identity.Identity;
 import org.gitana.platform.client.node.type.Person;
+import org.gitana.platform.client.support.AccessPolicyHolder;
 import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.support.TypedIDConstants;
+
+import java.util.Map;
 
 /**
  * @author uzi
@@ -171,5 +175,4 @@ public class DomainUserImpl extends AbstractDomainPrincipalImpl implements Domai
 
         return identity;
     }
-
 }

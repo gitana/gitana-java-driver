@@ -580,7 +580,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     public Person readPerson (String userId, boolean createIfNotFound)
     {
         // invoke
-        Response response = getRemote().get(getResourceUri() + "/person/" + userId + "?createIfNotFound=" + createIfNotFound);
+        Response response = getRemote().get(getResourceUri() + "/person/acquire?id=" + userId + "&createIfNotFound=" + createIfNotFound);
         return (Person) getFactory().node(this, response);
     }
 
@@ -588,7 +588,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     public Group readGroup (String groupId, boolean createIfNotFound)
     {
         // invoke
-        Response response = getRemote().get(getResourceUri() + "/group/" + groupId + "?createIfNotFound=" + createIfNotFound);
+        Response response = getRemote().get(getResourceUri() + "/group/acquire?id=" + groupId + "&createIfNotFound=" + createIfNotFound);
         return (Group) getFactory().node(this, response);
     }
 
