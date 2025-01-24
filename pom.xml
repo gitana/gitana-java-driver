@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gitana</groupId>
     <artifactId>gitana-java-driver</artifactId>
-    <version>4.0.3</version>
+    <version>4.0.4-SNAPSHOT</version>
     <name>Gitana Java Driver</name>
     <packaging>jar</packaging>
     <url>https://gitana.io</url>
@@ -34,7 +34,7 @@
     </developers>
     <scm>
         <developerConnection>scm:git:https://github.com/gitana/gitana-java-driver</developerConnection>
-        <tag>gitana-java-driver-4.0.3</tag>
+        <tag>HEAD</tag>
     </scm>
     <repositories>
         <repository>
