@@ -21,6 +21,7 @@
 package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.gitana.platform.client.LookupOptions;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.support.AccessControllable;
 import org.gitana.platform.client.support.Copyable;
@@ -289,6 +290,18 @@ public interface Node extends BaseNode, AccessControllable, Transferable, Copyab
      */
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, Pagination pagination);
 
+    /**
+     * Queries and searches for nodes in the defined traversal space around this node.
+     *
+     * @param query
+     * @param searchTerm
+     * @param traverse
+     * @param options
+     *
+     * @return
+     */
+    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, LookupOptions options);
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // TREE
@@ -299,6 +312,7 @@ public interface Node extends BaseNode, AccessControllable, Transferable, Copyab
     public ObjectNode fileFolderTree(String basePath);
     public ObjectNode fileFolderTree(String basePath, String leafPath);
     public ObjectNode fileFolderTree(String basePath, int depth, List<String> leafPaths, boolean includeProperties, boolean containersOnly, ObjectNode query);
+    public ObjectNode fileFolderTree(TreeLookupOptions options);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
