@@ -29,7 +29,7 @@
                 <role>Developer</role>
             </roles>
             <organization>Gitana, Inc</organization>
-            <organizationUrl>https://www.cloudcms.com</organizationUrl>
+            <organizationUrl>https://gitana.io</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -126,6 +126,9 @@
                     <includes>
                         <include>**/*.java</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/experiments/**/*.java</exclude>
+                    </excludes>
                     <!--
                     <failIfMissing>false</failIfMissing>
                     -->

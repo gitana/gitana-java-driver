@@ -53,9 +53,9 @@ public class MountTest extends AbstractTestCase
         Node node1 = (Node) master.createNode();
         node1.mount("scoobydoo");
 
-        // assert mount nodes size + 1
+        // assert mount nodes size + 2 (scoobydoo + the guid)
         ResultMap<Node> mounts2 = master.listNodes();
-        assertEquals(mounts1.size() + 1, mounts2.size());
+        assertEquals(mounts1.size() + 2, mounts2.size());
 
         // unmount
         node1.unmount();

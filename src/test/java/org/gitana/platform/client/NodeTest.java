@@ -163,6 +163,7 @@ public class NodeTest extends AbstractTestCase
         Pagination pagination = new Pagination();
         pagination.setSkip(0);
         pagination.setLimit(10);
+        pagination.getSorting().addSort("value", 1);
         pagination.getOptions().setCountTotal(true);
 
         // query
