@@ -32,6 +32,7 @@ public class TreeLookupOptions extends LookupOptions
     private String leafPathString = null;
     private Integer depth = null;
     private Boolean properties = null;
+    private Boolean options = null;
     private Boolean containers = null;
 
     private ObjectNode query = null;
@@ -74,6 +75,16 @@ public class TreeLookupOptions extends LookupOptions
     public void setProperties(Boolean properties)
     {
         this.properties = properties;
+    }
+
+    public Boolean getOptions()
+    {
+        return options;
+    }
+
+    public void setOptions(Boolean options)
+    {
+        this.options = options;
     }
 
     public Boolean getContainers()
@@ -119,6 +130,11 @@ public class TreeLookupOptions extends LookupOptions
         if (properties != null)
         {
             params.put("properties", String.valueOf(properties));
+        }
+
+        if (options != null)
+        {
+            params.put("options", String.valueOf(options));
         }
 
         if (containers != null)
