@@ -1320,13 +1320,19 @@ public class PlatformImpl extends AbstractClusterDataStoreImpl implements Platfo
     @Override
     public Job startCreateProject(ObjectNode object)
     {
+        return startCreateProject(object, null);
+    }
+
+    @Override
+    public Job startCreateProject(ObjectNode object, Map<String, String> params)
+    {
         // allow for null object
         if (object == null)
         {
             object = JsonUtil.createObject();
         }
 
-        Response response = getRemote().post("/projects/start", object);
+        Response response = getRemote().post("/projects/start", params, object);
 
         String jobId = response.getId();
 

@@ -46,6 +46,7 @@ import org.gitana.platform.support.Pagination;
 import org.gitana.platform.support.ResultMap;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author uzi
@@ -384,6 +385,7 @@ public interface Platform extends DataStore
     public Project createProject();
     public Project createProject(ObjectNode object);
     public Job startCreateProject(ObjectNode object);
+    public Job startCreateProject(ObjectNode object, Map<String, String> params);
     public void updateProject(Project project);
     public void deleteProject(Project project);
     public void deleteProject(String projectId);
