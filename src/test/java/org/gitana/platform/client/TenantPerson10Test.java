@@ -24,23 +24,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.platform.client.api.Client;
 import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.node.type.Person;
 import org.gitana.platform.client.platform.Platform;
+import org.gitana.platform.client.principal.DomainPrincipal;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.project.Project;
 import org.gitana.platform.client.registrar.Registrar;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.stack.Stack;
 import org.gitana.platform.client.tenant.Tenant;
-import org.gitana.platform.support.ResultMap;
+import org.gitana.platform.services.principals.PrincipalType;
 import org.gitana.platform.util.TestConstants;
 import org.gitana.util.JsonUtil;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * @author uzi
  */
-public class TenantPerson1Test extends AbstractTestCase
+public class TenantPerson10Test extends AbstractTestCase
 {
     @Test
     public void test()
@@ -81,7 +83,7 @@ public class TenantPerson1Test extends AbstractTestCase
         Domain tenantPrimaryDomain = platform.readDomain("primary");
 
         // create user #1
-        DomainUser user1 = tenantPrimaryDomain.createUser("user1-" + now1, TestConstants.TEST_PASSWORD);
+        DomainUser user1 =tenantPrimaryDomain.createUser("user1-" + now1, TestConstants.TEST_PASSWORD);
         // create user #2
         DomainUser user2 = tenantPrimaryDomain.createUser("user2-" + now1, TestConstants.TEST_PASSWORD);
         // create user #3
@@ -98,19 +100,55 @@ public class TenantPerson1Test extends AbstractTestCase
         Branch masterBranch = projectRepository.readBranch("master");
         //Domain projectDomain = (Domain) stack.readDataStore("principals");
 
-        // list users in the primary domain
-        ResultMap<DomainUser> users = tenantPrimaryDomain.listUsers();
-        for (DomainUser user: users.values())
-        {
-            Person person = masterBranch.readPerson(user.getDomainQualifiedId(), true);
-            if (person == null)
-            {
-                System.out.println("Failed to find person for user: " + user.getDomainQualifiedId());
-            }
-            else
-            {
-                System.out.println("Found person: " + JsonUtil.stringify(person.getObject(), true));
-            }
+        // invite user 1,2,3 to the project
+        project.inviteUser(user1.getId());
+        project.inviteUser(user2.getId());
+        project.inviteUser(user3.getId());
+
+        // test register a new user
+        register(tenantPrimaryDomain, project, "r1_name", "r1_firstName", "r1_lastName", "r1_email@test.com", "r1_company", TestConstants.TEST_PASSWORD);
+    }
+
+    private void register(Domain primaryDomain, Project project, String name, String firstName, String lastName, String email, String companyName, String password)
+    {
+        var data = JsonUtil.createObject();
+        data.put(DomainUser.FIELD_NAME, name);
+        data.put(DomainUser.FIELD_EMAIL, email);
+        data.put("password", password);
+
+        if (firstName != null) {
+            data.put(DomainUser.FIELD_FIRST_NAME, firstName);
         }
+
+        if (lastName != null) {
+            data.put(DomainUser.FIELD_LAST_NAME, lastName);
+        }
+
+        if (companyName != null) {
+            data.put(DomainUser.FIELD_COMPANY_NAME, companyName);
+        }
+
+        DomainUser domainUser = (DomainUser) primaryDomain.createPrincipal(PrincipalType.USER, data);
+        String userId = domainUser.getId();
+
+        // invite user to project
+        project.inviteUser(userId);
+
+        // remove user from all primary domain groups?
+//        for (DomainGroup group : primaryDomain.listMemberships(domainUser).values()) {
+//            group.removePrincipal(domainUser);
+//        }
+
+        //
+
+        // read back team titles
+        List<String> teams = primaryDomain
+            .listMemberships(domainUser)
+            .values()
+            .stream()
+            .map(DomainPrincipal::getTitle)
+            .toList();
+
+        System.out.println("Created user with id: " + userId + " and teams: " + teams);
     }
 }
