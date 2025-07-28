@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.gitana.http.HttpPayload;
-import org.gitana.platform.client.LookupOptions;
+import org.gitana.platform.client.Driver;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.job.Job;
@@ -333,19 +333,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<Node> listNodes()
     {
-        return listNodes((Pagination) null);
+        return listNodes(null);
     }
 
     @Override
     public ResultMap<Node> listNodes(Pagination pagination)
     {
-        return listNodes(LookupOptions.fromPagination(pagination));
-    }
-
-    @Override
-    public ResultMap<Node> listNodes(LookupOptions options)
-    {
-        Map<String, String> params = DriverUtil.params(options);
+        Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().get(getResourceUri() + "/nodes", params);
         ResultMap<BaseNode> baseNodes = getFactory().nodes(this, response);
@@ -356,24 +350,23 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public BaseNode readNode(String nodeId)
     {
-        return readNode(nodeId, (String) null);
+        return readNode(nodeId, null);
     }
 
     @Override
     public BaseNode readNode(String nodeId, String path)
     {
-        LookupOptions options = LookupOptions.fromPath(path);
-        return readNode(nodeId, options);
-    }
-
-    @Override
-    public BaseNode readNode(String nodeId, LookupOptions options)
-    {
         BaseNode baseNode = null;
 
         try
         {
-            Map<String, String> params = DriverUtil.params(options);
+            Map<String, String> params = new HashMap<String, String>();
+
+            if (path != null)
+            {
+                params.put("path", path);
+            }
+
             Response response = getRemote().get(getResourceUri() + "/nodes/" + nodeId, params);
             baseNode = getFactory().node(this, response);
         }
@@ -449,19 +442,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> queryNodes(ObjectNode query)
     {
-        return queryNodes(query, (Pagination) null);
+        return queryNodes(query, null);
     }
 
     @Override
     public ResultMap<BaseNode> queryNodes(ObjectNode query, Pagination pagination)
     {
-        return queryNodes(query, LookupOptions.fromPagination(pagination));
-    }
-
-    @Override
-    public ResultMap<BaseNode> queryNodes(ObjectNode query, LookupOptions options)
-    {
-        Map<String, String> params = DriverUtil.params(options);
+        Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post(getResourceUri() + "/nodes/query", params, query);
         return getFactory().nodes(this, response);
@@ -470,17 +457,11 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> searchNodes(String text)
     {
-        return searchNodes(text, (Pagination) null);
+        return searchNodes(text, null);
     }
 
     @Override
     public ResultMap<BaseNode> searchNodes(String text, Pagination pagination)
-    {
-        return searchNodes(text, LookupOptions.fromPagination(pagination));
-    }
-
-    @Override
-    public ResultMap<BaseNode> searchNodes(String text, LookupOptions options)
     {
         /*
         // url encode the text
@@ -495,7 +476,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
         */
 
         // Put pagination and text in params
-        Map<String, String> params = DriverUtil.params(options);
+        Map<String, String> params = DriverUtil.params(pagination);
         params.put("text", text);
 
         Response response = getRemote().get(getResourceUri() + "/nodes/search", params);
@@ -506,19 +487,13 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> searchNodes(ObjectNode searchObject)
     {
-        return searchNodes(searchObject, (Pagination) null);
+        return searchNodes(searchObject, null);
     }
 
     @Override
     public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, Pagination pagination)
     {
-        return searchNodes(searchObject, LookupOptions.fromPagination(pagination));
-    }
-
-    @Override
-    public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, LookupOptions options)
-    {
-        Map<String, String> params = DriverUtil.params(options);
+        Map<String, String> params = DriverUtil.params(pagination);
 
         ObjectNode payload = null;
 
@@ -741,17 +716,11 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm)
     {
-        return findNodes(query, searchTerm, (Pagination) null);
+        return findNodes(query, searchTerm, null);
     }
 
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, Pagination pagination)
-    {
-        return findNodes(query, searchTerm, LookupOptions.fromPagination(pagination));
-    }
-
-    @Override
-    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, LookupOptions options)
     {
         String uri = "/repositories/" + this.getRepositoryId() + "/branches/" + this.getId() + "/nodes/find";
 
@@ -765,7 +734,7 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
             payload.put("search", searchTerm);
         }
 
-        Map<String, String> params = DriverUtil.params(options);
+        Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post(uri, params, payload);
 

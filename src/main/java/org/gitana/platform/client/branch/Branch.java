@@ -22,7 +22,6 @@ package org.gitana.platform.client.branch;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.http.HttpPayload;
-import org.gitana.platform.client.LookupOptions;
 import org.gitana.platform.client.deletion.Deletion;
 import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.node.BaseNode;
@@ -103,16 +102,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
     public ResultMap<Node> listNodes(Pagination pagination);
 
     /**
-     * Retrieves the mount nodes for this branch.
-     *
-     * @param options
-     *
-     * @return a map of node objects keyed by node id
-     */
-    public ResultMap<Node> listNodes(LookupOptions options);
-
-
-    /**
      * Reads a single node from the branch.
      *
      * @param nodeId
@@ -130,16 +119,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return node
      */
     public BaseNode readNode(String nodeId, String path);
-
-    /**
-     * Reads a single node from the brancnh.
-     *
-     * @param nodeId
-     * @param options
-     *
-     * @return node
-     */
-    public BaseNode readNode(String nodeId, LookupOptions options);
 
     /**
      * Creates an empty node on the branch.
@@ -194,16 +173,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
     public ResultMap<BaseNode> queryNodes(ObjectNode query, Pagination pagination);
 
     /**
-     * Performs a query for nodes.
-     *
-     * @param query
-     * @param options
-     *
-     * @return map of nodes
-     */
-    public ResultMap<BaseNode> queryNodes(ObjectNode query, LookupOptions options);
-
-    /**
      * Full-text search
      *
      * @param text
@@ -221,15 +190,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
     public ResultMap<BaseNode> searchNodes(String text, Pagination pagination);
 
     /**
-     * Full-text search
-     *
-     * @param text
-     * @param options
-     * @return map of nodes
-     */
-    public ResultMap<BaseNode> searchNodes(String text, LookupOptions options);
-
-    /**
      * Search
      *
      * @param searchObject
@@ -245,15 +205,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return map of nodes
      */
     public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, Pagination pagination);
-
-    /**
-     * Search
-     *
-     * @param searchObject
-     * @param options
-     * @return map of nodes
-     */
-    public ResultMap<BaseNode> searchNodes(ObjectNode searchObject, LookupOptions options);
 
     /**
      * Delete multiple nodes
@@ -387,17 +338,6 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
      * @return
      */
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, Pagination pagination);
-
-    /**
-     * Queries and searches for nodes.
-     *
-     * @param query
-     * @param searchTerm
-     * @param options
-     *
-     * @return
-     */
-    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, LookupOptions options);
 
 
 

@@ -22,7 +22,6 @@ package org.gitana.platform.client.util;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.gitana.platform.client.LookupOptions;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.ACLEntry;
 import org.gitana.platform.client.branch.Branch;
@@ -103,12 +102,45 @@ public class DriverUtil
 
     public static Map<String, String> params(Pagination pagination)
     {
-        return params(LookupOptions.fromPagination(pagination));
-    }
+        Map<String, String> params = params();
 
-    public static Map<String, String> params(LookupOptions options)
-    {
-        return options.params();
+        if (pagination != null)
+        {
+            // sorting
+            if (pagination.getSorting().size() > 0)
+            {
+                String sort = JsonUtil.stringify((ObjectNode) pagination.getSorting().toJSON(), false);
+                params.put("sort", sort);
+            }
+
+            // skip
+            if (pagination.hasSkip())
+            {
+                params.put("skip", String.valueOf(pagination.getSkip()));
+            }
+
+            // limit
+            if (pagination.hasLimit())
+            {
+                params.put("limit", String.valueOf(pagination.getLimit()));
+            }
+            else if (pagination.getLimit() == -1)
+            {
+                params.put("limit", String.valueOf(-1));
+            }
+
+            // options
+            if (pagination.getOptions() != null)
+            {
+                ObjectNode json = pagination.getOptions().toJSON();
+                if (json.size() > 0)
+                {
+                    params.put("options", JsonUtil.stringify(json, false));
+                }
+            }
+        }
+
+        return params;
     }
 
     public static ResultMap<Node> toNodes(ResultMap<BaseNode> baseNodes)

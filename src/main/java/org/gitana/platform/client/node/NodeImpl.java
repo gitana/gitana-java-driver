@@ -22,7 +22,6 @@ package org.gitana.platform.client.node;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.gitana.platform.client.LookupOptions;
 import org.gitana.platform.client.beans.ACL;
 import org.gitana.platform.client.beans.TraversalResults;
 import org.gitana.platform.client.branch.Branch;
@@ -428,17 +427,11 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse)
     {
-        return findNodes(query, searchTerm, traverse, (Pagination) null);
+        return findNodes(query, searchTerm, traverse, null);
     }
 
     @Override
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, Pagination pagination)
-    {
-        return findNodes(query, searchTerm, traverse, LookupOptions.fromPagination(pagination));
-    }
-
-    @Override
-    public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, ObjectNode traverse, LookupOptions options)
     {
         String uri = getResourceUri() + "/find";
 
@@ -456,7 +449,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
             payload.put("traverse", traverse);
         }
 
-        Map<String, String> params = DriverUtil.params(options);
+        Map<String, String> params = DriverUtil.params(pagination);
 
         Response response = getRemote().post(uri, params, payload);
 
@@ -466,7 +459,7 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ObjectNode fileFolderTree()
     {
-        return fileFolderTree((String) null);
+        return fileFolderTree(null);
     }
 
     @Override
@@ -490,10 +483,12 @@ public class NodeImpl extends BaseNodeImpl implements Node
     @Override
     public ObjectNode fileFolderTree(String basePath, int depth, List<String> leafPaths, boolean includeProperties, boolean containersOnly, ObjectNode query)
     {
-        TreeLookupOptions options = new TreeLookupOptions();
+        String uri = getResourceUri() + "/tree";
+
+        Map<String, String> params = DriverUtil.params();
         if (basePath != null)
         {
-            options.setBase(basePath);
+            params.put("base", basePath);
         }
         if (leafPaths != null && leafPaths.size() > 0)
         {
@@ -510,37 +505,22 @@ public class NodeImpl extends BaseNodeImpl implements Node
                 }
             }
 
-            options.setLeafPathString(leafPathsParamString);
+            params.put("leaf", leafPathsParamString);
         }
         if (depth > -1)
         {
-            options.setDepth(depth);
+            params.put("depth", "" + depth);
         }
         if (includeProperties)
         {
-            options.setProperties(includeProperties);
+            params.put("properties", "true");
         }
         if (containersOnly)
         {
-            options.setContainers(containersOnly);
+            params.put("containers", "true");
         }
 
-        if (query != null)
-        {
-            options.setQuery(query);
-        }
-
-        return fileFolderTree(options);
-    }
-
-    @Override
-    public ObjectNode fileFolderTree(TreeLookupOptions options)
-    {
-        String uri = getResourceUri() + "/tree";
-
-        Map<String, String> params = DriverUtil.params(options);
-        ObjectNode payload = options.getPayload();
-        Response response = getRemote().post(uri, params, payload);
+        Response response = getRemote().post(uri, params);
 
         return response.getObjectNode();
     }
