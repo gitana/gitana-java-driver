@@ -6,10 +6,10 @@
     <version>1.0.50-SNAPSHOT</version>
     <name>Gitana Java Driver</name>
     <packaging>jar</packaging>
-    <url>https://www.cloudcms.com/</url>
+    <url>https://gitana.io</url>
     <organization>
         <name>Gitana Software, Inc</name>
-        <url>https://www.cloudcms.com/</url>
+        <url>https://gitana.io</url>
     </organization>
     <inceptionYear>2010</inceptionYear>
     <licenses>
@@ -29,7 +29,7 @@
                 <role>Developer</role>
             </roles>
             <organization>Gitana, Inc</organization>
-            <organizationUrl>https://www.cloudcms.com</organizationUrl>
+            <organizationUrl>https://gitana.io</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -126,6 +126,9 @@
                     <includes>
                         <include>**/*.java</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/experiments/**/*.java</exclude>
+                    </excludes>
                     <!--
                     <failIfMissing>false</failIfMissing>
                     -->
