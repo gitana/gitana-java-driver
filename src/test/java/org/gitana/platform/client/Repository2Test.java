@@ -78,15 +78,15 @@ public class Repository2Test extends AbstractTestCase
 
         // change it
         repository2.setTitle("foo2");
-        ObjectNode releasesObject2 = repository.getObject("releases");
+        ObjectNode releasesObject2 = repository2.getObject("releases");
         releasesObject2.put("blockMaster", false);
-        repository.update();
+        repository2.update();
 
         // verify
-        repository.reload();
-        String t22 = repository.getTitle();
+        repository2.reload();
+        String t22 = repository2.getTitle();
         assertEquals("foo2", t22);
-        boolean blockMaster22 = repository.getObject("releases").get("blockMaster").booleanValue();
+        boolean blockMaster22 = repository2.getObject("releases").get("blockMaster").booleanValue();
         assertFalse(blockMaster22);
     }
 }

@@ -20,6 +20,7 @@
  */
 package org.gitana.platform.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.JSONBuilder;
 import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.application.Application;
@@ -32,8 +33,10 @@ import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.support.QueryBuilder;
+import org.gitana.platform.support.ResultMap;
 import org.gitana.platform.util.TestConstants;
 import org.gitana.util.ClasspathUtil;
+import org.gitana.util.JsonUtil;
 
 /**
  * Application email tests
@@ -42,6 +45,17 @@ import org.gitana.util.ClasspathUtil;
  */
 public class EmailTest extends AbstractTestCase
 {
+    private EmailProvider createEmailProvider(Application application, String host, String username)
+    {
+        ObjectNode emailProviderObject1 = JsonUtil.createObject();
+        ObjectNode emailProviderConfig1 = JsonUtil.createObject();
+        emailProviderConfig1.put(EmailProvider.FIELD_HOST, host);
+        emailProviderConfig1.put(EmailProvider.FIELD_USERNAME, username);
+        emailProviderObject1.put("config", emailProviderConfig1);
+
+        return application.createEmailProvider(emailProviderObject1);
+    }
+
     /**
      * @throws Exception
      */
@@ -56,37 +70,21 @@ public class EmailTest extends AbstractTestCase
         // create an application
         Application application = platform.createApplication();
 
-        // create an email provider #1
-        EmailProvider emailProvider1 = application.createEmailProvider(
-                JSONBuilder.start(EmailProvider.FIELD_HOST).is("xyz.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("test1")
-                        .get()
-        );
-
-        // create another email provider #2
-        EmailProvider emailProvider2 = application.createEmailProvider(
-                JSONBuilder.start(EmailProvider.FIELD_HOST).is("booya.com")
-                    .and(EmailProvider.FIELD_USERNAME).is("test2")
-                    .get()
-        );
-
-        // create another email provider #3
-        EmailProvider emailProvider3 = application.createEmailProvider(
-                JSONBuilder.start(EmailProvider.FIELD_HOST).is("booya.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("test3")
-                        .get()
-        );
+        // create three email providers
+        EmailProvider emailProvider1 = createEmailProvider(application, "xyz.com", "test1");
+        EmailProvider emailProvider2 = createEmailProvider(application, "booya.com", "test2");
+        EmailProvider emailProvider3 = createEmailProvider(application, "booya.com", "test3");
 
         // query
-        assertEquals(2, application.queryEmailProviders(QueryBuilder.start(EmailProvider.FIELD_HOST).is("booya.com").get()).size());
-        assertEquals(1, application.queryEmailProviders(QueryBuilder.start(EmailProvider.FIELD_USERNAME).is("test3").get()).size());
+        assertEquals(2, application.queryEmailProviders(QueryBuilder.start("config." + EmailProvider.FIELD_HOST).is("booya.com").get()).size());
+        assertEquals(1, application.queryEmailProviders(QueryBuilder.start("config." + EmailProvider.FIELD_USERNAME).is("test3").get()).size());
         assertEquals(3, application.listEmailProviders().size());
 
         // delete
         emailProvider3.delete();
 
         // verify
-        assertEquals(0, application.queryEmailProviders(QueryBuilder.start(EmailProvider.FIELD_USERNAME).is("test3").get()).size());
+        assertEquals(0, application.queryEmailProviders(QueryBuilder.start("config." + EmailProvider.FIELD_USERNAME).is("test3").get()).size());
         assertEquals(2, application.listEmailProviders().size());
     }
 
@@ -155,9 +153,9 @@ public class EmailTest extends AbstractTestCase
         );
 
         // query
-        assertEquals(2, application.queryEmails(QueryBuilder.start(Email.FIELD_TO).is("user3@test.com").get()).size());
-        assertEquals(1, application.queryEmails(QueryBuilder.start(Email.FIELD_FROM).is("user2@user.com").get()).size());
-        assertEquals(0, application.queryEmails(QueryBuilder.start(Email.FIELD_FROM).is("user4@user.com").get()).size());
+        assertEquals(2, application.queryEmails(QueryBuilder.start("config." + Email.FIELD_TO).is("user3@test.com").get()).size());
+        assertEquals(1, application.queryEmails(QueryBuilder.start("config." + Email.FIELD_FROM).is("user2@user.com").get()).size());
+        assertEquals(0, application.queryEmails(QueryBuilder.start("config." + Email.FIELD_FROM).is("user4@user.com").get()).size());
         assertEquals(3, application.listEmails().size());
 
         // delete

@@ -131,8 +131,7 @@ public class DocumentImpl extends GitanaObjectImpl implements Document
         }
 
         // clear our own object and push new properties
-        this.getObject().removeAll();
-        this.getObject().putAll(replacement);
+        this.putObject(replacement);
 	}
 
     protected ObjectNode mergeProperties(ObjectNode original, ObjectNode incoming)

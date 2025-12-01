@@ -55,9 +55,11 @@ public class Authentication3Test extends AbstractTestCase
         // now wipe out the access token
         DriverContext.getDriver().expire(true);
         OAuth2HttpMethodExecutor executor = ((OAuth2HttpMethodExecutor) ((RemoteImpl) DriverContext.getDriver().getRemote()).getHttpMethodExecutor());
+        String accessToken1 = executor.getAccessToken();
         executor.invalidateAccessToken();
 
-        // list domains again (this should fail because both access token and refresh token have expired)
+        // list domains again
+        // this should acquire a new access token and then work
         Exception ex1 = null;
         try
         {
@@ -67,7 +69,10 @@ public class Authentication3Test extends AbstractTestCase
         {
             ex1 = ex;
         }
-        assertNotNull(ex1);
+        assertNull(ex1);
+
+        String accessToken2 = executor.getAccessToken();
+        assertFalse(accessToken1.equals(accessToken2));
     }
 
 }

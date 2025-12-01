@@ -89,7 +89,7 @@ public class JobTest extends AbstractTestCase
 
         // read job manually
         job = cluster.readJob(job.getId());
-        assertEquals("bulkIndex", job.getType());
+        assertEquals("processSearchIndexDocuments", job.getType());
 
         // test out various methods
         ResultMap<Job> unstarted = cluster.listUnstartedJobs();

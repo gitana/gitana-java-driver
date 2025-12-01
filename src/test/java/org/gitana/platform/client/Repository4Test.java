@@ -20,6 +20,7 @@
  */
 package org.gitana.platform.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.repository.Repository;
 import org.gitana.platform.client.support.DriverContext;
@@ -39,7 +40,7 @@ import java.util.concurrent.Executors;
 /**
  * @author uzi
  */
-public class Repository3Test extends AbstractTestCase
+public class Repository4Test extends AbstractTestCase
 {
     private final static int THREAD_COUNT = 10;
     private final static int ITERATIONS = 200;
@@ -55,6 +56,7 @@ public class Repository3Test extends AbstractTestCase
 
         // create a repository
         Repository repository = platform.createRepository();
+        repository.set("releases", JsonUtil.createObject());
         repository.setTitle("My Repository");
 
         // add a thousand properties to it
@@ -62,6 +64,9 @@ public class Repository3Test extends AbstractTestCase
         {
             repository.set("p" + i, "v" + i);
         }
+
+        // update the repo
+        repository.update();
 
         // executor service
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
@@ -117,15 +122,14 @@ public class Repository3Test extends AbstractTestCase
 
         System.out.println(JsonUtil.stringify(repository.getObject(), true));
 
+        // ensure all properties are still there
         for (int i = 0; i < 1000; i++)
         {
             String v = repository.getString("p" + i);
             assertNotNull(v);
         }
 
-        String runnerId = repository.getString("runnerId");
-        assertNotNull(runnerId);
-
+        // ensure the title is still there
         String title = repository.getTitle();
         assertEquals("My Repository", title);
     }
@@ -139,20 +143,19 @@ public class Repository3Test extends AbstractTestCase
         return runner;
     }
 
-
     public class RepositoryUpdateRunner extends AbstractRunner<Void>
     {
         private Repository repository = null;
-        private Driver originalDriver = null;
+        private Driver driver = null;
 
         public RepositoryUpdateRunner(String runnerId)
         {
             super(runnerId);
         }
 
-        public void setDriver(Driver originalDriver)
+        public void setDriver(Driver driver)
         {
-            this.originalDriver = originalDriver;
+            this.driver = driver;
         }
 
         public void setRepository(Repository repository)
@@ -163,7 +166,7 @@ public class Repository3Test extends AbstractTestCase
         @Override
         protected void doBeforeExecute() throws Exception
         {
-            DriverContext.setDriver(this.originalDriver);
+            DriverContext.setDriver(this.driver);
         }
 
         @Override
@@ -176,14 +179,19 @@ public class Repository3Test extends AbstractTestCase
         @Override
         protected Void doExecute() throws Exception
         {
-            Thread.sleep(50);
-
-            repository.set("runnerId", getId());
-            repository.update();
-
-            Thread.sleep(50);
+            toggle(false);
+            toggle(true);
 
             return null;
+        }
+
+        private void toggle(boolean blockMaster)
+        {
+            repository.reload();
+
+            ObjectNode releases = repository.getObject("releases");
+            releases.put("blockMaster", blockMaster);
+            repository.update();
         }
     }
 }
