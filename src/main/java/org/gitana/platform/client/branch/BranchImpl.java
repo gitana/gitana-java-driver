@@ -742,6 +742,31 @@ public class BranchImpl extends AbstractRepositoryDocumentImpl implements Branch
     }
 
     @Override
+    public ResultMap<BaseNode> findNodes(ObjectNode query, ObjectNode search, ObjectNode pathLookup, Pagination pagination)
+    {
+        String uri = "/repositories/" + this.getRepositoryId() + "/branches/" + this.getId() + "/nodes/find";
+
+        ObjectNode payload = JsonUtil.createObject();
+        if (query != null)
+        {
+            payload.put("query", query);
+        }
+        if (search != null)
+        {
+            payload.put("search", search);
+        }
+        if (pathLookup != null)
+        {
+            payload.put("pathLookup", pathLookup);
+        }
+
+        Map<String, String> params = DriverUtil.params(pagination);
+
+        Response response = getRemote().post(uri, params, payload);
+        return getFactory().nodes(this, response);
+    }
+
+    @Override
     public NodeList createList(String listKey, QName itemTypeQName)
     {
         Response response = getRemote().post(getResourceUri() + "/lists/" + listKey + "?type=" + itemTypeQName.toString());

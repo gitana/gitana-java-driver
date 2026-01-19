@@ -340,6 +340,20 @@ public interface Branch extends RepositoryDocument, AccessControllable, Selfable
     public ResultMap<BaseNode> findNodes(ObjectNode query, String searchTerm, Pagination pagination);
 
 
+    /**
+     * Performs an aggregate loookup for nodes using several methods.
+     * https://gitana.io/documentation/gitana/4.0/engine/find
+     *
+     * @param query
+     * @param search
+     * @param pathLookup
+     * @param pagination
+     *
+     * @return
+     */
+    public ResultMap<BaseNode> findNodes(ObjectNode query, ObjectNode search, ObjectNode pathLookup, Pagination pagination);
+
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
