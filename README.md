@@ -1,11 +1,11 @@
 # Cloud CMS Java Driver
 
-The Cloud CMS Java Driver is an Apache 2.0 licensed client library that you can drop into your Java or Android
-applications to connect to Cloud CMS.  It provides a nice client interface with multi-threaded support that works
+The Gitana Java Driver is an Apache 2.0 licensed client library that you can drop into your Java or Android
+applications to connect to the Gitana Cloud CMS platform.  It provides a nice client interface with multi-threaded support that works
 well with modern Java applications including those that run on mobile devices and the Spring Framework.
 
-The Cloud CMS Java driver handles all of the HTTPS calls, data conversions, OAuth2 authorization handshakes and any and
-all interaction with the Cloud CMS platform in a secure manner.  It works against Cloud CMS running on our SaaS platform
+The Gitana Java driver handles all of the HTTPS calls, data conversions, OAuth2 authorization handshakes and any and
+all interaction with the Gitana platform in a secure manner.  It works against Gitana running on our SaaS platform
 as well as on-premise installations at any endpoint you configure.
 
 ## Maven Dependency
@@ -29,10 +29,17 @@ And then add the following Maven dependency:
     <dependency>
         <groupId>org.gitana</groupId>
         <artifactId>gitana-java-driver</artifactId>
-        <version>1.0.26</version>
+        <version>{version}</version>
     </dependency>
 </dependencies>
 ````
+
+## Gitana 4.0 vs Gitana 3.2
+
+If you're connecting to Gitana 4.0, we recommend using the `4.x.y` versions of this driver.  Going forward,
+the major version number of this driver will correspond with the API release version. 
+
+For Gitana 3.2, you will need to use the `1.x.y` versions of the driver.
 
 ## Connecting to Cloud CMS
 
@@ -174,19 +181,19 @@ Use the following system properties to control the HTTP proxy:
 
 ## More Examples
 
-One very good place to look for examples of the Cloud CMS Java Driver in use is within the source code itself.  The
+One very good place to look for examples of the Gitana Java Driver in use is within the source code itself.  The
 unit tests work through a variety of interesting use cases and may give you ideas of some of the ways you can use the
 driver to accomplish what you need.
 
 ## Resources
 
-* Cloud CMS: https://www.cloudcms.com
-* Git Hub: http://github.com/gitana/gitana-java-driver
-* Java Driver Download: http://maven.cloudcms.com/public/org/gitana/gitana-java-driver/
-* Java Driver Documentation: https://www.cloudcms.com/documentation.html
-* Developers Guide: https://www.cloudcms.com/developers.html
+* Gitana: https://gitana.io
+* Gitana Java Driver: https://gitana.io/documentation/gitana/4.0/developers/drivers/java.html
+* Gitana Java Cookbook: https://gitana.io/documentation/gitana/4.0/developers/cookbooks/java.html
+* Gitana Documentation: https://gitana.io/documentation.html
+* Gitana Developers Guide: https://gitana.io/developers.html
 
 ## Support
 
-For information or questions about the Java Driver, please contact Cloud CMS
-at <a href="mailto:support@cloudcms.com">support@cloudcms.com</a>.
+For information or questions about the Java Driver, please contact Gitana
+at <a href="mailto:support@gitana.io">support@gitana.io</a>.
