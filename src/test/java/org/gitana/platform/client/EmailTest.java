@@ -107,8 +107,8 @@ public class EmailTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                    .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
-                    .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
+                    .and(EmailProvider.FIELD_USERNAME).is(getTestEmailUsername())
+                    .and(EmailProvider.FIELD_PASSWORD).is(getTestEmailPassword())
                     .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                     .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
                     .and(EmailProvider.FIELD_SMTP_REQUIRES_AUTH).is(true)
@@ -118,9 +118,9 @@ public class EmailTest extends AbstractTestCase
         
         // create an email
         Email email = application.createEmail(
-                JSONBuilder.start(Email.FIELD_TO).is("buildtest@gitanasoftware.com")
+                JSONBuilder.start(Email.FIELD_TO).is(getTestEmailTo())
                     .and(Email.FIELD_BODY).is("Here is a test body")
-                    .and(Email.FIELD_FROM).is("buildtest@gitanasoftware.com")
+                    .and(Email.FIELD_FROM).is(getTestEmailFrom())
                     .get()
         );
         
@@ -152,9 +152,9 @@ public class EmailTest extends AbstractTestCase
         );
 
         // query
-        assertEquals(2, application.queryEmails(QueryBuilder.start("config." + Email.FIELD_TO).is("user3@test.com").get()).size());
-        assertEquals(1, application.queryEmails(QueryBuilder.start("config." + Email.FIELD_FROM).is("user2@user.com").get()).size());
-        assertEquals(0, application.queryEmails(QueryBuilder.start("config." + Email.FIELD_FROM).is("user4@user.com").get()).size());
+        assertEquals(2, application.queryEmails(QueryBuilder.start(Email.FIELD_TO).is("user3@test.com").get()).size());
+        assertEquals(1, application.queryEmails(QueryBuilder.start(Email.FIELD_FROM).is("user2@user.com").get()).size());
+        assertEquals(0, application.queryEmails(QueryBuilder.start(Email.FIELD_FROM).is("user4@user.com").get()).size());
         assertEquals(3, application.listEmails().size());
 
         // delete
@@ -180,7 +180,7 @@ public class EmailTest extends AbstractTestCase
         // create a domain and a principal
         Domain domain = platform.createDomain();
         DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-        user.setEmail("buildtest@gitanasoftware.com");
+        user.setEmail(getTestEmailUsername());
         user.update();
 
         // create an application
@@ -189,8 +189,8 @@ public class EmailTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
-                        .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
+                        .and(EmailProvider.FIELD_USERNAME).is(getTestEmailUsername())
+                        .and(EmailProvider.FIELD_PASSWORD).is(getTestEmailPassword())
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
                         .and(EmailProvider.FIELD_SMTP_REQUIRES_AUTH).is(true)
@@ -201,7 +201,7 @@ public class EmailTest extends AbstractTestCase
         // create an email
         Email email = application.createEmail(
                 JSONBuilder.start(Email.FIELD_BODY).is("Here is a test body")
-                        .and(Email.FIELD_FROM).is("buildtest@gitanasoftware.com")
+                        .and(Email.FIELD_FROM).is(getTestEmailFrom())
                         .get()
         );
         email.setToDomainUser(user);
@@ -234,7 +234,7 @@ public class EmailTest extends AbstractTestCase
         // create a domain and a principal
         Domain domain = platform.createDomain();
         DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-        user.setEmail("buildtest@gitanasoftware.com");
+        user.setEmail(getTestEmailUsername());
         user.update();
 
         // create a repository
@@ -252,8 +252,8 @@ public class EmailTest extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@gitanasoftware.com")
-                        .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
+                        .and(EmailProvider.FIELD_USERNAME).is(getTestEmailUsername())
+                        .and(EmailProvider.FIELD_PASSWORD).is(getTestEmailPassword())
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
                         .and(EmailProvider.FIELD_SMTP_REQUIRES_AUTH).is(true)
@@ -264,7 +264,7 @@ public class EmailTest extends AbstractTestCase
         // create an email
         Email email = application.createEmail(
                 JSONBuilder.start(Email.FIELD_BODY).is("Here is a test body")
-                        .and(Email.FIELD_FROM).is("buildtest@gitanasoftware.com")
+                        .and(Email.FIELD_FROM).is(getTestEmailFrom())
                         .get()
         );
         email.setToDomainUser(user);

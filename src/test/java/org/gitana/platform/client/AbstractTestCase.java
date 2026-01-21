@@ -20,17 +20,11 @@
  */
 package org.gitana.platform.client;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import junit.framework.TestCase;
-import org.gitana.platform.client.job.Job;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.services.job.JobState;
-import org.gitana.platform.support.Pagination;
-import org.gitana.platform.support.ResultMap;
-import org.gitana.util.JsonUtil;
 import org.junit.Ignore;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -83,4 +77,25 @@ import java.util.Set;
         }
         while (!done);
     }
+
+    public String getTestEmailUsername()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_USERNAME");
+    }
+
+    public String getTestEmailPassword()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_PASSWORD");
+    }
+
+    public String getTestEmailTo()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_TO");
+    }
+
+    public String getTestEmailFrom()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_FROM");
+    }
+
 }

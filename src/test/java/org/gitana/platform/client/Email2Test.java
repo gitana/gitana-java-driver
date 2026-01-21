@@ -21,19 +21,13 @@
 package org.gitana.platform.client;
 
 import org.gitana.JSONBuilder;
-import org.gitana.mimetype.MimeTypeMap;
 import org.gitana.platform.client.application.Application;
 import org.gitana.platform.client.application.Email;
 import org.gitana.platform.client.application.EmailProvider;
-import org.gitana.platform.client.branch.Branch;
 import org.gitana.platform.client.domain.Domain;
-import org.gitana.platform.client.node.Node;
 import org.gitana.platform.client.platform.Platform;
 import org.gitana.platform.client.principal.DomainUser;
-import org.gitana.platform.client.repository.Repository;
-import org.gitana.platform.support.QueryBuilder;
 import org.gitana.platform.util.TestConstants;
-import org.gitana.util.ClasspathUtil;
 
 /**
  * Application email tests 2
@@ -53,7 +47,7 @@ public class Email2Test extends AbstractTestCase
         // create a domain and a principal
         Domain domain = platform.createDomain();
         DomainUser user = domain.createUser("test-" + System.currentTimeMillis(), TestConstants.TEST_PASSWORD);
-        user.setEmail("buildtest@gitanasoftware.com");
+        user.setEmail(getTestEmailUsername());
         user.update();
 
         // create an application
@@ -62,8 +56,8 @@ public class Email2Test extends AbstractTestCase
         // create an email provider
         EmailProvider emailProvider = application.createEmailProvider(
                 JSONBuilder.start(EmailProvider.FIELD_HOST).is("smtp.gmail.com")
-                        .and(EmailProvider.FIELD_USERNAME).is("buildtest@cloudcms.com")
-                        .and(EmailProvider.FIELD_PASSWORD).is("buildt@st11")
+                        .and(EmailProvider.FIELD_USERNAME).is(getTestEmailUsername())
+                        .and(EmailProvider.FIELD_PASSWORD).is(getTestEmailPassword())
                         .and(EmailProvider.FIELD_SMTP_ENABLED).is(true)
                         .and(EmailProvider.FIELD_SMTP_IS_SECURE).is(true)
                         .and(EmailProvider.FIELD_SMTP_REQUIRES_AUTH).is(true)
@@ -74,7 +68,7 @@ public class Email2Test extends AbstractTestCase
         // create an email
         String subject = "test1";
         String body = "body1";
-        String fromEmailAddress = "buildtest@gitanasoftware.com";
+        String fromEmailAddress = getTestEmailFrom();
         Email email = application.createEmail(user, subject, body, fromEmailAddress);
 
         // send the email
