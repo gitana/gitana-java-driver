@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Gitana Software, Inc.
+ * Copyright 2026 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -174,8 +174,8 @@ public class RefreshToken2Test extends TestCase
                 // muck with the access token
                 OAuth2HttpMethodExecutor executor = ((OAuth2HttpMethodExecutor) ((RemoteImpl) driver.getRemote()).getHttpMethodExecutor());
 
-                executor.setGrantTime(System.currentTimeMillis());
-                executor.setExpiresIn(45); // 45 seconds
+                executor.getState().setGrantTime(System.currentTimeMillis());
+                executor.getState().setExpiresIn(45); // 45 seconds
             }
         }
     }

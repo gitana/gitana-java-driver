@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Gitana Software, Inc.
+ * Copyright 2026 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -181,8 +181,8 @@ public class RefreshToken1Test extends TestCase
                 executor.acquireTokenLock();
                 try
                 {
-                    String accessToken = executor.getAccessToken();
-                    executor.setAccessToken("_" + accessToken.substring(1));
+                    String accessToken = executor.getState().getAccessToken();
+                    executor.getState().setAccessToken("_" + accessToken.substring(1));
                 }
                 finally
                 {

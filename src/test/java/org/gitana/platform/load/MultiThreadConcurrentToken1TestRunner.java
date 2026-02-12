@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Gitana Software, Inc.
+ * Copyright 2026 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.load;
 
@@ -58,8 +58,8 @@ public class MultiThreadConcurrentToken1TestRunner
         OAuth2HttpMethodExecutor executor = (OAuth2HttpMethodExecutor) ((RemoteImpl) this.driver.getRemote()).getHttpMethodExecutor();
 
         // before
-        String accessToken = executor.getAccessToken();
-        String refreshToken = executor.getRefreshToken();
+        String accessToken = executor.getState().getAccessToken();
+        String refreshToken = executor.getState().getRefreshToken();
 
         System.out.println("[" + Thread.currentThread().getName() + "] after authentication (access token: " + accessToken + ", refresh token: " + refreshToken + ")");
     }
@@ -78,8 +78,8 @@ public class MultiThreadConcurrentToken1TestRunner
         for (int i = 0; i < 100; i++)
         {
             // before
-            String accessToken = executor.getAccessToken();
-            String refreshToken = executor.getRefreshToken();
+            String accessToken = executor.getState().getAccessToken();
+            String refreshToken = executor.getState().getRefreshToken();
 
             System.out.println("[" + Thread.currentThread().getName() + "] [" + i + "] before (access token: " + accessToken + ", refresh token: " + refreshToken + ")");
 
@@ -92,7 +92,7 @@ public class MultiThreadConcurrentToken1TestRunner
                     System.out.println("[" + Thread.currentThread().getName() + "] [" + i + "] corrupting access token");
 
                     // corrupt the access token
-                    executor.setAccessToken(new StringBuilder(accessToken).reverse().toString());
+                    executor.getState().setAccessToken(new StringBuilder(accessToken).reverse().toString());
                 }
             }
             else if (rand == 1)
@@ -100,7 +100,7 @@ public class MultiThreadConcurrentToken1TestRunner
                 System.out.println("[" + Thread.currentThread().getName() + "] [" + i + "] deleting access token");
 
                 // delete the access token
-                executor.setAccessToken(null);
+                executor.getState().setAccessToken(null);
             }
 
             // attempt to create a node
@@ -109,8 +109,8 @@ public class MultiThreadConcurrentToken1TestRunner
             this.branch.createNode();
 
             // after
-            String accessToken1 = executor.getAccessToken();
-            String refreshToken1 = executor.getRefreshToken();
+            String accessToken1 = executor.getState().getAccessToken();
+            String refreshToken1 = executor.getState().getRefreshToken();
 
             System.out.println("[" + Thread.currentThread().getName() + "] [" + i + "] after (access token: " + accessToken1 + ", refresh token: " + refreshToken1 + ")");
         }

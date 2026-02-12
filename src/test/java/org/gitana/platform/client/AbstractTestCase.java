@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Gitana Software, Inc.
+ * Copyright 2026 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -63,5 +63,25 @@ import org.junit.Ignore;
                 throw new RuntimeException(ie);
             }
         }
+    }
+
+    public String getTestEmailUsername()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_USERNAME");
+    }
+
+    public String getTestEmailPassword()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_PASSWORD");
+    }
+
+    public String getTestEmailTo()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_TO");
+    }
+
+    public String getTestEmailFrom()
+    {
+        return System.getenv("GITANA_TEST_EMAIL_FROM");
     }
 }

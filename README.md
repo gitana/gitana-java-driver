@@ -179,6 +179,41 @@ Use the following system properties to control the HTTP proxy:
 - https.proxyHost
 - https.proxyPort
 
+## Managing OAuth2 Connection State
+
+By default, the OAuth 2 connection state is retained in memory.  This works well for a single JVM application.
+
+If you are running multiple JVMs in a cluster, you may wish to have the members of your clusters share
+the connection state.  To do so, instantiate a class that implements `OAuth2StatePersister` and 
+assign it to your Gitana instance ahead of authenticating.  Like this:
+
+```
+Gitana gitana = new Gitana();
+gitana.setStatePersister(statePersister);
+...
+gitana.authenticate()
+```
+
+With this in place, the access token, refresh token and other OAuth2 authentication state will be
+managed using your persister.  If any JVM updates this state, it will be shared and available to other
+JVMs using the same persister.
+
+The state persister is responsible for reading and writing `OAuth2State` instances against storage. 
+By default, Gitana uses a `HeapOAuth2StatePersister` instance which works in memory.  The following
+persisters are available:
+
+- `HeapOAuth2StatePersister` - works in heap
+- `JsonFileOAuth2StatePersister` - persists JSON text representation of state to a target file
+- `SerializedFileOAuth2StatePersister` - persists the serialized OAuth2State to a target file
+
+There is also a sample `HttpServletSessionOAuth2StatePersister` class which works with Http Servlet
+Sessions.
+
+To implement your own persisters, simply implement the `OAuth2StatePersister` class and write your
+implementations for the `read` and `write` methods.  You may alternatively wish to extend the
+`AbstractOAuth2StatePersister` abstract class and implement `doRead` and `doWrite`.
+
+
 ## More Examples
 
 One very good place to look for examples of the Gitana Java Driver in use is within the source code itself.  The

@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Gitana Software, Inc.
+ * Copyright 2026 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
@@ -55,7 +55,7 @@ public class Authentication3Test extends AbstractTestCase
         // now wipe out the access token
         DriverContext.getDriver().expire(true);
         OAuth2HttpMethodExecutor executor = ((OAuth2HttpMethodExecutor) ((RemoteImpl) DriverContext.getDriver().getRemote()).getHttpMethodExecutor());
-        String accessToken1 = executor.getAccessToken();
+        String accessToken1 = executor.getState().getAccessToken();
         executor.invalidateAccessToken();
 
         // list domains again
@@ -71,7 +71,7 @@ public class Authentication3Test extends AbstractTestCase
         }
         assertNull(ex1);
 
-        String accessToken2 = executor.getAccessToken();
+        String accessToken2 = executor.getState().getAccessToken();
         assertFalse(accessToken1.equals(accessToken2));
     }
 

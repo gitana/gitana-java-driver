@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Gitana Software, Inc.
+ * Copyright 2026 Gitana Software, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,14 @@
  * For more information, please contact Gitana Software, Inc. at this
  * address:
  *
- *   info@cloudcms.com
+ *   info@gitana.io
  */
 package org.gitana.platform.client;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.gitana.http.HttpClientConfiguration;
-import org.gitana.http.OAuth2HttpMethodExecutor;
-import org.gitana.http.OAuth2TokenRequestConfigurer;
+import org.gitana.http.*;
 import org.gitana.platform.client.cluster.Cluster;
 import org.gitana.platform.client.cluster.ClusterImpl;
 import org.gitana.platform.client.identity.Identity;
@@ -61,6 +59,8 @@ public class Gitana
     private String clientKey;
     private String clientSecret;
 
+    private OAuth2StatePersister statePersister = new HeapOAuth2StatePersister();
+
     private static Map<String, Lock> LOCKS = new HashMap<String, Lock>();
 
     private synchronized static Lock getOrCreateLock(String key) {
@@ -73,6 +73,11 @@ public class Gitana
         }
 
         return lock;
+    }
+
+    public void setStatePersister(OAuth2StatePersister statePersister)
+    {
+        this.statePersister = statePersister;
     }
 
     public String getBaseURL()
@@ -542,16 +547,27 @@ public class Gitana
             }
         }
 
-        RemoteImpl remote = createRemote(acquireClientConfiguration());
+        // build the http method executor
 
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
+        httpMethodExecutor.setStatePersister(this.statePersister);
         httpMethodExecutor.setUri(this.baseURL + "/oauth/token");
-        httpMethodExecutor.setClientId(this.clientKey);
-        httpMethodExecutor.setClientSecret(this.clientSecret);
-        httpMethodExecutor.setResourceOwnerPasswordCredentialsFlow(username, password);
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
+
+        // build the initial oauth2 state
+        OAuth2State state = new OAuth2State();
+        state.setClientId(clientKey);
+        state.setClientSecret(this.clientSecret);
+
+        // use resource owner flow
+        httpMethodExecutor.setAuthorizationFlow(OAuth2AuthorizationGrantType.RESOURCE_OWNER_PASSWORD_CREDENTIALS);
         httpMethodExecutor.setRequestedScope("api");
+        state.setUsername(username);
+        state.setPassword(password);
+
+        // write to persistence
+        this.statePersister.write(state);
 
         // if we have auth options, add in a token request configurer to supply things like MFA CODE and other auth options
         if (connectOptions != null)
@@ -569,7 +585,6 @@ public class Gitana
 
             httpMethodExecutor.setTokenRequestConfigurer(tokenRequestConfigurer);
         }
-        remote.setHttpMethodExecutor(httpMethodExecutor);
 
         // "automatic" mode support
         boolean useAutomaticReattempt = DriverUtil.acquireBooleanFromSystemOrBundle(bundle, "gitana.useAutomaticReattempt", null, false);
@@ -578,6 +593,10 @@ public class Gitana
         // set token lock
         Lock tokenLock = getOrCreateLock("tokenLock-" + this.baseURL);
         httpMethodExecutor.setTokenLock(tokenLock);
+
+        // build remote
+        RemoteImpl remote = createRemote(acquireClientConfiguration());
+        remote.setHttpMethodExecutor(httpMethodExecutor);
 
         // build driver instance
         Driver driver = new Driver(remote);
@@ -600,17 +619,25 @@ public class Gitana
      */
     public Platform authenticateWithCode(String code, String redirectUri)
     {
-        RemoteImpl remote = createRemote(acquireClientConfiguration());
-
         // apply OAuth2 HTTP Method Executor
         OAuth2HttpMethodExecutor httpMethodExecutor = new OAuth2HttpMethodExecutor();
+        httpMethodExecutor.setStatePersister(this.statePersister);
         httpMethodExecutor.setUri(this.baseURL + "/oauth/token");
-        httpMethodExecutor.setClientId(this.clientKey);
-        httpMethodExecutor.setClientSecret(this.clientSecret);
-        httpMethodExecutor.setAuthorizationCodeFlow(code, redirectUri);
         //httpMethodExecutor.setSignatureMethod(OAuth2SignatureMethod.QUERY_PARAMETER);
+
+        // build the initial oauth2 state
+        OAuth2State state = new OAuth2State();
+        state.setClientId(clientKey);
+        state.setClientSecret(this.clientSecret);
+
+        // use authorization code flow
+        httpMethodExecutor.setAuthorizationFlow(OAuth2AuthorizationGrantType.AUTHORIZATION_CODE);
         httpMethodExecutor.setRequestedScope("api");
-        remote.setHttpMethodExecutor(httpMethodExecutor);
+        state.setCode(code);
+        state.setRedirectUri(redirectUri);
+
+        // write to persistence
+        this.statePersister.write(state);
 
         // "automatic" mode support
         boolean useAutomaticReattempt = DriverUtil.acquireBoolean(System.getProperties(), "gitana.useAutomaticReattempt", false);
@@ -619,6 +646,10 @@ public class Gitana
         // set token lock
         Lock tokenLock = getOrCreateLock("tokenLock-" + this.baseURL);
         httpMethodExecutor.setTokenLock(tokenLock);
+
+        // set onto remote
+        RemoteImpl remote = createRemote(acquireClientConfiguration());
+        remote.setHttpMethodExecutor(httpMethodExecutor);
 
         // build driver and bind to thread local context
         Driver driver = new Driver(remote);
