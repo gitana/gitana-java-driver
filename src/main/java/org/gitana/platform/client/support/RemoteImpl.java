@@ -30,7 +30,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -47,6 +48,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -760,9 +762,11 @@ public class RemoteImpl implements Remote
         payload.setFilename(filename);
         payload.setLength(bytes.length);
 
-        MultipartEntity entity = new MultipartEntity();
-        entity.addPart(filename, new HttpPayloadContentBody(payload));
-        httpPost.setEntity(entity);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        builder.setCharset(StandardCharsets.UTF_8);
+        builder.addPart("file", new HttpPayloadContentBody(payload));
+        httpPost.setEntity(builder.build());
 
         HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
@@ -805,9 +809,11 @@ public class RemoteImpl implements Remote
 
         InputStreamBody inputStreamBody = new InputStreamBody(in, mimetype, filename);
 
-        MultipartEntity entity = new MultipartEntity();
-        entity.addPart(filename, inputStreamBody);
-        httpPost.setEntity(entity);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        builder.setCharset(StandardCharsets.UTF_8);
+        builder.addPart("file", inputStreamBody);
+        httpPost.setEntity(builder.build());
 
         HttpResponse httpResponse = invoker.execute(httpPost);
         if (!HttpUtil.isOk(httpResponse) && !HttpUtil.isRedirect(httpResponse))
